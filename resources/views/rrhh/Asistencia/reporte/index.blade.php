@@ -212,7 +212,7 @@
                                         <div class="col-md-2">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">Área:</label>
-                                                <select id="id_area_nm" name="id_area_nm" class="form-control basic" onchange="Traer_Colaborador();">
+                                                <select id="id_area_nm" name="id_area_nm" class="form-control basic" onchange="Traer_Colaborador_nm();">
                                                     <option value="0">TODOS</option>
                                                     <?php foreach($list_area as $list){?>
                                                         <option value="<?php echo $list['id_area']; ?>"> <?php echo $list['nom_area'];?> </option>
@@ -224,10 +224,10 @@
                                         <div class="col-md-1">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">Estado:</label><br>
-                                                <input type="radio" name="estado_nm" id="estadosi" value="1" checked="checked" onclick="Traer_Colaborador();">
-                                                <label class="form-check-label" for="estadosi">Activos</label><br>
-                                                <input type="radio" name="estado_nm" id="estadono" value="2" onclick="Traer_Colaborador();">
-                                                <label class="form-check-label" for="estadono">Inactivos</label>
+                                                <input type="radio" name="estado_nm" id="estadosi_nm" value="1" checked="checked" onclick="Traer_Colaborador_nm();">
+                                                <label class="form-check-label" for="estadosi_nm">Activos</label><br>
+                                                <input type="radio" name="estado_nm" id="estadono_nm" value="2" onclick="Traer_Colaborador();">
+                                                <label class="form-check-label" for="estadono_nm">Inactivos</label>
                                             </div>
                                         </div>
 
@@ -323,9 +323,10 @@
         Cargando();
         $('#id_area').val(0).trigger('change');
         $('#id_puesto').val(0).trigger('change');
+        $('#id_area_nm').val(0).trigger('change');
+        $('#id_puesto_nm').val(0).trigger('change');
         Traer_Colaborador();
     }
-
 
     function Traer_Colaborador(){
         Cargando();
@@ -357,8 +358,6 @@
     }
 
     function TipoBusqueda() {
-        var messageContainer = $('#message-container');
-        messageContainer.empty();
         Cargando();
         var div1 = document.getElementById("cmb_mes");
         var div4 = document.getElementById("cmb_anio");
@@ -370,18 +369,11 @@
             div4.style.display = "block";
             div2.style.display = "none";
             div3.style.display = "none";
-            messageContainer.empty();
         }else{
             div1.style.display = "none";
             div4.style.display = "none";
             div2.style.display = "block";
             div3.style.display = "block";
-
-            var span = $('<span></span>')
-                .addClass('text-danger')
-                .text('Se recomienda una busqueda menor a 30 días');
-            messageContainer.append(span);
-
         }
 
     }
@@ -873,6 +865,56 @@
                     }
                 });
             }
+    }
+    
+    function Traer_Colaborador_nm(){
+        Cargando();
+
+        var cod_base = $('#cod_base_nm').val();
+        var id_area = $('#id_area_nm').val();
+        var id_puesto = $('#id_puesto_nm').val();
+        if(id_puesto == 29){
+            var estado = 1;
+        }else{
+            if ($('#estadosi_nm').is(":checked")){
+                var estado = 1;
+            }
+
+            if ($('#estadono_nm').is(":checked")){
+                var estado = 3;
+            }
+        }
+        var url = "{{ url('Asistencia/Traer_Colaborador_Asistencia') }}";
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {'cod_base':cod_base,'id_area':id_area,'estado':estado},
+            success: function(data) {
+                $('#num_doc_nm').html(data);
+            }
+        });
+    }
+
+    function TipoBusqueda_nm() {
+        Cargando();
+        var div1 = document.getElementById("cmb_mes_nm");
+        var div4 = document.getElementById("cmb_anio_nm");
+        var div2 = document.getElementById("cmb_finicio_nm");
+        var div3 = document.getElementById("cmb_ffin_nm");
+
+        if ($('#tipo1_nm').is(":checked")){
+            div1.style.display = "block";
+            div4.style.display = "block";
+            div2.style.display = "none";
+            div3.style.display = "none";
+        }else{
+            div1.style.display = "none";
+            div4.style.display = "none";
+            div2.style.display = "block";
+            div3.style.display = "block";
+        }
+
     }
 </script>
 @endsection
