@@ -842,12 +842,13 @@ class Model_Perfil extends Model
                     WHERE st.id_usuario=u.id_usuario
                     LIMIT 1) AS archivo_saludo
                     FROM users u
-                    left join area a on a.id_area=u.id_area
                     left join puesto p on p.id_puesto=u.id_puesto
+                    left join area a on a.id_area=p.id_area
                     left join mes m on m.id_mes=u.mes_nac
                     left join genero g on g.id_genero=u.id_genero
                     left join tipo_documento t on t.id_tipo_documento=u.id_tipo_documento
-                    left join gerencia ge on ge.id_gerencia = u.id_gerencia
+                    LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                    LEFT JOIN gerencia ge on ge.id_gerencia=sg.id_gerencia
                     WHERE u.id_usuario=$id_usuario";
         }else{
             $sql = "SELECT * FROM parentesco";

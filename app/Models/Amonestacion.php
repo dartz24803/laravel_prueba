@@ -74,16 +74,18 @@ class Amonestacion extends Model
                 when i.estado_amonestacion=4 then 'Aceptado' 
                 when i.estado_amonestacion=5 then 'No Aceptado' end as desc_estado_amonestacion,
                 date_format(i.fecha, '%d/%m/%Y') as fecha_amonestacion,a.nom_tipo_amonestacion,
-                m.nom_motivo_amonestacion,s.id_area,
+                m.nom_motivo_amonestacion,ar.id_area,
                 CASE WHEN i.documento!='' THEN 'Si' ELSE 'No' END AS v_documento
                 FROM amonestacion i 
                 left join users u on i.id_colaborador=u.id_usuario
                 left join users s on i.id_solicitante=s.id_usuario
                 left join users r on i.id_revisor=r.id_usuario
+                LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                LEFT JOIN area ar on ar.id_area=p.id_area
                 left join tipo_amonestacion a on i.tipo=a.id_tipo_amonestacion
                 left join motivo_amonestacion m on i.motivo=m.id_motivo_amonestacion
                 left join gravedad_amonestacion g on i.id_gravedad_amonestacion=g.id_gravedad_amonestacion
-                where i.estado=1 and s.id_area=$id_area and r.centro_labores='$base'";
+                where i.estado=1 and ar.id_area=$id_area and r.centro_labores='$base'";
             }elseif($id_puesto==128){
                 $sql = "SELECT i.*,concat(u.usuario_nombres,' ',u.usuario_apater,' ',u.usuario_amater) as colaborador,
                 concat(s.usuario_nombres,' ',s.usuario_apater,' ',s.usuario_amater) as solicitante,
@@ -101,6 +103,8 @@ class Amonestacion extends Model
                 left join users u on i.id_colaborador=u.id_usuario
                 left join users s on i.id_solicitante=s.id_usuario
                 left join users r on i.id_revisor=r.id_usuario
+                LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                LEFT JOIN area ar on ar.id_area=p.id_area
                 left join tipo_amonestacion a on i.tipo=a.id_tipo_amonestacion
                 left join motivo_amonestacion m on i.motivo=m.id_motivo_amonestacion
                 left join gravedad_amonestacion g on i.id_gravedad_amonestacion=g.id_gravedad_amonestacion
@@ -209,12 +213,14 @@ class Amonestacion extends Model
             when i.estado_amonestacion=4 then 'Aceptado' 
             when i.estado_amonestacion=5 then 'No Aceptado' end as desc_estado_amonestacion,
             date_format(i.fecha, '%d/%m/%Y') as fecha_amonestacion,a.nom_tipo_amonestacion,
-            m.nom_motivo_amonestacion,s.id_area,
+            m.nom_motivo_amonestacion,ar.id_area,
             CASE WHEN i.documento!='' THEN 'Si' ELSE 'No' END AS v_documento
             FROM amonestacion i 
             left join users u on i.id_colaborador=u.id_usuario
             left join users s on i.id_solicitante=s.id_usuario
             left join users r on i.id_revisor=r.id_usuario
+            LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+            LEFT JOIN area ar on ar.id_area=p.id_area
             left join tipo_amonestacion a on i.tipo=a.id_tipo_amonestacion
             left join motivo_amonestacion m on i.motivo=m.id_motivo_amonestacion
             left join gravedad_amonestacion g on i.id_gravedad_amonestacion=g.id_gravedad_amonestacion

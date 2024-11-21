@@ -14,6 +14,7 @@ use App\Models\SubGerencia;
 use DateTime;
 use App\Models\Notificacion;
 use App\Models\Ubicacion;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -604,5 +605,87 @@ class AsistenciaController extends Controller
 		header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"');
 		header('Cache-Control: max-age=0');
 		$writer->save('php://output');
+    }
+    
+    public function Modal_Update_Asistencia($nombres,$dni,$orden,$time){
+        $dato['nombres']=$nombres;
+        $dato['get_id'] = DB::connection('second_mysql')
+                        ->table('iclock_transaction')
+                        ->whereDate('punch_time',$orden)
+                        ->where('punch_time', 'LIKE', '%' .$time .'%')
+                        ->where('emp_code',$dni)
+                        ->get();
+        //print_r($dato['get_id']);
+        return view('rrhh.Asistencia.reporte.modal_editar',$dato);
+    }
+    public function Update_Asistencia_Diaria(Request $request){
+        $request->validate([
+            'hora' => 'required'
+        ],[
+            'hora' => 'Debe ingresar hora.',
+        ]);
+
+        $dato['hora'] = $request->post("hora");
+        $dato['fecha'] = $request->post("fecha");
+        $dato['punch_time']=$dato['fecha']." ".$dato['hora'];
+        $dato['id_asistencia_remota'] = $request->post("id_asistencia_remota");
+        
+        DB::connection('second_mysql')
+            ->table('iclock_transaction')
+            ->where('id', $dato['id_asistencia_remota'])
+            ->update([
+                'punch_time' => $dato['punch_time']
+            ]);
+    }
+    
+    public function Modal_Reg_Asistencia(Request $request) {
+        $dato = [
+            'cod_base' => $request->cod_base,
+            'id_area' => $request->id_area,
+            'estado' => $request->estado,
+            'list_colaborador' => $this->modelousuarios->get_list_usuarios_x_baset(
+                $request->cod_base,
+                $request->id_area,
+                $request->estado
+            )
+        ];
+    
+        return view('rrhh.Asistencia.reporte.modal_reg', $dato);
+    }
+    
+    
+    public function Insert_Asistencia_Diaria(){
+        if ($this->session->userdata('usuario')) {
+            $dato['hora']=$this->input->post("horar");
+            $dato['fecha']=$this->input->post("fechar");
+            $dato['num_doc']=$this->input->post("num_docr");
+            $dato['punch_time']=$dato['fecha']." ".$dato['hora'];
+            $dato['get_id']=$this->Model_Asistencia->get_id_usuario_xnum_doc($dato);
+            
+
+            $cont=count($this->Model_Asistencia->valida_reg_asistencia_diaria($dato));
+            
+            if(count($dato['get_id'])==0){
+                echo "error";
+            }else{
+                $dato['base']=$dato['get_id'][0]['centro_labores'];
+                $dato['get_employee']=$this->Model_Asistencia->get_id_employee($dato);
+                $dato['emp_id']=$dato['get_employee'][0]['id'];
+                $dato['get_terminal']=$this->Model_Asistencia->get_id_terminal($dato);
+                if(count($dato['get_terminal'])>0){
+                    $dato['terminal_id']=$dato['get_terminal'][0]['id'];
+                    $dato['terminal_sn']=$dato['get_terminal'][0]['sn'];
+                    $dato['terminal_alias']=$dato['get_terminal'][0]['alias'];
+                }else{
+                    $dato['terminal_id']="23";
+                    $dato['terminal_sn']="AF6P211660021";
+                    $dato['terminal_alias']=$dato['base'];//"OFC";
+                }
+                $this->Model_Asistencia->insert_asistencia_diaria($dato);
+            }
+        }
+        else{
+            redirect('');
+        }
     }
 }

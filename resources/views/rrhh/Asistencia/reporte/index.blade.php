@@ -175,7 +175,12 @@
                                             </button>
                                         </div>
 
-                                        <div id="message-container" class="col-md-12 d-flex justify-content-center h-0"></div>
+
+                                        <div class="form-group col-md-1">
+                                            <!--<button type="button" class="btn btn-primary mb-2 mr-2" title="Registrar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('Asistencia/Modal_Reg_Asistencia')}}" >
+                                                Registrar
+                                            </button>-->
+                                        </div>
 
                                         <div class="form-group col-md-1">
                                             <button class="btn btn-primary hidden-sm" type="button" onclick="Excel_Reporte_Asistencia();" style="margin-top:33px;background-color: #28a745!important;border-color:#28a745!important">
@@ -485,14 +490,6 @@
 
 
         var url = "{{ url('Buscar_Reporte_Control_Asistencia')}}";
-        /*if (cod_base==0) {
-            swal.fire(
-                'Error!',
-                'Debe seleccionar base de busqueda!',
-                'error'
-            ).then(function() {
-            });
-        }else{*/
             if(tipo==2){
                 var ini = moment(finicio);
                 var fin = moment(ffin);
@@ -571,8 +568,6 @@
                     }
                 });
             }
-        //}
-
     }
 
     function Excel_Reporte_Asistencia() {
@@ -636,6 +631,36 @@
         }
 
 
+    }
+
+    function Modal_Registrar(){
+        Cargando();
+        var cod_base = $('#cod_base').val();
+        var id_area = $('#id_area').val();
+        var id_puesto = $('#id_puesto').val();
+        
+        if(id_puesto == 29){
+            var estado = 1;
+        }else{
+            if ($('#estadosi').is(":checked")){
+                var estado = 1;
+            }
+
+            if ($('#estadono').is(":checked")){
+                var estado = 3;
+            }
+        }
+
+        var url = "{{ url('Asistencia/Modal_Reg_Asistencia') }}";
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {'cod_base':cod_base,'id_area':id_area,'estado':estado},
+            success: function(data) {
+                $('#ModalRegistro').modal('show');
+            },
+        });
     }
 </script>
 @endsection

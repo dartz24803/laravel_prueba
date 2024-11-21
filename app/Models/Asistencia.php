@@ -30,22 +30,22 @@ class Asistencia extends Model
             $sql = "SELECT DISTINCT DATE(it.punch_time) AS orden, ub.cod_ubi AS centro_labores,
                     u.usuario_apater,u.usuario_amater,u.usuario_nombres, u.usuario_codigo as num_doc,
                     DATE_FORMAT(it.punch_time, '%d/%m/%Y') AS fecha,
-                    (SELECT DATE_FORMAT(ir.punch_time, '%H:%i %p') 
+                    (SELECT ir.punch_time
                     FROM iclock_transaction ir
                     WHERE ir.emp_code = it.emp_code AND DATE(ir.punch_time) = DATE(it.punch_time)
                     ORDER BY ir.punch_time ASC
                     LIMIT 1) AS ingreso,
-                    (SELECT DATE_FORMAT(ir.punch_time, '%H:%i %p') 
+                    (SELECT ir.punch_time
                     FROM iclock_transaction ir
                     WHERE ir.emp_code = it.emp_code AND DATE(ir.punch_time) = DATE(it.punch_time)
                     ORDER BY ir.punch_time ASC
                     LIMIT 1,1) AS inicio_refrigerio,
-                    (SELECT DATE_FORMAT(ir.punch_time, '%H:%i %p') 
+                    (SELECT ir.punch_time
                     FROM iclock_transaction ir
                     WHERE ir.emp_code = it.emp_code AND DATE(ir.punch_time) = DATE(it.punch_time)
                     ORDER BY ir.punch_time ASC
                     LIMIT 2,1) AS fin_refrigerio,
-                    (SELECT DATE_FORMAT(ir.punch_time, '%H:%i %p') 
+                    (SELECT ir.punch_time
                     FROM iclock_transaction ir
                     WHERE ir.emp_code = it.emp_code AND DATE(ir.punch_time) = DATE(it.punch_time)
                     ORDER BY ir.punch_time ASC

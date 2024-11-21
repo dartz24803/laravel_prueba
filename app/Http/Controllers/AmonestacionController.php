@@ -89,18 +89,25 @@ class AmonestacionController extends Controller
             || session('usuario')->id_puesto == 133
         ) {
             $dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
-            $list_responsables = $this->modelousuarios->list_usuarios_responsables($dato);
+            $dato['list_responsables'] = $this->modelousuarios->list_usuarios_responsables($dato);
         } else {
-            $dato['id_area'] = $_SESSION['usuario'][0]['id_area'];
+            $dato['id_area'] = session('usuario')->id_area;
         }
 
-        $list_colaborador = $this->modelousuarios->get_list_colaborador();
+        $dato['list_colaborador'] = $this->modelousuarios->get_list_colaborador();
 
-        $list_tipo_amonestacion = $this->modelotipoa->where('estado', 1)->get();
-        $list_gravedad_amonestacion = $this->modelogravedada->where('estado', 1)->get();
-        $list_motivo_amonestacion = $this->modelomotivoa->where('estado', 1)->get();
+        $dato['list_tipo_amonestacion'] = $this->modelotipoa->where('estado', 1)->get();
+        $dato['list_gravedad_amonestacion'] = $this->modelogravedada->where('estado', 1)->get();
+        $dato['list_motivo_amonestacion'] = $this->modelomotivoa->where('estado', 1)->get();
 
-        return view('rrhh.Amonestacion.Emitidas.modal_registrar', compact('list_responsables', 'list_colaborador', 'list_tipo_amonestacion', 'list_gravedad_amonestacion', 'list_motivo_amonestacion'));
+        if (
+            session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2
+            || session('usuario')->id_puesto == 133
+        ) {
+            return view('rrhh.Amonestacion.Emitidas.modal_registrar', $dato);
+        } else {
+            return view('rrhh.Amonestacion.Emitidas.modal_registrar', $dato);
+        }
     }
 
     public function Insert_Amonestacion(Request $request)

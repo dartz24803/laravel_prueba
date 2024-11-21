@@ -52,7 +52,7 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs  mb-3 mt-3" id="simpletab" role="tablist">
                         <?php 
-                        if($id_nivel==1 || $id_nivel==2 || $id_puesto==22 || $id_puesto==133 || 
+                        if($id_nivel==1 || $id_nivel==2 || $id_puesto==22 || $id_puesto==133 || $id_puesto==30 ||
                         session('usuario')->nivel_jerarquico==1 ||
                         session('usuario')->nivel_jerarquico==2 || 
                         session('usuario')->nivel_jerarquico==3 ||  

@@ -128,7 +128,7 @@ $id_nivel=session('usuario')->id_nivel;
         $("#rhumanos").addClass('active');
         $("#hrhumanos").attr('aria-expanded','true');
         $("#papeletas").addClass('active');
-        if (<?= session('usuario')->id_puesto ?>==24) {
+        if (<?= session('usuario')->id_puesto ?>==24 || <?= session('usuario')->id_puesto ?>==36) {
             Buscar_Papeleta_Control();
         } else {
             Buscar_Papeleta_Aprobacion();
