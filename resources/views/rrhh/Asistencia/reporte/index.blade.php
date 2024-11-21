@@ -247,15 +247,15 @@
                                         <div class="col-md-1">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">Tipo:</label><br>
-                                                <input type="radio" name="tipo_nm" id="tipo1_nm" value="1" checked="checked" onclick="TipoBusqueda('1')">
+                                                <input type="radio" name="tipo_nm" id="tipo1_nm" value="1" checked="checked" onclick="TipoBusqueda_nm('1')">
                                                 <label class="form-check-label" for="tipo1_nm">Por Mes</label>
                                                 <br>
-                                                <input type="radio" name="tipo_nm" id="tipo2_nm" value="2"  onclick="TipoBusqueda('2')">
+                                                <input type="radio" name="tipo_nm" id="tipo2_nm" value="2"  onclick="TipoBusqueda_nm('2')">
                                                 <label class="form-check-label" for="tipo2_nm">Por Rango</label>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-1" id="cmb_mes">
+                                        <div class="col-md-1" id="cmb_mes_nm">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">Mes:</label>
                                                 <select class="form-control" id="cod_mes_nm" name="cod_mes_nm">
@@ -266,7 +266,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-1" id="cmb_anio">
+                                        <div class="col-md-1" id="cmb_anio_nm">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">Año:</label>
                                                 <select class="form-control" id="cod_anio_nm" name="cod_anio_nm">
@@ -277,14 +277,14 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2" id="cmb_finicio" style="display:none">
+                                        <div class="col-md-2" id="cmb_finicio_nm" style="display:none">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">F inicio:</label>
                                                     <input type="date" class="form-control formcontrolarlimpiar" id="finicio_nm"  name="finicio_nm" value="<?php echo date('Y-m-d') ?>">
                                             </div>
                                         </div>
 
-                                        <div class="col-md-2" id="cmb_ffin" style="display:none">
+                                        <div class="col-md-2" id="cmb_ffin_nm" style="display:none">
                                             <div class="form-group">
                                                 <label class="control-label text-bold">F fin:</label>
                                                     <input type="date" class="form-control formcontrolarlimpiar" id="ffin_nm"  name="ffin_nm" value="<?php echo date('Y-m-d') ?>">
@@ -771,11 +771,11 @@
         if(id_puesto == 29){
             var estado=1;
         }else{
-            if ($('#estadosi').is(":checked")){
+            if ($('#estadosi_nm').is(":checked")){
                 var estado=1;
             }
 
-            if ($('#estadono').is(":checked")){
+            if ($('#estadono_nm').is(":checked")){
                 var estado=3;
             }
         }
@@ -837,7 +837,7 @@
                                 'ffin': ffin
                             },
                             success: function(data) {
-                                $('#lista_colaborador').html(data);
+                                $('#lista_colaborador_nm').html(data);
                             }
                         });
                     }
@@ -914,7 +914,6 @@
             div2.style.display = "block";
             div3.style.display = "block";
         }
-
     }
 </script>
 @endsection
