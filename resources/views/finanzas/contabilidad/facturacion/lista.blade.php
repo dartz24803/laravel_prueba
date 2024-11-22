@@ -1,6 +1,5 @@
 <!-- Estilos CSS -->
 <style>
-    /* Ajustar el tamaño y el espacio alrededor del checkbox */
     .custom-checkbox {
         width: 20px;
         height: 20px;
@@ -60,64 +59,57 @@
         /* Cambia el color según tu necesidad */
     }
 </style>
-<div class="toolbar d-md-flex align-items-md-center mt-3">
-    <!-- Modal Previsualización por Facturar-->
-    <div class="modal fade" id="modalFacturados" tabindex="-1" aria-labelledby="modalFacturadosLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="modalFacturadosLabel">Previsualización por Facturar</h5>
+<!-- Modal Previsualización por Facturar-->
+<div class="modal fade" id="modalFacturados" tabindex="-1" aria-labelledby="modalFacturadosLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalFacturadosLabel">Previsualización por Facturar</h5>
+            </div>
+            <div class="modal-body" id="tablaFacturados">
+                <!-- Aquí se insertará la tabla con estructura personalizada -->
+                <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
+                    <table class="table table-striped" style="width: 100%; border-collapse: collapse; min-width: 800px;">
+                        <thead>
+                            <tr>
+                                <th>Estilo</th>
+                                <th>SKU</th>
+                                <th>Descripción</th>
+                                <th>Color</th>
+                                <th>Talla</th>
+                                <th>Costo Precio</th>
+                                <th>Alm DSC</th>
+                                <th>Empresa</th>
+                                <th>Guía de Remisión</th>
+                                <th>Estado</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tablaContenido">
+                            <!-- Los registros de la tabla se insertarán aquí -->
+                        </tbody>
+                    </table>
                 </div>
-                <div class="modal-body" id="tablaFacturados">
-                    <!-- Aquí se insertará la tabla con estructura personalizada -->
-                    <div style="overflow-x: auto; -webkit-overflow-scrolling: touch;">
-                        <table class="table table-striped" style="width: 100%; border-collapse: collapse; min-width: 800px;">
-                            <thead>
-                                <tr>
-                                    <th>Estilo</th>
-                                    <th>SKU</th>
-                                    <th>Descripción</th>
-                                    <th>Color</th>
-                                    <th>Talla</th>
-                                    <th>Costo Precio</th>
-                                    <th>Alm DSC</th>
-                                    <th>Empresa</th>
-                                    <th>Guía de Remisión</th>
-                                    <th>Estado</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tablaContenido">
-                                <!-- Los registros de la tabla se insertarán aquí -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <!-- Botón para cerrar el modal -->
-                    <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
-                    <!-- Botón para llamar a la función de facturación -->
-                    <button type="button" class="btn btn-primary" onclick="exportar_por_facturar()">Exportar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <!-- Botón para cerrar el modal -->
+                <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
+                <!-- Botón para llamar a la función de facturación -->
+                <button type="button" class="btn btn-primary">Exportar</button>
             </div>
         </div>
     </div>
+</div>
 
-
-
-
+<div class="toolbar  mt-3">
+    <!-- Primera fila -->
     <div class="row">
-
-
         <div class="form-group col-lg-2">
             <label>Fecha Inicio:</label>
-            <input type="date" class="form-control" name="fecha_iniciob"
-                id="fecha_iniciob" value="{{ date('Y-m-d') }}">
+            <input type="date" class="form-control" name="fecha_iniciob" id="fecha_iniciob" value="{{ date('Y-m-d') }}">
         </div>
-
         <div class="form-group col-lg-2">
             <label>Fecha Fin:</label>
-            <input type="date" class="form-control" name="fecha_finb"
-                id="fecha_finb" value="{{ date('Y-m-d') }}">
+            <input type="date" class="form-control" name="fecha_finb" id="fecha_finb" value="{{ date('Y-m-d') }}">
         </div>
         <div class="form-group col-lg-2">
             <label>Estado:</label>
@@ -128,30 +120,51 @@
             </select>
         </div>
         <div class="form-group col-lg-2">
-            <label for="mostrarSeleccionados" class="control-label">Mostrar Seleccionados:</label>
-            <input type="checkbox" id="mostrarSeleccionados" class="custom-checkbox" />
+            <label>SKU:</label>
+            <select name="skuFiltro" id="skuFiltro" class="form-control">
+                <option value="">Seleccione un SKU</option>
+                @foreach($skus as $sku)
+                <option value="{{ $sku->sku }}">{{ $sku->sku }}</option>
+                @endforeach
+            </select>
+        </div>
+
+        <div class="form-group col-lg-3">
+            <label>Empresa:</label>
+            <select class="form-control" name="empresaFiltro" id="empresaFiltro">
+                <option value="">Seleccione una empresa</option>
+                @foreach($empresas as $empresa)
+                <option value="{{ $empresa->nom_empresa }}">{{ $empresa->nom_empresa }}</option>
+                @endforeach
+            </select>
         </div>
         <div class="form-group col-lg-1">
-            <button type="button"
-                class="btn btn-primary mx-1 mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Buscar"
-                id="btnBuscar">
+            <label for="mostrarSeleccionados">Seleccionados:</label>
+            <div class="d-block">
+                <input type="checkbox" id="mostrarSeleccionados" class="custom-checkbox mb-2" />
+            </div>
+        </div>
+
+        <div class="form-group col-lg-1">
+            <button type="button" class="btn btn-primary w-100" title="Buscar" id="btnBuscar">
                 Buscar
             </button>
         </div>
-        <div class="form-group col-lg-2">
-            <button type="button"
-                class="btn btn-primary mb-2 mx-1 mb-sm-0 mb-md-2 mb-lg-0" title="Facturar"
-                id="btnFacturar" disabled>
-                Previsualizar
+        <div class="form-group col-lg-1">
+            <button type="button" class="btn btn-primary w-100" title="Facturar" id="btnFacturar" disabled>
+                Ver
             </button>
         </div>
         <div class="form-group col-lg-1">
-            <button type="button"
-                class="btn btn-secondary mb-2 mx-1 mb-sm-0 mb-md-2 mb-lg-0" title="Facturar"
-                id="btnActualizar">
+            <button type="button" class="btn btn-secondary w-100" title="Actualizar" id="btnActualizar">
                 Actualizar
             </button>
         </div>
+
+
+
+
+
     </div>
 </div>
 
@@ -162,7 +175,9 @@
 
         <tr class="text-center">
             <th>ID</th>
-            <th>Seleccionar</th>
+            <th>
+                Todos <input type="checkbox" id="selectAll" />
+            </th>
             <th>Estilo</th>
             <th>Color</th>
             <th>SKU</th>
@@ -188,6 +203,36 @@
 </table>
 
 <script>
+    $('#empresaFiltro').select2({
+        placeholder: 'Seleccione una Empresa',
+        allowClear: true
+    });
+    $('#skuFiltro').select2({
+        placeholder: 'Seleccione un SKU',
+        allowClear: true,
+        ajax: {
+            url: "{{ route('tabla_facturacion.obtenersku') }}", // Nuevo endpoint para cargar SKUs
+            dataType: 'json',
+            delay: 250,
+            data: function(params) {
+                return {
+                    search: params.term // Término de búsqueda ingresado
+                };
+            },
+            processResults: function(data) {
+                return {
+                    results: data.results // Formato esperado
+                };
+            },
+            cache: true
+        },
+        minimumInputLength: 1
+    });
+
+    // $('#skuFiltro').select2({
+    //     placeholder: 'Seleccione un SKU',
+    //     allowClear: true
+    // });
     var selectedIds = [];
     $(document).ready(function() {
 
@@ -204,9 +249,13 @@
                     var fechaInicio = $('#fecha_iniciob').val();
                     var fechaFin = $('#fecha_finb').val();
                     var estado = $('#estadoFiltro').val();
+                    var filtroSku = $('#skuFiltro').val();
+                    var filtroEmpresa = $('#empresaFiltro').val();
                     d.fecha_inicio = fechaInicio;
                     d.fecha_fin = fechaFin;
                     d.estado = estado;
+                    d.filtroSku = filtroSku;
+                    d.filtroEmpresa = filtroEmpresa;
                 },
                 "headers": {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -219,7 +268,7 @@
                     "visible": false // Oculta la columna del ID
                 },
                 {
-                    "data": null, // Columna para el checkbox
+                    "data": null, // Columna para los checkboxes de filas
                     "render": function(data, type, row, meta) {
                         return `<input type="checkbox" class="row-selector" />`;
                     },
@@ -309,6 +358,44 @@
             } else {
                 $('#btnFacturar').prop('disabled', true); // Deshabilitar el botón
             }
+        });
+
+        // Evento para el checkbox global en el encabezado
+        $('#selectAll').on('change', function() {
+            const isChecked = $(this).is(':checked');
+            $('.row-selector').prop('checked', isChecked); // Marcar/desmarcar todos los checkboxes visibles
+
+            // Manejar el array de seleccionados
+            if (isChecked) {
+                table.rows().every(function() {
+                    const rowData = this.data();
+                    const rowId = rowData.id;
+                    if (!selectedIds.includes(rowId)) {
+                        selectedIds.push(rowId);
+                    }
+                });
+            } else {
+                // Limpiar array al desmarcar
+                table.rows().every(function() {
+                    const rowData = this.data();
+                    const rowId = rowData.id;
+                    selectedIds = selectedIds.filter(id => id !== rowId);
+                });
+            }
+
+            // Actualizar visualización de filas seleccionadas
+            $('#tabla_js tbody tr').toggleClass('highlight-row', isChecked);
+
+            // Actualizar estado del botón de facturar
+            $('#btnFacturar').prop('disabled', !isChecked);
+        });
+
+        // Evento para desactivar el checkbox al paginar
+        table.on('page.dt', function() {
+            $('#mostrarSeleccionados').prop('checked', false); // Restablecer el estado del checkbox
+            table.rows().every(function() {
+                this.nodes().to$().show(); // Asegurarse de mostrar todas las filas
+            });
         });
 
         // Guardar las selecciones al cambiar de página

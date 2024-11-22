@@ -108,10 +108,16 @@ class TbContabilidad extends Model
         if (isset($filters['estado']) && $filters['estado'] !== '') {
             $query->where('stock', $filters['estado']);
         }
-
         // Filtrar solo los registros donde 'cerrado' es igual a 0
         $query->where('cerrado', 0);
-
+        // Filtrar por SKU si se pasa un valor
+        if (isset($filters['sku']) && $filters['sku'] !== '') {
+            $query->where('sku', 'like', "%{$filters['sku']}%");
+        }
+        // Filtrar por Empresa si se pasa un valor
+        if (isset($filters['empresa']) && $filters['empresa'] !== '') {
+            $query->where('empresa', 'like', "%{$filters['empresa']}%");
+        }
         // Filtrar por búsqueda de texto
         if (isset($filters['search']) && $filters['search'] !== '') {
             $query->where(function ($q) use ($filters) {
@@ -127,6 +133,7 @@ class TbContabilidad extends Model
 
         return $query;
     }
+
     public static function sincronizarContabilidad()
     {
         try {
