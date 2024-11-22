@@ -1194,6 +1194,35 @@ class ColaboradorController extends Controller
                     'fec_act' => now(),
                     'user_act' => session('usuario')->id_usuario
                 ]);
+                $get_org = Organigrama::where('id_usuario', $id_usuario)
+                        ->first();
+                if($get_org){
+                    Organigrama::findOrFail($get_org->id)->update([
+                        'id_usuario' => 0,
+                        'fecha' => now(),
+                        'usuario' => session('usuario')->id_usuario,
+                    ]);
+                }
+                $get_usuario = Usuario::findOrFail($id_usuario);
+                $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
+                        ->where('id_centro_labor',$get_usuario->id_centro_labor)
+                        ->where('id_usuario',0)
+                        ->first();
+                if(isset($valida->id)){
+                    Organigrama::findOrFail($valida->id)->update([
+                        'id_usuario' => $id_usuario,
+                        'fecha' => now(),
+                        'usuario' => session('usuario')->id_usuario
+                    ]);
+                }else{
+                    Organigrama::create([
+                        'id_puesto' => $request->id_puesto_hp,
+                        'id_centro_labor' => $get_usuario->id_centro_labor,
+                        'id_usuario' => $id_usuario,
+                        'fecha' => now(),
+                        'usuario' => session('usuario')->id_usuario
+                    ]);
+                }
             }
         }else{
             UsersHistoricoPuesto::create([

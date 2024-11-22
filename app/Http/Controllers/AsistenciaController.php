@@ -15,6 +15,7 @@ use DateTime;
 use App\Models\Notificacion;
 use App\Models\Ubicacion;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
@@ -69,7 +70,7 @@ class AsistenciaController extends Controller
                     ->orderBy('cod_ubi', 'ASC')
                     ->get();
         //print_r($list_base[0]);
-        
+
         if ($id_puesto == 29 || $id_puesto == 98 || $id_puesto == 26 || $id_puesto == 16 || $id_puesto == 197 || $id_puesto == 161  || $id_puesto==314) {
             $cod_base = $centro_labores;
         } else {
@@ -173,20 +174,15 @@ class AsistenciaController extends Controller
             $dato['list_colaborador'] = $this->modelousuarios->get_list_usuarios_x_baset($dato['cod_base'],$dato['id_area'],$dato['estado']);
             return view('rrhh.Asistencia.reporte.colaborador', $dato);
     }
-    
-    public function Excel_Reporte_Asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $area, $estado, $tipo, $finicio, $ffin, Request $request){
+
+    public function Excel_Reporte_Asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $area, $estado, $tipo, $finicio, $ffin, Request $request) {
         // Crear una nueva instancia de Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $spreadsheet->getActiveSheet()->setTitle('Reporte Control Asistencia');
-    
-        // Encabezados
-        $headers = ['Fecha', 'Nombres', 'Apellido Paterno', 'Apellido Materno', 'Código', 'Total Marcaciones', 'Estado Marcación'];
-        $sheet->fromArray($headers, NULL, 'A1');
-    
+
         // Obtener usuarios según los parámetros
-        $usuarios = Usuario::select('usuario_codigo', 'id_usuario');
-    
+        $usuarios = Usuario::select('usuario_codigo', 'id_usuario', 'usuario_nombres', 'usuario_apater', 'usuario_amater');
         if ($estado == 1 || $estado == 2) {
             $usuarios->where('users.estado', $estado);
         }
@@ -206,58 +202,165 @@ class AsistenciaController extends Controller
             $usuarios->leftJoin('puesto', 'users.id_puesto', 'puesto.id_puesto');
             $usuarios->where('puesto.id_area', $area);
         }
-    
-        // Obtener los usuarios
         $usuarios = $usuarios->get();
-    
+
         // Establecer fechas de inicio y fin
-        $year = date('Y');
+        $fechas = [];
         if ($tipo == 1) {
-            $year = $cod_anio;
-            $fecha_inicio = strtotime("01-$cod_mes-$year");
-            $L = new DateTime("$year-$cod_mes-01");
-            $fecha_fin = $L->format('Y-m-t');
-            $timestamp = strtotime($fecha_fin);
-            $fecha_fin = strtotime(date("d-m-Y", $timestamp));
+            $fecha_inicio = new DateTime("$cod_anio-$cod_mes-01");
+            $fecha_fin = new DateTime("$cod_anio-$cod_mes-" . $fecha_inicio->format('t'));
         } else {
-            $fecha_inicio = strtotime(date("d-m-Y", strtotime($finicio)));
-            $fecha_fin = strtotime(date("d-m-Y", strtotime($ffin)));
+            $fecha_inicio = new DateTime($finicio);
+            $fecha_fin = new DateTime($ffin);
         }
-    
-        // Llamada a la función para obtener los datos
-        $data = $this->modelo->buscar_reporte_control_asistencia_excel($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios);
-    
-        // Agregar los datos al archivo Excel
-        $row = 2; // Comenzamos en la fila 2
-        foreach ($data as $num_doc => $registros) {
-            foreach ($registros as $item) {
-                // Agregar los datos en las celdas correspondientes
-                $sheet->setCellValue('A' . $row, $item['fecha']);
-                $sheet->setCellValue('B' . $row, $item['usuario_nombres']);
-                $sheet->setCellValue('C' . $row, $item['usuario_apater']);
-                $sheet->setCellValue('D' . $row, $item['usuario_amater']);
-                $sheet->setCellValue('E' . $row, $item['emp_code']);
-                $sheet->setCellValue('F' . $row, $item['total_marcaciones']);
-                $sheet->setCellValue('G' . $row, $item['estado_marcacion']);
-                $row++;
+        $get_mes = Mes::where('cod_mes', $cod_mes)->get();
+        if($tipo==1){
+            $spreadsheet->getActiveSheet()->setCellValue("C1", $get_mes[0]->nom_mes .' '.$cod_anio);
+        }else{
+            $spreadsheet->getActiveSheet()->setCellValue("C1", date("d/m/Y", strtotime($finicio)).' - '.date("d/m/Y", strtotime($ffin)));
+        }
+
+        while ($fecha_inicio <= $fecha_fin) {
+            $fechas[] = $fecha_inicio->format('Y-m-d');
+            $fecha_inicio->modify('+1 day');
+        }
+
+        $spreadsheet->getActiveSheet()->setCellValue("Q1", 'CONTROL DE ASISTENCIA');
+        $spreadsheet->getActiveSheet()->setCellValue("A6", 'N°');
+        $spreadsheet->getActiveSheet()->setCellValue("B6", 'APELLIDOS Y NOMBRES');
+
+        $spreadsheet->getActiveSheet()->setCellValue("D3", 'ASISTENCIA');
+        $spreadsheet->getActiveSheet()->setCellValue("G3", '1');
+        $spreadsheet->getActiveSheet()->setCellValue("J3", 'FALTAS');
+        $spreadsheet->getActiveSheet()->setCellValue("L3", '0');
+        $spreadsheet->getActiveSheet()->setCellValue("Q3", 'TARDANZAS');
+        $spreadsheet->getActiveSheet()->setCellValue("T3", 'T');
+        $spreadsheet->getActiveSheet()->setCellValue("Y3", 'FALTA JUSTIFICADA');
+        $spreadsheet->getActiveSheet()->setCellValue("AC3", 'FJ');
+
+        $sheet->getStyle('C1:Q1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 16,
+                'color' => ['rgb' => '51B9D6'], // Color de texto en formato RGB
+            ],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]
+        ]);
+
+        $sheet->getStyle("D3:AC3")->getFont()->setBold(true);/*
+        $styleArray = [
+            'font' => [
+                'bold'  =>  true,
+                'size'  =>  12,
+                'color' => ['rgb' => '000000']
+            ],
+            'alignment' => [
+                'horizontal' => Alignment::HORIZONTAL_CENTER,
+                'vertical' => Alignment::VERTICAL_CENTER
+            ]
+        ];
+        $sheet->getStyle('C1:X1')->applyFromArray($styleArray);*/
+
+        $colIndex = 3; // Comenzamos en la columna C
+        foreach ($fechas as $fecha) {
+            $colLetter = Coordinate::stringFromColumnIndex($colIndex); // Convertir índice de columna a letra
+            $fechaDatetime = new DateTime($fecha);
+
+            // Día de la semana (L, M, M, J, V, S, D)
+            $diaSemana = [
+                'Mon' => 'L',
+                'Tue' => 'M',
+                'Wed' => 'M',
+                'Thu' => 'J',
+                'Fri' => 'V',
+                'Sat' => 'S',
+                'Sun' => 'D',
+            ][$fechaDatetime->format('D')];
+
+            // Número del día
+            $numeroDia = $fechaDatetime->format('d');
+
+            // Escribir en las celdas
+            $sheet->setCellValue($colLetter . '5', $diaSemana);
+            $sheet->setCellValue($colLetter . '6', $numeroDia);
+
+            $colIndex++;
+        }
+        $sheet->getStyle('A5:'.$colLetter.'6')->applyFromArray([
+            'font' => ['bold' => true],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'FFdce6f1', // Color de fondo en formato ARGB (A: alfa, R: rojo, G: verde, B: azul)
+                ],
+            ],
+        ]);
+
+        $sheet->getColumnDimension('A')->setWidth(5);
+        $sheet->getColumnDimension('B')->setWidth(40);
+        // $sheet->getColumnDimension('C')->setWidth(40);
+            $allborder = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['rgb' => '000000']
+                    ]
+                ]
+            ];
+
+        // Agregar los datos de los usuarios
+        $rowIndex = 7; // Comenzamos en la fila 7
+        foreach ($usuarios as $key => $usuario) {
+            $sheet->setCellValue('A' . $rowIndex, $key + 1); // Número
+            $sheet->setCellValue('B' . $rowIndex, $usuario->usuario_apater . ' ' . $usuario->usuario_amater . ', ' . $usuario->usuario_nombres);
+
+            // Obtener los registros de asistencia del usuario
+            $asistencias = $this->modelo->buscar_reporte_control_asistencia_excel($cod_mes, $cod_anio, $cod_base, $usuario->usuario_codigo, $tipo, $finicio, $ffin, [$usuario]);
+            //print_r($asistencias);
+            $colIndex = 3; // Columna inicial para las fechas
+            foreach ($fechas as $fecha) {
+                $colLetter = Coordinate::stringFromColumnIndex($colIndex); // Convertir índice de columna a letra
+
+                $estadoMarcacion = 0; // Por defecto, asumimos 0
+                if (isset($asistencias[$usuario->usuario_codigo])) {
+                    foreach ($asistencias[$usuario->usuario_codigo] as $asistencia) {
+                        if ($asistencia['fecha'] === $fecha) {
+                            $estadoMarcacion = $asistencia['estado_marcacion']; // Asignar el estado correspondiente
+                            break; // Salimos del bucle al encontrar la fecha
+                        }
+                    }
+                }
+
+                // Escribir en la celda
+                $sheet->setCellValue($colLetter . $rowIndex, $estadoMarcacion);
+                $colIndex++;
             }
+            $rowIndex++;
         }
-    
-        // Parte final: crear y descargar el archivo Excel
+        $bordeTabla = $rowIndex-1;
+        $sheet->getStyle('A5:'.$colLetter.$bordeTabla)->applyFromArray($allborder);
+
+        // Descargar el archivo Excel
         $curdate = date('d-m-Y');
         $writer = new Xlsx($spreadsheet);
         $filename = 'Reporte Control Asistencia ' . $curdate;
-    
+
         // Configuración de cabeceras para la descarga
         ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
         header('Cache-Control: max-age=0');
-        
+
         // Guardar y enviar el archivo al navegador
         $writer->save('php://output');
     }
-
     public function Update_Asistencia_Diaria(Request $request){
         $request->validate([
             'hora' => 'required'
@@ -269,7 +372,7 @@ class AsistenciaController extends Controller
         $dato['fecha'] = $request->post("fecha");
         $dato['punch_time']=$dato['fecha']." ".$dato['hora'];
         $dato['id_asistencia_remota'] = $request->post("id_asistencia_remota");
-        
+
         DB::connection('second_mysql')
             ->table('iclock_transaction')
             ->where('id', $dato['id_asistencia_remota'])
@@ -277,11 +380,11 @@ class AsistenciaController extends Controller
                 'punch_time' => $dato['punch_time']
             ]);
     }
-    
+
     public function Modal_Reg_Asistencia(Request $request) {
         return view('rrhh.Asistencia.reporte.modal_reg');
-    }    
-    
+    }
+
     public function Modal_Registro_Dia($nombres,$num_doc,$orden,$time){
         $dato['nombres']=$nombres;
         $dato['num_doc']=$num_doc;
@@ -299,7 +402,7 @@ class AsistenciaController extends Controller
                             ->leftJoin('ubicacion', 'users.id_centro_labor' ,'=', 'ubicacion.id_ubicacion')
                             ->where('users.num_doc',$dato['num_doc'])
                             ->get();
-            
+
             //print_r($dato['get_id']);
             if(empty($dato['get_id'])){
                 echo "error";
@@ -346,7 +449,7 @@ class AsistenciaController extends Controller
                     ]);
             }
     }
-    
+
     public function Buscar_No_Marcados(Request $request){
         $id_puesto = Session('usuario')->id_puesto;
         $cod_mes = $request->input("cod_mes");
