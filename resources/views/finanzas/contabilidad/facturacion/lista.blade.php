@@ -315,7 +315,7 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             },
-            "pageLength": 50, // Número de registros por página
+            // "pageLength": 50, // Número de registros por página
             "lengthMenu": [10, 25, 50, 100],
             "columns": [{
                     "data": "id", // Columna para el ID
