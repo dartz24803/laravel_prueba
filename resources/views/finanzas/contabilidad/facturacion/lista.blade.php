@@ -1,5 +1,64 @@
 <!-- Estilos CSS -->
 <style>
+    /* Asegurar que la primera columna no se mueva */
+    /* Asegura que la columna fija tenga un fondo blanco y no se mezcle visualmente con las demás */
+    /* Fondo blanco para la primera columna fija */
+    .dataTables_wrapper .DTFC_LeftWrapper {
+        background-color: white;
+        /* Fondo blanco para la columna fija */
+        z-index: 3;
+        /* Asegura que esté sobre el contenido desplazable */
+        border-right: 1px solid #ddd;
+        /* Línea divisoria clara */
+    }
+
+    table.dataTable.fixedColumns {
+        table-layout: fixed;
+    }
+
+    /* Asegura que el encabezado de la tabla sea fijo */
+    #tabla_js thead th {
+        position: sticky;
+        top: 0;
+        z-index: 2;
+        background-color: white;
+        /* Fondo blanco */
+        width: 100%;
+        overflow-x: auto;
+    }
+
+    /* Fijar el encabezado de la tabla en caso de scroll horizontal */
+    .dataTables_wrapper .dataTables_scrollHeadInner {
+        margin-left: 0 !important;
+    }
+
+    /* Ajusta la primera columna */
+    .DTFC_LeftWrapper .row-selector {
+        transform: scale(0.8);
+        /* Reducir el tamaño del checkbox */
+    }
+
+
+
+    /* Reducir tamaño de fuente en filas y encabezados */
+    #tabla_js thead th,
+    #tabla_js tbody td {
+        /* font-size: 10px; */
+        /* Ajusta el tamaño de letra */
+        padding-top: 2px;
+        padding-bottom: 2px;
+
+        /* Padding vertical (10px) y horizontal por defecto (auto) */
+    }
+
+
+    /* Reducir tamaño del checkbox */
+    #tabla_js .row-selector {
+        transform: scale(0.8);
+        /* Escala el tamaño del checkbox */
+    }
+
+
     .custom-checkbox {
         width: 20px;
         height: 20px;
@@ -100,7 +159,7 @@
     </div>
 </div>
 
-<div class="toolbar  mt-3">
+<div class="toolbar m-4">
     <!-- Primera fila -->
     <div class="row">
         <div class="form-group col-lg-2">
@@ -160,11 +219,6 @@
                 Actualizar
             </button>
         </div>
-
-
-
-
-
     </div>
 </div>
 
@@ -185,7 +239,7 @@
             <th>Descripción</th>
             <th>Costo Precio</th>
             <th>Almacén LN1</th>
-            <th>Almacén Descuento</th>
+            <th>Almacén Dsc</th>
             <th>Almacén Discotela</th>
             <th>Almacén PB</th>
             <th>Almacén Fam</th>
@@ -237,7 +291,7 @@
     $(document).ready(function() {
 
 
-        var table = $('#tabla_js').DataTable({
+        var table = $('#tabla_js').addClass('small-text').DataTable({
             "processing": true,
             "serverSide": true,
             "stateSave": true, // Guarda el estado de la tabla (incluido el filtro, paginación, etc.)
@@ -272,7 +326,7 @@
                     "render": function(data, type, row, meta) {
                         return `<input type="checkbox" class="row-selector" />`;
                     },
-                    "orderable": false,
+                    "orderable": true,
                     "searchable": false
                 },
                 {
@@ -327,11 +381,18 @@
                     "data": "estado"
                 }
             ],
-            "scrollX": true,
+            "scrollCollapse": true,
+            "scrollX": true, // Habilita el desplazamiento horizontal
+            "scrollY": 400, // Altura de la tabla para el desplazamiento vertical (ajústalo según sea necesario)
+            "fixedColumns": {
+                "leftColumns": 3 // Fija la primera columna (con el checkbox)
+            },
             "language": {
                 "url": "//cdn.datatables.net/plug-ins/1.10.21/i18n/Spanish.json"
             }
         });
+
+
 
         // Manejo de eventos para los checkboxes
         $('#tabla_js tbody').on('change', '.row-selector', function() {
@@ -397,7 +458,22 @@
                 this.nodes().to$().show(); // Asegurarse de mostrar todas las filas
             });
         });
+        $('#tabla_js tbody').on('click', 'tr', function() {
+            var $checkbox = $(this).find('.row-selector'); // Obtén el checkbox en la fila
+            var $row = $(this); // Obtén la fila
+            var rowId = table.row($row).data().id; // Obtén el id de la fila
 
+            // Alterna la selección del checkbox
+            if ($checkbox.prop('checked')) {
+                $checkbox.prop('checked', false); // Desmarca el checkbox si estaba marcado
+                $row.removeClass('highlight-row'); // Elimina el resaltado de la fila
+                selectedIds = selectedIds.filter(id => id !== rowId); // Elimina el id de la fila de selectedIds
+            } else {
+                $checkbox.prop('checked', true); // Marca el checkbox si estaba desmarcado
+                $row.addClass('highlight-row'); // Resalta la fila
+                selectedIds.push(rowId); // Agrega el id de la fila a selectedIds
+            }
+        });
         // Guardar las selecciones al cambiar de página
         table.on('draw', function() {
             // Vuelve a seleccionar las filas previamente seleccionadas
