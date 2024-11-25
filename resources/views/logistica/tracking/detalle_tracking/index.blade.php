@@ -1,13 +1,13 @@
-<div class="table-responsive mt-4" id="lista_base_datos">
+<div class="table-responsive mt-4" id="lista_detalle">
 </div>
 
 <script>
-    Lista_Base_Datos();
+    Lista_Detalle();
 
-    function Lista_Base_Datos(){
+    function Lista_Detalle(){
         Cargando();
 
-        var url = "{{ route('tracking_bd.list') }}";
+        var url = "{{ route('tracking_det.list') }}";
 
         $.ajax({
             url: url,
@@ -16,7 +16,7 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success:function (resp) {
-                $('#lista_base_datos').html(resp);  
+                $('#lista_detalle').html(resp);  
             }
         });
     }

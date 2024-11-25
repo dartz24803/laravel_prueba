@@ -16,8 +16,13 @@
                                     <a id="a_tra" class="nav-link" onclick="Tracking();" style="cursor: pointer; font-size: 0.875rem;">Tracking</a>
                                 </li>
                                 <li class="nav-item" style="height: 0% !important;">
-                                    <a id="a_btra" class="nav-link" onclick="Bd_Tracking();" style="cursor: pointer; font-size: 0.875rem;">BD Tracking</a>
+                                    <a id="a_btra" class="nav-link" onclick="Base_datos();" style="cursor: pointer; font-size: 0.875rem;">BD Tracking</a>
                                 </li>
+                                @if (session('usuario')->id_usuario=="815")
+                                    <li class="nav-item" style="height: 0% !important;">
+                                        <a id="a_dtra" class="nav-link" onclick="Detalle();" style="cursor: pointer; font-size: 0.875rem;">Detalle</a>
+                                    </li>
+                                @endif
                             </ul>
 
                             <div class="row" id="cancel-row">
@@ -54,11 +59,12 @@
                     $('#div_tracking').html(resp);
                     $("#a_tra").addClass('active');
                     $("#a_btra").removeClass('active');
+                    $("#a_dtra").removeClass('active');
                 }
             });
         }
 
-        function Bd_Tracking() {
+        function Base_datos() {
             Cargando();
 
             var url = "{{ route('tracking_bd') }}";
@@ -70,6 +76,24 @@
                     $('#div_tracking').html(resp);
                     $("#a_tra").removeClass('active');
                     $("#a_btra").addClass('active');
+                    $("#a_dtra").removeClass('active');
+                }
+            });
+        }
+
+        function Detalle() {
+            Cargando();
+
+            var url = "{{ route('tracking_det') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function(resp) {
+                    $('#div_tracking').html(resp);
+                    $("#a_tra").removeClass('active');
+                    $("#a_btra").removeClass('active');
+                    $("#a_dtra").addClass('active');
                 }
             });
         }
