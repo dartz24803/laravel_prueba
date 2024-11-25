@@ -122,7 +122,10 @@ $nivel_jerarquico = session('usuario')->nivel_jerarquico;
             },
             "stripeClasses": [],
             "lengthMenu": [10, 20, 50],
-            "pageLength": 10
+            "pageLength": 10,
+            "order": [
+                [0, "desc"]
+            ],
         });
     });
 
