@@ -4712,5 +4712,26 @@ class TrackingController extends Controller
             'semana'=>$request->semana
         ]);
         return view('logistica.tracking.detalle_tracking.lista', compact('list_detalle'));
-    }    
+    }
+
+    public function detalle_det($id)
+    {
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        $get_transporte = TrackingTransporte::where('id_base',$get_id->id_origen_hacia)
+                        ->where('anio',$get_id->anio)->where('semana',$get_id->semana)->first();
+        $comentario_transporte = TrackingComentario::where('id_tracking',$get_id->id)
+                                ->where('pantalla','DETALLE_TRANSPORTE')->first();
+        $comentario_fardo = TrackingComentario::where('id_tracking',$get_id->id)
+                            ->where('pantalla','VERIFICACION_FARDO')->first();                                
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();   
+        $list_subgerencia = SubGerencia::list_subgerencia(7);         
+        return view('logistica.tracking.detalle_tracking.detalle',compact(
+            'get_id',
+            'get_transporte',
+            'comentario_transporte',
+            'list_notificacion', 
+            'list_subgerencia'
+        ));
+    }
 }
