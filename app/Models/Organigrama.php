@@ -48,61 +48,61 @@ class Organigrama extends Model
     {
         $parte_gerencia = "";
         if ($dato['id_gerencia'] != "0") {
-            $parte_gerencia = "WHERE us.id_gerencia=" . $dato['id_gerencia'];
+            $parte_gerencia = "WHERE ge.id_gerencia=" . $dato['id_gerencia'];
         }
         if (isset($dato['excel'])) {
-            $sql = "SELECT eu.nom_estado_usuario,CASE WHEN us.ini_funciones IS NULL THEN '' 
+            $sql = "SELECT eu.nom_estado_usuario,CASE WHEN us.ini_funciones IS NULL THEN ''
                     ELSE us.ini_funciones END AS ini_funciones,
                     us.centro_labores,us.usuario_apater,us.usuario_amater,us.usuario_nombres,ca.nom_cargo,
                     pu.nom_puesto,ar.nom_area,sg.nom_sub_gerencia,ge.nom_gerencia,td.cod_tipo_documento,
-                    us.num_doc,du.dni_doc,gn.nom_genero,CASE WHEN us.fec_nac IS NULL THEN '' 
+                    us.num_doc,du.dni_doc,gn.nom_genero,CASE WHEN us.fec_nac IS NULL THEN ''
                     ELSE us.fec_nac END AS fec_nac,us.usuario_email,us.num_celp,de.nombre_departamento,
                     pr.nombre_provincia,di.nombre_distrito,tv.nom_tipo_via,dm.nom_via,dm.num_via,dm.kilometro,
                     dm.manzana,dm.interior,dm.departamento,dm.lote,dm.piso,zo.nom_zona AS nom_tipo_zona,
                     dm.nom_zona,ti.nom_tipo_vivienda,dm.referencia AS referencia_domicilio,
                     gpu.plato_postre,gpu.galletas_golosinas,gpu.ocio_pasatiempos,gpu.artistas_banda,gpu.genero_musical,
                     gpu.pelicula_serie,gpu.colores_favorito,gpu.redes_sociales,gpu.deporte_favorito,gpu.mascota,
-                    CONCAT((CASE WHEN dm.id_tipo_via!=0 AND dm.id_tipo_via!=21 THEN 
+                    CONCAT((CASE WHEN dm.id_tipo_via!=0 AND dm.id_tipo_via!=21 THEN
                     CONCAT(tv.nom_tipo_via,' ') ELSE '' END),
-                    (CASE WHEN dm.nom_via!='' AND dm.nom_via!='NO' AND dm.nom_via!='No' AND 
-                    dm.nom_via!='no' AND dm.nom_via!='-' AND dm.nom_via!='.' 
+                    (CASE WHEN dm.nom_via!='' AND dm.nom_via!='NO' AND dm.nom_via!='No' AND
+                    dm.nom_via!='no' AND dm.nom_via!='-' AND dm.nom_via!='.'
                     THEN CONCAT(dm.nom_via,' ') ELSE '' END),
-                    (CASE WHEN dm.num_via!='' AND dm.num_via!='NO' AND dm.num_via!='No' AND 
-                    dm.num_via!='no' AND dm.num_via!='-' AND dm.num_via!='.' 
+                    (CASE WHEN dm.num_via!='' AND dm.num_via!='NO' AND dm.num_via!='No' AND
+                    dm.num_via!='no' AND dm.num_via!='-' AND dm.num_via!='.'
                     THEN CONCAT(dm.num_via,' ') ELSE '' END),
-                    (CASE WHEN dm.kilometro!='' AND dm.kilometro!='NO' AND dm.kilometro!='No' AND 
-                    dm.kilometro!='no' AND dm.kilometro!='-' AND dm.kilometro!='.' 
+                    (CASE WHEN dm.kilometro!='' AND dm.kilometro!='NO' AND dm.kilometro!='No' AND
+                    dm.kilometro!='no' AND dm.kilometro!='-' AND dm.kilometro!='.'
                     THEN CONCAT('KM ',dm.kilometro,' ') ELSE '' END),
-                    (CASE WHEN dm.manzana!='' AND dm.manzana!='NO' AND dm.manzana!='No' AND 
-                    dm.manzana!='no' AND dm.manzana!='-' AND dm.manzana!='.' 
+                    (CASE WHEN dm.manzana!='' AND dm.manzana!='NO' AND dm.manzana!='No' AND
+                    dm.manzana!='no' AND dm.manzana!='-' AND dm.manzana!='.'
                     THEN CONCAT('MZ ',dm.manzana,' ') ELSE '' END),
-                    (CASE WHEN dm.lote!='' AND dm.lote!='NO' AND dm.lote!='No' AND 
-                    dm.lote!='no' AND dm.lote!='-' AND dm.lote!='.' 
+                    (CASE WHEN dm.lote!='' AND dm.lote!='NO' AND dm.lote!='No' AND
+                    dm.lote!='no' AND dm.lote!='-' AND dm.lote!='.'
                     THEN CONCAT('LT ',dm.lote,' ') ELSE '' END),
-                    (CASE WHEN dm.interior!='' AND dm.interior!='NO' AND dm.interior!='No' AND 
-                    dm.interior!='no' AND dm.interior!='-' AND dm.interior!='.' 
+                    (CASE WHEN dm.interior!='' AND dm.interior!='NO' AND dm.interior!='No' AND
+                    dm.interior!='no' AND dm.interior!='-' AND dm.interior!='.'
                     THEN CONCAT('INT ',dm.interior,' ') ELSE '' END),
-                    (CASE WHEN dm.departamento!='' AND dm.departamento!='NO' AND dm.departamento!='No' AND 
-                    dm.departamento!='no' AND dm.departamento!='-' AND dm.departamento!='.' 
+                    (CASE WHEN dm.departamento!='' AND dm.departamento!='NO' AND dm.departamento!='No' AND
+                    dm.departamento!='no' AND dm.departamento!='-' AND dm.departamento!='.'
                     THEN CONCAT('DPTO ',dm.departamento,' ') ELSE '' END),
-                    (CASE WHEN dm.piso!='' AND dm.piso!='NO' AND dm.piso!='No' AND 
-                    dm.piso!='no' AND dm.piso!='-' AND dm.piso!='.' 
+                    (CASE WHEN dm.piso!='' AND dm.piso!='NO' AND dm.piso!='No' AND
+                    dm.piso!='no' AND dm.piso!='-' AND dm.piso!='.'
                     THEN CONCAT('Piso ',dm.piso,' ') ELSE '' END),
                     (CASE WHEN dm.id_zona!=0 AND dm.id_zona!=11 THEN CONCAT(zo.nom_zona,' ') ELSE '' END),
-                    (CASE WHEN dm.nom_zona!='' AND dm.nom_zona!='NO' AND dm.nom_zona!='No' AND 
-                    dm.nom_zona!='no' AND dm.nom_zona!='-' AND dm.nom_zona!='.' 
+                    (CASE WHEN dm.nom_zona!='' AND dm.nom_zona!='NO' AND dm.nom_zona!='No' AND
+                    dm.nom_zona!='no' AND dm.nom_zona!='-' AND dm.nom_zona!='.'
                     THEN CONCAT(dm.nom_zona,' ') ELSE '' END)) AS direccion_completa,
                     sn.cod_sistema_pensionario,ba.nom_banco,cb.num_cuenta_bancaria,
-                    CASE WHEN us.ini_funciones IS NULL THEN '' 
+                    CASE WHEN us.ini_funciones IS NULL THEN ''
                     ELSE TIMESTAMPDIFF(YEAR, us.ini_funciones, CURDATE()) END AS anio_antiguedad,
-                    CASE WHEN us.ini_funciones IS NULL THEN '' 
+                    CASE WHEN us.ini_funciones IS NULL THEN ''
                     ELSE TIMESTAMPDIFF(MONTH, us.ini_funciones, CURDATE()) END AS mes_antiguedad,
-                    sl.nom_situacion_laboral,em.nom_empresa,CASE WHEN us.hijos=1 THEN 'SI' 
-                    ELSE 'NO' END AS hijos,CASE WHEN og.id_usuario=0 THEN 0 ELSE 
+                    sl.nom_situacion_laboral,em.nom_empresa,CASE WHEN us.hijos=1 THEN 'SI'
+                    ELSE 'NO' END AS hijos,CASE WHEN og.id_usuario=0 THEN 0 ELSE
                     progreso_colaborador(og.id_usuario) END AS progreso,
                     (CASE WHEN ou.cert_vacu_covid IS NOT NULL THEN 1 ELSE 0 END) AS covid,ou.cert_vacu_covid,
                     (CASE WHEN us.id_horario IS NOT NULL THEN ho.nombre ELSE 'Sin Horario' END) AS horariof,
-                    (CASE WHEN us.id_modalidad_laboral!=0 THEN md.nom_modalidad_laboral 
+                    (CASE WHEN us.id_modalidad_laboral!=0 THEN md.nom_modalidad_laboral
                     ELSE 'Sin Modalidad' END) AS modalidadf,tp.cod_talla AS polo,tc.cod_talla AS camisa,
                     tpa.cod_talla AS pantalon,tz.cod_talla AS zapato,gs.nom_grupo_sanguineo,
                     CASE WHEN YEAR(us.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
