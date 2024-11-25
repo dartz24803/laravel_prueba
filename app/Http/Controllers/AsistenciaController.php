@@ -109,7 +109,7 @@ class AsistenciaController extends Controller
 
         $usuarios = Usuario::select('usuario_codigo', 'id_usuario');
 
-        if ($estado == 1 || $estado == 2) {
+        if ($estado == 1 || $estado == 3) {
             $usuarios->where('users.estado', $estado);
         }
         if ($num_doc != 0) {
@@ -133,7 +133,7 @@ class AsistenciaController extends Controller
         // $bindings = $usuarios->getBindings(); // Obtener los bindings (valores)
 
         // echo "Consulta: $query\n";
-        // print_r($bindings); // Imprimir los valores que se utilizan en la consulta
+        // print_r($estado); // Imprimir los valores que se utilizan en la consulta
 
         $usuarios = $usuarios->get();
         // print_r($cod_base);
@@ -183,7 +183,7 @@ class AsistenciaController extends Controller
 
         // Obtener usuarios según los parámetros
         $usuarios = Usuario::select('usuario_codigo', 'id_usuario', 'usuario_nombres', 'usuario_apater', 'usuario_amater');
-        if ($estado == 1 || $estado == 2) {
+        if ($estado == 1 || $estado == 3) {
             $usuarios->where('users.estado', $estado);
         }
         if ($num_doc != 0) {
@@ -361,6 +361,7 @@ class AsistenciaController extends Controller
         // Guardar y enviar el archivo al navegador
         $writer->save('php://output');
     }
+
     public function Update_Asistencia_Diaria(Request $request){
         $request->validate([
             'hora' => 'required'

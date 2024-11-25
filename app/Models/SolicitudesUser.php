@@ -260,6 +260,8 @@ class SolicitudesUser extends Model
                     $cabecera=",user_aprob,fec_apro";
                     $valores=",$id_usuario,NOW()";
                 }else{
+                    $cabecera=",user_aprob";
+                    $valores=",0";
                     $estado_solicitud = 4;
                 }
                 $sql = "INSERT INTO solicitudes_user (dif_dias, user_horar_salida, user_horar_entrada,
