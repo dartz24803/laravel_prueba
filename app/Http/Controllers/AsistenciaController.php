@@ -361,6 +361,7 @@ class AsistenciaController extends Controller
         // Guardar y enviar el archivo al navegador
         $writer->save('php://output');
     }
+
     public function Update_Asistencia_Diaria(Request $request){
         $request->validate([
             'hora' => 'required'
