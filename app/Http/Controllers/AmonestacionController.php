@@ -112,6 +112,22 @@ class AmonestacionController extends Controller
 
     public function Insert_Amonestacion(Request $request)
     {
+        $request->validate([
+            'fecha' => 'required',
+            'id_solicitante' => 'not_in:0',
+            'usuario' => 'not_in:0',
+            'tipo' => 'not_in:0',
+            'id_gravedad_amonestacion' => 'not_in:0',
+            'motivo' => 'not_in:0',
+        ], [
+            'fecha.required' => 'Debe ingresar fecha.',
+            'id_solicitante' => 'Debe escoger solicitante',
+            'usuario' => 'Debe seleccionar usuario',
+            'tipo' => 'Debe seleccionar tipo',
+            'id_gravedad_amonestacion' => 'Debe seleccionar gravedad',
+            'motivo' => 'Debe seleccionar motivo',
+        ]);
+
         $dato['id_solicitante'] = $request->input("id_solicitante");
         $dato['fecha'] = $request->input("fecha");
         $dato['tipo'] = $request->input("tipo");
@@ -202,6 +218,21 @@ class AmonestacionController extends Controller
 
     public function Update_Amonestacion(Request $request)
     {
+        $request->validate([
+            'fechae' => 'required',
+            'id_solicitantee' => 'not_in:0',
+            'usuarioe' => 'not_in:0',
+            'tipoe' => 'not_in:0',
+            'id_gravedad_amonestacione' => 'not_in:0',
+            'motivoe' => 'not_in:0',
+        ], [
+            'fechae' => 'Debe ingresar fecha.',
+            'id_solicitantee' => 'Debe escoger solicitante',
+            'usuarioe' => 'Debe seleccionar usuario',
+            'tipoe' => 'Debe seleccionar tipo',
+            'id_gravedad_amonestacione' => 'Debe seleccionar gravedad',
+            'motivoe' => 'Debe seleccionar motivo',
+        ]);
         $id_puesto = session('usuario')->id_puesto;
         //$id_amonestacion = $request->input("id_amonestacion");
         $dato['id_amonestacion'] = $request->input("id_amonestacion");
