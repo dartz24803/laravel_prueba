@@ -3532,7 +3532,7 @@ class TrackingController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(7);
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        $list_guia_remision = TrackingGuiaRemisionDetalle::select('id','sku','descripcion','cantidad')->where('n_guia_remision',$get_id->n_guia_remision)->get();
+        $list_guia_remision = TrackingGuiaRemisionDetalle::select('id','sku','descripcion','cantidad')->where('n_requerimiento',$get_id->n_requerimiento)->get();
         return view('logistica.tracking.tracking.solicitud_devolucion', compact('list_notificacion','list_subgerencia','get_id','list_guia_remision'));
     }
 
