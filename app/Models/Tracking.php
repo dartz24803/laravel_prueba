@@ -220,4 +220,31 @@ class Tracking extends Model
         $query = DB::select($sql);
         return $query;
     }
+
+    public static function get_list_detalle_tracking($dato=null){
+        if(substr(session('usuario')->centro_labores,0,1)=="B"){
+            $parte_base = "bh.cod_base='".session('usuario')->centro_labores."' AND";
+        }else{
+            $parte_base = "";
+        }
+        if($dato['base']!="0"){
+            $parte_base = "tr.id_origen_hacia=".$dato['base']." AND";
+        }
+        $parte_anio = "";
+        if($dato['anio']!="0"){
+            $parte_anio = "YEAR(tr.fec_reg)='".$dato['anio']."' AND";
+        }
+        $parte_semana = "";
+        if($dato['semana']!="0"){
+            $parte_semana = "tr.semana='".$dato['semana']."' AND";
+        }
+        $sql = "SELECT tr.id,tr.fec_reg AS orden,tr.n_requerimiento,tr.semana,
+                bd.cod_base AS desde,bh.cod_base AS hacia
+                FROM tracking tr
+                INNER JOIN base bd ON bd.id_base=tr.id_origen_desde
+                INNER JOIN base bh ON bh.id_base=tr.id_origen_hacia
+                WHERE $parte_anio $parte_semana $parte_base tr.estado=1";
+        $query = DB::select($sql);
+        return $query;
+    }
 }

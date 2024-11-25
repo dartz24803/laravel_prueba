@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Anio;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use App\Models\Tracking;
 use App\Models\Base;
+use App\Models\BaseActiva;
 use App\Models\MercaderiaSurtida;
 use App\Models\MercaderiaSurtidaPadre;
 use App\Models\Notificacion;
@@ -4688,18 +4690,27 @@ class TrackingController extends Controller
     }
     //DETALLE TRACKING
     public function index_det()
-    {      
-        return view('logistica.tracking.detalle_tracking.index');
+    {
+        if(substr(session('usuario')->centro_labores,0,1)=="B"){
+            $list_base = BaseActiva::where('cod_base',session('usuario')->centro_labores)->get();
+        }else{
+            $list_base = BaseActiva::all();
+        }
+        $list_anio = Anio::select('cod_anio')->where('estado',1)
+                    ->where('cod_anio','>=','2024')->get();
+        return view('logistica.tracking.detalle_tracking.index',compact(
+            'list_base',
+            'list_anio'
+        ));
     }
 
-    public function list_det()
+    public function list_det(Request $request)
     {
-        $list_detalle = Tracking::from('tracking AS tr')
-                        ->select('tr.id','tr.fec_reg AS orden','tr.n_requerimiento',
-                        'tr.semana','bd.cod_base AS desde','bh.cod_base AS hacia')
-                        ->join('base AS bd','bd.id_base','=','tr.id_origen_desde')
-                        ->join('base AS bh','bh.id_base','=','tr.id_origen_hacia')
-                        ->where('tr.estado',1)->get();
+        $list_detalle = Tracking::get_list_detalle_tracking([
+            'base'=>$request->base,
+            'anio'=>$request->anio,
+            'semana'=>$request->semana
+        ]);
         return view('logistica.tracking.detalle_tracking.lista', compact('list_detalle'));
     }    
 }
