@@ -138,98 +138,100 @@ class TbContabilidad extends Model
     {
         try {
             set_time_limit(300); // Aumentar el tiempo de ejecución
+            // Obtener el primer día del AÑO actual
             $fechaInicioAno = Carbon::now()->startOfYear()->toDateString();
+            // $fechaInicioAno = Carbon::now()->subMonth()->startOfMonth()->toDateString();
 
             // Paso 1: Obtener los registros existentes en MySQL con claves compuestas
             $mysqlRecords = DB::table('tb_contabilidad')
                 ->where('fecha_documento', '>=', $fechaInicioAno)
-                ->select('guia_remision', 'sku')
+                ->select('guia_remision', 'sku') // Seleccionar sólo los campos necesarios
                 ->get()
                 ->map(function ($record) {
                     return $record->guia_remision . '|' . $record->sku; // Crear clave compuesta
                 })
-                ->toArray();
+                ->toArray(); // Convertir a un arreglo para búsqueda eficiente
             $mysqlRecordsSet = array_flip($mysqlRecords); // Convertir en un conjunto para búsqueda rápida
-
             // Paso 2: Obtener datos de SQL Server
             $data_sql = DB::connection('sqlsrv_dbmsrt')->select("
-            SELECT DISTINCT
-                s.Estilo,
-                s.Descripcion,
-                s.SKU,
-                s.Color,
-                s.Talla,
-                ISNULL(alm_discotela.STK, 0) AS ALM_DISCOTELA,
-                ISNULL(alm_dsc.STK, 0) AS ALM_DSC,
-                ISNULL(alm_ln1.STK, 0) AS ALM_LN1,
-                ISNULL(alm_pb.STK, 0) AS ALM_PB,
-                egr.CIA,
-                CASE 
-                    WHEN CHARINDEX(' \\ ', egr.Origen_Destino) > 0 THEN 
-                        SUBSTRING(egr.Origen_Destino, 1, CHARINDEX(' \\ ', egr.Origen_Destino) - 1)
-                    ELSE 'Valor inválido'
-                END AS Empresa,
-                CASE 
-                    WHEN CHARINDEX(' \\ ', egr.Origen_Destino) > 0 THEN 
-                        SUBSTRING(egr.Origen_Destino, CHARINDEX(' \\ ', egr.Origen_Destino) + 2, LEN(egr.Origen_Destino))
-                    ELSE 'Valor inválido'
-                END AS Base,
-                egr.Fecha_Documento,
-                egr.Referencia_1 AS Guía_de_Remisión,
-                ISNULL(egr.Enviado, 0) AS Enviado,
-                ISNULL(c.Costo_Prom, 0) AS Costo_Prom,
-                CASE 
-                    WHEN ISNULL(alm_discotela.STK, 0) = 0 
-                        AND ISNULL(alm_dsc.STK, 0) = 0 
-                        AND ISNULL(alm_ln1.STK, 0) = 0 
-                        AND ISNULL(alm_pb.STK, 0) = 0 
-                    THEN 'sin Stock'
-                    ELSE 'con Stock'
-                END AS Estado
-            FROM 
-                (SELECT Estilo, Descripcion, Articulo AS SKU, Color, Talla 
-                FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local LIKE 'ALM%') s
-            LEFT JOIN 
-                (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
-                FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM DISCOTELA' GROUP BY Articulo) alm_discotela ON s.SKU = alm_discotela.SKU
-            LEFT JOIN 
-                (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
-                FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM DSC' GROUP BY Articulo) alm_dsc ON s.SKU = alm_dsc.SKU
-            LEFT JOIN 
-                (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
-                FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM LN1' GROUP BY Articulo) alm_ln1 ON s.SKU = alm_ln1.SKU
-            LEFT JOIN 
-                (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
-                FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM PB' GROUP BY Articulo) alm_pb ON s.SKU = alm_pb.SKU
-            LEFT JOIN 
-                (SELECT Estilo, Costo_Prom FROM DBMSTR.dbo.TABLA_PREC) c ON s.Estilo = c.Estilo
-            LEFT JOIN 
-                (SELECT 
-                    CIA,
-                    Barra AS SKU,
-                    Origen_Destino,
-                    Fecha_Documento,
-                    Referencia_1,
+                SELECT 
+                    s.Estilo,
+                    s.Descripcion,
+                    s.SKU,
+                    s.Color,
+                    s.Talla,
+                    ISNULL(alm_discotela.STK, 0) AS ALM_DISCOTELA,
+                    ISNULL(alm_dsc.STK, 0) AS ALM_DSC,
+                    ISNULL(alm_ln1.STK, 0) AS ALM_LN1,
+                    ISNULL(alm_pb.STK, 0) AS ALM_PB,
+                    egr.CIA,
                     CASE 
-                        WHEN CIA = 'LN1' THEN SUM(Salidas) 
-                        ELSE 0 
-                    END AS Enviado
+                        WHEN CHARINDEX(' \\ ', egr.Origen_Destino) > 0 THEN 
+                            SUBSTRING(egr.Origen_Destino, 1, CHARINDEX(' \\ ', egr.Origen_Destino) - 1)
+                        ELSE 'Valor inválido'
+                    END AS Empresa,
+                    CASE 
+                        WHEN CHARINDEX(' \\ ', egr.Origen_Destino) > 0 THEN 
+                            SUBSTRING(egr.Origen_Destino, CHARINDEX(' \\ ', egr.Origen_Destino) + 2, LEN(egr.Origen_Destino))
+                        ELSE 'Valor inválido'
+                    END AS Base,
+                    egr.Fecha_Documento,
+                    egr.Referencia_1 AS Guía_de_Remisión,
+                    ISNULL(egr.Enviado, 0) AS Enviado,
+                    ISNULL(c.Costo_Prom, 0) AS Costo_Prom,
+                    CASE 
+                        WHEN ISNULL(alm_discotela.STK, 0) = 0 
+                            AND ISNULL(alm_dsc.STK, 0) = 0 
+                            AND ISNULL(alm_ln1.STK, 0) = 0 
+                            AND ISNULL(alm_pb.STK, 0) = 0 
+                        THEN 'sin Stock'
+                        ELSE 'con Stock'
+                    END AS Estado
                 FROM 
-                    DBMSTR.dbo.A1KARDEX_TOTAL 
+                    (SELECT Estilo, Descripcion, Articulo AS SKU, Color, Talla 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local LIKE 'ALM%') s
+                LEFT JOIN 
+                    (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM DISCOTELA' GROUP BY Articulo) alm_discotela ON s.SKU = alm_discotela.SKU
+                LEFT JOIN 
+                    (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM DSC' GROUP BY Articulo) alm_dsc ON s.SKU = alm_dsc.SKU
+                LEFT JOIN 
+                    (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM LN1' GROUP BY Articulo) alm_ln1 ON s.SKU = alm_ln1.SKU
+                LEFT JOIN 
+                    (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM PB' GROUP BY Articulo) alm_pb ON s.SKU = alm_pb.SKU
+                LEFT JOIN 
+                    (SELECT Estilo, Costo_Prom FROM DBMSTR.dbo.TABLA_PREC) c ON s.Estilo = c.Estilo
+                LEFT JOIN 
+                    (SELECT 
+                        CIA,
+                        Barra AS SKU,
+                        Origen_Destino,
+                        Fecha_Documento,
+                        Referencia_1,
+                        CASE 
+                            WHEN CIA = 'LN1' THEN SUM(Salidas) 
+                            ELSE 0 
+                        END AS Enviado
+                    FROM 
+                        DBMSTR.dbo.A1KARDEX_TOTAL 
+                    WHERE 
+                        Fecha_Documento >= ? 
+                        AND motivo = '(24) -VENTAS ALMACEN'
+                    GROUP BY 
+                        CIA, Barra, Origen_Destino, Fecha_Documento, Referencia_1) egr ON s.SKU = egr.SKU
                 WHERE 
-                    Fecha_Documento >= ? 
-                    AND motivo = '(24) -VENTAS ALMACEN'
-                GROUP BY 
-                    CIA, Barra, Origen_Destino, Fecha_Documento, Referencia_1) egr ON s.SKU = egr.SKU
-            WHERE 
-                egr.Referencia_1 IS NOT NULL
-            ORDER BY s.SKU
-        ", [$fechaInicioAno]);
+                    egr.Referencia_1 IS NOT NULL
+                ORDER BY s.SKU
+            ", [$fechaInicioAno]);
 
-            // Paso 3: Filtrar registros que no están en MySQL y agrupar en lotes
+            // Paso 3: Filtrar registros que no están en MySQL
             $datosAInsertar = [];
             foreach ($data_sql as $row) {
-                $compositeKey = $row->Guía_de_Remisión . '|' . $row->SKU;
+                // dd($row);
+                $compositeKey = $row->Guía_de_Remisión . '|' . $row->SKU; // Crear clave compuesta
                 if (!isset($mysqlRecordsSet[$compositeKey])) {
                     $datosAInsertar[] = [
                         'estilo' => $row->Estilo,
@@ -251,20 +253,17 @@ class TbContabilidad extends Model
                         'estado' => $row->Estado,
                     ];
                 }
-
-                // Insertar en lotes de 500 registros
-                if (count($datosAInsertar) >= 50000) {
+            }
+            // dd(count($datosAInsertar));
+            // Paso 4: Insertar en lotes
+            if (!empty($datosAInsertar)) {
+                try {
                     DB::table('tb_contabilidad')->insert($datosAInsertar);
-                    $datosAInsertar = [];
+                } catch (\Exception $e) {
+                    return response()->json(['error' => $e->getMessage()], 500);
                 }
             }
-
-            // Insertar el resto de los datos si quedaron pendientes
-            if (!empty($datosAInsertar)) {
-                DB::table('tb_contabilidad')->insert($datosAInsertar);
-            }
-
-            return response()->json(['message' => 'Sincronización completada']);
+            return response()->json(['message' => 'Sincronización completada', 'insertados' => count($datosAInsertar)]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }

@@ -142,6 +142,7 @@ class FacturacionController extends Controller
 
     public function actualizarTabla(Request $request)
     {
+
         TbContabilidad::sincronizarContabilidad();
     }
 }

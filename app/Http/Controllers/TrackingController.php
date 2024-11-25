@@ -4686,4 +4686,20 @@ class TrackingController extends Controller
         $list_bd_tracking = Tracking::get_list_bd_tracking();
         return view('logistica.tracking.bd_tracking.lista', compact('list_bd_tracking'));
     }
+    //DETALLE TRACKING
+    public function index_det()
+    {      
+        return view('logistica.tracking.detalle_tracking.index');
+    }
+
+    public function list_det()
+    {
+        $list_detalle = Tracking::from('tracking AS tr')
+                        ->select('tr.id','tr.fec_reg AS orden','tr.n_requerimiento',
+                        'tr.semana','bd.cod_base AS desde','bh.cod_base AS hacia')
+                        ->join('base AS bd','bd.id_base','=','tr.id_origen_desde')
+                        ->join('base AS bh','bh.id_base','=','tr.id_origen_hacia')
+                        ->where('tr.estado',1)->get();
+        return view('logistica.tracking.detalle_tracking.lista', compact('list_detalle'));
+    }    
 }
