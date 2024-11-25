@@ -8,12 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class TbContabilidad extends Model
+class TbContabilidadCerradosParcial extends Model
 {
     use HasFactory;
 
     // Nombre de la tabla
-    protected $table = 'tb_contabilidad'; // Ejemplo: si el esquema es 'dbo'
+    protected $table = 'tb_contabilidad_cerrados_parcial'; // Ejemplo: si el esquema es 'dbo'
 
     // Clave primaria
     protected $primaryKey = 'id';

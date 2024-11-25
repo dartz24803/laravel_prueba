@@ -5,6 +5,9 @@
 @endsection
 
 @section('content')
+<style>
+
+</style>
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
         <div class="page-header">
@@ -13,12 +16,16 @@
             </div>
 
         </div>
-
+        <div class="form-group col-lg-1">
+            <button type="button" class="btn btn-secondary w-100" title="Actualizar" id="btnActualizar">
+                Actualizar
+            </button>
+        </div>
         <div class="row" id="cancel-row">
             <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
                 <div class="widget-content widget-content-area br-6">
 
-                    <div class="table-responsive" id="lista_maestra">
+                    <div class="table-responsive" id="lista_maestra" style="padding: 10px">
                     </div>
                 </div>
             </div>
@@ -58,5 +65,43 @@
             }
         });
     }
+
+    $('#btnActualizar').on('click', function() {
+        $.ajax({
+            url: "{{ route('tabla_facturacion.update') }}", // Ruta donde se procesarán los IDs
+            type: "POST",
+            data: {
+                _token: $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(data) {
+                if (data == "error") {
+                    Swal.fire({
+                        title: '¡Error al Actualizar!',
+                        text: "¡El registro ya existe o hay un problema con los datos!",
+                        icon: 'error',
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    });
+                } else {
+                    Swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡Los registros han sido actualizados correctamente!',
+                        'success'
+                    ).then(function() {
+                        table.ajax.reload();
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    title: '¡Error!',
+                    text: "Ocurrió un error al procesar la actualización.",
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
 </script>
 @endsection
