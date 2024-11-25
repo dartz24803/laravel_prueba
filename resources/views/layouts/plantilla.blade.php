@@ -685,6 +685,9 @@
             height: 0% !important;
         }
 
+        .gNhLue{
+            height: min-content !important;
+        }
         @media (max-width: 900px) {
             #div_imagen_header {
                 display: none

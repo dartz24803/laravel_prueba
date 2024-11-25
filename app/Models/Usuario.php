@@ -378,7 +378,7 @@ class Usuario extends Model
     function get_list_colaborador($id_usuario = null)
     {
         if (isset($id_usuario) && $id_usuario > 0) {
-            $sql = "SELECT u.*, n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
+            $sql = "SELECT u.*, n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo, a.id_area
                     from users u
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto
@@ -388,7 +388,7 @@ class Usuario extends Model
                     LEFT JOIN cargo c on c.id_cargo=u.id_cargo
                     where u.estado=1 and id_usuario =" . $id_usuario;
         } else {
-            $sql = "SELECT u.*,  n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
+            $sql = "SELECT u.*,  n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo, a.id_area
                     from users u
                     LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
                     LEFT JOIN puesto p on p.id_puesto=u.id_puesto

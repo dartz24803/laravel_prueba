@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Anio;
 use Illuminate\Http\Request;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use App\Models\Tracking;
 use App\Models\Base;
+use App\Models\BaseActiva;
 use App\Models\MercaderiaSurtida;
 use App\Models\MercaderiaSurtidaPadre;
 use App\Models\Notificacion;
@@ -3530,7 +3532,7 @@ class TrackingController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(7);
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
-        $list_guia_remision = TrackingGuiaRemisionDetalle::select('id','sku','descripcion','cantidad')->where('n_guia_remision',$get_id->n_guia_remision)->get();
+        $list_guia_remision = TrackingGuiaRemisionDetalle::select('id','sku','descripcion','cantidad')->where('n_requerimiento',$get_id->n_requerimiento)->get();
         return view('logistica.tracking.tracking.solicitud_devolucion', compact('list_notificacion','list_subgerencia','get_id','list_guia_remision'));
     }
 
@@ -4685,5 +4687,51 @@ class TrackingController extends Controller
     {
         $list_bd_tracking = Tracking::get_list_bd_tracking();
         return view('logistica.tracking.bd_tracking.lista', compact('list_bd_tracking'));
+    }
+    //DETALLE TRACKING
+    public function index_det()
+    {
+        if(substr(session('usuario')->centro_labores,0,1)=="B"){
+            $list_base = BaseActiva::where('cod_base',session('usuario')->centro_labores)->get();
+        }else{
+            $list_base = BaseActiva::all();
+        }
+        $list_anio = Anio::select('cod_anio')->where('estado',1)
+                    ->where('cod_anio','>=','2024')->get();
+        return view('logistica.tracking.detalle_tracking.index',compact(
+            'list_base',
+            'list_anio'
+        ));
+    }
+
+    public function list_det(Request $request)
+    {
+        $list_detalle = Tracking::get_list_detalle_tracking([
+            'base'=>$request->base,
+            'anio'=>$request->anio,
+            'semana'=>$request->semana
+        ]);
+        return view('logistica.tracking.detalle_tracking.lista', compact('list_detalle'));
+    }
+
+    public function detalle_det($id)
+    {
+        $get_id = Tracking::get_list_tracking(['id'=>$id]);
+        $get_transporte = TrackingTransporte::where('id_base',$get_id->id_origen_hacia)
+                        ->where('anio',$get_id->anio)->where('semana',$get_id->semana)->first();
+        $comentario_transporte = TrackingComentario::where('id_tracking',$get_id->id)
+                                ->where('pantalla','DETALLE_TRANSPORTE')->first();
+        $comentario_fardo = TrackingComentario::where('id_tracking',$get_id->id)
+                            ->where('pantalla','VERIFICACION_FARDO')->first();                                
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();   
+        $list_subgerencia = SubGerencia::list_subgerencia(7);         
+        return view('logistica.tracking.detalle_tracking.detalle',compact(
+            'get_id',
+            'get_transporte',
+            'comentario_transporte',
+            'list_notificacion', 
+            'list_subgerencia'
+        ));
     }
 }

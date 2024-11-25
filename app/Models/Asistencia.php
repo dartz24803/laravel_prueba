@@ -169,6 +169,7 @@ class Asistencia extends Model
                         u.usuario_codigo AS emp_code,
                         IFNULL(m.marcaciones, 0) AS total_marcaciones,
                         CASE
+                            WHEN DAYOFWEEK(c.fecha) = 1 THEN 1
                             WHEN IFNULL(m.marcaciones, 0) = 4 THEN 1
                             ELSE 0
                         END AS estado_marcacion
@@ -197,6 +198,7 @@ class Asistencia extends Model
         }
         return $resultados;
     }
+
     /*
     public function buscar_reporte_control_asistencia_excel($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios){
         if ($tipo == 1) {

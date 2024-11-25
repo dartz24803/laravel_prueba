@@ -188,6 +188,10 @@ Route::controller(TrackingController::class)->group(function () {
     //BD TRACKING
     Route::get('tracking_bd', 'index_bd')->name('tracking_bd');
     Route::post('tracking_bd/list', 'list_bd')->name('tracking_bd.list');
+    //DETALLE TRACKING
+    Route::get('tracking_det', 'index_det')->name('tracking_det');
+    Route::post('tracking_det/list', 'list_det')->name('tracking_det.list');
+    Route::get('tracking_det/{id}/detalle', 'detalle_det')->name('tracking_det.detalle');
 });
 //TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function () {

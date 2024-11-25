@@ -1,10 +1,10 @@
-<div class="table-responsive mt-4" id="lista_bd_tracking">
+<div class="table-responsive mt-4" id="lista_base_datos">
 </div>
 
 <script>
-    Lista_Bd_Tracking();
+    Lista_Base_Datos();
 
-    function Lista_Bd_Tracking(){
+    function Lista_Base_Datos(){
         Cargando();
 
         var url = "{{ route('tracking_bd.list') }}";
@@ -16,7 +16,7 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success:function (resp) {
-                $('#lista_bd_tracking').html(resp);  
+                $('#lista_base_datos').html(resp);  
             }
         });
     }
