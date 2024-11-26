@@ -19,6 +19,9 @@ use App\Models\User;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class ProduccionController extends Controller
 {
@@ -566,5 +569,81 @@ class ProduccionController extends Controller
 
 
         return response()->json(['message' => 'Registros creados con éxito.']);
+    }
+    
+    public function Excel_Asignacion_Visita($fini,$ffin){
+            $dato['fini']=$fini;
+            $dato['ffin']=$ffin;
+            $data = AsignacionVisita::get_list_asignacion_visita(0,$dato);
+            // Create new Spreadsheet object
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+            $spreadsheet->getActiveSheet()->setTitle('Asignación de Visita');
+            $sheet->setCellValue('A1', 'FECHA');
+            $sheet->setCellValue('B1', 'INSPECTOR');
+            $sheet->setCellValue('C1', 'PUNTO DE PARTIDA');
+            $sheet->setCellValue('D1', 'PUNTO DE LLEGADA');
+            $sheet->setCellValue('E1', 'MODELO');
+            $sheet->setCellValue('F1', 'TRANSPORTE');
+            $sheet->setCellValue('G1', 'TOTAL');
+            $sheet->setCellValue('H1', 'INICIO');
+            $sheet->setCellValue('I1', 'TERMINO');
+            $sheet->setCellValue('J1', 'ESTADO');
+            //border
+            $styleThinBlackBorderOutline = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+            //Font BOLD
+            //$sheet->getStyle("A1:G1")->applyFromArray($styleThinBlackBorderOutline);
+            $sheet->getStyle("A1:J1")->applyFromArray($styleThinBlackBorderOutline);
+            $sheet->getStyle('A1:J1')->getFont()->setBold(true);
+            $spreadsheet->getActiveSheet()->setAutoFilter('A1:J1');  
+            //$slno = 1;
+            $start = 1;
+            foreach($data as $d){
+                $start = $start+1;          
+                
+                $spreadsheet->getActiveSheet()->setCellValue("A{$start}", date('d/m/Y', strtotime($d['fecha'])));
+                $spreadsheet->getActiveSheet()->setCellValue("B{$start}", $d['usuario_nombres']." ".$d['usuario_apater']." ".$d['usuario_amater']);
+                $spreadsheet->getActiveSheet()->setCellValue("C{$start}", $d['desc_punto_partida']);
+                $spreadsheet->getActiveSheet()->setCellValue("D{$start}", $d['desc_punto_llegada']);
+                $spreadsheet->getActiveSheet()->setCellValue("E{$start}", $d['modelos']);
+                $spreadsheet->getActiveSheet()->setCellValue("F{$start}", $d['transporte']);
+                $spreadsheet->getActiveSheet()->setCellValue("G{$start}", "S/ ".$d['total_transporte']);
+                $spreadsheet->getActiveSheet()->setCellValue("H{$start}", $d['fecha_inicio']);
+                $spreadsheet->getActiveSheet()->setCellValue("I{$start}", $d['fecha_fin']);
+                $spreadsheet->getActiveSheet()->setCellValue("J{$start}", $d['desc_estado_registro']);
+
+                $sheet->getStyle("A{$start}:J{$start}")->applyFromArray($styleThinBlackBorderOutline);
+            }
+            //Custom width for Individual Columns
+            $sheet->getColumnDimension('A')->setWidth(15);
+            $sheet->getColumnDimension('B')->setWidth(35);
+            $sheet->getColumnDimension('C')->setWidth(38);
+            $sheet->getColumnDimension('D')->setWidth(38);
+            $sheet->getColumnDimension('E')->setWidth(25);
+            $sheet->getColumnDimension('F')->setWidth(20);
+            $sheet->getColumnDimension('G')->setWidth(20);
+            $sheet->getColumnDimension('H')->setWidth(20);
+            $sheet->getColumnDimension('I')->setWidth(20);
+            $sheet->getColumnDimension('J')->setWidth(20);
+            //$sheet->getColumnDimension('C')->setWidth(55);
+            //$sheet->getColumnDimension('C')->setWidth(55);
+            //final part
+            $curdate = date('d-m-Y');
+           // $writer = new Xlsx($spreadsheet);
+            $filename = 'Asignacion de Visitas_'.$curdate;
+            if (ob_get_contents()) ob_end_clean();
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+            header('Cache-Control: max-age=0');
+        
+            $writer = IOFactory::createWriter($spreadsheet,'Xlsx');
+            $writer->save('php://output');
     }
 }

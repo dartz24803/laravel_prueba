@@ -1437,6 +1437,7 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::post('produccion_ft/{id}/iniciar', 'iniciar_rv')->name('produccion_ft.iniciar');
     Route::post('produccion_ft/{id}/finalizar', 'finalizar_rv')->name('produccion_ft.finalizar');
     Route::get('produccion_ft/{id}/detalle', 'detalle_rv')->name('produccion_ft.detalle');
+    Route::get('Produccion/Excel_Asignacion_Visita/{fini}/{ffin}', 'Excel_Asignacion_Visita');
 });
 
 //ÁREA INFRAESTRUCTURA
