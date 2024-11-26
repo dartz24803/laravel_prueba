@@ -415,7 +415,7 @@ class ColaboradorController extends Controller
                 $sheet->setCellValue("B{$contador}", Date::PHPToExcel($list->ini_funciones));
                 $sheet->getStyle("B{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
             }
-            $sheet->setCellValue("C{$contador}", $list->centro_labores);
+            $sheet->setCellValue("C{$contador}", $list->centro_labor);
             $sheet->setCellValue("D{$contador}", $list->usuario_apater);
             $sheet->setCellValue("E{$contador}", $list->usuario_amater);
             $sheet->setCellValue("F{$contador}", $list->usuario_nombres);
