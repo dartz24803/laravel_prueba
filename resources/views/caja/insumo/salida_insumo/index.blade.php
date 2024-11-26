@@ -110,6 +110,42 @@
         });
     }
 
+    function Delete_Salida_Insumo(id) {
+        Cargando();
+
+        var url = "{{ route('insumo_sa.destroy', ':id') }}".replace(':id', id);
+
+        Swal({
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Lista_Izquierda();
+                            Lista_Derecha();
+                        });    
+                    }
+                });
+            }
+        })
+    }
+
     function solo_Numeros(e) {
         var key = event.which || event.keyCode;
         if (key >= 48 && key <= 57) {

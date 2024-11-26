@@ -1572,6 +1572,7 @@ Route::controller(InsumoController::class)->group(function () {
     Route::post('insumo_sa/list_derecha', 'list_derecha_sa')->name('insumo_sa.list_derecha');
     Route::get('insumo_sa/{id}/edit', 'edit_sa')->name('insumo_sa.edit');
     Route::put('insumo_sa/{id}', 'update_sa')->name('insumo_sa.update');
+    Route::delete('insumo_sa/{id}', 'destroy_sa')->name('insumo_sa.destroy');
     Route::get('insumo_sa/{cod_base}/{id_insumo}/{inicio}/{fin}/excel', 'excel_sa')->name('insumo_sa.excel');
     Route::get('insumo_ro', 'index_ro')->name('insumo_ro');
     Route::get('insumo_ro/list_izquierda', 'list_izquierda_ro')->name('insumo_ro.list_izquierda');

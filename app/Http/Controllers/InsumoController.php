@@ -588,6 +588,15 @@ class InsumoController extends Controller
         ]);
     }
 
+    public function destroy_sa($id)
+    {
+        SalidaContometro::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
     public function excel_sa($cod_base, $id_insumo, $inicio, $fin)
     {
         $list_salida_insumo = SalidaContometro::get_list_salida_contometro([
