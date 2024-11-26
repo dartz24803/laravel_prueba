@@ -217,4 +217,10 @@
             }
         })
     }
+
+    function Excel_Asignacion_Visita() {
+        var fini=$('#fini').val();
+        var ffin=$('#ffin').val();
+        window.location = "{{ url('Produccion/Excel_Asignacion_Visita') }}/"+fini+"/"+ffin;
+    }
 </script>

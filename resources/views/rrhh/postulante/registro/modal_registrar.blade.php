@@ -140,7 +140,7 @@
                 }else if(data=="error_postulante"){
                     Swal({
                         title: '¡Registro Denegado!',
-                        text: "¡Existe un postulante con ese número de documento!",
+                        text: "¡Este colaborador está cesado o ya registrado!",
                         type: 'error',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
