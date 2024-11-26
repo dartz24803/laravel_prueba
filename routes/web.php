@@ -1673,6 +1673,9 @@ Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
 //FACTURACIÓN 
 Route::controller(FacturacionController::class)->group(function () {
     Route::get('facturacion', 'index')->name('facturacion');
+    Route::get('facturacion_ic', 'index_ic')->name('facturacion_ic');
+    Route::get('facturacion_fp', 'index_fp')->name('facturacion_fp');
+
     Route::post('tabla_facturacion/list', 'list')->name('tabla_facturacion.list');
     Route::post('tabla_facturacion/update', 'actualizarTabla')->name('tabla_facturacion.update');
     Route::post('tabla_facturacion/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
@@ -1683,9 +1686,13 @@ Route::controller(FacturacionController::class)->group(function () {
     Route::post('tabla_facturacion/por_facturar', 'list_por_facturar')->name('tabla_facturacion.por_facturar');
     Route::get('tabla_facturacion/modal_por_facturar', 'modal_por_facturar')->name('tabla_facturacion.modal_por_facturar');
 
-    // Route::get('tabla_facturacion/{fecha_inicio}/{fecha_fin}/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
+    // FACTURACIÓN PARCIAL
+    Route::post('tabla_facturacion_parcial/list', 'list_fp')->name('tabla_facturacion_parcial.list');
+    Route::post('tabla_facturacion_fp/datatable_fp', 'list_datatable_fp')->name('tabla_facturacion_fp.datatable_fp');
 
-
+    // FACTURACIÓN TOTAL
+    Route::post('tabla_facturacion_total/list', 'list_ft')->name('tabla_facturacion_total.list');
+    Route::post('tabla_facturacion_ft/datatable_ft', 'list_datatable_ft')->name('tabla_facturacion_ft.datatable_ft');
 });
 //TESORERÍA - REGISTRO LETRAS
 Route::controller(RegistroLetraController::class)->group(function () {

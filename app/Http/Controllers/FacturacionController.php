@@ -24,9 +24,21 @@ class FacturacionController extends Controller
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(8);
-        return view('finanzas.contabilidad.facturacion.index', compact('list_notificacion', 'list_subgerencia'));
+        return view('finanzas.contabilidad.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
+
+    public function index_ic()
+    {
+
+        return view('finanzas.contabilidad.facturacion.index');
+    }
+
+    public function index_fp()
+    {
+
+        return view('finanzas.contabilidad.facturacion_parcial.index');
+    }
     public function obtenerSkus(Request $request)
     {
         $search = $request->input('search'); // Buscar por este término
@@ -210,6 +222,55 @@ class FacturacionController extends Controller
     public function actualizarTabla(Request $request)
     {
 
-        TbContabilidad::sincronizarContabilidad();
+        $data = TbContabilidad::sincronizarContabilidad();
+        dd($data);
+    }
+
+
+    // FACTURACIÓN PARCIAL
+    public function list_fp()
+    {
+
+        return view('finanzas.contabilidad.facturacion_parcial.lista');
+    }
+
+    public function list_datatable_fp(Request $request)
+    {
+        $draw = intval($request->input('draw'));
+        $start = intval($request->input('start'));
+        $length = intval($request->input('length'));
+        $search = $request->input('search')['value'] ?? '';
+        $order = $request->input('order'); // Parámetros de ordenamiento
+        $columns = $request->input('columns'); // Información de las columnas
+
+        $query = TbContabilidadCerradosParcial::filtros([
+            'fecha_inicio' => $request->input('fecha_inicio'),
+            'fecha_fin' => $request->input('fecha_fin'),
+            'estado' => $request->input('estado'),
+            'sku' => $request->input('filtroSku'),
+            'empresa' => $request->input('filtroEmpresa'),
+            'search' => $search
+        ]);
+
+        // Manejo de ordenamiento
+        if ($order) {
+            $columnIndex = $order[0]['column']; // Índice de la columna
+            $columnName = $columns[$columnIndex]['data']; // Nombre de la columna
+            $columnSortOrder = $order[0]['dir']; // Dirección (asc o desc)
+
+            if ($columnName) {
+                $query->orderBy($columnName, $columnSortOrder);
+            }
+        }
+
+        $totalRecords = $query->count();
+        $data = $query->skip($start)->take($length)->get();
+
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalRecords,
+            'data' => $data
+        ]);
     }
 }

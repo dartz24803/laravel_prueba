@@ -45,8 +45,8 @@
 
 
     /* Reducir tamaño de fuente en filas y encabezados */
-    #tabla_js thead th,
-    #tabla_js tbody td {
+    #tabla_js_fp thead th,
+    #tabla_js_fp tbody td {
         /* font-size: 10px; */
         /* Ajusta el tamaño de letra */
         padding-top: 2px;
@@ -88,7 +88,7 @@
     }
 
     /* Fijar el encabezado de la tabla */
-    #tabla_js thead th {
+    #tabla_js_fp thead th {
         position: sticky;
         top: 0;
         z-index: 2;
@@ -130,81 +130,10 @@
         /* Cambia el color según tu necesidad */
     }
 </style>
-<!-- Modal Previsualización por Facturar-->
-<div class="modal fade" id="modalFacturados" tabindex="-1" aria-labelledby="modalFacturadosLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalFacturadosLabel">Previsualización por Facturar</h5>
-            </div>
-            <div class="modal-body" id="tablaFacturados">
-                <!-- Aquí se insertará la tabla con estructura personalizada -->
-                <div style="overflow-x: 0; -webkit-overflow-scrolling: touch;">
-                    <!-- <table class="table table-striped" style="width: 100%; table-layout: fixed; border-collapse: collapse; min-width: 800px;"> -->
 
-                    <table id="tabla_jsver" class="table table-striped" style="width: 100%; border-collapse: collapse; min-width: 800px;">
-                        <thead>
-                            <tr>
-                                <th>Estilo</th>
-                                <th>SKU</th>
-                                <th>Alm LN1</th>
-                                <th>Alm DSC</th>
-                                <th>Alm DISCOTELA</th>
-                                <th>Alm PB</th>
-                                <th>Alm FAM</th>
-                                <th>Alm MAD</th>
-                                <th>Enviado</th>
-                                <th>Costo Prom</th>
-                                <th>Color</th>
-                                <th>Talla</th>
-                                <th>Empresa</th>
-                                <th>Guía de Remisión</th>
-                                <th>Descripción</th>
-                                <th>Estado</th>
-
-                            </tr>
-                        </thead>
-                        <tbody id="tablaContenido">
-                            <!-- Los registros de la tabla se insertarán aquí -->
-                        </tbody>
-                        <tfoot id="tablaTotales">
-                            <tr>
-                                <td colspan="2">Cantidad Total:</td>
-                                <td id="totalAlmLN1">0</td>
-                                <td id="totalAlmDSC">0</td>
-                                <td id="totalAlmDISCOTELA">0</td>
-                                <td id="totalAlmPB">0</td>
-                                <td id="totalAlmFAM">0</td>
-                                <td id="totalAlmMAD">0</td>
-                                <td id="totalEnviado">0</td>
-                                <td colspan="7"></td>
-                            </tr>
-                        </tfoot>
-                    </table>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" onclick="cerrarModal()">Cerrar</button>
-                <a class="btn mb-1 mb-sm-0" title="Exportar excel"
-                    style="background-color: #28a745 !important;"
-                    onclick="Excel_Registro_Cheque();">
-                    <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
-                        <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
-                            <path d="M0,172v-172h172v172z" fill="none"></path>
-                            <g fill="#ffffff">
-                                <path d="M94.42993,6.41431c-0.58789,-0.021 -1.17578,0.0105 -1.76367,0.11548l-78.40991,13.83642c-5.14404,0.91333 -8.88135,5.3645 -8.88135,10.58203v104.72852c0,5.22803 3.7373,9.6792 8.88135,10.58203l78.40991,13.83643c0.46191,0.08398 0.93433,0.11548 1.39624,0.11548c1.88965,0 3.71631,-0.65088 5.17554,-1.87915c1.83716,-1.53272 2.88696,-3.7898 2.88696,-6.18335v-12.39819h51.0625c4.44067,0 8.0625,-3.62183 8.0625,-8.0625v-96.75c0,-4.44067 -3.62183,-8.0625 -8.0625,-8.0625h-51.0625v-12.40869c0,-2.38306 -1.0498,-4.64014 -2.88696,-6.17285c-1.36474,-1.15479 -3.05493,-1.80566 -4.8081,-1.87915zM94.34595,11.7998c0.68237,0.06299 1.17578,0.38843 1.43823,0.60889c0.36743,0.30444 0.96582,0.97632 0.96582,2.05762v137.68188c0,1.0918 -0.59839,1.76367 -0.96582,2.06812c-0.35693,0.30444 -1.11279,0.77685 -2.18359,0.58789l-78.40991,-13.83643c-2.57202,-0.45142 -4.44067,-2.677 -4.44067,-5.29102v-104.72852c0,-2.61401 1.86865,-4.8396 4.44067,-5.29102l78.39941,-13.83642c0.27295,-0.04199 0.5249,-0.05249 0.75586,-0.021zM102.125,32.25h51.0625c1.48022,0 2.6875,1.20728 2.6875,2.6875v96.75c0,1.48022 -1.20728,2.6875 -2.6875,2.6875h-51.0625v-16.125h8.0625c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875h-8.0625v-10.75h8.0625c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875h-8.0625v-10.75h8.0625c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875h-8.0625v-10.75h8.0625c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875h-8.0625v-10.75h8.0625c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875h-8.0625zM120.9375,48.375c-1.48022,0 -2.6875,1.19678 -2.6875,2.6875c0,1.49072 1.20728,2.6875 2.6875,2.6875h16.125c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875zM34.46509,53.79199c-0.34643,0.06299 -0.68237,0.18897 -0.99732,0.38843c-1.23877,0.80835 -1.5957,2.47754 -0.78735,3.72681l16.52393,25.40527l-16.52393,25.40527c-0.80835,1.24927 -0.45141,2.91846 0.78735,3.72681c0.46191,0.29395 0.96582,0.43042 1.46973,0.43042c0.87134,0 1.74268,-0.43042 2.25708,-1.21777l15.21167,-23.41064l15.21167,23.41064c0.51441,0.78735 1.38574,1.21777 2.25708,1.21777c0.50391,0 1.00781,-0.13647 1.46973,-0.43042c1.23877,-0.80835 1.5957,-2.47754 0.78735,-3.72681l-16.52393,-25.40527l16.52393,-25.40527c0.80835,-1.24927 0.45142,-2.91846 -0.78735,-3.72681c-1.24927,-0.80835 -2.91846,-0.45141 -3.72681,0.78735l-15.21167,23.41065l-15.21167,-23.41065c-0.60889,-0.93433 -1.70068,-1.36474 -2.72949,-1.17578zM120.9375,64.5c-1.48022,0 -2.6875,1.19678 -2.6875,2.6875c0,1.49072 1.20728,2.6875 2.6875,2.6875h16.125c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875zM120.9375,80.625c-1.48022,0 -2.6875,1.19678 -2.6875,2.6875c0,1.49072 1.20728,2.6875 2.6875,2.6875h16.125c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875zM120.9375,96.75c-1.48022,0 -2.6875,1.19678 -2.6875,2.6875c0,1.49072 1.20728,2.6875 2.6875,2.6875h16.125c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875zM120.9375,112.875c-1.48022,0 -2.6875,1.19678 -2.6875,2.6875c0,1.49072 1.20728,2.6875 2.6875,2.6875h16.125c1.48022,0 2.6875,-1.19678 2.6875,-2.6875c0,-1.49072 -1.20728,-2.6875 -2.6875,-2.6875z"></path>
-                            </g>
-                        </g>
-                    </svg>
-                </a>
-                <button id="btnFacturar" type="button" class="btn btn-primary" onclick="cerrarModal()">Facturar</button>
-            </div>
-        </div>
-    </div>
-</div>
 
 <div class="toolbar m-4">
-    <!-- Primera fila -->
+
     <div class="row">
         <div class="form-group col-lg-2">
             <label>Fecha Inicio:</label>
@@ -214,41 +143,9 @@
             <label>Fecha Fin:</label>
             <input type="date" class="form-control" name="fecha_finb" id="fecha_finb" value="{{ date('Y-m-d') }}">
         </div>
-        <div class="form-group col-lg-2">
-            <label>Estado:</label>
-            <select class="form-control" id="estadoFiltro">
-                <option value="">Todos</option>
-                <option value="1">Con Stock</option>
-                <option value="0">Sin Stock</option>
-            </select>
-        </div>
-        <div class="form-group col-lg-2">
-            <label>SKU:</label>
-            <select name="skuFiltro" id="skuFiltro" class="form-control">
-                <option value="">Seleccione un SKU</option>
-                @foreach($skus as $sku)
-                <option value="{{ $sku->sku }}">{{ $sku->sku }}</option>
-                @endforeach
-            </select>
-        </div>
-
-        <div class="form-group col-lg-3">
-            <label>Empresa:</label>
-            <select class="form-control" name="empresaFiltro" id="empresaFiltro">
-                <option value="">Seleccione una empresa</option>
-                @foreach($empresas as $empresa)
-                <option value="{{ $empresa->nom_empresa }}">{{ $empresa->nom_empresa }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div class="form-group col-lg-1">
-            <label for="mostrarSeleccionados">Todos:</label>
-            <div class="d-block">
-                <input type="checkbox" id="mostrarSeleccionados" class="custom-checkbox mb-2" />
-            </div>
-        </div>
 
         <div class="form-group col-lg-2">
+            <br>
             <button type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center" title="Buscar" id="btnBuscar">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
                     <circle cx="11" cy="11" r="8"></circle>
@@ -258,28 +155,16 @@
             </button>
         </div>
 
-        <div class="form-group col-lg-1">
-            <button type="button" class="btn btn-primary w-100" title="Facturar" id="btnVer" disabled>
-                Ver
-            </button>
-        </div>
-        <div class="form-group col-lg-3">
-            Registros seleccionados: <span id="cantidadSeleccionados">0</span>
-        </div>
-
     </div>
 </div>
 
 
-<table id="tabla_js" class="table" style="width:100%">
+<table id="tabla_js_fp" class="table" style="width:100%">
     <thead>
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
         <tr class="text-center">
             <th>ID</th>
-            <th>
-                Seleccionar <input type="checkbox" id="selectAll" />
-            </th>
             <th>Estilo</th>
             <th>Color</th>
             <th>SKU</th>
@@ -338,12 +223,12 @@
     var selectedIds = [];
     $(document).ready(function() {
 
-        var table = $('#tabla_js').DataTable({
+        var table = $('#tabla_js_fp').DataTable({
             "processing": true,
             "serverSide": true,
             "stateSave": true, // Guarda el estado de la tabla (incluido el filtro, paginación, etc.)
             "ajax": {
-                "url": "{{ route('tabla_facturacion.datatable') }}", // La URL de la ruta
+                "url": "{{ route('tabla_facturacion_fp.datatable_fp') }}", // La URL de la ruta
                 "type": "POST", // Cambiar a POST
                 "data": function(d) {
                     // Obtener los valores de las fechas y el estado de los filtros
@@ -372,13 +257,6 @@
                     "data": "id",
                     "visible": false, // Oculta la columna del ID
                     "orderable": true // Asegura que sea ordenable (aunque esté oculta)
-                },
-                {
-                    "data": null,
-                    "render": function(data, type, row, meta) {
-                        return `<input type="checkbox" class="row-selector" />`;
-                    },
-                    "orderable": false // Desactiva el ordenamiento en esta columna
                 },
                 {
                     "data": "estilo",
@@ -467,7 +345,7 @@
 
 
         // Manejo de eventos para los checkboxes
-        $('#tabla_js tbody').on('change', '.row-selector', function() {
+        $('#tabla_js_fp tbody').on('change', '.row-selector', function() {
             var $row = $(this).closest('tr');
             var data = table.row($row).data();
             var rowId = data.id;
@@ -484,39 +362,13 @@
                 $row.removeClass('highlight-row');
             }
             // VALIDAR BUTTON DE FACTURAR
-            var selectedRows = $('#tabla_js tbody .row-selector:checked').length; // Contar cuántas filas están seleccionadas
+            var selectedRows = $('#tabla_js_fp tbody .row-selector:checked').length; // Contar cuántas filas están seleccionadas
             // Habilitar o deshabilitar el botón según el número de filas seleccionadas
 
         });
 
         // Evento para el checkbox global en el encabezado
-        $('#selectAll').on('change', function() {
-            const isChecked = $(this).is(':checked');
-            $('.row-selector').prop('checked', isChecked); // Marcar/desmarcar todos los checkboxes visibles
 
-            if (isChecked) {
-                table.rows().every(function() {
-                    const rowData = this.data();
-                    const rowId = rowData.id;
-                    if (!selectedIds.includes(rowId)) {
-                        selectedIds.push(rowId);
-                    }
-
-                });
-            } else {
-                // Limpiar array al desmarcar
-                table.rows().every(function() {
-                    const rowData = this.data();
-                    const rowId = rowData.id;
-                    selectedIds = selectedIds.filter(id => id !== rowId);
-                });
-            }
-
-            // Actualizar visualización de filas seleccionadas
-            $('#tabla_js tbody tr').toggleClass('highlight-row', isChecked);
-            // Actualizar estado del botón de facturar
-            $('#btnVer').prop('disabled', !isChecked);
-        });
 
         // Evento para desactivar el checkbox al paginar
         table.on('page.dt', function() {
@@ -526,7 +378,7 @@
             });
         });
 
-        $('#tabla_js tbody').on('click', 'tr', function() {
+        $('#tabla_js_fp tbody').on('click', 'tr', function() {
             var $checkbox = $(this).find('.row-selector'); // Obtén el checkbox en la fila
             var $row = $(this); // Obtén la fila
             var rowId = table.row($row).data().id;
@@ -553,7 +405,7 @@
         // Guardar las selecciones al cambiar de página
         table.on('draw', function() {
             // Vuelve a seleccionar las filas previamente seleccionadas
-            $('#tabla_js tbody .row-selector').each(function() {
+            $('#tabla_js_fp tbody .row-selector').each(function() {
                 var $row = $(this).closest('tr');
                 var data = table.row($row).data();
                 var rowId = data.id;

@@ -70,11 +70,10 @@ class SubGerencia extends Model
             ->leftJoin('area', 'sub_gerencia.id_sub_gerencia', '=', 'area.id_departamento')
             ->where(function ($query) use ($subgerenciaId) {
                 $query->where('sub_gerencia.id_sub_gerencia', $subgerenciaId)
-                    ->orWhere('sub_gerencia.id_sub_gerencia', 7)
-                    ->orWhere('sub_gerencia.id_sub_gerencia', 3);
+                    ->orWhere('sub_gerencia.id_sub_gerencia', 2);
             })
             // Omitir áreas 
-            ->whereNotIn('area.id_area', [6, 33, 35, 42, 7, 39])
+            // ->whereNotIn('area.id_area', [6, 33, 35, 42, 7, 39])
             // Omitir áreas 
             ->select('sub_gerencia.nom_sub_gerencia', 'area.id_area', 'area.nom_area', 'area.cod_area') // Seleccionar también nom_area y cod_area
             ->get();
@@ -88,7 +87,6 @@ class SubGerencia extends Model
             if (!in_array($result->nom_sub_gerencia, $subgerencia_names)) {
                 $subgerencia_names[] = $result->nom_sub_gerencia;
             }
-
             // Agregar tanto el id_area como el nom_area al array de áreas
             $areas[] = [
                 'id_area' => $result->id_area,
@@ -96,10 +94,8 @@ class SubGerencia extends Model
                 'id_subgerencia' => $subgerenciaId // Agregar el id_subgerencia aquí
             ];
         }
-
         // Concatenar los nombres de las subgerencias
         $subgerencia_concatenada = implode(' & ', $subgerencia_names);
-
         return [
             'nom_sub_gerencia' => $subgerencia_concatenada,  // Concatenación de subgerencias
             'areas' => $areas
