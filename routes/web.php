@@ -1570,6 +1570,8 @@ Route::controller(InsumoController::class)->group(function () {
     Route::get('insumo_sa', 'index_sa')->name('insumo_sa');
     Route::post('insumo_sa/list_izquierda', 'list_izquierda_sa')->name('insumo_sa.list_izquierda');
     Route::post('insumo_sa/list_derecha', 'list_derecha_sa')->name('insumo_sa.list_derecha');
+    Route::get('insumo_sa/create', 'create_sa')->name('insumo_sa.create');
+    Route::post('insumo_sa', 'store_sa')->name('insumo_sa.store');
     Route::get('insumo_sa/{id}/edit', 'edit_sa')->name('insumo_sa.edit');
     Route::put('insumo_sa/{id}', 'update_sa')->name('insumo_sa.update');
     Route::delete('insumo_sa/{id}', 'destroy_sa')->name('insumo_sa.destroy');
