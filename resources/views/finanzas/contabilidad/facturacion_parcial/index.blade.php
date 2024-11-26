@@ -29,42 +29,4 @@
             }
         });
     }
-
-    $('#btnActualizar').on('click', function() {
-        $.ajax({
-            url: "{{ route('tabla_facturacion.update') }}", // Ruta donde se procesarán los IDs
-            type: "POST",
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(data) {
-                if (data == "error") {
-                    Swal.fire({
-                        title: '¡Error al Actualizar!',
-                        text: "¡El registro ya existe o hay un problema con los datos!",
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    });
-                } else {
-                    Swal.fire(
-                        '¡Actualización Exitosa!',
-                        '¡Los registros han sido actualizados correctamente!',
-                        'success'
-                    ).then(function() {
-                        table.ajax.reload();
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                Swal.fire({
-                    title: '¡Error!',
-                    text: "Ocurrió un error al procesar la actualización.",
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK'
-                });
-            }
-        });
-    });
 </script>

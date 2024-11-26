@@ -97,6 +97,16 @@ class TbContabilidad extends Model
         return $registros;
     }
 
+    public static function filtrarCerradosExcel($fechaInicio, $fechaFin)
+    {
+        // Filtrar solo por rango de fechas en fecha_documento y stock = 1
+        $registros = self::whereBetween('fecha_documento', [$fechaInicio, $fechaFin])
+            ->where('stock', 1)
+            ->get();
+
+        return $registros;
+    }
+
 
     public function scopeFiltros($query, $filters)
     {
@@ -141,7 +151,7 @@ class TbContabilidad extends Model
     public static function sincronizarContabilidad()
     {
         try {
-            set_time_limit(600); // Aumentar el tiempo de ejecución
+            set_time_limit(600);
             // Obtener el primer día del AÑO actual
             $fechaInicioAno = Carbon::now()->startOfYear()->toDateString();
             // $fechaInicioAno = Carbon::now()->subMonth()->startOfMonth()->toDateString();
@@ -245,7 +255,6 @@ class TbContabilidad extends Model
             $datosAInsertar = [];
 
             foreach ($data_sql as $row) {
-                // dd($row);
                 $compositeKey = $row->Guía_de_Remisión . '|' . $row->SKU; // Crear clave compuesta
                 if (!isset($mysqlRecordsSet[$compositeKey])) {
 
@@ -257,7 +266,7 @@ class TbContabilidad extends Model
                         'descripcion' => $row->Descripcion,
                         'costo_precio' => $row->Costo_Prom,
                         'empresa' => $row->Empresa,
-                        'alm_discotela' => intval($row->ALM_DISCOTELA),  // Convertir a entero
+                        'alm_discotela' => (int) $row->ALM_DISCOTELA,  // Convertir a entero
                         'alm_dsc' => (int) $row->ALM_DSC,  // Convertir a entero
                         'alm_ln1' => (int) $row->ALM_LN1,  // Convertir a entero
                         'alm_pb' => (int) $row->ALM_PB,  // Convertir a entero
@@ -271,19 +280,48 @@ class TbContabilidad extends Model
                         'estado' => $row->Estado,
                         'stock' => ($row->Estado == 'sin Stock') ? 0 : 1, // Verificar stock
                     ];
-                    // dd($datosAInsertar);
                 }
             }
             // Paso 4: Insertar en lotes
+            // Actualizar el registro de la cantidad de registros insertados
+            DB::table('tb_contabilidad_configuracion')
+                ->updateOrInsert(
+                    ['id' => 1], // Condición para buscar la fila
+                    [
+                        'fecha_actualizacion' => now(),
+                        'estado' => 1,
+                        'cantidad_registros' => count($mysqlRecords),
+                    ]
+                );
             if (!empty($datosAInsertar)) {
+                DB::statement('SET FOREIGN_KEY_CHECKS=1;');
                 try {
-                    DB::table('tb_contabilidad')->insert($datosAInsertar);
+                    $totalInserted = 0; // Variable para contar los registros insertados
+                    foreach ($datosAInsertar as $dato) {
+                        try {
+                            TbContabilidad::create($dato);
+                            $totalInserted++;  // Incrementar el contador de registros insertados
+                        } catch (\Exception $e) {
+                            // Capturar error de inserción y retornar la respuesta con el error
+                            return response()->json([
+                                'success' => false,
+                                'message' => 'Error al insertar un registro: ' . $e->getMessage()
+                            ]);
+                        }
+                    }
                 } catch (\Exception $e) {
-                    return response()->json(['error' => $e->getMessage()], 500);
+                    // Capturar cualquier otro error fuera del bucle
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Error: ' . $e->getMessage()
+                    ]);
                 }
+            } else {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'No se encontraron datos para insertar.'
+                ]);
             }
-            // dd(count($datosAInsertar));
-            return response()->json(['message' => 'Sincronización completada', 'insertados' => count($datosAInsertar)]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
