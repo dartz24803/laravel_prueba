@@ -1151,6 +1151,7 @@ Route::controller(ObservacionController::class)->group(function () {
     Route::post('observacion/traer_datos_error', 'traer_datos_error_reg')->name('observacion.traer_datos_error');
     Route::post('observacion/traer_responsable', 'traer_responsable_reg')->name('observacion.traer_responsable');
     Route::post('observacion', 'store_reg')->name('observacion.store');
+    Route::get('observacion/{id}/modal_suceso', 'modal_suceso_reg')->name('observacion.modal_suceso');
     Route::get('observacion/{id}/edit', 'edit_reg')->name('observacion.edit');
     Route::get('observacion/{id}/download', 'download_reg')->name('observacion.download');
     Route::put('observacion/{id}', 'update_reg')->name('observacion.update');

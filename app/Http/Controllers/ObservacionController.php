@@ -192,6 +192,12 @@ class ObservacionController extends Controller
         }
     }
 
+    public function modal_suceso_reg($id)
+    {
+        $get_id = Suceso::findOrFail($id);
+        return view('caja.observacion.modal_suceso',compact('get_id'));
+    }
+
     public function edit_reg($id)
     {
         $get_id = Suceso::findOrFail($id);
