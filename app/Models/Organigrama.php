@@ -113,8 +113,8 @@ class Organigrama extends Model
                     CASE WHEN us.fin_funciones IS NULL THEN '' ELSE us.fin_funciones END AS fin_funciones,
                     us.mes_nac,us.dia_nac
                     FROM organigrama og
-                    LEFT JOIN ubicacion cl ON us.id_centro_labor=cl.id_ubicacion
                     LEFT JOIN users us ON og.id_usuario=us.id_usuario
+                    LEFT JOIN ubicacion cl ON us.id_centro_labor=cl.id_ubicacion
                     LEFT JOIN gusto_preferencia_users gpu ON us.id_usuario = gpu.id_usuario
                     LEFT JOIN estado_usuario eu ON us.estado=eu.id_estado_usuario
                     LEFT JOIN cargo ca ON us.id_cargo=ca.id_cargo
