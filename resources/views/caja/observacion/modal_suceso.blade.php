@@ -1,3 +1,10 @@
+<style>
+    textarea[disabled] {
+        background-color: white !important;
+        color: black;
+    }
+</style>
+
 <div class="modal-header">
     <h5 class="modal-title">Ver suceso:</h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -14,7 +21,7 @@
             <label>Suceso: </label>
         </div>
         <div class="form-group col-lg-10">
-            <textarea class="form-control" rows="4" placeholder="Ingresar suceso"
+            <textarea class="form-control" rows="4" placeholder="Ingresar suceso" disabled
             >{{ $get_id->nom_suceso }}</textarea>
         </div>
     </div>
