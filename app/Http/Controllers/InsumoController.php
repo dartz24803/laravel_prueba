@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Base;
+use App\Models\BaseActiva;
 use App\Models\Contometro;
 use App\Models\Insumo;
 use App\Models\Notificacion;
@@ -320,7 +321,7 @@ class InsumoController extends Controller
     {
         $list_insumo = Insumo::select('id_insumo','nom_insumo')->where('estado',1)
                         ->orderBy('nom_insumo','ASC')->get();
-        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_base = BaseActiva::all();
         return view('caja.insumo.reparto_insumo.modal_registrar',compact('list_insumo','list_base'));
     }
 
