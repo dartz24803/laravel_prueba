@@ -102,72 +102,58 @@
 
                 function Activar_Camara() {
                     var screenWidth = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth;
+                    var constraints;
+
                     if (screenWidth < 1000) {
-                        if (!isCameraOn) {
-                            //Pedir permiso para acceder a la cámara
-                            navigator.mediaDevices.getUserMedia({
-                                    video: {
-                                        facingMode: {
-                                            exact: "environment"
-                                        }
-                                    }
-                                })
-                                .then(function(newStream) {
-                                    stream = newStream;
-                                    // Mostrar el stream de la cámara en el elemento de video
-                                    video.srcObject = stream;
-                                    video.play();
-                                    isCameraOn = true;
-                                    div_tomar_foto.style.cssText = "display: block;";
-                                    div.style.cssText = "display: block;";
-                                })
-                                .catch(function(error) {
-                                    console.error('Error al acceder a la cámara:', error);
-                                });
-                        } else {
-                            //Detener la reproducción  del stream y liberar la cámara
-                            if (stream) {
-                                stream.getTracks().forEach(function(track) {
-                                    track.stop();
-                                });
-                                video.srcObject = null;
-                                isCameraOn = false;
-                                div_tomar_foto.style.cssText = "display: none !important;";
-                                div.style.cssText = "display: none !important;";
+                        // Configuración para dispositivos móviles
+                        constraints = {
+                            video: {
+                                facingMode: { exact: "environment" }, // Cámara trasera
+                                width: { ideal: 1920 },              // Ancho deseado
+                                height: { ideal: 1080 }             // Alto deseado
                             }
-                        }
+                        };
                     } else {
-                        if (!isCameraOn) {
-                            //Pedir permiso para acceder a la cámara
-                            navigator.mediaDevices.getUserMedia({
-                                    video: true
-                                })
-                                .then(function(newStream) {
-                                    stream = newStream;
-                                    // Mostrar el stream de la cámara en el elemento de video
-                                    video.srcObject = stream;
-                                    video.play();
-                                    isCameraOn = true;
-                                    div_tomar_foto.style.cssText = "display: block;";
-                                    div.style.cssText = "display: block;";
-                                })
-                                .catch(function(error) {
-                                    console.error('Error al acceder a la cámara:', error);
-                                });
-                        } else {
-                            //Detener la reproducción  del stream y liberar la cámara
-                            if (stream) {
-                                stream.getTracks().forEach(function(track) {
-                                    track.stop();
-                                });
-                                video.srcObject = null;
-                                isCameraOn = false;
-                                div_tomar_foto.style.cssText = "display: none !important;";
-                                div.style.cssText = "display: none !important;";
+                        // Configuración para dispositivos de escritorio
+                        constraints = {
+                            video: {
+                                width: { ideal: 1920 },
+                                height: { ideal: 1080 }
                             }
+                        };
+                    }
+
+                    if (!isCameraOn) {
+                        navigator.mediaDevices.getUserMedia(constraints)
+                            .then(function(newStream) {
+                                stream = newStream;
+
+                                // Mostrar el stream de la cámara en el elemento de video
+                                video.srcObject = stream;
+                                video.play();
+
+                                isCameraOn = true;
+                                div_tomar_foto.style.cssText = "display: block;";
+                                div.style.cssText = "display: block;";
+                            })
+                            .catch(function(error) {
+                                console.error('Error al acceder a la cámara:', error);
+                            });
+                    } else {
+                        // Detener la reproducción del stream y liberar la cámara
+                        if (stream) {
+                            stream.getTracks().forEach(function(track) {
+                                track.stop();
+                            });
+
+                            video.srcObject = null;
+                            isCameraOn = false;
+                            div_tomar_foto.style.cssText = "display: none !important;";
+                            div.style.cssText = "display: none !important;";
                         }
                     }
                 }
+
 
                 function Tomar_Foto() {
                     Cargando();
@@ -182,6 +168,8 @@
                     // Ajusta el tamaño del canvas al tamaño del video
                     canvas.width = video.videoWidth;
                     canvas.height = video.videoHeight;
+                    // console.log(video.videoWidth);
+                    // console.log(video.videoHeight);
 
                     context.drawImage(video, 0, 0, canvas.width, canvas.height);
 
@@ -211,7 +199,7 @@
                                 }
                             }
                         });
-                    }, 'image/jpeg');
+                    }, 'image/jpeg', 1.0);
                 }
 
 
