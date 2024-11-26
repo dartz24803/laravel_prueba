@@ -82,7 +82,7 @@ class AsistenciaController extends Controller
         $list_gerencia = $this->modelogerencia->get_list_gerencia();
         $list_mes = $this->modelomes->where('estado', 1)->get();
         $list_anio = $this->modeloanio->where('estado', 1)->orderBy('cod_anio', 'DESC')->get();
-        if ($id_puesto == 29 || $id_puesto == 98 || $id_puesto == 26 || $id_puesto == 16 || $id_puesto == 197 || $id_puesto == 161 || $id_puesto == 314) {
+        if ($id_puesto == 29 || $id_puesto == 98 || $id_puesto == 26 || $id_puesto == 16 || $id_puesto == 197 || $id_puesto == 161 || $id_puesto == 311 || $id_puesto == 314) {
             return view('rrhh.Asistencia.reporte.indexct', compact('list_base', 'list_colaborador', 'list_area', 'list_gerencia', 'list_mes', 'list_anio', 'list_notificacion', 'list_subgerencia'));
         } else {
             return view('rrhh.Asistencia.reporte.index', compact('list_base', 'list_colaborador', 'list_area', 'list_gerencia', 'list_mes', 'list_anio', 'list_notificacion', 'list_subgerencia'));
@@ -160,7 +160,7 @@ class AsistenciaController extends Controller
         }
         $n_documento = $num_doc;
 
-        if ($id_puesto == 29 || $id_puesto == 161 || $id_puesto == 197 || $id_puesto == 311) {
+        if ($id_puesto == 29 || $id_puesto == 161 || $id_puesto == 197 || $id_puesto === 311) {
             return view('rrhh.Asistencia.reporte.listarct', compact('fecha_inicio', 'fecha_fin', 'list_asistencia', 'list_colaborador', 'n_documento'));
         } else {
             return view('rrhh.Asistencia.reporte.listar', compact('fecha_inicio', 'fecha_fin', 'list_asistencia', 'list_colaborador', 'n_documento'));
