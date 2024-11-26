@@ -174,4 +174,44 @@ class AsignacionVisita extends Model
     //         ->orderBy('asignacion_visita.cod_asignacion', 'DESC')
     //         ->get();
     // }
+    
+    static function get_list_asignacion_visita($id_asignacion_visita=null,$dato){
+        if(isset($id_asignacion_visita) && $id_asignacion_visita>0){
+            $sql="SELECT * from asignacion_visita where id_asignacion_visita='$id_asignacion_visita'";
+        }else{
+            $sql="SELECT a.*,b.usuario_nombres,b.usuario_apater,b.usuario_amater,
+            case when tipo_punto_partida=1 or tipo_punto_partida=2 then 
+            (CASE WHEN c.responsable!='' THEN c.responsable ELSE c.nombre_proveedor END)
+            when tipo_punto_partida=3 then a.punto_partida 
+            when tipo_punto_partida=4 then 'Domicilio' end as desc_punto_partida,
+            case when tipo_punto_llegada=1 or tipo_punto_llegada=2 then 
+            (CASE WHEN d.responsable!='' THEN d.responsable ELSE d.nombre_proveedor END)
+            when tipo_punto_llegada=3 then a.punto_llegada 
+            when tipo_punto_llegada=4 then 'Domicilio' end as desc_punto_llegada,e.nom_tipo_transporte,
+            (SELECT group_concat(distinct g.nom_tipo_transporte) from asignacion_visita_transporte f
+            left join tipo_transporte_produccion g on f.id_tipo_transporte=g.id_tipo_transporte
+            where f.estado=1 and f.id_asignacion_visita=a.id_asignacion_visita) as transporte,
+            case when a.estado_registro=1 then 'Por Iniciar' when a.estado_registro=2 then 'Iniciado' when a.estado_registro=3 then 'Finalizado' end as desc_estado_registro,
+            DATE_FORMAT(a.fec_ini_visita, '%H:%i') as fecha_inicio, DATE_FORMAT(a.fec_fin_visita, '%H:%i') as fecha_fin,
+            (SELECT GROUP_CONCAT(DISTINCT h.modelo) 
+            FROM ficha_tecnica_produccion h 
+            WHERE FIND_IN_SET(h.id_ft_produccion, a.id_modelo)) AS modelos,
+            (SELECT GROUP_CONCAT(DISTINCT concat(h.img_ft_produccion,'___',h.modelo)) 
+            FROM ficha_tecnica_produccion h 
+            WHERE FIND_IN_SET(h.id_ft_produccion, a.id_modelo)) AS url_modelos,
+            ROUND(COALESCE((SELECT SUM(i.costo) FROM asignacion_visita_transporte i WHERE i.id_asignacion_visita=a.id_asignacion_visita and i.estado=1), 0),2) AS total_transporte,
+            f.nom_proceso
+            from asignacion_visita a 
+            left join users b on a.id_inspector=b.id_usuario
+            left join proveedor_general c on a.punto_partida=c.id_proveedor
+            left join proveedor_general d on a.punto_llegada=d.id_proveedor
+            left join tipo_transporte_produccion e on a.id_tipo_transporte=e.id_tipo_transporte
+            left join proceso_visita f on a.id_proceso=f.id_procesov
+            where a.estado=1 and a.fecha between '".$dato['fini']."' and '".$dato['ffin']."'";
+        }
+        
+        $result = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
 }

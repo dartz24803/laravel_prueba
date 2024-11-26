@@ -52,7 +52,7 @@ class Organigrama extends Model
         }
         if (isset($dato['excel'])) {
             $sql = "SELECT eu.nom_estado_usuario,CASE WHEN us.ini_funciones IS NULL THEN ''
-                    ELSE us.ini_funciones END AS ini_funciones,
+                    ELSE us.ini_funciones END AS ini_funciones, cl.cod_ubi AS centro_labor,
                     us.centro_labores,us.usuario_apater,us.usuario_amater,us.usuario_nombres,ca.nom_cargo,
                     pu.nom_puesto,ar.nom_area,sg.nom_sub_gerencia,ge.nom_gerencia,td.cod_tipo_documento,
                     us.num_doc,du.dni_doc,gn.nom_genero,CASE WHEN us.fec_nac IS NULL THEN ''
@@ -114,6 +114,7 @@ class Organigrama extends Model
                     us.mes_nac,us.dia_nac
                     FROM organigrama og
                     LEFT JOIN users us ON og.id_usuario=us.id_usuario
+                    LEFT JOIN ubicacion cl ON us.id_centro_labor=cl.id_ubicacion
                     LEFT JOIN gusto_preferencia_users gpu ON us.id_usuario = gpu.id_usuario
                     LEFT JOIN estado_usuario eu ON us.estado=eu.id_estado_usuario
                     LEFT JOIN cargo ca ON us.id_cargo=ca.id_cargo

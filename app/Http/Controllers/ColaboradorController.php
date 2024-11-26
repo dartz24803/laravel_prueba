@@ -247,7 +247,7 @@ class ColaboradorController extends Controller
         $sheet->getColumnDimension('D')->setWidth(25);
         $sheet->getColumnDimension('E')->setWidth(25);
         $sheet->getColumnDimension('F')->setWidth(30);
-        $sheet->getColumnDimension('G')->setWidth(30);
+        $sheet->getColumnDimension('G')->setWidth(0);
         $sheet->getColumnDimension('H')->setWidth(30);
         $sheet->getColumnDimension('I')->setWidth(30);
         $sheet->getColumnDimension('J')->setWidth(30);
@@ -331,7 +331,7 @@ class ColaboradorController extends Controller
         $sheet->setCellValue('D1', 'APELLIDO PATERNO');
         $sheet->setCellValue('E1', 'APELLIDO MATERNO');
         $sheet->setCellValue('F1', 'NOMBRES');
-        $sheet->setCellValue('G1', 'CARGO');
+        // $sheet->setCellValue('G1', 'CARGO');
         $sheet->setCellValue('H1', 'PUESTO');
         $sheet->setCellValue('I1', 'ÁREA');
         $sheet->setCellValue('J1', 'DEPARTAMENTO');
@@ -415,11 +415,11 @@ class ColaboradorController extends Controller
                 $sheet->setCellValue("B{$contador}", Date::PHPToExcel($list->ini_funciones));
                 $sheet->getStyle("B{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
             }
-            $sheet->setCellValue("C{$contador}", $list->centro_labores);
+            $sheet->setCellValue("C{$contador}", $list->centro_labor);
             $sheet->setCellValue("D{$contador}", $list->usuario_apater);
             $sheet->setCellValue("E{$contador}", $list->usuario_amater);
             $sheet->setCellValue("F{$contador}", $list->usuario_nombres);
-            $sheet->setCellValue("G{$contador}", $list->nom_cargo);
+            // $sheet->setCellValue("G{$contador}", $list->nom_cargo);
             $sheet->setCellValue("H{$contador}", $list->nom_puesto);
             $sheet->setCellValue("I{$contador}", $list->nom_area);
             $sheet->setCellValue("J{$contador}", $list->nom_sub_gerencia);
