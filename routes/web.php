@@ -192,6 +192,7 @@ Route::controller(TrackingController::class)->group(function () {
     Route::get('tracking_det', 'index_det')->name('tracking_det');
     Route::post('tracking_det/list', 'list_det')->name('tracking_det.list');
     Route::get('tracking_det/{id}/detalle', 'detalle_det')->name('tracking_det.detalle');
+    Route::get('tracking_det/{id}/excel_guia_despacho', 'excel_guia_despacho')->name('tracking_det.excel_guia_despacho');
 });
 //TIENDA - FUNCIÓN TEMPORAL
 Route::controller(FuncionTemporalController::class)->group(function () {

@@ -18,7 +18,7 @@
                                 <li class="nav-item" style="height: 0% !important;">
                                     <a id="a_btra" class="nav-link" onclick="Base_datos();" style="cursor: pointer; font-size: 0.875rem;">BD Tracking</a>
                                 </li>
-                                @if (session('usuario')->id_usuario=="815")
+                                @if (session('usuario')->id_nivel="1")
                                     <li class="nav-item" style="height: 0% !important;">
                                         <a id="a_dtra" class="nav-link" onclick="Detalle();" style="cursor: pointer; font-size: 0.875rem;">Detalle</a>
                                     </li>
