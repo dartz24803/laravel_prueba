@@ -129,11 +129,15 @@ session('usuario')->id_sede_laboral == 6 )
         </li>
         @endif
         @if (session('usuario')->id_nivel == 1 ||
-        session('usuario')->id_nivel == 7 ||
+        /*COORDINADOR DE CONTROL INTERNO (VERONICA NINA)*/
+        session('usuario')->id_puesto == 9 ||
+        /*COORDINADOR SR. DE TECNOLOGÍAS DE LA INFORMACIÓN (MELISSA VALDIVIESO)*/
+        session('usuario')->id_puesto == 27 ||
+        /*COORDINADOR SR. DE CAJA (KATTIA SANZ)*/
         session('usuario')->id_puesto == 128 ||
+        /*ASISTENTE DE TECNOLOGÍAS DE LA INFORMACIÓN (OSCAR LOZA)*/
         session('usuario')->id_puesto == 148 ||
-        session('usuario')->id_puesto == 31 ||
-        session('usuario')->id_puesto == 32 ||
+        /*TODOS LOS USUARIOS DE TIENDA*/
         session('usuario')->id_sede_laboral == 6 )
         <li id="insumos">
             <a href="{{ route('insumo') }}" data-toggle="tooltip" data-placement="right" data-html="true">
@@ -194,17 +198,6 @@ session('usuario')->id_sede_laboral == 6 )
         <li id="requisiciones_tiendas">
             <a href="{{ route('requisicion_tienda') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Requisición tienda</p>
-            </a>
-        </li>
-        @endif
-        @if (session('usuario')->id_nivel == 1 ||
-        session('usuario')->id_puesto == 314 ||
-        session('usuario')->id_puesto == 31 ||
-        session('usuario')->id_puesto == 32 ||
-        session('usuario')->id_puesto == 161)
-        <li id="salidas_insumos">
-            <a href="{{ route('salida_insumo') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                <p class="romperpalabra"><span id="icono_active2"></span> Salida de insumo</p>
             </a>
         </li>
         @endif

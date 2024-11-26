@@ -126,7 +126,7 @@ Route::controller(ReporteFotograficoController::class)->group(function () {
     Route::post('/Reporte_Fotografico_Listar', 'Reporte_Fotografico_Listar');
     Route::get('Imagenes_Reporte_Fotografico', 'Imagenes_Reporte_Fotografico');
     Route::post('/Listar_Imagenes_Reporte_Fotografico', 'Listar_Imagenes_Reporte_Fotografico');
-    Route::get('Modal_Detalle_RF/{id}', 'Modal_Detalle_RF');
+    Route::get('Modal_Detalle_RF/{id}/{pre}/{nex}', 'Modal_Detalle_RF');
     Route::get('ReporteFotografico/validar_reporte_fotografico_dia_job', 'validar_reporte_fotografico_dia_job');
     Route::get('ReporteFotografico/validar_reporte_fotografico_dia_job_2', 'validar_reporte_fotografico_dia_job_2');
     Route::post('ReporteFotografico/Rotar_Imagen_RF', 'Rotar_Imagen_RF');
@@ -1151,6 +1151,7 @@ Route::controller(ObservacionController::class)->group(function () {
     Route::post('observacion/traer_datos_error', 'traer_datos_error_reg')->name('observacion.traer_datos_error');
     Route::post('observacion/traer_responsable', 'traer_responsable_reg')->name('observacion.traer_responsable');
     Route::post('observacion', 'store_reg')->name('observacion.store');
+    Route::get('observacion/{id}/modal_suceso', 'modal_suceso_reg')->name('observacion.modal_suceso');
     Route::get('observacion/{id}/edit', 'edit_reg')->name('observacion.edit');
     Route::get('observacion/{id}/download', 'download_reg')->name('observacion.download');
     Route::put('observacion/{id}', 'update_reg')->name('observacion.update');
@@ -1568,23 +1569,19 @@ Route::controller(InsumoController::class)->group(function () {
     Route::get('insumo_ra/excel_izquierda', 'excel_izquierda_ra')->name('insumo_ra.excel_izquierda');
     Route::get('insumo_ra/excel_derecha', 'excel_derecha_ra')->name('insumo_ra.excel_derecha');
     Route::get('insumo_sa', 'index_sa')->name('insumo_sa');
-    Route::post('insumo_sa/list', 'list_sa')->name('insumo_sa.list');
+    Route::post('insumo_sa/list_izquierda', 'list_izquierda_sa')->name('insumo_sa.list_izquierda');
+    Route::post('insumo_sa/list_derecha', 'list_derecha_sa')->name('insumo_sa.list_derecha');
+    Route::get('insumo_sa/create', 'create_sa')->name('insumo_sa.create');
+    Route::post('insumo_sa', 'store_sa')->name('insumo_sa.store');
     Route::get('insumo_sa/{id}/edit', 'edit_sa')->name('insumo_sa.edit');
     Route::put('insumo_sa/{id}', 'update_sa')->name('insumo_sa.update');
+    Route::delete('insumo_sa/{id}', 'destroy_sa')->name('insumo_sa.destroy');
     Route::get('insumo_sa/{cod_base}/{id_insumo}/{inicio}/{fin}/excel', 'excel_sa')->name('insumo_sa.excel');
     Route::get('insumo_ro', 'index_ro')->name('insumo_ro');
     Route::get('insumo_ro/list_izquierda', 'list_izquierda_ro')->name('insumo_ro.list_izquierda');
     Route::get('insumo_ro/list_derecha', 'list_derecha_ro')->name('insumo_ro.list_derecha');
     Route::get('insumo_ro/excel_izquierda', 'excel_izquierda_ro')->name('insumo_ro.excel_izquierda');
     Route::get('insumo_ro/excel_derecha', 'excel_derecha_ro')->name('insumo_ro.excel_derecha');
-});
-//CAJA - SALIDA DE INSUMO
-Route::controller(SalidaInsumoController::class)->group(function () {
-    Route::get('salida_insumo', 'index')->name('salida_insumo');
-    Route::get('salida_insumo/list_izquierda', 'list_izquierda')->name('salida_insumo.list_izquierda');
-    Route::get('salida_insumo/list_derecha', 'list_derecha')->name('salida_insumo.list_derecha');
-    Route::get('salida_insumo/create', 'create')->name('salida_insumo.create');
-    Route::post('salida_insumo', 'store')->name('salida_insumo.store');
 });
 //CAJA - CAPACITACIÓN CAJEROS
 Route::controller(CapacitacionCajeroController::class)->group(function () {

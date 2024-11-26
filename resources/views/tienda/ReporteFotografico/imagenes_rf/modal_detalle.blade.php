@@ -36,12 +36,23 @@
     </div>
 </div>
 <div class="modal-footer">
+    <button type="button" id="prev-button" class="btn btn-secondary" data-prev-id="{{ $prev }}">⬅ Anterior</button>
+    <button type="button" id="next-button" class="btn btn-secondary" data-next-id="{{ $next }}">Siguiente ➡</button>
     <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
 </div>
 <script>
     $(document).ready(function() {
         AbrirImagen();
         EzPlus();
+        const prevId = parseInt($('#prev-button').data('prev-id'));
+        const nextId = parseInt($('#next-button').data('next-id'));// Deshabilitar botones si prevId o nextId son 0
+        if (prevId === 0) {
+            $('#prev-button').attr('disabled', true);
+        }
+
+        if (nextId === 0) {
+            $('#next-button').attr('disabled', true);
+        }
     });
 
     function AbrirImagen(){
@@ -99,6 +110,33 @@
         });
     }
 
+    $('#prev-button').on('click', function() {
+        var prevId = {{ $prev }};
+        if (prevId) {
+            $("#ModalUpdate .close").click()
+            $("#detalle_"+prevId).click()
+        } else {
+            Swal.fire(
+                '¡Ups!',
+                'No hay reporte previo',
+                'error'
+            );
+        }
+    });
+
+    $('#next-button').on('click', function() {
+        var nextId = {{ $next }}
+        if (nextId) {
+            $("#ModalUpdate .close").click()
+            $("#detalle_"+nextId).click()
+        } else {
+            Swal.fire(
+                '¡Ups!',
+                'No hay reporte siguiente',
+                'error'
+            );
+        }
+    });
 </script>
 <style>
     .zoomContainer{

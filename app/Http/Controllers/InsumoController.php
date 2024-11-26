@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Base;
+use App\Models\BaseActiva;
 use App\Models\Contometro;
 use App\Models\Insumo;
 use App\Models\Notificacion;
@@ -320,7 +321,7 @@ class InsumoController extends Controller
     {
         $list_insumo = Insumo::select('id_insumo','nom_insumo')->where('estado',1)
                         ->orderBy('nom_insumo','ASC')->get();
-        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_base = BaseActiva::all();
         return view('caja.insumo.reparto_insumo.modal_registrar',compact('list_insumo','list_base'));
     }
 
@@ -363,7 +364,7 @@ class InsumoController extends Controller
         $get_id = RepartoInsumo::findOrFail($id);
         $list_insumo = Insumo::select('id_insumo','nom_insumo')->where('estado',1)
                         ->orderBy('nom_insumo','ASC')->get();
-        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_base = BaseActiva::all();
         return view('caja.insumo.reparto_insumo.modal_editar', compact('get_id','list_insumo','list_base'));
     }
 
@@ -538,21 +539,70 @@ class InsumoController extends Controller
 
     public function index_sa()
     {
-        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_base = BaseActiva::all();
         $list_insumo = Insumo::select('id_insumo','nom_insumo')->where('estado',1)
                         ->orderBy('nom_insumo','ASC')->get();
         return view('caja.insumo.salida_insumo.index', compact('list_base','list_insumo'));
     }
 
-    public function list_sa(Request $request)
+    public function list_izquierda_sa(Request $request)
     {
-        $list_salida_insumo = SalidaContometro::get_list_salida_contometro([
+        if($request->cod_base=="0"){
+            $list_stock_salida_insumo = StockSalidaInsumo::all();
+        }else{
+            $list_stock_salida_insumo = StockSalidaInsumo::where('cod_base',$request->cod_base)->get();
+        }
+        return view('caja.insumo.salida_insumo.lista_izquierda', compact('list_stock_salida_insumo'));
+    }
+
+    public function list_derecha_sa(Request $request)
+    {
+        $list_salida_contometro = SalidaContometro::get_list_salida_contometro([
             'cod_base'=>$request->cod_base,
             'id_insumo'=>$request->id_insumo,
             'inicio'=>$request->inicio,
             'fin'=>$request->fin
         ]);
-        return view('caja.insumo.salida_insumo.lista', compact('list_salida_insumo'));
+        return view('caja.insumo.salida_insumo.lista_derecha', compact('list_salida_contometro'));
+    }
+
+    public function create_sa()
+    {
+        $list_insumo = StockSalidaInsumo::where('cod_base',session('usuario')->centro_labores)
+                        ->orderBy('nom_insumo','ASC')->get();
+        return view('caja.insumo.salida_insumo.modal_registrar',compact('list_insumo'));
+    }
+
+    public function store_sa(Request $request)
+    {
+        $request->validate([
+            'id_insumo' => 'gt:0',
+            'cantidad_salida' => 'required|gt:0'
+        ], [
+            'id_insumo.gt' => 'Debe seleccionar insumo.',
+            'cantidad_salida.required' => 'Debe ingresar cantidad.',
+            'cantidad_salida.gt' => 'Debe ingresar cantidad mayor a 0.'
+        ]);
+
+        $stock = StockSalidaInsumo::where('cod_base',session('usuario')->centro_labores)
+                ->where('id_insumo',$request->id_insumo)->first();
+
+        if(!isset($stock) || $request->cantidad_salida>$stock->total){
+            echo "error";
+        }else{
+            SalidaContometro::create([
+                'id_insumo' => $request->id_insumo,
+                'cod_base' => session('usuario')->centro_labores,
+                'cantidad_salida' => $request->cantidad_salida,
+                'fecha' => now(),
+                'id_usuario' => session('usuario')->id_usuario,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
     }
 
     public function edit_sa($id)
@@ -574,6 +624,15 @@ class InsumoController extends Controller
             'cantidad_salida' => $request->cantidad_salidae,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
+        ]);
+    }
+
+    public function destroy_sa($id)
+    {
+        SalidaContometro::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
         ]);
     }
 

@@ -279,13 +279,23 @@ class ReporteFotograficoController extends Controller
         return view('tienda.ReporteFotografico.imagenes_rf.listar',  compact('list_rf'));
     }
 
-    public function Modal_Detalle_RF($id)
+    public function Modal_Detalle_RF($id,$prev=null,$next=null)
     {
         $get_id = ReporteFotografico::leftJoin('codigos_reporte_fotografico_new', 'reporte_fotografico_new.codigo', '=', 'codigos_reporte_fotografico_new.id')
             ->select('reporte_fotografico_new.id', 'reporte_fotografico_new.foto', 'reporte_fotografico_new.base', 'reporte_fotografico_new.fec_reg', 'codigos_reporte_fotografico_new.descripcion')
             ->where('reporte_fotografico_new.id', $id)
             ->get();
-        return view('tienda.ReporteFotografico.imagenes_rf.modal_detalle', compact('get_id'));
+        
+        return view('tienda.ReporteFotografico.imagenes_rf.modal_detalle', compact('get_id','prev','next'));
+    }
+    
+    public function Modal_Detalle_RF_S($id)
+    {
+        $get_id = ReporteFotografico::leftJoin('codigos_reporte_fotografico_new', 'reporte_fotografico_new.codigo', '=', 'codigos_reporte_fotografico_new.id')
+            ->select('reporte_fotografico_new.id', 'reporte_fotografico_new.foto', 'reporte_fotografico_new.base', 'reporte_fotografico_new.fec_reg', 'codigos_reporte_fotografico_new.descripcion')
+            ->where('reporte_fotografico_new.id', $id)
+            ->get();
+        
     }
     //cron ejecutandose a las 19:00 a las 13:00
     public function validar_reporte_fotografico_dia_job_old()
