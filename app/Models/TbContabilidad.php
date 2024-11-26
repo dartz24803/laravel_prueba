@@ -248,7 +248,7 @@ class TbContabilidad extends Model
                 // dd($row);
                 $compositeKey = $row->Guía_de_Remisión . '|' . $row->SKU; // Crear clave compuesta
                 if (!isset($mysqlRecordsSet[$compositeKey])) {
-                    // dd($row);
+
                     $datosAInsertar[] = [
                         'estilo' => $row->Estilo,
                         'color' => $row->Color,
@@ -257,36 +257,28 @@ class TbContabilidad extends Model
                         'descripcion' => $row->Descripcion,
                         'costo_precio' => $row->Costo_Prom,
                         'empresa' => $row->Empresa,
-                        'alm_discotela' => $row->ALM_DISCOTELA,
-                        'alm_dsc' => $row->ALM_DSC,
-                        'alm_ln1' => $row->ALM_LN1,
-                        'alm_pb' => $row->ALM_PB,
-                        'alm_fam' => $row->ALM_FAM,
-                        'alm_mad' => $row->ALM_MAD,
+                        'alm_discotela' => intval($row->ALM_DISCOTELA),  // Convertir a entero
+                        'alm_dsc' => (int) $row->ALM_DSC,  // Convertir a entero
+                        'alm_ln1' => (int) $row->ALM_LN1,  // Convertir a entero
+                        'alm_pb' => (int) $row->ALM_PB,  // Convertir a entero
+                        'alm_fam' => (int) $row->ALM_FAM,  // Convertir a entero
+                        'alm_mad' => (int) $row->ALM_MAD,  // Convertir a entero
                         'cia' => $row->CIA,
                         'base' => $row->Base,
                         'fecha_documento' => $row->Fecha_Documento,
                         'guia_remision' => $row->Guía_de_Remisión,
-                        'enviado' => $row->Enviado,
+                        'enviado' => (int) $row->Enviado,  // Convertir a entero
                         'estado' => $row->Estado,
-                        'stock' => ($row->Estado == 'sin Stock') ? 0 : 1,
+                        'stock' => ($row->Estado == 'sin Stock') ? 0 : 1, // Verificar stock
                     ];
+                    // dd($datosAInsertar);
                 }
             }
-
             // Paso 4: Insertar en lotes
             if (!empty($datosAInsertar)) {
                 try {
                     DB::table('tb_contabilidad')->insert($datosAInsertar);
-                    dd("termino");
                 } catch (\Exception $e) {
-                    // Mostrar el mensaje de error completo y el seguimiento
-                    Log::error('Error al insertar datos en la base de datos: ' . $e->getMessage());
-                    Log::error('Trace: ' . $e->getTraceAsString());
-
-                    // También puedes usar dd() para depurar directamente
-                    dd($e->getMessage(), $e->getTraceAsString());
-
                     return response()->json(['error' => $e->getMessage()], 500);
                 }
             }

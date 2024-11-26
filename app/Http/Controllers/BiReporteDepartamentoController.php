@@ -15,6 +15,9 @@ class BiReporteDepartamentoController extends Controller
 
         if ($id_subgerencia == 2) {
             $list_subgerencia = SubGerencia::list_subgerencia_with_validation($id_subgerencia);
+        }
+        if ($id_subgerencia == 3) {
+            $list_subgerencia = SubGerencia::list_subgerencia_with_validation_comercial($id_subgerencia);
         } else {
             $list_subgerencia = SubGerencia::list_subgerencia($id_subgerencia);
         }

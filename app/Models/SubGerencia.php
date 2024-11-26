@@ -107,17 +107,18 @@ class SubGerencia extends Model
     }
 
 
-    public static function list_subgerencia_with_validation_logistica($subgerenciaId)
+    public static function list_subgerencia_with_validation_comercial($subgerenciaId)
     {
         // Obtener los datos de la subgerencia y las áreas relacionadas, filtrando por id_sub_gerencia y validando si es 7
         $results = DB::table('sub_gerencia')
             ->leftJoin('area', 'sub_gerencia.id_sub_gerencia', '=', 'area.id_departamento')
             ->where(function ($query) use ($subgerenciaId) {
                 $query->where('sub_gerencia.id_sub_gerencia', $subgerenciaId)
-                    ->orWhere('sub_gerencia.id_sub_gerencia', 2);
+                    ->orWhere('sub_gerencia.id_sub_gerencia', 2)
+                    ->orWhere('sub_gerencia.id_sub_gerencia', 7);
             })
             // Omitir áreas 
-            // ->whereNotIn('area.id_area', [6, 33, 35, 42, 7, 39])
+            ->whereNotIn('area.id_area', [33, 42, 6, 30, 35])
             // Omitir áreas 
             ->select('sub_gerencia.nom_sub_gerencia', 'area.id_area', 'area.nom_area', 'area.cod_area') // Seleccionar también nom_area y cod_area
             ->get();
