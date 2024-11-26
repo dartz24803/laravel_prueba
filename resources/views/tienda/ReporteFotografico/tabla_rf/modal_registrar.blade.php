@@ -109,8 +109,8 @@
                         constraints = {
                             video: {
                                 facingMode: { exact: "environment" }, // Cámara trasera
-                                width: { ideal: 1920 },              // Ancho deseado
-                                height: { ideal: 1080 }             // Alto deseado
+                                width: { ideal: 1900 },              // Ancho deseado
+                                height: { ideal: 1000 }             // Alto deseado
                             }
                         };
                     } else {
