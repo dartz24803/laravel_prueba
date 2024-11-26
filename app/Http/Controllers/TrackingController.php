@@ -249,7 +249,7 @@ class TrackingController extends Controller
             $sheet->getStyle("A1:F1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle("A1:F1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
     
-            $spreadsheet->getActiveSheet()->setTitle('Lectura Servicio');
+            $spreadsheet->getActiveSheet()->setTitle('Guía remisión');
     
             $sheet->setAutoFilter('A1:F1');
     
@@ -4719,19 +4719,146 @@ class TrackingController extends Controller
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
         $get_transporte = TrackingTransporte::where('id_base',$get_id->id_origen_hacia)
                         ->where('anio',$get_id->anio)->where('semana',$get_id->semana)->first();
-        $comentario_transporte = TrackingComentario::where('id_tracking',$get_id->id)
-                                ->where('pantalla','DETALLE_TRANSPORTE')->first();
-        $comentario_fardo = TrackingComentario::where('id_tracking',$get_id->id)
-                            ->where('pantalla','VERIFICACION_FARDO')->first();                                
+        $list_comentario_despacho = TrackingComentario::from('tracking_comentario AS tc')
+                                ->select(DB::raw("CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
+                                us.usuario_apater) AS nombre"),'tc.comentario')
+                                ->join('users AS us','us.id_usuario','=','tc.id_usuario')
+                                ->where('tc.id_tracking',$get_id->id)
+                                ->where('tc.pantalla','DETALLE_TRANSPORTE')
+                                ->orderBy('tc.id','DESC')->get();
+        $list_archivo_fardo = TrackingArchivo::where('id_tracking',$get_id->id)->where('tipo',2)->get();
+        $list_comentario_fardo = TrackingComentario::from('tracking_comentario AS tc')
+                                ->select(DB::raw("CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
+                                us.usuario_apater) AS nombre"),'tc.comentario')
+                                ->join('users AS us','us.id_usuario','=','tc.id_usuario')
+                                ->where('tc.id_tracking',$get_id->id)
+                                ->where('tc.pantalla','VERIFICACION_FARDO')
+                                ->orderBy('tc.id','DESC')->get();                            
+        if(isset($get_transporte->id)){
+            $list_archivo_pago = TrackingTransporteArchivo::where('id_tracking_transporte',$get_transporte->id)
+                                ->get();
+        }else{
+            $list_archivo_pago = [];
+        }
+        $list_diferencia = TrackingDiferencia::where('id_tracking',$get_id->id)->get();
+        $list_comentario_diferencia = TrackingComentario::from('tracking_comentario AS tc')
+                                    ->select(DB::raw("CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
+                                    us.usuario_apater) AS nombre"),'tc.comentario')
+                                    ->join('users AS us','us.id_usuario','=','tc.id_usuario')
+                                    ->where('tc.id_tracking',$get_id->id)
+                                    ->whereIn('tc.pantalla',['CUADRE_DIFERENCIA',
+                                    'DETALLE_OPERACION_DIFERENCIA'])
+                                    ->orderBy('tc.id','DESC')->get();
+        $list_devolucion = TrackingDevolucion::from('tracking_devolucion AS td')
+                            ->select('tg.sku','tg.descripcion','td.cantidad','td.sustento_respuesta',
+                            DB::raw('CASE WHEN td.aprobacion=1 THEN "Aprobada" 
+                            WHEN td.aprobacion=2 THEN "Denegada" ELSE "" END AS devolucion'),
+                            'td.forma_proceder',
+                            DB::raw("(SELECT GROUP_CONCAT(ta.archivo SEPARATOR '@@@')
+                            FROM tracking_archivo ta
+                            WHERE ta.id_tracking=td.id_tracking AND 
+                            ta.id_producto=td.id_producto) AS archivos"))
+                            ->join('tracking_guia_remision_detalle AS tg','tg.id','=','td.id_producto')
+                            ->where('td.id_tracking',$id)
+                            ->where('td.estado',1)->get();
+        $list_comentario_devolucion = TrackingComentario::from('tracking_comentario AS tc')
+                            ->select(DB::raw("CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
+                            us.usuario_apater) AS nombre"),'tc.comentario')
+                            ->join('users AS us','us.id_usuario','=','tc.id_usuario')
+                            ->where('tc.id_tracking',$get_id->id)
+                            ->whereIn('tc.pantalla',['SOLICITUD_DEVOLUCION',
+                            'EVALUACION_DEVOLUCION'])
+                            ->orderBy('tc.id','DESC')->get();                            
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();   
         $list_subgerencia = SubGerencia::list_subgerencia(7);         
         return view('logistica.tracking.detalle_tracking.detalle',compact(
             'get_id',
             'get_transporte',
-            'comentario_transporte',
+            'list_comentario_despacho',
+            'list_archivo_fardo',
+            'list_comentario_fardo',
+            'list_archivo_pago',
+            'list_diferencia',
+            'list_comentario_diferencia',
+            'list_devolucion',
+            'list_comentario_devolucion',
             'list_notificacion', 
             'list_subgerencia'
         ));
+    }
+
+    public function excel_guia_despacho($id)
+    {
+        $get_id = Tracking::findOrFail($id);
+        $list_detalle = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?,?', ['R',$get_id->n_requerimiento]);
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:F1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:F1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Guía de remisión');
+
+        $sheet->setAutoFilter('A1:F1');
+
+        $sheet->getColumnDimension('A')->setWidth(20);
+        $sheet->getColumnDimension('B')->setWidth(25);
+        $sheet->getColumnDimension('C')->setWidth(25);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(100);
+        $sheet->getColumnDimension('F')->setWidth(15);
+
+        $sheet->getStyle('A1:F1')->getFont()->setBold(true);
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:F1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:F1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue("A1", 'SKU');
+        $sheet->setCellValue("B1", 'Color');
+        $sheet->setCellValue("C1", 'Estilo');
+        $sheet->setCellValue("D1", 'Talla');
+        $sheet->setCellValue("E1", 'Descripción');
+        $sheet->setCellValue("F1", 'Cantidad');
+
+        $contador = 1;
+
+        foreach ($list_detalle as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("B{$contador}:E{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:F{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:F{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A{$contador}", $list->sku);
+            $sheet->setCellValue("B{$contador}", $list->color);
+            $sheet->setCellValue("C{$contador}", $list->estilo);
+            $sheet->setCellValue("D{$contador}", $list->talla);
+            $sheet->setCellValue("E{$contador}", $list->descripcion);
+            $sheet->setCellValue("F{$contador}", $list->cantidad);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Guia de Remisión';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
     }
 }
