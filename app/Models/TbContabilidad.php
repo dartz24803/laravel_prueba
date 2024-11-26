@@ -141,7 +141,7 @@ class TbContabilidad extends Model
     public static function sincronizarContabilidad()
     {
         try {
-            set_time_limit(300); // Aumentar el tiempo de ejecución
+            set_time_limit(600); // Aumentar el tiempo de ejecución
             // Obtener el primer día del AÑO actual
             $fechaInicioAno = Carbon::now()->startOfYear()->toDateString();
             // $fechaInicioAno = Carbon::now()->subMonth()->startOfMonth()->toDateString();
@@ -190,6 +190,8 @@ class TbContabilidad extends Model
                             AND ISNULL(alm_dsc.STK, 0) = 0 
                             AND ISNULL(alm_ln1.STK, 0) = 0 
                             AND ISNULL(alm_pb.STK, 0) = 0 
+                            AND ISNULL(alm_fam.STK, 0) = 0 
+                            AND ISNULL(alm_mad.STK, 0) = 0 
                         THEN 'sin Stock'
                         ELSE 'con Stock'
                     END AS Estado
@@ -208,6 +210,12 @@ class TbContabilidad extends Model
                 LEFT JOIN 
                     (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
                     FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM PB' GROUP BY Articulo) alm_pb ON s.SKU = alm_pb.SKU
+                LEFT JOIN 
+                    (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM FAM' GROUP BY Articulo) alm_fam ON s.SKU = alm_fam.SKU
+                LEFT JOIN 
+                    (SELECT Articulo AS SKU, SUM(Stock_Total) AS STK 
+                    FROM DBMSTR.dbo.SIG_Stock_x_Articulo WHERE Local = 'ALM MAD' GROUP BY Articulo) alm_mad ON s.SKU = alm_mad.SKU
                 LEFT JOIN 
                     (SELECT Estilo, Costo_Prom FROM DBMSTR.dbo.TABLA_PREC) c ON s.Estilo = c.Estilo
                 LEFT JOIN 
@@ -235,16 +243,20 @@ class TbContabilidad extends Model
 
             // Paso 3: Filtrar registros que no están en MySQL
             $datosAInsertar = [];
+
             foreach ($data_sql as $row) {
                 // dd($row);
                 $compositeKey = $row->Guía_de_Remisión . '|' . $row->SKU; // Crear clave compuesta
                 if (!isset($mysqlRecordsSet[$compositeKey])) {
+                    // dd($row);
                     $datosAInsertar[] = [
                         'estilo' => $row->Estilo,
-                        'descripcion' => $row->Descripcion,
-                        'sku' => $row->SKU,
                         'color' => $row->Color,
                         'talla' => $row->Talla,
+                        'sku' => $row->SKU,
+                        'descripcion' => $row->Descripcion,
+                        'costo_precio' => $row->Costo_Prom,
+                        'empresa' => $row->Empresa,
                         'alm_discotela' => $row->ALM_DISCOTELA,
                         'alm_dsc' => $row->ALM_DSC,
                         'alm_ln1' => $row->ALM_LN1,
@@ -252,25 +264,33 @@ class TbContabilidad extends Model
                         'alm_fam' => $row->ALM_FAM,
                         'alm_mad' => $row->ALM_MAD,
                         'cia' => $row->CIA,
-                        'empresa' => $row->Empresa,
                         'base' => $row->Base,
                         'fecha_documento' => $row->Fecha_Documento,
                         'guia_remision' => $row->Guía_de_Remisión,
                         'enviado' => $row->Enviado,
-                        'costo_precio' => $row->Costo_Prom,
                         'estado' => $row->Estado,
+                        'stock' => ($row->Estado == 'sin Stock') ? 0 : 1,
                     ];
                 }
             }
-            // dd(count($datosAInsertar));
+
             // Paso 4: Insertar en lotes
             if (!empty($datosAInsertar)) {
                 try {
                     DB::table('tb_contabilidad')->insert($datosAInsertar);
+                    dd("termino");
                 } catch (\Exception $e) {
+                    // Mostrar el mensaje de error completo y el seguimiento
+                    Log::error('Error al insertar datos en la base de datos: ' . $e->getMessage());
+                    Log::error('Trace: ' . $e->getTraceAsString());
+
+                    // También puedes usar dd() para depurar directamente
+                    dd($e->getMessage(), $e->getTraceAsString());
+
                     return response()->json(['error' => $e->getMessage()], 500);
                 }
             }
+            // dd(count($datosAInsertar));
             return response()->json(['message' => 'Sincronización completada', 'insertados' => count($datosAInsertar)]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

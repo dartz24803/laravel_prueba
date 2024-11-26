@@ -105,4 +105,44 @@ class SubGerencia extends Model
             'areas' => $areas
         ];
     }
+
+
+    public static function list_subgerencia_with_validation_logistica($subgerenciaId)
+    {
+        // Obtener los datos de la subgerencia y las áreas relacionadas, filtrando por id_sub_gerencia y validando si es 7
+        $results = DB::table('sub_gerencia')
+            ->leftJoin('area', 'sub_gerencia.id_sub_gerencia', '=', 'area.id_departamento')
+            ->where(function ($query) use ($subgerenciaId) {
+                $query->where('sub_gerencia.id_sub_gerencia', $subgerenciaId)
+                    ->orWhere('sub_gerencia.id_sub_gerencia', 2);
+            })
+            // Omitir áreas 
+            // ->whereNotIn('area.id_area', [6, 33, 35, 42, 7, 39])
+            // Omitir áreas 
+            ->select('sub_gerencia.nom_sub_gerencia', 'area.id_area', 'area.nom_area', 'area.cod_area') // Seleccionar también nom_area y cod_area
+            ->get();
+
+        // Agrupar los resultados
+        $subgerencia_names = [];  // Array para almacenar nombres de subgerencias
+        $areas = [];
+
+        foreach ($results as $result) {
+            // Agregar el nombre de la subgerencia al array si aún no está en él
+            if (!in_array($result->nom_sub_gerencia, $subgerencia_names)) {
+                $subgerencia_names[] = $result->nom_sub_gerencia;
+            }
+            // Agregar tanto el id_area como el nom_area al array de áreas
+            $areas[] = [
+                'id_area' => $result->id_area,
+                'nom_area' => $result->nom_area,
+                'id_subgerencia' => $subgerenciaId // Agregar el id_subgerencia aquí
+            ];
+        }
+        // Concatenar los nombres de las subgerencias
+        $subgerencia_concatenada = implode(' & ', $subgerencia_names);
+        return [
+            'nom_sub_gerencia' => $subgerencia_concatenada,  // Concatenación de subgerencias
+            'areas' => $areas
+        ];
+    }
 }
