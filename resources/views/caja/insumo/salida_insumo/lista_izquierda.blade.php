@@ -1,6 +1,7 @@
 <table id="tabla_js_izq" class="table" style="width:100%">
     <thead>
         <tr class="text-center">
+            <th>Base</th>
             <th>Insumo</th>
             <th>Cantidad</th>
         </tr>
@@ -8,6 +9,7 @@
     <tbody>
         @foreach ($list_stock_salida_insumo as $list)
             <tr class="text-center">
+                <td>{{ $list->cod_base }}</td>
                 <td class="text-left">{{ $list->nom_insumo }}</td> 
                 <td>{{ $list->total }}</td>
             </tr>

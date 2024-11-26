@@ -364,7 +364,7 @@ class InsumoController extends Controller
         $get_id = RepartoInsumo::findOrFail($id);
         $list_insumo = Insumo::select('id_insumo','nom_insumo')->where('estado',1)
                         ->orderBy('nom_insumo','ASC')->get();
-        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_base = BaseActiva::all();
         return view('caja.insumo.reparto_insumo.modal_editar', compact('get_id','list_insumo','list_base'));
     }
 
@@ -539,21 +539,31 @@ class InsumoController extends Controller
 
     public function index_sa()
     {
-        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_base = BaseActiva::all();
         $list_insumo = Insumo::select('id_insumo','nom_insumo')->where('estado',1)
                         ->orderBy('nom_insumo','ASC')->get();
         return view('caja.insumo.salida_insumo.index', compact('list_base','list_insumo'));
     }
 
-    public function list_sa(Request $request)
+    public function list_izquierda_sa(Request $request)
     {
-        $list_salida_insumo = SalidaContometro::get_list_salida_contometro([
+        if($request->cod_base=="0"){
+            $list_stock_salida_insumo = StockSalidaInsumo::all();
+        }else{
+            $list_stock_salida_insumo = StockSalidaInsumo::where('cod_base',$request->cod_base)->get();
+        }
+        return view('caja.insumo.salida_insumo.lista_izquierda', compact('list_stock_salida_insumo'));
+    }
+
+    public function list_derecha_sa(Request $request)
+    {
+        $list_salida_contometro = SalidaContometro::get_list_salida_contometro([
             'cod_base'=>$request->cod_base,
             'id_insumo'=>$request->id_insumo,
             'inicio'=>$request->inicio,
             'fin'=>$request->fin
         ]);
-        return view('caja.insumo.salida_insumo.lista', compact('list_salida_insumo'));
+        return view('caja.insumo.salida_insumo.lista_derecha', compact('list_salida_contometro'));
     }
 
     public function edit_sa($id)

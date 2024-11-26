@@ -1,11 +1,11 @@
 <div class="toolbar d-md-flex align-items-md-center mt-3">
     <div class="form-group col-lg-2">
         <label>Base:</label>
-        @if (session('usuario')->id_puesto=="31" || session('usuario')->id_puesto=="32" || session('usuario')->id_puesto==314)
+        @if (session('usuario')->id_sede_laboral=="6")
             <input type="text" class="form-control" name="cod_baseb" id="cod_baseb" 
             value="{{ session('usuario')->centro_labores }}" readonly>
         @else
-            <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Salida_Insumo();">
+            <select class="form-control" id="cod_baseb" name="cod_baseb" onchange="Lista_Derecha(); Lista_Izquierda();">
                 <option value="0">TODOS</option>
                 @foreach ($list_base as $list)
                     <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
@@ -16,7 +16,7 @@
 
     <div class="form-group col-lg-2">
         <label>Insumo:</label>
-        <select class="form-control" id="id_insumob" name="id_insumob" onchange="Lista_Salida_Insumo();">
+        <select class="form-control" id="id_insumob" name="id_insumob" onchange="Lista_Derecha();">
             <option value="0">TODOS</option>
             @foreach ($list_insumo as $list)
                 <option value="{{ $list->id_insumo }}">
@@ -37,8 +37,13 @@
     </div>
 
     <div class="col-lg-4">
-        <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Buscar" onclick="Lista_Salida_Insumo();">
+        <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Buscar" onclick="Lista_Derecha();">
             Buscar
+        </button>
+
+        <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Buscar" onclick="Lista_Derecha();">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-plus-square"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
+            Registrar
         </button>
 
         <a class="btn mb-2 mb-sm-0 mb-md-2 mb-lg-0" style="background-color: #28a745 !important;" onclick="Excel_Salida_Insumo();">
@@ -47,20 +52,50 @@
     </div>
 </div>
 
-<div class="table-responsive mb-4 mt-4" id="lista_salida_insumo">
+<div class="row mt-4">
+    <div class="col-lg-6">
+        <div class="table-responsive mb-4" id="lista_izquierda">
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="table-responsive mb-4" id="lista_derecha">
+        </div>
+    </div>
 </div>
 
 <script>
-    Lista_Salida_Insumo();
+    Lista_Izquierda();
+    Lista_Derecha();
 
-    function Lista_Salida_Insumo(){
+    function Lista_Izquierda(){
+        Cargando();
+
+        var cod_base = $('#cod_baseb').val();
+        var url = "{{ route('insumo_sa.list_izquierda') }}";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data:{
+                'cod_base':cod_base
+            },
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success:function (resp) {
+                $('#lista_izquierda').html(resp);  
+            }
+        });
+    }
+    
+    function Lista_Derecha(){
         Cargando();
 
         var cod_base = $('#cod_baseb').val();
         var id_insumo = $('#id_insumob').val();
         var inicio = $('#iniciob').val();
         var fin = $('#finb').val();
-        var url = "{{ route('insumo_sa.list') }}";
+        var url = "{{ route('insumo_sa.list_derecha') }}";
 
         $.ajax({
             url: url,
@@ -68,9 +103,9 @@
             data: {'cod_base':cod_base,'id_insumo':id_insumo,'inicio':inicio,'fin':fin},
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
+            },            
             success:function (resp) {
-                $('#lista_salida_insumo').html(resp);  
+                $('#lista_derecha').html(resp);  
             }
         });
     }

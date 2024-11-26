@@ -201,17 +201,6 @@ session('usuario')->id_sede_laboral == 6 )
             </a>
         </li>
         @endif
-        @if (session('usuario')->id_nivel == 1 ||
-        session('usuario')->id_puesto == 314 ||
-        session('usuario')->id_puesto == 31 ||
-        session('usuario')->id_puesto == 32 ||
-        session('usuario')->id_puesto == 161)
-        <li id="salidas_insumos">
-            <a href="{{ route('salida_insumo') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                <p class="romperpalabra"><span id="icono_active2"></span> Salida de insumo</p>
-            </a>
-        </li>
-        @endif
     </ul>
 </li>
 @endif

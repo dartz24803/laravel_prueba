@@ -1568,7 +1568,8 @@ Route::controller(InsumoController::class)->group(function () {
     Route::get('insumo_ra/excel_izquierda', 'excel_izquierda_ra')->name('insumo_ra.excel_izquierda');
     Route::get('insumo_ra/excel_derecha', 'excel_derecha_ra')->name('insumo_ra.excel_derecha');
     Route::get('insumo_sa', 'index_sa')->name('insumo_sa');
-    Route::post('insumo_sa/list', 'list_sa')->name('insumo_sa.list');
+    Route::post('insumo_sa/list_izquierda', 'list_izquierda_sa')->name('insumo_sa.list_izquierda');
+    Route::post('insumo_sa/list_derecha', 'list_derecha_sa')->name('insumo_sa.list_derecha');
     Route::get('insumo_sa/{id}/edit', 'edit_sa')->name('insumo_sa.edit');
     Route::put('insumo_sa/{id}', 'update_sa')->name('insumo_sa.update');
     Route::get('insumo_sa/{cod_base}/{id_insumo}/{inicio}/{fin}/excel', 'excel_sa')->name('insumo_sa.excel');
@@ -1577,14 +1578,6 @@ Route::controller(InsumoController::class)->group(function () {
     Route::get('insumo_ro/list_derecha', 'list_derecha_ro')->name('insumo_ro.list_derecha');
     Route::get('insumo_ro/excel_izquierda', 'excel_izquierda_ro')->name('insumo_ro.excel_izquierda');
     Route::get('insumo_ro/excel_derecha', 'excel_derecha_ro')->name('insumo_ro.excel_derecha');
-});
-//CAJA - SALIDA DE INSUMO
-Route::controller(SalidaInsumoController::class)->group(function () {
-    Route::get('salida_insumo', 'index')->name('salida_insumo');
-    Route::get('salida_insumo/list_izquierda', 'list_izquierda')->name('salida_insumo.list_izquierda');
-    Route::get('salida_insumo/list_derecha', 'list_derecha')->name('salida_insumo.list_derecha');
-    Route::get('salida_insumo/create', 'create')->name('salida_insumo.create');
-    Route::post('salida_insumo', 'store')->name('salida_insumo.store');
 });
 //CAJA - CAPACITACIÓN CAJEROS
 Route::controller(CapacitacionCajeroController::class)->group(function () {

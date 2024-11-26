@@ -27,9 +27,15 @@
                                 <li class="nav-item">
                                     <a id="a_sins" class="nav-link" onclick="Salida_Insumo();" style="cursor: pointer;">Salida de insumo</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a id="a_roins" class="nav-link" onclick="Reporte_Insumo();" style="cursor: pointer;">Reporte de insumo</a>
-                                </li>
+                                @if (session('usuario')->id_nivel == 1 ||
+                                session('usuario')->id_puesto == 9 ||
+                                session('usuario')->id_puesto == 27 ||
+                                session('usuario')->id_puesto == 128 ||
+                                session('usuario')->id_puesto == 148)
+                                    <li class="nav-item">
+                                        <a id="a_roins" class="nav-link" onclick="Reporte_Insumo();" style="cursor: pointer;">Reporte de insumo</a>
+                                    </li>
+                                @endif
                             </ul>
 
                             <div class="row" id="cancel-row">

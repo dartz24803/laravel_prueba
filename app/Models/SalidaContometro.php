@@ -43,7 +43,8 @@ class SalidaContometro extends Model
         }
         $sql = "SELECT sc.id_salida_contometro,sc.fecha AS orden,sc.cod_base,iu.nom_insumo,
                 CASE WHEN sc.flag_acceso=1 THEN sc.cod_base 
-                ELSE CONCAT(us.usuario_nombres,' ',us.usuario_apater,' ',us.usuario_amater) END AS nom_usuario,
+                ELSE CONCAT(us.usuario_nombres,' ',us.usuario_apater,' ',
+                us.usuario_amater) END AS nom_usuario,
                 sc.cantidad_salida,DATE_FORMAT(sc.fecha, '%d-%m-%Y %H:%i:%s') AS fecha,
                 DATE_FORMAT(sc.fecha, '%H:%i:%s') AS hora
                 FROM salida_contometro sc
