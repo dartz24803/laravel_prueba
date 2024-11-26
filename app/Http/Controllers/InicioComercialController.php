@@ -15,7 +15,9 @@ class InicioComercialController extends Controller
     public function index()
     {
         //NOTIFICACIONES
-        $list_subgerencia = SubGerencia::list_subgerencia(3);
+        // $list_subgerencia = SubGerencia::list_subgerencia(3);
+        $list_subgerencia = SubGerencia::list_subgerencia_with_validation_comercial(3);
+        // dd($list_subgerencia);
         $list_notificacion = Notificacion::get_list_notificacion();
         return view('comercial.inicio_comercial', compact('list_notificacion', 'list_subgerencia'));
     }
