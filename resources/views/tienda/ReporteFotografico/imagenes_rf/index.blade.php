@@ -68,8 +68,8 @@ $base = Session('usuario')->centro_labores;
     <div class="form-group col-md-4">
         <label>Fecha: </label>
 
-        {{-- <input type="date" class="form-control" id="fecha_filtro" name="fecha_filtro" onchange="Imagenes_Listar();" max="{{$today}}" value="{{$today}}"> --}}
-        <input type="date" class="form-control" id="fecha_filtro" name="fecha_filtro" value="2024-08-01">    </div>
+        <input type="date" class="form-control" id="fecha_filtro" name="fecha_filtro" onchange="Imagenes_Listar();" max="{{$today}}" value="{{$today}}">
+        {{-- <input type="date" class="form-control" id="fecha_filtro" name="fecha_filtro" value="2024-08-01">    </div> --}}
 </div>
 @csrf
 <div id="lista" class="p-2 row ml-2">
