@@ -82,8 +82,9 @@ class ProduccionController extends Controller
             'id_usuario',
             DB::raw("CONCAT(usuario_apater, ' ', usuario_amater, ' ', usuario_nombres) AS nombre_completo")
         )
-            ->where('estado', 1)
-            ->whereIn('id_area', [28, 27, 47, 48, 49])
+            ->leftJoin('puesto', 'users.id_puesto','puesto.id_puesto')
+            ->where('users.estado', 1)
+            ->whereIn('puesto.id_area', [28, 27, 47, 48, 49])
             ->orderBy(DB::raw("CONCAT(usuario_apater, ' ', usuario_amater, ' ', usuario_nombres)"), 'ASC') // Ordenar por nombre completo
             ->distinct()
             ->get();
