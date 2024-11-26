@@ -12,18 +12,30 @@
                     <div class="statbox widget box box-shadow">
                         <div class="widget-content widget-content-area simple-tab">
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
-                                <li class="nav-item">
-                                    <a id="a_eins" class="nav-link" onclick="Entrada_Insumo();" style="cursor: pointer;">Entrada de insumo</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a id="a_rains" class="nav-link" onclick="Reparto_Insumo();" style="cursor: pointer;">Reparto de insumo</a>
-                                </li>
+                                @if (session('usuario')->id_nivel == 1 ||
+                                session('usuario')->id_puesto == 9 ||
+                                session('usuario')->id_puesto == 27 ||
+                                session('usuario')->id_puesto == 128 ||
+                                session('usuario')->id_puesto == 148)
+                                    <li class="nav-item">
+                                        <a id="a_eins" class="nav-link" onclick="Entrada_Insumo();" style="cursor: pointer;">Entrada de insumo</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a id="a_rains" class="nav-link" onclick="Reparto_Insumo();" style="cursor: pointer;">Reparto de insumo</a>
+                                    </li>
+                                @endif
                                 <li class="nav-item">
                                     <a id="a_sins" class="nav-link" onclick="Salida_Insumo();" style="cursor: pointer;">Salida de insumo</a>
                                 </li>
-                                <li class="nav-item">
-                                    <a id="a_roins" class="nav-link" onclick="Reporte_Insumo();" style="cursor: pointer;">Reporte de insumo</a>
-                                </li>
+                                @if (session('usuario')->id_nivel == 1 ||
+                                session('usuario')->id_puesto == 9 ||
+                                session('usuario')->id_puesto == 27 ||
+                                session('usuario')->id_puesto == 128 ||
+                                session('usuario')->id_puesto == 148)
+                                    <li class="nav-item">
+                                        <a id="a_roins" class="nav-link" onclick="Reporte_Insumo();" style="cursor: pointer;">Reporte de insumo</a>
+                                    </li>
+                                @endif
                             </ul>
 
                             <div class="row" id="cancel-row">
@@ -45,7 +57,15 @@
             $("#hcajas").attr('aria-expanded', 'true');
             $("#insumos").addClass('active');
 
-            Entrada_Insumo();
+            @if (session('usuario')->id_nivel == 1 ||
+            session('usuario')->id_puesto == 9 ||
+            session('usuario')->id_puesto == 27 ||
+            session('usuario')->id_puesto == 128 ||
+            session('usuario')->id_puesto == 148)
+                Entrada_Insumo();
+            @else 
+                Salida_Insumo();
+            @endif
         });
         
         function Entrada_Insumo(){

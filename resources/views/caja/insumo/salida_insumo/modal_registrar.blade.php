@@ -9,7 +9,7 @@
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
             <div class="form-group col-lg-2">
-                <label class="control-label text-bold">Insumo:</label> 
+                <label class="control-label text-bold">Insumo:</label>
             </div>
             <div class="form-group col-lg-4">
                 <select class="form-control" name="id_insumo" id="id_insumo">
@@ -42,7 +42,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formulario'));
-        var url = "{{ route('salida_insumo.store') }}";
+        var url = "{{ route('insumo_sa.store') }}";
 
         $.ajax({
             url: url,
@@ -54,7 +54,7 @@
                 if(data=="error"){
                     Swal({
                         title: '¡Registro Denegado!',
-                        text: "¡La cantidad de reparto no puede ser mayor al stock actual!",
+                        text: "¡La cantidad de salida no puede ser mayor al stock actual!",
                         type: 'error',
                         showCancelButton: false,
                         confirmButtonColor: '#3085d6',
