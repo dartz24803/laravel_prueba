@@ -307,7 +307,11 @@ class PapeletasController extends Controller
     }
 
     public function Buscar_Papeleta_Aprobacion(){
-        $dato['list_colaborador'] = Usuario::get_list_colaboradort(null,1);
+        if(session('usuario')->id_puesto != 314){
+            $dato['list_colaborador'] = Usuario::get_list_colaboradort(null,1);
+        }else{
+            $dato['list_colaborador'] = Usuario::get_list_colaboradorct(1);
+        }
         return view('rrhh.Papeletas_Salida.Aprobacion.index', $dato);
     }
 
