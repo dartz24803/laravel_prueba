@@ -76,6 +76,7 @@ use App\Http\Controllers\RegistroChequeController;
 use App\Http\Controllers\RegistroLetraController;
 use App\Http\Controllers\RegistroServicioController;
 use App\Http\Controllers\ReporteProveedoresController;
+use App\Http\Controllers\RequerimientoTiendaController;
 use App\Http\Controllers\RequisicionTiendaConfController;
 use App\Http\Controllers\RequisicionTiendaController;
 use App\Http\Controllers\SalidaInsumoController;
@@ -1787,6 +1788,16 @@ Route::controller(CapController::class)->group(function () {
     Route::post('cap_ges/list', 'list_ges')->name('cap_ges.list');
     Route::post('cap_ges/{id}/detalle', 'detalle_ges')->name('cap_ges.detalle');
     Route::post('cap_ges/{id}/list_detalle', 'list_detalle_ges')->name('cap_ges.list_detalle');
+});
+//COMERCIAL - REQUERIMIENTO DE TIENDA
+Route::controller(RequerimientoTiendaController::class)->group(function () {
+    Route::get('requerimiento_tienda', 'index')->name('requerimiento_tienda');
+    Route::get('requerimiento_tienda_re', 'index_re')->name('requerimiento_tienda_re');
+    Route::post('requerimiento_tienda_re/list', 'list_re')->name('requerimiento_tienda_re.list');
+    Route::get('requerimiento_tienda_re/{base}/{anio}/{semana}/excel', 'excel_re')->name('requerimiento_tienda_re.excel');
+    Route::get('requerimiento_tienda_mn', 'index_mn')->name('requerimiento_tienda_mn');
+    Route::post('requerimiento_tienda_mn/list', 'list_mn')->name('requerimiento_tienda_mn.list');
+    Route::get('requerimiento_tienda_mn/{base}/{anio}/{semana}/excel', 'excel_mn')->name('requerimiento_tienda_mn.excel');
 });
 
 
