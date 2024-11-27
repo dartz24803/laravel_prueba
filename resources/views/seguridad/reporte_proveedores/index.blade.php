@@ -82,7 +82,11 @@ $id_puesto=session('usuario')->id_puesto;
                     <div class="toolbar">    
                         <div class="row">
                             <input type="hidden" id="puesto" name="puesto" value="<?php echo $id_puesto ?>">
-                            <?php if($id_puesto==23 || $id_puesto==24 || $id_nivel==1){?>
+                            <?php if($id_nivel==1 || 
+                            $id_puesto==23 || 
+                            $id_puesto==24 || 
+                            $id_puesto==158 || 
+                            $id_puesto==209){?>
                                 <div class="col-md-2 form-group">
                                     <label class="control-label text-bold">Bases:</label>
                                     <select id="base" name="base" placeholder="Centro de labores" data-placeholder="Your Favorite Type of Bear" tabindex="10" class="form-control chosen-select-deselect">
@@ -122,7 +126,10 @@ $id_puesto=session('usuario')->id_puesto;
                                     Buscar
                                 </button>
                             </div>
-                            <?php if($id_nivel==1 || $id_puesto==23){?> 
+                            <?php if($id_nivel==1 || 
+                            $id_puesto==23 || 
+                            $id_puesto==158 || 
+                            $id_puesto==209){?> 
                                 <div class="form-group col-md-1">
                                     <label class="control-label text-bold">&nbsp;</label>
                                     <a class="btn mb-2 mr-2" style="background-color: #28a745 !important;" onclick="Excel_RProveedor()">

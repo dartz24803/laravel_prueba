@@ -457,9 +457,10 @@ use App\Models\TrackingDetalleProceso;
                 Verificación de fardos
                 @endif
                 @elseif($list->id_estado==8)
-                <!-- PUESTO DE MAYRA TORRES (76) y JAIME SAAVEDRA (97) -->
+                <!-- PUESTO DE MAYRA TORRES (76),JAIME SAAVEDRA (97) y MANUEL NIETO (131) -->
                 @if (session('usuario')->id_puesto==76 ||
                 session('usuario')->id_puesto==97 ||
+                session('usuario')->id_puesto==131 ||
                 session('usuario')->id_nivel==1)
                 <a href="javascript:void(0);" title="Cierre inspección de fardos" onclick="Insert_Cierre_Inspeccion_Fardos('{{ $list->id }}');">
                     <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-clock text-success">
