@@ -158,4 +158,52 @@ class MercaderiaSurtida extends Model
         $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
         return $query;
     }
+    //MÓDULO DE COMERCIAL (REQUERIMIENTO TIENDA)
+    public static function get_list_requerimiento_reposicion($dato=null)
+    {
+        $parte_anio = "";
+        if($dato['anio']){
+            $parte_anio = "AND anio=?";
+        }
+        $parte_semana = "";
+        if($dato['semana']){
+            $parte_semana = "AND semana=?";
+        }
+        $parte_base = "";
+        if($dato['base']){
+            $parte_base = "AND base=?";
+        }
+        $sql = "SELECT fecha AS orden,base,estilo,tipo_usuario,color,talla,descripcion,cantidad,
+                CASE WHEN estado=0 THEN 'Pendiente' WHEN estado=1 THEN 'Surtido' 
+                ELSE '' END AS nom_estado
+                FROM mercaderia_surtida 
+                WHERE tipo IN (2,3) $parte_anio $parte_semana $parte_base
+                ORDER BY fecha DESC";
+        $query = DB::connection('sqlsrv')->select($sql, [$dato['anio'],$dato['semana'],$dato['base']]);
+        return $query;
+    }
+    //MÓDULO DE COMERCIAL (MERCADERÍA NUEVA)
+    public static function get_list_mercaderia_nueva($dato=null)
+    {
+        $parte_anio = "";
+        if($dato['anio']){
+            $parte_anio = "AND anio=?";
+        }
+        $parte_semana = "";
+        if($dato['semana']){
+            $parte_semana = "AND semana=?";
+        }
+        $parte_base = "";
+        if($dato['base']){
+            $parte_base = "AND base=?";
+        }
+        $sql = "SELECT fecha AS orden,base,sku,estilo,tipo_usuario,tipo_prenda,color,talla,descripcion,
+                cantidad,CASE WHEN estado=0 THEN 'Pendiente' WHEN estado=1 THEN 'Surtido' 
+                ELSE '' END AS nom_estado
+                FROM mercaderia_surtida 
+                WHERE tipo=1 $parte_anio $parte_semana $parte_base
+                ORDER BY fecha DESC";
+        $query = DB::connection('sqlsrv')->select($sql, [$dato['anio'],$dato['semana'],$dato['base']]);
+        return $query;
+    }
 }

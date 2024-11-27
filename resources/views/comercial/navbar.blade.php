@@ -56,8 +56,13 @@
 <?php } ?>
 
 <?php if (
-    session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 5 || session('usuario')->id_puesto == 115 || session('usuario')->id_puesto == 153 || session('usuario')->id_puesto == 66
-    || session('usuario')->id_puesto == 173
+    session('usuario')->id_nivel == 1 || 
+    /*USUARIOS DE COMERCIAL*/
+    session('usuario')->id_nivel == 5 || 
+    session('usuario')->id_puesto == 115 || 
+    session('usuario')->id_puesto == 153 || 
+    session('usuario')->id_puesto == 66 || 
+    session('usuario')->id_puesto == 173
 ) { ?>
     <li class="menu" id="comercial">
         <a href="#rcomercial" id="hcomercial" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
@@ -75,29 +80,6 @@
             </div>
         </a>
         <ul class="collapse submenu list-unstyled" id="rcomercial" data-parent="#accordionExample">
-            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 5  || session('usuario')->id_puesto == 115) { ?>
-                <li id="rprenda">
-                    <a id="rprenda2" href="{{ url('RequerimientoPrenda/index') }}">
-                        <p class="romperpalabra" title="Requerimiento de prendas para fotografía"><span id="icono_active2"></span> Requerimientos de prendas para fotografía</p>
-                    </a>
-                </li>
-            <?php } ?>
-            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 5  || session('usuario')->id_puesto == 115) { ?>
-                <li id="rsugerenciaprecio">
-                    <a id="rsugerenciaprecio1" href="{{ url('SugerenciadePrecios/index') }}">
-                        <p class="romperpalabra" title="Sugerencia de Precios"><span id="icono_active2"></span> Segurencia de Precios</p>
-                    </a>
-                </li>
-            <?php } ?>
-
-            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 5 || session('usuario')->id_puesto == 153 || session('usuario')->id_puesto == 66) { ?>
-                <li id="rsurtido" class="menu">
-                    <a href="{{ url('RequerimientoSurtido/index') }}">
-                        <p class="romperpalabra"><span id="icono_active2"></span> Requerimiento de Surtido</p>
-                    </a>
-                </li>
-            <?php } ?>
-
             <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 5) { ?>
                 <li id="sprocedure">
                     <a href="{{ url('ActualizacionProcedimientos/index') }}">
@@ -109,6 +91,32 @@
                 <li id="rvisitas">
                     <a href="{{ url('ContadorVisitas/index') }}">
                         <p class="romperpalabra"><span id="icono_active2"></span> Contador Visitas</p>
+                    </a>
+                </li>
+            <?php } ?>
+            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 5  || session('usuario')->id_puesto == 115) { ?>
+                <li id="rprenda">
+                    <a id="rprenda2" href="{{ url('RequerimientoPrenda/index') }}">
+                        <p class="romperpalabra" title="Requerimiento de prendas para fotografía"><span id="icono_active2"></span> Requerimientos de prendas para fotografía</p>
+                    </a>
+                </li>
+            <?php } ?>
+            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 5 || session('usuario')->id_puesto == 153 || session('usuario')->id_puesto == 66) { ?>
+                <li id="rsurtido" class="menu">
+                    <a href="{{ url('RequerimientoSurtido/index') }}">
+                        <p class="romperpalabra"><span id="icono_active2"></span> Requerimiento de Surtido</p>
+                    </a>
+                </li>
+            <?php } ?>
+            <li id="requerimientos_tiendas">
+                <a href="{{ route('requerimiento_tienda') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Requerimientos de tienda</p>
+                </a>
+            </li>
+            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 5  || session('usuario')->id_puesto == 115) { ?>
+                <li id="rsugerenciaprecio">
+                    <a id="rsugerenciaprecio1" href="{{ url('SugerenciadePrecios/index') }}">
+                        <p class="romperpalabra" title="Sugerencia de Precios"><span id="icono_active2"></span> Sugerencia de Precios</p>
                     </a>
                 </li>
             <?php } ?>

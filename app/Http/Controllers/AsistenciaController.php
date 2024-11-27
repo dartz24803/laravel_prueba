@@ -325,15 +325,20 @@ class AsistenciaController extends Controller
             $asistencias = $this->modelo->buscar_reporte_control_asistencia_excel($cod_mes, $cod_anio, $cod_base, $usuario->usuario_codigo, $tipo, $finicio, $ffin, [$usuario]);
             //print_r($asistencias);
             $colIndex = 3; // Columna inicial para las fechas
+            
             foreach ($fechas as $fecha) {
                 $colLetter = Coordinate::stringFromColumnIndex($colIndex); // Convertir índice de columna a letra
 
                 $estadoMarcacion = 0; // Por defecto, asumimos 0
                 if (isset($asistencias[$usuario->usuario_codigo])) {
                     foreach ($asistencias[$usuario->usuario_codigo] as $asistencia) {
-                        if ($asistencia['fecha'] === $fecha) {
-                            $estadoMarcacion = $asistencia['estado_marcacion']; // Asignar el estado correspondiente
-                            break; // Salimos del bucle al encontrar la fecha
+                        if($estado!=3){
+                            if ($asistencia['fecha'] === $fecha) {
+                                $estadoMarcacion = $asistencia['estado_marcacion']; // Asignar el estado correspondiente
+                                break; // Salimos del bucle al encontrar la fecha
+                            }
+                        }else{
+                            $estadoMarcacion = 0;
                         }
                     }
                 }

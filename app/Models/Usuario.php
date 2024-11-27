@@ -921,6 +921,32 @@ class Usuario extends Model
         return json_decode(json_encode($result), true);
     }
 
+    static function get_list_colaboradorct($estado = null)
+    {
+        $id_centro_labor = session('usuario')->id_centro_labor;
+        $id_estado = "";
+
+        if (isset($estado) && $estado > 0) {
+            if ($estado == 1) {
+                $id_estado = " and u.estado=" . $estado;
+            } else {
+                $id_estado = " and u.estado in (2,3)";
+            }
+        }
+        $sql = "SELECT u.*,  n.nom_nacionalidad, a.nom_area, g.nom_gerencia, p.nom_puesto, c.nom_cargo
+                from users u
+                LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                LEFT JOIN puesto p on p.id_puesto=u.id_puesto
+                LEFT JOIN area a on a.id_area=p.id_area
+                LEFT JOIN cargo c on c.id_cargo=u.id_cargo
+                LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                LEFT JOIN gerencia g on g.id_gerencia=sg.id_gerencia
+                where u.id_nivel<>8 $id_estado and u.id_ubicacion = $id_centro_labor";
+        $result = DB::select($sql);
+        // Convertir el resultado a un array
+        return json_decode(json_encode($result), true);
+    }
+
     static function colaborador_porcentaje($id_usuario = null, $centro_labores = null, $dato = null, $data)
     {
         $id_gerencia = session('usuario')->id_gerencia;
