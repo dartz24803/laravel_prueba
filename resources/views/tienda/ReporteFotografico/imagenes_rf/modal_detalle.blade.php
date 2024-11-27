@@ -65,7 +65,11 @@
         $(".img_post").ezPlus({
             scrollZoom: true,
             zoomLevel: 0.5, // Aumenta este valor para más zoom
-            zIndex: 1000
+            zIndex: 1000,
+            zoomWindowWidth: 600, // Ancho del cuadro de zoom
+            zoomWindowHeight: 600, // Altura del cuadro de zoom
+            zoomWindowOffetx: 10, // Desplazamiento horizontal del cuadro
+            zoomWindowPosition: 1 // Posición del cuadro (1: derecha de la imagen)
         });
     }
 
