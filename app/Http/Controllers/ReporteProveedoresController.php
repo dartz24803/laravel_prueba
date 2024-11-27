@@ -36,7 +36,11 @@ class ReporteProveedoresController extends Controller{
         $dato['hasta']=date('Y-m-d');
 
         $dato['estado']=3;
-        if($id_puesto==23 || $id_nivel==1 || $id_puesto==24){
+        if($id_nivel==1 || 
+        $id_puesto==23 || 
+        $id_puesto==24 || 
+        $id_puesto==158 || 
+        $id_puesto==209){
             $dato['base']=0;
             if($id_puesto==24){
                 $dato['list_base'] = Base::select('cod_base')
