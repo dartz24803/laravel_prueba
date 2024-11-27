@@ -42,6 +42,9 @@
         visibility: visible;
         opacity: 1;
     }
+    #tabla_js {
+        margin-bottom: 3rem;
+    }
 </style>
 
 <table id="tabla_js" class="table" style="width:100%">
@@ -240,7 +243,7 @@
 <script>
     $('#tabla_js').DataTable({
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
-            "<'table-responsive mb-5'tr>" +
+            "<'table-responsive'tr>" +
             "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
         responsive: true,
         order: [
