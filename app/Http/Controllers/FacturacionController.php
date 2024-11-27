@@ -67,9 +67,14 @@ class FacturacionController extends Controller
 
     public function index_fp()
     {
-
         return view('finanzas.contabilidad.facturacion_parcial.index');
     }
+
+    public function index_ft()
+    {
+        return view('finanzas.contabilidad.facturacion_total.index');
+    }
+
     public function obtenerSkus(Request $request)
     {
         $search = $request->input('search'); // Buscar por este término
@@ -129,6 +134,7 @@ class FacturacionController extends Controller
     public function facturar_cerrar(Request $request)
     {
         $filas = $request->input('filas'); // Recibimos las filas enviadas desde el frontend
+
         // Iterar sobre las filas recibidas
         foreach ($filas as $fila) {
             $id = $fila['id']; // ID de la fila
@@ -159,13 +165,14 @@ class FacturacionController extends Controller
                         'cia' => $registro->cia,
                         'estado' => $registro->estado,
                         'stock' => $registro->stock,
-                        'cerrado' => 0 // Cambiar el campo cerrado a 0
+                        'cerrado' => 0,
+                        'fecha_cerrado_parcial' => now()
                     ]);
                     // Actualizar el campo 'enviado' en la tabla tb_contabilidad haciendo la resta
                     $registro->enviado = $registro->enviado - $fila['enviado'];
                     $registro->save();
                 } else {
-                    // Caso parcial = 0, insertar en tb_contabilidad_cerrados y actualizar tb_contabilidad
+                    // Caso parcial = 0, insertar en tb_contabilidad_cerrados
                     TbContabilidadCerrados::create([
                         'estilo' => $registro->estilo,
                         'color' => $registro->color,
@@ -187,11 +194,12 @@ class FacturacionController extends Controller
                         'cia' => $registro->cia,
                         'estado' => $registro->estado,
                         'stock' => $registro->stock,
-                        'cerrado' => 1 // Cambiar el campo cerrado a 1
+                        'cerrado' => 1,
+                        'fecha_cerrado_total' => now()
+
                     ]);
-                    // Actualizar el campo cerrado en tb_contabilidad
-                    $registro->cerrado = 1;
-                    $registro->save();
+                    // Eliminar el registro de la tabla tb_contabilidad
+                    $registro->delete();  // Eliminar el registro
                 }
             } else {
                 // Manejo de error si el registro no existe
@@ -202,9 +210,10 @@ class FacturacionController extends Controller
             }
         }
 
+        // Si todo ha ido bien, devolver una respuesta positiva
         return response()->json([
             'success' => true,
-            'message' => 'Los datos se procesaron correctamente.'
+            'message' => "Las filas han sido procesadas correctamente."
         ]);
     }
 
@@ -217,14 +226,44 @@ class FacturacionController extends Controller
         $search = $request->input('search')['value'] ?? '';
         $order = $request->input('order'); // Parámetros de ordenamiento
         $columns = $request->input('columns'); // Información de las columnas
-
+        $almacenSeleccionadoInput = $request->input('almacenSeleccionadoInput');
+        $almDsc = 0;
+        $almDiscotela = 0;
+        $almPb = 0;
+        $almMad = 0;
+        $almFam = 0;
+        switch ($almacenSeleccionadoInput) {
+            case '1':
+                $almDsc = 1;
+                break;
+            case '2':
+                $almDiscotela = 1;
+                break;
+            case '3':
+                $almPb = 1;
+                break;
+            case '4':
+                $almMad = 1;
+                break;
+            case '5':
+                $almFam = 1;
+                break;
+            default:
+                break;
+        }
+        // Aplicar los filtros basados en los valores de los almacenes
         $query = TbContabilidad::filtros([
             'fecha_inicio' => $request->input('fecha_inicio'),
             'fecha_fin' => $request->input('fecha_fin'),
             'estado' => $request->input('estado'),
             'sku' => $request->input('filtroSku'),
             'empresa' => $request->input('filtroEmpresa'),
-            'search' => $search
+            'search' => $search,
+            'alm_dsc' => $almDsc,
+            'alm_discotela' => $almDiscotela,
+            'alm_pb' => $almPb,
+            'alm_mad' => $almMad,
+            'alm_fam' => $almFam,
         ]);
 
         // Manejo de ordenamiento
@@ -376,7 +415,7 @@ class FacturacionController extends Controller
 
         // Crear el archivo Excel y enviarlo al navegador
         $writer = new Xlsx($spreadsheet);
-        $filename = 'Informe de Facturación';
+        $filename = 'Informe_Facturación_General';
 
         // Limpiar el buffer de salida y establecer encabezados para el archivo
         if (ob_get_contents()) ob_end_clean();
@@ -390,34 +429,57 @@ class FacturacionController extends Controller
 
 
 
-    public function excel_filtrado(Request $request)
+    public function excel_filtrado($ids)
     {
-        $idsSeleccionados = $request->input('ids');
+        // Recuperamos los IDs desde la solicitud y los convertimos a un arreglo
+        $idsSeleccionados = explode(',', $ids);
+
+        // Filtramos los datos según los IDs seleccionados
         $list_previsualizacion_por_facturar = TbContabilidad::filtrarCerrados($idsSeleccionados);
+
+        // Crear un nuevo objeto Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        $sheet->getStyle("A1:G1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-        $sheet->getStyle("A1:G1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        // Formato de encabezado
+        $sheet->getStyle("A1:T1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:T1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
-        $spreadsheet->getActiveSheet()->setTitle('Duración de transacción');
+        // Establecer el nombre de la hoja
+        $spreadsheet->getActiveSheet()->setTitle('Informe Facturación Filtrado');
 
-        $sheet->setAutoFilter('A1:G1');
+        // Establecer autofiltro
+        $sheet->setAutoFilter('A1:T1');
 
+        // Definir el tamaño de las columnas
         $sheet->getColumnDimension('A')->setWidth(15);
-        $sheet->getColumnDimension('B')->setWidth(30);
+        $sheet->getColumnDimension('B')->setWidth(20);
         $sheet->getColumnDimension('C')->setWidth(15);
-        $sheet->getColumnDimension('D')->setWidth(20);
-        $sheet->getColumnDimension('E')->setWidth(20);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(25);
         $sheet->getColumnDimension('F')->setWidth(20);
         $sheet->getColumnDimension('G')->setWidth(20);
+        $sheet->getColumnDimension('H')->setWidth(15);
+        $sheet->getColumnDimension('I')->setWidth(20);
+        $sheet->getColumnDimension('J')->setWidth(25);
+        $sheet->getColumnDimension('K')->setWidth(20);
+        $sheet->getColumnDimension('L')->setWidth(20);
+        $sheet->getColumnDimension('M')->setWidth(20);
+        $sheet->getColumnDimension('N')->setWidth(20);
+        $sheet->getColumnDimension('O')->setWidth(20);
+        $sheet->getColumnDimension('P')->setWidth(20);
+        $sheet->getColumnDimension('Q')->setWidth(15);
+        $sheet->getColumnDimension('R')->setWidth(20);
+        $sheet->getColumnDimension('S')->setWidth(20);
+        $sheet->getColumnDimension('T')->setWidth(15);
 
-        $sheet->getStyle('A1:G1')->getFont()->setBold(true);
-
-        $spreadsheet->getActiveSheet()->getStyle("A1:G1")->getFill()
+        // Estilo del encabezado
+        $sheet->getStyle('A1:T1')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("A1:T1")->getFill()
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('C8C8C8');
 
+        // Estilo de bordes
         $styleThinBlackBorderOutline = [
             'borders' => [
                 'allBorders' => [
@@ -427,43 +489,74 @@ class FacturacionController extends Controller
             ],
         ];
 
-        $sheet->getStyle("A1:G1")->applyFromArray($styleThinBlackBorderOutline);
+        // Definir encabezados de las columnas
+        $sheet->setCellValue("A1", 'Estilo');
+        $sheet->setCellValue("B1", 'Color');
+        $sheet->setCellValue("C1", 'Talla');
+        $sheet->setCellValue("D1", 'SKU');
+        $sheet->setCellValue("E1", 'Descripción');
+        $sheet->setCellValue("F1", 'Costo Precio');
+        $sheet->setCellValue("G1", 'Empresa');
+        $sheet->setCellValue("H1", 'Almacen LN1');
+        $sheet->setCellValue("I1", 'Almacen DSC');
+        $sheet->setCellValue("J1", 'Almacen Discotela');
+        $sheet->setCellValue("K1", 'Almacen PB');
+        $sheet->setCellValue("L1", 'Almacen Fam');
+        $sheet->setCellValue("M1", 'Almacen Mad');
+        $sheet->setCellValue("N1", 'Fecha Documento');
+        $sheet->setCellValue("O1", 'Guía Remisión');
+        $sheet->setCellValue("P1", 'Enviado');
+        $sheet->setCellValue("Q1", 'Estado');
+        $sheet->setCellValue("R1", 'Base');
+        $sheet->setCellValue("S1", 'CIA');
+        $sheet->setCellValue("T1", 'Stock');
 
-        $sheet->setCellValue("A1", 'Base');
-        $sheet->setCellValue("B1", 'Cajero');
-        $sheet->setCellValue("C1", 'Fecha');
-        $sheet->setCellValue("D1", 'Cantidad prendas');
-        $sheet->setCellValue("E1", 'Hora inicio');
-        $sheet->setCellValue("F1", 'Hora termino');
-        $sheet->setCellValue("G1", 'Total tiempo');
-
+        // Variable para contador de filas
         $contador = 1;
 
+        // Recorrer la lista filtrada y añadir los datos al Excel
         foreach ($list_previsualizacion_por_facturar as $list) {
             $contador++;
 
-            $sheet->getStyle("A{$contador}:G{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-            $sheet->getStyle("A{$contador}:B{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-            $sheet->getStyle("A{$contador}:G{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-            $sheet->getStyle("A{$contador}:G{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+            // Alinear las celdas y aplicar bordes
+            $sheet->getStyle("A{$contador}:T{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$contador}:T{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:T{$contador}")->applyFromArray($styleThinBlackBorderOutline);
 
-            $sheet->setCellValue("A{$contador}", $list->NombreBase);
-            $sheet->setCellValue("B{$contador}", $list->NomCajero);
-            $sheet->setCellValue("C{$contador}", Date::PHPToExcel($list->fecha));
-            $sheet->getStyle("C{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
-            $sheet->setCellValue("D{$contador}", $list->Cantidad);
-            $sheet->setCellValue("E{$contador}", $list->hora_inicial);
-            $sheet->setCellValue("F{$contador}", $list->hora_final);
-            $sheet->setCellValue("G{$contador}", $list->diferencia . " min ");
+            // Asignar valores a las celdas
+            $sheet->setCellValue("A{$contador}", $list->estilo);
+            $sheet->setCellValue("B{$contador}", $list->color);
+            $sheet->setCellValue("C{$contador}", $list->talla);
+            $sheet->setCellValue("D{$contador}", $list->sku);
+            $sheet->setCellValue("E{$contador}", $list->descripcion);
+            $sheet->setCellValue("F{$contador}", $list->costo_precio);
+            $sheet->setCellValue("G{$contador}", $list->empresa);
+            $sheet->setCellValue("H{$contador}", $list->alm_ln1);
+            $sheet->setCellValue("I{$contador}", $list->alm_dsc);
+            $sheet->setCellValue("J{$contador}", $list->alm_discotela);
+            $sheet->setCellValue("K{$contador}", $list->alm_pb);
+            $sheet->setCellValue("L{$contador}", $list->alm_fam);
+            $sheet->setCellValue("M{$contador}", $list->alm_mad);
+            $sheet->setCellValue("N{$contador}", Date::PHPToExcel($list->fecha_documento));
+            $sheet->getStyle("N{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $sheet->setCellValue("O{$contador}", $list->guia_remision);
+            $sheet->setCellValue("P{$contador}", $list->enviado);
+            $sheet->setCellValue("Q{$contador}", $list->estado);
+            $sheet->setCellValue("R{$contador}", $list->base);
+            $sheet->setCellValue("S{$contador}", $list->cia);
+            $sheet->setCellValue("T{$contador}", $list->stock);
         }
 
+        // Crear el archivo Excel
         $writer = new Xlsx($spreadsheet);
-        $filename = 'Duración de transacción';
+        $filename = 'Informe_Facturación_Filtrado';
+
         if (ob_get_contents()) ob_end_clean();
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
         header('Cache-Control: max-age=0');
 
+        // Guardar el archivo Excel en la salida
         $writer->save('php://output');
     }
 
@@ -506,6 +599,52 @@ class FacturacionController extends Controller
             $columnName = $columns[$columnIndex]['data']; // Nombre de la columna
             $columnSortOrder = $order[0]['dir']; // Dirección (asc o desc)
 
+            if ($columnName) {
+                $query->orderBy($columnName, $columnSortOrder);
+            }
+        }
+
+        $totalRecords = $query->count();
+        $data = $query->skip($start)->take($length)->get();
+
+        return response()->json([
+            'draw' => $draw,
+            'recordsTotal' => $totalRecords,
+            'recordsFiltered' => $totalRecords,
+            'data' => $data
+        ]);
+    }
+
+
+    // FACTURACIÓN TOTAL
+    public function list_ft()
+    {
+        return view('finanzas.contabilidad.facturacion_total.lista');
+    }
+
+    public function list_datatable_ft(Request $request)
+    {
+        $draw = intval($request->input('draw'));
+        $start = intval($request->input('start'));
+        $length = intval($request->input('length'));
+        $search = $request->input('search')['value'] ?? '';
+        $order = $request->input('order'); // Parámetros de ordenamiento
+        $columns = $request->input('columns'); // Información de las columnas
+
+        $query = TbContabilidadCerrados::filtros([
+            'fecha_inicio' => $request->input('fecha_inicio'),
+            'fecha_fin' => $request->input('fecha_fin'),
+            'estado' => $request->input('estado'),
+            'sku' => $request->input('filtroSku'),
+            'empresa' => $request->input('filtroEmpresa'),
+            'search' => $search
+        ]);
+
+        // Manejo de ordenamiento
+        if ($order) {
+            $columnIndex = $order[0]['column']; // Índice de la columna
+            $columnName = $columns[$columnIndex]['data']; // Nombre de la columna
+            $columnSortOrder = $order[0]['dir']; // Dirección (asc o desc)
             if ($columnName) {
                 $query->orderBy($columnName, $columnSortOrder);
             }

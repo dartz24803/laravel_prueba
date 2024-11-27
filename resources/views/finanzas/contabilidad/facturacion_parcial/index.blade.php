@@ -3,9 +3,9 @@
 </div>
 
 <script>
-    Redirigir_Lista_Contabilidad();
+    Redirigir_Lista_Contabilidad_fp();
 
-    function Redirigir_Lista_Contabilidad() {
+    function Redirigir_Lista_Contabilidad_fp() {
         Cargando();
         var fecha_inicio = $('#fecha_iniciob').val();
         var fecha_fin = $('#fecha_finb').val();

@@ -40,6 +40,7 @@ class TbContabilidadCerradosParcial extends Model
         'base',
         'cia',
         'stock',
+        'fecha_cerrado_parcial',
         'cerrado'
     ];
 
@@ -52,42 +53,6 @@ class TbContabilidadCerradosParcial extends Model
         'costo_precio' => 'decimal:2',
     ];
 
-    public static function marcarComoCerrados(array $ids)
-    {
-        $registros = self::whereIn('id', $ids)->get();
-        if ($registros->isEmpty()) {
-            return false;
-        }
-        self::whereIn('id', $ids)->update(['cerrado' => 1]);
-        foreach ($registros as $registro) {
-            DB::table('tb_contabilidad_cerrados')->insert([
-                'estilo' => $registro->estilo,
-                'color' => $registro->color,
-                'talla' => $registro->talla,
-                'sku' => $registro->sku,
-                'descripcion' => $registro->descripcion,
-                'costo_precio' => $registro->costo_precio,
-                'empresa' => $registro->empresa,
-                'alm_dsc' => $registro->alm_dsc,
-                'alm_ln1' => $registro->alm_ln1,
-                'alm_discotela' => $registro->alm_discotela,
-                'alm_pb' => $registro->alm_pb,
-                'alm_mad' => $registro->alm_mad,
-                'alm_fam' => $registro->alm_fam,
-                'fecha_documento' => $registro->fecha_documento,
-                'guia_remision' => $registro->guia_remision,
-                'base' => $registro->base,
-                'enviado' => $registro->enviado,
-                'cia' => $registro->cia,
-                'estado' => $registro->estado,
-                'stock' => $registro->stock,
-                'cerrado' => 1,
-            ]);
-        }
-
-        // Devolver los registros procesados
-        return $registros;
-    }
 
 
 

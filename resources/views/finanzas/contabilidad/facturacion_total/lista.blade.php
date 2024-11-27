@@ -165,6 +165,7 @@
 
         <tr class="text-center">
             <th>ID</th>
+            <th>Fecha Fact.Total</th>
             <th>Estilo</th>
             <th>Color</th>
             <th>SKU</th>
@@ -228,7 +229,7 @@
             "serverSide": true,
             "stateSave": true, // Guarda el estado de la tabla (incluido el filtro, paginación, etc.)
             "ajax": {
-                "url": "{{ route('tabla_facturacion_fp.datatable_fp') }}", // La URL de la ruta
+                "url": "{{ route('tabla_facturacion_ft.datatable_ft') }}", // La URL de la ruta
                 "type": "POST", // Cambiar a POST
                 "data": function(d) {
                     // Obtener los valores de las fechas y el estado de los filtros
@@ -257,6 +258,10 @@
                     "data": "id",
                     "visible": false, // Oculta la columna del ID
                     "orderable": true // Asegura que sea ordenable (aunque esté oculta)
+                },
+                {
+                    "data": "fecha_cerrado_total",
+                    "orderable": true
                 },
                 {
                     "data": "estilo",
@@ -370,54 +375,7 @@
         // Evento para el checkbox global en el encabezado
 
 
-        // Evento para desactivar el checkbox al paginar
-        table.on('page.dt', function() {
-            $('#mostrarSeleccionados').prop('checked', false); // Restablecer el estado del checkbox
-            table.rows().every(function() {
-                this.nodes().to$().show(); // Asegurarse de mostrar todas las filas
-            });
-        });
 
-        $('#tabla_js_fp tbody').on('click', 'tr', function() {
-            var $checkbox = $(this).find('.row-selector'); // Obtén el checkbox en la fila
-            var $row = $(this); // Obtén la fila
-            var rowId = table.row($row).data().id;
-
-            // Alterna la selección del checkbox
-            if ($checkbox.prop('checked')) {
-                $checkbox.prop('checked', false); // Desmarca el checkbox si estaba marcado
-                $row.removeClass('highlight-row'); // Elimina el resaltado de la fila
-                selectedIds = selectedIds.filter(id => id !== rowId); // Elimina el id de la fila de selectedIds
-
-            } else {
-                $checkbox.prop('checked', true); // Marca el checkbox si estaba desmarcado
-                $row.addClass('highlight-row'); // Resalta la fila
-                selectedIds.push(rowId); // Agrega el id de la fila a selectedIds
-
-
-            }
-            if (selectedIds.length > 0) {
-                $('#btnVer').prop('disabled', false); // Habilitar el botón
-            } else {
-                $('#btnVer').prop('disabled', true); // Deshabilitar el botón
-            }
-        });
-        // Guardar las selecciones al cambiar de página
-        table.on('draw', function() {
-            // Vuelve a seleccionar las filas previamente seleccionadas
-            $('#tabla_js_fp tbody .row-selector').each(function() {
-                var $row = $(this).closest('tr');
-                var data = table.row($row).data();
-                var rowId = data.id;
-                if (selectedIds.includes(rowId)) {
-                    $(this).prop('checked', true);
-                    $row.addClass('highlight-row');
-                } else {
-                    $(this).prop('checked', false);
-                    $row.removeClass('highlight-row');
-                }
-            });
-        });
 
 
         $('#btnFacturar').on('click', function() {
