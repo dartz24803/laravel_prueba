@@ -72,7 +72,7 @@
                 <div class="d-flex">
                     <a href="javascript:void(0)" class="tooltip-link {{ $list->generacion }}"
                         data-tooltip="@php
-                                if($list->generacion==" BB"){echo "Baby Boomers&#10;-Conservadores y ordenados&#10;-Experiencia análoga&#10;-Tecnología en el hogar&#10;-Grandes lectores" ;}
+                                if($list->generacion=="BB"){echo "Baby Boomers&#10;-Conservadores y ordenados&#10;-Experiencia análoga&#10;-Tecnología en el hogar&#10;-Grandes lectores" ;}
                         if($list->generacion=="X"){echo "Generación X&#10;-Enfoque en preparación académica&#10;-Niñez análoga y adultez digital&#10;-Fácil adaptación a los cambios tecnológicos&#10;-Gustos por manifestaciones culturales";}
                         if($list->generacion=="Y"){echo "Generación Y (Millenials)&#10;-Emprendedores&#10;-Alto uso de dispositivos móviles&#10;-Alto manejo de las TIC&#10;-Rechazo a los medios tradicionales";}
                         if($list->generacion=="Z"){echo "Generación Z&#10;-Multitareas&#10;-Acceso a internet&#10;-Alto manejo de las TIC&#10;-Generan nuevos contenidos&#10;-Redes sociales, principal medio de comunicación";} @endphp"
@@ -240,7 +240,7 @@
 <script>
     $('#tabla_js').DataTable({
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
-            "<'table-responsive'tr>" +
+            "<'table-responsive mb-5'tr>" +
             "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
         responsive: true,
         order: [
