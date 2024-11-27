@@ -41,7 +41,11 @@ class Suceso extends Model
         if($dato['estado_suceso']!="0"){
             $parte_estado = "AND su.estado_suceso=".$dato['estado_suceso'];
         }
-        if(session('usuario')->id_puesto=="128" || session('usuario')->id_nivel=="1" || session('usuario')->id_puesto==9){
+        if(session('usuario')->id_nivel=="1" || 
+        session('usuario')->id_puesto=="9" || 
+        session('usuario')->id_puesto=="128" ||
+        session('usuario')->id_puesto=="158" ||
+        session('usuario')->id_puesto=="209"){
             $parte_base = "";
             if($dato['cod_base']!="0"){
                 $parte_base = "AND su.centro_labores='".$dato['cod_base']."'";
