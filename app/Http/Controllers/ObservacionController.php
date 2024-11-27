@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Base;
+use App\Models\BaseActiva;
 use App\Models\Error;
 use App\Models\Notificacion;
 use App\Models\SubGerencia;
@@ -31,7 +32,7 @@ class ObservacionController extends Controller
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(13);
-        $list_base = Base::get_list_bases_tienda();
+        $list_base = BaseActiva::all();
         return view('caja.observacion.index',compact('list_notificacion','list_base','list_subgerencia'));
     }
 
@@ -44,7 +45,7 @@ class ObservacionController extends Controller
     public function create_reg()
     {
         $list_tipo_error = TipoError::where('estado',1)->orderBy('nom_tipo_error')->get();
-        $list_base = Base::get_list_bases_tienda();
+        $list_base = BaseActiva::all();
         $list_responsable = Usuario::select('id_usuario',DB::raw('CONCAT(usuario_apater," ",usuario_amater,", ",usuario_nombres) AS nom_usuario'))
                             ->where('centro_labores',session('usuario')->centro_labores)->whereNotIn('id_nivel',[8,12])->where('estado',1)
                             ->orderBy('usuario_apater','ASC')->orderBy('usuario_amater','ASC')->orderBy('usuario_nombres','ASC')->get();
@@ -205,7 +206,7 @@ class ObservacionController extends Controller
         $list_error = Error::select('id_error','nom_error')->where('id_tipo_error',$get_id->id_tipo_error)
                     ->where('estado',1)->orderBy('nom_error','ASC')->get();
         $get_error = Error::findOrFail($get_id->id_error);                    
-        $list_base = Base::get_list_bases_tienda();
+        $list_base = BaseActiva::all();
         $list_responsable = Usuario::select('id_usuario',DB::raw('CONCAT(usuario_apater," ",usuario_amater,", ",usuario_nombres) AS nom_usuario'))
                             ->where('centro_labores',$get_id->centro_labores)->whereNotIn('id_nivel',[8,12])->where('estado',1)
                             ->orderBy('usuario_apater','ASC')->orderBy('usuario_amater','ASC')->orderBy('usuario_nombres','ASC')->get();
