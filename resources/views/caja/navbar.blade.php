@@ -32,36 +32,28 @@
 
 
 @if (session('usuario')->id_nivel == 1 ||
-session('usuario')->id_nivel == 7 ||
-session('usuario')->id_puesto == 28 ||
-session('usuario')->id_puesto == 128 ||
 session('usuario')->id_puesto == 9 ||
+session('usuario')->id_puesto == 19 ||
+session('usuario')->id_puesto == 21 ||
+session('usuario')->id_puesto == 23 ||
+session('usuario')->id_puesto == 27 ||
+session('usuario')->id_puesto == 30 ||
 session('usuario')->id_puesto == 31 ||
 session('usuario')->id_puesto == 32 ||
-session('usuario')->id_puesto == 36 ||
-session('usuario')->id_puesto == 23 ||
-session('usuario')->id_puesto == 98 ||
-session('usuario')->id_puesto == 26 ||
-session('usuario')->id_puesto == 27 ||
-session('usuario')->id_puesto == 16 ||
 session('usuario')->id_puesto == 33 ||
-session('usuario')->id_puesto == 30 ||
-session('usuario')->id_puesto == 167 ||
-session('usuario')->id_puesto == 161 ||
-session('usuario')->id_puesto == 19 ||
-session('usuario')->id_puesto == 20 ||
-session('usuario')->id_puesto == 21 ||
-session('usuario')->id_puesto == 279 ||
-session('usuario')->id_puesto == 314 ||
-session('usuario')->id_puesto == 148 ||
+session('usuario')->id_puesto == 36 ||
 session('usuario')->id_puesto == 66 ||
 session('usuario')->id_puesto == 68 ||
 session('usuario')->id_puesto == 73 ||
 session('usuario')->id_puesto == 82 ||
 session('usuario')->id_puesto == 83 ||
-session('usuario')->id_puesto == 114 ||
-session('usuario')->id_puesto == 130 ||
-session('usuario')->id_puesto == 135 ||
+session('usuario')->id_puesto == 128 ||
+session('usuario')->id_puesto == 148 ||
+session('usuario')->id_puesto == 161 ||
+session('usuario')->id_puesto == 167 ||
+//PUESTO ASISTENTE DE COMPENSACIONES
+session('usuario')->id_puesto == 209 ||
+//
 session('usuario')->id_puesto == 314 ||
 session('usuario')->id_sede_laboral == 6 )
 <li class="menu menu-heading">
@@ -104,6 +96,8 @@ session('usuario')->id_sede_laboral == 6 )
         session('usuario')->id_puesto == 23 ||
         session('usuario')->id_puesto == 314 ||
         session('usuario')->id_puesto == 148 ||
+        //ASISTENTE DE COMPENSACIONES
+        session('usuario')->id_puesto == 209 ||
         session('usuario')->id_sede_laboral == 6 )
         <li id="cambios_prendas">
             <a href="{{ route('cambio_prenda') }}" data-toggle="tooltip" data-placement="right" data-html="true">
@@ -120,7 +114,6 @@ session('usuario')->id_sede_laboral == 6 )
         </li>
         @endif
         @if (session('usuario')->id_nivel == 1 ||
-        session('usuario')->id_puesto == 28 ||
         session('usuario')->id_puesto == 128)
         <li id="duraciones_transacciones">
             <a href="{{ route('duracion_transaccion') }}" data-toggle="tooltip" data-placement="right" data-html="true">
@@ -137,6 +130,8 @@ session('usuario')->id_sede_laboral == 6 )
         session('usuario')->id_puesto == 128 ||
         /*ASISTENTE DE TECNOLOGÍAS DE LA INFORMACIÓN (OSCAR LOZA)*/
         session('usuario')->id_puesto == 148 ||
+        //ASISTENTE DE COMPENSACIONES
+        session('usuario')->id_puesto == 209 ||
         /*TODOS LOS USUARIOS DE TIENDA*/
         session('usuario')->id_sede_laboral == 6 )
         <li id="insumos">
@@ -146,13 +141,13 @@ session('usuario')->id_sede_laboral == 6 )
         </li>
         @endif
         @if (session('usuario')->id_nivel == 1 ||
-        session('usuario')->id_puesto == 128 ||
         session('usuario')->id_puesto == 9 ||
-        session('usuario')->id_puesto == 161 ||
         session('usuario')->id_puesto == 19 ||
-        session('usuario')->id_puesto == 20 ||
         session('usuario')->id_puesto == 21 ||
-        session('usuario')->id_puesto == 279)
+        session('usuario')->id_puesto == 128 ||
+        session('usuario')->id_puesto == 161 ||
+        //ASISTENTE DE COMPENSACIONES
+        session('usuario')->id_puesto == 209)
         <li id="lineas_carreras">
             <a href="{{ route('linea_carrera') }}" data-toggle="tooltip" data-placement="right" data-html="true">
                 <p class="romperpalabra"><span id="icono_active2"></span> Línea de carrera</p>
@@ -166,6 +161,8 @@ session('usuario')->id_sede_laboral == 6 )
         session('usuario')->id_puesto == 128 ||
         session('usuario')->id_puesto == 167 ||
         session('usuario')->id_puesto == 161 ||
+        //ASISTENTE DE COMPENSACIONES
+        session('usuario')->id_puesto == 209 ||        
         session('usuario')->id_puesto == 314 ||
         session('usuario')->id_sede_laboral == 6 )
         <li id="observaciones">
@@ -193,6 +190,8 @@ session('usuario')->id_sede_laboral == 6 )
         session('usuario')->id_puesto == 130 ||
         session('usuario')->id_puesto == 135 ||
         session('usuario')->id_puesto == 161 ||
+        //ASISTENTE DE COMPENSACIONES
+        session('usuario')->id_puesto == 209 ||        
         session('usuario')->id_puesto == 314 ||
         session('usuario')->id_sede_laboral == 6 )
         <li id="requisiciones_tiendas">

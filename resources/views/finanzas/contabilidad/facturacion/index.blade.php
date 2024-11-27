@@ -1,7 +1,7 @@
 @csrf
 <div class="form-group row">
     <div class="col-lg-2">
-        <button type="button" class="btn btn-secondary w-100" title="Actualizar" id="btnActualizar">
+        <button type="button" class="btn btn-secondary w-100" title="Actualizar" id="btnActualizar" disabled>
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw">
                 <polyline points="23 4 23 10 17 10"></polyline>
                 <polyline points="1 20 1 14 7 14"></polyline>
@@ -29,9 +29,9 @@
 </div>
 
 <script>
-    Redirigir_Lista_Contabilidad();
+    Redirigir_Lista_Contabilidad_f();
 
-    function Redirigir_Lista_Contabilidad() {
+    function Redirigir_Lista_Contabilidad_f() {
         Cargando();
         var url = "{{ route('tabla_facturacion.list') }}";
 
@@ -55,7 +55,6 @@
             success: function(data) {
                 console.log("Respuesta del servidor:", data); // Para ver los datos completos
                 if (data.success) {
-
                     Swal.fire(
                         '¡Actualización Exitosa!',
                         '¡' + data.cantidad_insertados + ' registros han sido actualizados correctamente!',
@@ -65,19 +64,16 @@
                     });
 
                 } else {
-                    Swal.fire({
-                        title: 'Actualizado',
-                        text: data.message || 'No hay Datos para Actualizar',
-                        icon: 'info',
-                        confirmButtonColor: '#d33',
-                        confirmButtonText: 'OK'
+                    Swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡No hay Datos para Actualizar',
+                        'success'
+                    ).then(function() {
+                        table.ajax.reload();
                     });
                 }
             },
             error: function(xhr, status, error) {
-                console.log(error)
-                console.log("########2")
-
                 Swal.fire({
                     title: '¡Error al Actualizar!',
                     text: error,
