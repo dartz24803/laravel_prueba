@@ -52,42 +52,7 @@ class TbContabilidad extends Model
         'costo_precio' => 'decimal:2',
     ];
 
-    public static function marcarComoCerrados(array $ids)
-    {
-        $registros = self::whereIn('id', $ids)->get();
-        if ($registros->isEmpty()) {
-            return false;
-        }
-        self::whereIn('id', $ids)->update(['cerrado' => 1]);
-        foreach ($registros as $registro) {
-            DB::table('tb_contabilidad_cerrados')->insert([
-                'estilo' => $registro->estilo,
-                'color' => $registro->color,
-                'talla' => $registro->talla,
-                'sku' => $registro->sku,
-                'descripcion' => $registro->descripcion,
-                'costo_precio' => $registro->costo_precio,
-                'empresa' => $registro->empresa,
-                'alm_dsc' => $registro->alm_dsc,
-                'alm_ln1' => $registro->alm_ln1,
-                'alm_discotela' => $registro->alm_discotela,
-                'alm_pb' => $registro->alm_pb,
-                'alm_mad' => $registro->alm_mad,
-                'alm_fam' => $registro->alm_fam,
-                'fecha_documento' => $registro->fecha_documento,
-                'guia_remision' => $registro->guia_remision,
-                'base' => $registro->base,
-                'enviado' => $registro->enviado,
-                'cia' => $registro->cia,
-                'estado' => $registro->estado,
-                'stock' => $registro->stock,
-                'cerrado' => 1,
-            ]);
-        }
 
-        // Devolver los registros procesados
-        return $registros;
-    }
 
 
 
@@ -144,28 +109,78 @@ class TbContabilidad extends Model
                 }
             });
         }
+        // Filtros adicionales de almacenes
+        if (isset($filters['alm_dsc']) && $filters['alm_dsc'] == 1) {
+            $query->where('alm_dsc', '>', 0)
+                ->where('alm_discotela', 0)
+                ->where('alm_pb', 0)
+                ->where('alm_mad', 0)
+                ->where('alm_fam', 0);
+        }
 
+        if (isset($filters['alm_discotela']) && $filters['alm_discotela'] == 1) {
+            $query->where('alm_discotela', '>', 0)
+                ->where('alm_dsc', 0)
+                ->where('alm_pb', 0)
+                ->where('alm_mad', 0)
+                ->where('alm_fam', 0);
+        }
+
+        if (isset($filters['alm_pb']) && $filters['alm_pb'] == 1) {
+            $query->where('alm_pb', '>', 0)
+                ->where('alm_dsc', 0)
+                ->where('alm_discotela', 0)
+                ->where('alm_mad', 0)
+                ->where('alm_fam', 0);
+        }
+
+        if (isset($filters['alm_mad']) && $filters['alm_mad'] == 1) {
+            $query->where('alm_mad', '>', 0)
+                ->where('alm_dsc', 0)
+                ->where('alm_discotela', 0)
+                ->where('alm_pb', 0)
+                ->where('alm_fam', 0);
+        }
+
+        if (isset($filters['alm_fam']) && $filters['alm_fam'] == 1) {
+            $query->where('alm_fam', '>', 0)
+                ->where('alm_dsc', 0)
+                ->where('alm_discotela', 0)
+                ->where('alm_pb', 0)
+                ->where('alm_mad', 0);
+        }
         return $query;
     }
 
     public static function sincronizarContabilidad()
     {
         try {
-            set_time_limit(600);
-            // Obtener el primer día del AÑO actual
-            $fechaInicioAno = Carbon::now()->startOfYear()->toDateString();
-            // $fechaInicioAno = Carbon::now()->subMonth()->startOfMonth()->toDateString();
+            set_time_limit(600); // 10 minutos
 
-            // Paso 1: Obtener los registros existentes en MySQL con claves compuestas
+            // Obtener el primer día del AÑO actual
+            $fechaInicioAnoMysql = Carbon::now()->startOfYear()->toDateString();
+            // Obtener el primer día de Julio del año actual
+            $fechaInicioAno = Carbon::now()->setMonth(7)->day(1)->toDateString();
+            // Paso 1: Obtener los registros existentes en MySQL con claves compuestas de la tabla tb_contabilidad
             $mysqlRecords = DB::table('tb_contabilidad')
-                ->where('fecha_documento', '>=', $fechaInicioAno)
-                ->select('guia_remision', 'sku') // Seleccionar sólo los campos necesarios
+                ->where('fecha_documento', '>=', $fechaInicioAnoMysql)
+                ->select('guia_remision', 'sku', 'empresa') // Seleccionar también el campo 'empresa'
                 ->get()
                 ->map(function ($record) {
-                    return $record->guia_remision . '|' . $record->sku; // Crear clave compuesta
+                    return $record->guia_remision . '|' . $record->sku . '|' . $record->empresa; // Crear clave compuesta con 'empresa'
                 })
                 ->toArray(); // Convertir a un arreglo para búsqueda eficiente
-            $mysqlRecordsSet = array_flip($mysqlRecords); // Convertir en un conjunto para búsqueda rápida
+            $mysqlRecordsCerrados = DB::table('tb_contabilidad_cerrados')
+                ->where('fecha_documento', '>=', $fechaInicioAnoMysql)
+                ->select('guia_remision', 'sku', 'empresa') // Seleccionar también el campo 'empresa'
+                ->get()
+                ->map(function ($record) {
+                    return $record->guia_remision . '|' . $record->sku . '|' . $record->empresa; // Crear clave compuesta con 'empresa'
+                })
+                ->toArray(); // Convertir a un arreglo para búsqueda eficiente
+            $combinedRecords = array_merge($mysqlRecords, $mysqlRecordsCerrados);
+            $mysqlRecordsSet = array_flip($combinedRecords);
+
             // Paso 2: Obtener datos de SQL Server
             $data_sql = DB::connection('sqlsrv_dbmsrt')->select("
                 SELECT 
@@ -255,9 +270,9 @@ class TbContabilidad extends Model
             $datosAInsertar = [];
 
             foreach ($data_sql as $row) {
-                $compositeKey = $row->Guía_de_Remisión . '|' . $row->SKU; // Crear clave compuesta
-                if (!isset($mysqlRecordsSet[$compositeKey])) {
 
+                $compositeKey = $row->Guía_de_Remisión . '|' . $row->SKU . '|' . $row->Empresa;
+                if (!isset($mysqlRecordsSet[$compositeKey])) {
                     $datosAInsertar[] = [
                         'estilo' => $row->Estilo,
                         'color' => $row->Color,

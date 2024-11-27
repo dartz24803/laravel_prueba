@@ -93,7 +93,7 @@
     function FacturadosTotal() {
         Cargando();
 
-        var url = "{{ route('facturacion_fp') }}";
+        var url = "{{ route('facturacion_ft') }}";
 
         $.ajax({
             url: url,

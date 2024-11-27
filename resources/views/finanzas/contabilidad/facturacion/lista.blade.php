@@ -169,7 +169,7 @@
                         </tbody>
                         <tfoot id="tablaTotales">
                             <tr>
-                                <td colspan="2">Cantidad Total:</td>
+                                <td colspan="2">Total General:</td>
                                 <td id="totalAlmLN1">0</td>
                                 <td id="totalAlmDSC">0</td>
                                 <td id="totalAlmDISCOTELA">0</td>
@@ -257,7 +257,7 @@
                 Buscar
             </button>
         </div>
-        <div class="form-group col-lg-2">
+        <div class="form-group col-lg-1">
             <a class="btn mb-1 mb-sm-0" title="Exportar excel"
                 style="background-color: #28a745 !important;"
                 onclick="Excel_Facturacion_Informe();">
@@ -273,12 +273,35 @@
         </div>
         <div class="form-group col-lg-1">
             <button type="button" class="btn btn-primary w-100" title="Facturar" id="btnVer" disabled>
-                Ver
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                    <circle cx="12" cy="12" r="3"></circle>
+                </svg>
             </button>
         </div>
         <div class="form-group col-lg-3">
             Registros seleccionados: <span id="cantidadSeleccionados">0</span>
         </div>
+        <div class="form-group col-lg-5">
+            <label>
+                <input type="checkbox" name="almacen" value="1" id="alm_dsc"> Alm DSC
+            </label>
+            <label>
+                <input type="checkbox" name="almacen" value="2" id="alm_discotela"> Alm Discotela
+            </label>
+            <label>
+                <input type="checkbox" name="almacen" value="3" id="alm_pb"> Alm PB
+            </label>
+            <label>
+                <input type="checkbox" name="almacen" value="4" id="alm_mad"> Alm Mad
+            </label>
+            <label>
+                <input type="checkbox" name="almacen" value="5" id="alm_fam"> Alm Fam
+            </label>
+        </div>
+        <input type="hidden" id="almacenSeleccionadoInput" name="almacenSeleccionado">
+
+
 
     </div>
 </div>
@@ -365,22 +388,24 @@
                     var estado = $('#estadoFiltro').val();
                     var filtroSku = $('#skuFiltro').val();
                     var filtroEmpresa = $('#empresaFiltro').val();
+                    var almacenSeleccionadoInput = $('#almacenSeleccionadoInput').val();
                     d.fecha_inicio = fechaInicio;
                     d.fecha_fin = fechaFin;
                     d.estado = estado;
                     d.filtroSku = filtroSku;
                     d.filtroEmpresa = filtroEmpresa;
+                    d.almacenSeleccionadoInput = almacenSeleccionadoInput;
+
                 },
                 "headers": {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             },
-            // "pageLength": 50, // Número de registros por página
+            // "pageLength": 50, 
             "lengthMenu": [10, 25, 50, 100],
             "order": [
                 [0, "asc"]
-            ], // Define la columna 0 como orden por defecto
-
+            ],
             "columns": [{
                     "data": "id",
                     "visible": false, // Oculta la columna del ID
@@ -875,14 +900,44 @@
 
 
     function Excel_Facturacion_Filtrado() {
-        $.ajax({
-            url: "{{ route('tabla_facturacion.excel_filtrado') }}", // Ruta donde se procesarán los IDs
-            type: "GET",
-            data: {
-                ids: selectedIds,
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {}
+        var ids = selectedIds.join(','); // Asegúrate de que los IDs estén en el formato correcto
+        window.location.replace("{{ route('tabla_facturacion.excel_filtrado', ['ids' => ':ids']) }}".replace(':ids', ids));
+    }
+
+
+
+    const checkboxes = document.querySelectorAll('input[type="checkbox"][name="almacen"]');
+
+    checkboxes.forEach((checkbox) => {
+        console.log("####1");
+
+        checkbox.addEventListener('change', function() {
+            // Restablecer todos los checkboxes, y marcar sólo el seleccionado
+            checkboxes.forEach((otherCheckbox) => {
+                if (otherCheckbox !== checkbox) {
+                    otherCheckbox.checked = false; // Desmarcar otros checkboxes
+                }
+            });
+            // Enviar los datos del checkbox seleccionado
+            enviarDatosSeleccionado();
         });
+    });
+
+    function enviarDatosSeleccionado() {
+        let selectedAlmacenId = null;
+        // Buscar el checkbox seleccionado
+        checkboxes.forEach((checkbox) => {
+            if (checkbox.checked) {
+                selectedAlmacenId = checkbox.value; // Captura el valor del checkbox seleccionado
+            }
+        });
+        if (selectedAlmacenId) {
+            $('#almacenSeleccionadoInput').val(selectedAlmacenId);
+
+        } else {
+            $('#almacenSeleccionadoInput').val(0);
+        }
+
+        var almacenSeleccionadoInput = $('#almacenSeleccionadoInput').val();
     }
 </script>

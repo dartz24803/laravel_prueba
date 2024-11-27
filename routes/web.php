@@ -1674,6 +1674,7 @@ Route::controller(FacturacionController::class)->group(function () {
     Route::get('facturacion', 'index')->name('facturacion');
     Route::get('facturacion_ic', 'index_ic')->name('facturacion_ic');
     Route::get('facturacion_fp', 'index_fp')->name('facturacion_fp');
+    Route::get('facturacion_ft', 'index_ft')->name('facturacion_ft');
 
     Route::post('tabla_facturacion/list', 'list')->name('tabla_facturacion.list');
     Route::get('tabla_facturacion/update', 'actualizarTabla')->name('tabla_facturacion.update');
@@ -1684,7 +1685,7 @@ Route::controller(FacturacionController::class)->group(function () {
     Route::post('tabla_facturacion/por_facturar', 'list_por_facturar')->name('tabla_facturacion.por_facturar');
     Route::get('tabla_facturacion/modal_por_facturar', 'modal_por_facturar')->name('tabla_facturacion.modal_por_facturar');
     Route::get('tabla_facturacion/{inicio}/{fin}/excel', 'excel_ic')->name('tabla_facturacion.excel');
-    Route::get('tabla_facturacion/excel_filtrado', 'excel_filtrado')->name('tabla_facturacion.excel_filtrado');
+    Route::get('tabla_facturacion/excel_filtrado/{ids}', 'excel_filtrado')->name('tabla_facturacion.excel_filtrado');
 
 
     // FACTURACIÓN PARCIAL
