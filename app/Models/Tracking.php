@@ -239,10 +239,23 @@ class Tracking extends Model
             $parte_semana = "tr.semana='".$dato['semana']."' AND";
         }
         $sql = "SELECT tr.id,tr.fec_reg AS orden,tr.n_requerimiento,tr.semana,
-                bd.cod_base AS desde,bh.cod_base AS hacia
+                bd.cod_base AS desde,bh.cod_base AS hacia,
+                te.descripcion AS nom_estado,CASE WHEN dp.id_proceso=9 THEN '100%'
+                ELSE CONCAT(dp.id_proceso*11.11,'%') END AS porcentaje_avance
                 FROM tracking tr
                 INNER JOIN base bd ON bd.id_base=tr.id_origen_desde
                 INNER JOIN base bh ON bh.id_base=tr.id_origen_hacia
+                INNER JOIN (SELECT MAX(id) AS ultimo_id,id_tracking
+                FROM tracking_detalle_proceso
+                WHERE id_proceso!=5
+                GROUP BY id_tracking) mp ON tr.id=mp.id_tracking
+                INNER JOIN tracking_detalle_proceso dp ON mp.ultimo_id=dp.id
+                /*INNER JOIN tracking_proceso tp ON dp.id_proceso=tp.id*/
+                INNER JOIN (SELECT MAX(id) AS ultimo_id,id_detalle
+                FROM tracking_detalle_estado
+                GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
+                INNER JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
+                INNER JOIN tracking_estado te ON de.id_estado=te.id
                 WHERE $parte_anio $parte_semana $parte_base tr.estado=1";
         $query = DB::select($sql);
         return $query;

@@ -4603,9 +4603,11 @@ class TrackingController extends Controller
         }
         $list_anio = Anio::select('cod_anio')->where('estado',1)
                     ->where('cod_anio','>=','2024')->get();
+        $list_estado = TrackingEstado::all();                    
         return view('logistica.tracking.detalle_tracking.index',compact(
             'list_base',
-            'list_anio'
+            'list_anio',
+            'list_estado'
         ));
     }
 
@@ -4614,7 +4616,8 @@ class TrackingController extends Controller
         $list_detalle = Tracking::get_list_detalle_tracking([
             'base'=>$request->base,
             'anio'=>$request->anio,
-            'semana'=>$request->semana
+            'semana'=>$request->semana,
+            'estado'=>$request->estado
         ]);
         return view('logistica.tracking.detalle_tracking.lista', compact('list_detalle'));
     }
