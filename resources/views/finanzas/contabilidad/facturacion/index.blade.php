@@ -10,10 +10,10 @@
         </button>
     </div>
     <div class="col-lg-4">
-        Última Fecha de actualización: <span id="cantidadSeleccionados">0</span><br>
-        Cantidad total de Registros: <span id="cantidadSeleccionados">0</span>
-
+        Última Fecha de actualización: <span id="ultimaActualizacion">{{ $fecha_actualizacion }}</span><br>
+        Cantidad total de Registros: <span id="totalRegistros">{{ $cantidad_registros }}</span>
     </div>
+
 </div>
 
 <div class="row" id="cancel-row">
@@ -33,20 +33,11 @@
 
     function Redirigir_Lista_Contabilidad() {
         Cargando();
-        var fecha_inicio = $('#fecha_iniciob').val();
-        var fecha_fin = $('#fecha_finb').val();
-
-        var ini = moment(fecha_inicio);
-        var fin = moment(fecha_fin);
         var url = "{{ route('tabla_facturacion.list') }}";
 
         $.ajax({
             url: url,
             type: "POST",
-            data: {
-                'fecha_inicio': fecha_inicio,
-                'fecha_fin': fecha_fin
-            },
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
@@ -59,33 +50,37 @@
     $('#btnActualizar').on('click', function() {
         $.ajax({
             url: "{{ route('tabla_facturacion.update') }}", // Ruta donde se procesarán los IDs
-            type: "POST",
-            data: {
-                _token: $('meta[name="csrf-token"]').attr('content')
-            },
+            type: "GET",
+
             success: function(data) {
-                if (data == "error") {
-                    Swal.fire({
-                        title: '¡Error al Actualizar!',
-                        text: "¡El registro ya existe o hay un problema con los datos!",
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    });
-                } else {
+                console.log("Respuesta del servidor:", data); // Para ver los datos completos
+                if (data.success) {
+
                     Swal.fire(
                         '¡Actualización Exitosa!',
-                        '¡Los registros han sido actualizados correctamente!',
+                        '¡' + data.cantidad_insertados + ' registros han sido actualizados correctamente!',
                         'success'
                     ).then(function() {
                         table.ajax.reload();
                     });
+
+                } else {
+                    Swal.fire({
+                        title: 'Actualizado',
+                        text: data.message || 'No hay Datos para Actualizar',
+                        icon: 'info',
+                        confirmButtonColor: '#d33',
+                        confirmButtonText: 'OK'
+                    });
                 }
             },
             error: function(xhr, status, error) {
+                console.log(error)
+                console.log("########2")
+
                 Swal.fire({
-                    title: '¡Error!',
-                    text: "Ocurrió un error al procesar la actualización.",
+                    title: '¡Error al Actualizar!',
+                    text: error,
                     icon: 'error',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'OK'
