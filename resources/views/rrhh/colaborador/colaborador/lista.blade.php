@@ -42,6 +42,9 @@
         visibility: visible;
         opacity: 1;
     }
+    #tabla_js {
+        margin-bottom: 3rem;
+    }
 </style>
 
 <table id="tabla_js" class="table" style="width:100%">
