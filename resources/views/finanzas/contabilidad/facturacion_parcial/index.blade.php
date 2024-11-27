@@ -1,5 +1,5 @@
 @csrf
-<div class="table-responsive" id="lista_maestra" style="padding: 10px">
+<div class="table-responsive" id="lista_maestra_fp" style="padding: 10px">
 </div>
 
 <script>
@@ -25,7 +25,7 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success: function(resp) {
-                $('#lista_maestra').html(resp);
+                $('#lista_maestra_fp').html(resp);
             }
         });
     }
