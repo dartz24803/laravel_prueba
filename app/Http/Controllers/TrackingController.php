@@ -2754,6 +2754,9 @@ class TrackingController extends Controller
                         'recibido',DB::raw('recibido-enviado AS diferencia'),'observacion')
                         ->where('id_tracking',$id)->where('observacion','Faltante')
                         ->whereColumn('enviado','>','recibido')->get();
+        $list_diferencia = TrackingDiferencia::select('sku','estilo','color_talla','bulto','enviado',
+                        'recibido',DB::raw('recibido-enviado AS diferencia'),'observacion')
+                        ->where('id_tracking',$id)->whereIn('observacion',['Faltante','Sobrante'])->get();                        
 
         //ALERTA 9
         $get_id = Tracking::get_list_tracking(['id'=>$id]);
@@ -2774,6 +2777,10 @@ class TrackingController extends Controller
                 'contenido' => 'Hola '.$get_id->desde.', regularizar los sobrantes indicados',
             ];
             $this->insert_notificacion($dato);
+
+            Tracking::findOrFail($id)->update([
+                'v_sobrante' => 0
+            ]);
         }
         if(count($list_faltante)>0){
             $list_token = TrackingToken::whereIn('base', [$get_id->hacia])->get();
@@ -2791,218 +2798,112 @@ class TrackingController extends Controller
                 'contenido' => 'Hola '.$get_id->hacia.', regularizar los faltantes indicados',
             ];
             $this->insert_notificacion($dato);
+
+            Tracking::findOrFail($id)->update([
+                'v_faltante' => 0
+            ]);
         }
 
         //MENSAJE 5
         $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','CUADRE_DIFERENCIA')->first();
 
-        if(count($list_sobrante)>0){
-            $mail = new PHPMailer(true);
+        $mail = new PHPMailer(true);
 
-            try {
-                $mail->SMTPDebug = 0;
-                $mail->isSMTP();
-                $mail->Host       =  'mail.lanumero1.com.pe';
-                $mail->SMTPAuth   =  true;
-                $mail->Username   =  'intranet@lanumero1.com.pe';
-                $mail->Password   =  'lanumero1$1';
-                $mail->SMTPSecure =  'tls';
-                $mail->Port     =  587; 
-                $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
-    
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
-                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
-                foreach($list_cd as $list){
-                    $mail->addAddress($list->emailp);
-                }
-                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
-                foreach($list_td as $list){
-                    $mail->addAddress($list->emailp);
-                }
-                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
-                foreach($list_cc as $list){
-                    $mail->addCC($list->emailp);
-                }
-    
-                $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
-                $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
-                $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
-                $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
-                $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
-                $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
-                $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
-    
-                $mail->isHTML(true);
-    
-                $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
-            
-                $mail->Body =  '<FONT SIZE=3>
-                                    <b>Semana:</b> '.$get_id->semana.'<br>
-                                    <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
-                                    <b>Base:</b> '.$get_id->hacia.'<br>
-                                    <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                    <b>Fecha - Reporte de diferencias:</b> '.$fecha_formateada.'<br><br>
-                                    Hola '.$get_id->desde.', regularizar los sobrantes indicados.<br><br>
-                                    <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
-                                        <thead>
-                                            <tr align="center" style="background-color:#0093C6;">
-                                                <th><b>SKU</b></th>
-                                                <th><b>Estilo</b></th>
-                                                <th><b>Col_Tal</b></th>
-                                                <th><b>Bulto</b></th>
-                                                <th><b>Enviado</b></th>
-                                                <th><b>Recibido</b></th>
-                                                <th><b>Dif</b></th>
-                                                <th><b>Orden de Regularización</b></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>';
-                                    foreach($list_sobrante as $list){
-                $mail->Body .=  '            <tr align="left">
-                                                <td>'.$list->sku.'</td>
-                                                <td>'.$list->estilo.'</td>
-                                                <td>'.$list->color_talla.'</td>
-                                                <td>'.$list->bulto.'</td>
-                                                <td>'.$list->enviado.'</td>
-                                                <td>'.$list->recibido.'</td>
-                                                <td>'.$list->diferencia.'</td>
-                                                <td>'.$list->observacion.'</td>
-                                            </tr>';
-                                    }
-                $mail->Body .=  '        </tbody>
-                                    </table><br>
-                                    <a href="'.route('tracking.detalle_operacion_diferencia', $id).'" 
-                                    title="Detalle Operación de Diferencias"
-                                    target="_blank" 
-                                    style="background-color: red;
-                                    color: white;
-                                    border: 1px solid transparent;
-                                    padding: 7px 12px;
-                                    font-size: 13px;
-                                    text-decoration: none !important;
-                                    border-radius: 10px;">
-                                        Detalle de Operación de Diferencias
-                                    </a><br>';
-                                if($t_comentario){
-                $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
-                                </FONT SIZE>';
-                                }                                
-            
-                $mail->CharSet = 'UTF-8';
-                $mail->send();
+        try {
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host       =  'mail.lanumero1.com.pe';
+            $mail->SMTPAuth   =  true;
+            $mail->Username   =  'intranet@lanumero1.com.pe';
+            $mail->Password   =  'lanumero1$1';
+            $mail->SMTPSecure =  'tls';
+            $mail->Port     =  587; 
+            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-                Tracking::findOrFail($id)->update([
-                    'v_sobrante' => 0
-                ]);
-            }catch(Exception $e) {
-                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            //$mail->addAddress('dpalomino@lanumero1.com.pe');
+            //$mail->addAddress('ogutierrez@lanumero1.com.pe');
+            //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
+            $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
+            foreach($list_cd as $list){
+                $mail->addAddress($list->emailp);
             }
-        }
-        if(count($list_faltante)>0){
-            $mail = new PHPMailer(true);
-
-            try {
-                $mail->SMTPDebug = 0;
-                $mail->isSMTP();
-                $mail->Host       =  'mail.lanumero1.com.pe';
-                $mail->SMTPAuth   =  true;
-                $mail->Username   =  'intranet@lanumero1.com.pe';
-                $mail->Password   =  'lanumero1$1';
-                $mail->SMTPSecure =  'tls';
-                $mail->Port     =  587; 
-                $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
-    
-                //$mail->addAddress('dpalomino@lanumero1.com.pe');
-                //$mail->addAddress('ogutierrez@lanumero1.com.pe');
-                //$mail->addAddress('asist1.procesosyproyectos@lanumero1.com.pe');
-                $list_cd = DB::select('CALL usp_correo_tracking (?,?)', ['CD','']);
-                foreach($list_cd as $list){
-                    $mail->addAddress($list->emailp);
-                }
-                $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
-                foreach($list_td as $list){
-                    $mail->addAddress($list->emailp);
-                }
-                $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
-                foreach($list_cc as $list){
-                    $mail->addCC($list->emailp);
-                }
-    
-                $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
-                $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
-                $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
-                $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
-                $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
-                $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
-                $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
-    
-                $mail->isHTML(true);
-    
-                $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
-            
-                $mail->Body =  '<FONT SIZE=3>
-                                    <b>Semana:</b> '.$get_id->semana.'<br>
-                                    <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
-                                    <b>Base:</b> '.$get_id->hacia.'<br>
-                                    <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
-                                    <b>Fecha - Reporte de diferencias:</b> '.$fecha_formateada.'<br><br>
-                                    Hola '.$get_id->hacia.', regularizar los faltantes indicados.<br><br>
-                                    <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
-                                        <thead>
-                                            <tr align="center" style="background-color:#0093C6;">
-                                                <th><b>SKU</b></th>
-                                                <th><b>Estilo</b></th>
-                                                <th><b>Col_Tal</b></th>
-                                                <th><b>Bulto</b></th>
-                                                <th><b>Enviado</b></th>
-                                                <th><b>Recibido</b></th>
-                                                <th><b>Dif</b></th>
-                                                <th><b>Orden de Regularización</b></th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>';
-                                    foreach($list_faltante as $list){
-                $mail->Body .=  '            <tr align="left">
-                                                <td>'.$list->sku.'</td>
-                                                <td>'.$list->estilo.'</td>
-                                                <td>'.$list->color_talla.'</td>
-                                                <td>'.$list->bulto.'</td>
-                                                <td>'.$list->enviado.'</td>
-                                                <td>'.$list->recibido.'</td>
-                                                <td>'.$list->diferencia.'</td>
-                                                <td>'.$list->observacion.'</td>
-                                            </tr>';
-                                    }
-                $mail->Body .=  '        </tbody>
-                                    </table><br>
-                                    <a href="'.route('tracking.detalle_operacion_diferencia', $id).'" 
-                                    title="Detalle Operación de Diferencias"
-                                    target="_blank" 
-                                    style="background-color: red;
-                                    color: white;
-                                    border: 1px solid transparent;
-                                    padding: 7px 12px;
-                                    font-size: 13px;
-                                    text-decoration: none !important;
-                                    border-radius: 10px;">
-                                        Detalle de Operación de Diferencias
-                                    </a><br>';
-                                if($t_comentario){
-                $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
-                                </FONT SIZE>';
-                                }                                
-            
-                $mail->CharSet = 'UTF-8';
-                $mail->send();
-
-                Tracking::findOrFail($id)->update([
-                    'v_faltante' => 0
-                ]);
-            }catch(Exception $e) {
-                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            $list_td = DB::select('CALL usp_correo_tracking (?,?)', ['TD',$get_id->hacia]);
+            foreach($list_td as $list){
+                $mail->addAddress($list->emailp);
             }
+            $list_cc = DB::select('CALL usp_correo_tracking (?,?)', ['CC','']);
+            foreach($list_cc as $list){
+                $mail->addCC($list->emailp);
+            }
+
+            $fecha_formateada =  date('l d')." de ".date('F')." del ".date('Y');
+            $dias_ingles = array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday');
+            $dias_espanol = array('Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo');
+            $meses_ingles = array('January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+            $meses_espanol = array('enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre');
+            $fecha_formateada = str_replace($dias_ingles, $dias_espanol, $fecha_formateada);
+            $fecha_formateada = str_replace($meses_ingles, $meses_espanol, $fecha_formateada);
+
+            $mail->isHTML(true);
+
+            $mail->Subject = "DIFERENCIAS EN LA RECEPCIÓN: RQ. ".$get_id->n_requerimiento." (".$get_id->hacia.") - PRUEBA";
+        
+            $mail->Body =  '<FONT SIZE=3>
+                                <b>Semana:</b> '.$get_id->semana.'<br>
+                                <b>Nro. Req.:</b> '.$get_id->n_requerimiento.'<br>
+                                <b>Base:</b> '.$get_id->hacia.'<br>
+                                <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
+                                <b>Fecha - Reporte de diferencias:</b> '.$fecha_formateada.'<br><br>
+                                Hola '.$get_id->hacia.', regularizar los sobrantes y faltantes indicados.<br><br>
+                                <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
+                                    <thead>
+                                        <tr align="center" style="background-color:#0093C6;">
+                                            <th><b>SKU</b></th>
+                                            <th><b>Estilo</b></th>
+                                            <th><b>Col_Tal</b></th>
+                                            <th><b>Bulto</b></th>
+                                            <th><b>Enviado</b></th>
+                                            <th><b>Recibido</b></th>
+                                            <th><b>Dif</b></th>
+                                            <th><b>Orden de Regularización</b></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>';
+                                foreach($list_diferencia as $list){
+            $mail->Body .=  '            <tr align="left">
+                                            <td>'.$list->sku.'</td>
+                                            <td>'.$list->estilo.'</td>
+                                            <td>'.$list->color_talla.'</td>
+                                            <td>'.$list->bulto.'</td>
+                                            <td>'.$list->enviado.'</td>
+                                            <td>'.$list->recibido.'</td>
+                                            <td>'.$list->diferencia.'</td>
+                                            <td>'.$list->observacion.'</td>
+                                        </tr>';
+                                }
+            $mail->Body .=  '        </tbody>
+                                </table><br>
+                                <a href="'.route('tracking.detalle_operacion_diferencia', $id).'" 
+                                title="Detalle Operación de Diferencias"
+                                target="_blank" 
+                                style="background-color: red;
+                                color: white;
+                                border: 1px solid transparent;
+                                padding: 7px 12px;
+                                font-size: 13px;
+                                text-decoration: none !important;
+                                border-radius: 10px;">
+                                    Detalle de Operación de Diferencias
+                                </a><br>';
+                            if($t_comentario){
+            $mail->Body .=      '<br>Comentario:<br>'.nl2br($t_comentario->comentario).'
+                            </FONT SIZE>';
+                            }                                
+        
+            $mail->CharSet = 'UTF-8';
+            $mail->send();
+        }catch(Exception $e) {
+            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
 
         TrackingDetalleEstado::create([
