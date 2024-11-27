@@ -1,4 +1,4 @@
-<div class="toolbar d-md-flex align-items-md-center mt-3">
+<div class="toolbar d-md-flex align-items-md-center">
     @if (session('usuario')->id_puesto==19 ||
     session('usuario')->id_puesto==21 ||
     session('usuario')->id_puesto==279 ||

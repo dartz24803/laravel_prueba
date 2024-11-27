@@ -9,7 +9,17 @@
             <th>Proceso</th>
             <th>Estado</th>
             <th id="ordenar-fechas" onclick="OrdenarFechas()" style="cursor: pointer;">
-                <div class=" d-flex justify-content-end orden-icono">⇅</div>Fecha
+                <div class="col-md-12 row p-0">
+                    <div class="offset-1 col-md-6">
+                        Fecha
+                    </div>
+                    <div class="offset-1 col-md-2">
+                        <div class="d-flex flex-column orden-icono">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                        </div>
+                    </div>
+                </div>
             </th>
             <th>Hora</th>
         </tr>
@@ -66,7 +76,17 @@ $(document).ready(function() {
             }
         ],
     });
+    $('#tabla_js thead').on('click', 'th', function() {
+        if ($(this).attr('id') !== 'ordenar-fechas') {
+            $('#tabla_js thead th .orden-icono').html(`
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            `);
+        }
+    });
 });
+
+
 
 function OrdenarFechas() {
     var tabla = $('#tabla_js').DataTable();
@@ -82,37 +102,23 @@ function OrdenarFechas() {
 
         // Cambia la clase del ícono según el nuevo orden
         if (newOrder === 'asc') {
-            icono.removeClass('desc').addClass('asc').text('⇑');
+            icono.removeClass('desc').addClass('asc').html(`
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    `);
         } else {
-            icono.removeClass('asc').addClass('desc').text('⇓');
+            icono.removeClass('asc').addClass('desc').html(`
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    `);
         }
     } else {
         // Si no está ordenada, establece como ascendente por defecto
         tabla.order([0, 'asc']).draw();
-        icono.removeClass('desc').addClass('asc').text('⇑');
+        icono.removeClass('desc').addClass('asc').html(`
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                    `);
     }
 }
-
 </script>
-<style>
-#ordenar-fechas {
-    cursor: pointer; /* Cambia el cursor a pointer */
-    user-select: none; /* Evita selección del texto al hacer clic */
-}
-
-.orden-icono {
-    margin-left: 5px; /* Espacio entre texto y flecha */
-    font-size: 0.9em;
-    color: gray; /* Color inicial */
-}
-
-.orden-icono.asc {
-    content: "⇑"; /* Flecha ascendente */
-    color: gray; /* Color activo */
-}
-
-.orden-icono.desc {
-    content: "⇓"; /* Flecha descendente */
-    color: gray; /* Color activo */
-}
-</style>

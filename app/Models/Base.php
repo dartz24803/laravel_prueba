@@ -80,7 +80,12 @@ class Base extends Model
         $id_puesto = session('usuario')->id_puesto;
         $id_nivel = session('usuario')->id_nivel;
 
-        if ($id_puesto == 23 || $id_puesto == 26 || $id_nivel == 1 || $id_puesto == 27) {
+        if ($id_nivel == 1 || 
+        $id_puesto == 23 || 
+        $id_puesto == 26 || 
+        $id_puesto == 27 ||
+        $id_puesto == 158 ||
+        $id_puesto == 209) {
             $buscar = "";
         } elseif ($id_puesto == 128) {
             $buscar = "AND cod_base not in ('OFC', 'CD' , 'AMT', 'DEED', 'EXT', 'ZET') ";

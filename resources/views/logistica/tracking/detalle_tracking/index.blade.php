@@ -38,6 +38,18 @@
             @endwhile
         </select>
     </div>
+
+    <div class="form-group col-lg-2">
+        <label>Estado:</label>
+        <select class="form-control" id="estadob" name="estadob" onchange="Lista_Detalle();">
+            <option value="0">Todos</option>
+            @foreach ($list_estado as $list)
+                <option value="{{ $list->id }}">
+                    {{ $list->descripcion }}
+                </option>
+            @endforeach
+        </select>
+    </div>
 </div>
 
 <div class="table-responsive" id="lista_detalle">
@@ -52,17 +64,18 @@
         var base = $('#baseb').val();
         var anio = $('#aniob').val();
         var semana = $('#semanab').val();
+        var estado = $('#estadob').val();
         var url = "{{ route('tracking_det.list') }}";
 
         $.ajax({
             url: url,
             type: "POST",
-            data: {'base':base,'anio':anio,'semana':semana},
+            data: {'base':base,'anio':anio,'semana':semana,'estado':estado},
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success:function (resp) {
-                $('#lista_detalle').html(resp);  
+                $('#lista_detalle').html(resp);
             }
         });
     }

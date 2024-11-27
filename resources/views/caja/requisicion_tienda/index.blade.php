@@ -19,7 +19,9 @@
                         <div class="toolbar d-md-flex align-items-md-center mt-3">
                             @if (session('usuario')->id_nivel == "1" ||
                             session('usuario')->id_puesto == "9" ||
-                            session('usuario')->id_puesto == "128")
+                            session('usuario')->id_puesto == "128" ||
+                            session('usuario')->id_puesto == "158" ||
+                            session('usuario')->id_puesto == "209")
                                 <div class="form-group col-lg-2">
                                     <label>Base:</label>
                                     <select class="form-control" name="cod_baseb" id="cod_baseb" onchange="Lista_Requisicion_Tienda();">
