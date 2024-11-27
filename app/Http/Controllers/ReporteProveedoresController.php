@@ -126,7 +126,11 @@ class ReporteProveedoresController extends Controller{
         $dato['desde'] = $request->fecha_inicio;
         $dato['hasta'] = $request->fecha_fin;
         $dato['estado']=3;
-        if($id_puesto==23 || $id_nivel==1 || $id_puesto==24){
+        if($id_nivel==1 || 
+        $id_puesto==23 || 
+        $id_puesto==24 || 
+        $id_puesto==158 || 
+        $id_puesto==209){
             if($id_puesto==24){
                 $dato['list_base'] = Base::select('cod_base')
                                     ->where('estado', 1)
