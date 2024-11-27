@@ -4603,7 +4603,7 @@ class TrackingController extends Controller
         }
         $list_anio = Anio::select('cod_anio')->where('estado',1)
                     ->where('cod_anio','>=','2024')->get();
-        $list_estado = TrackingEstado::all();                    
+        $list_estado = TrackingEstado::orderBy('id_proceso','ASC')->get();                    
         return view('logistica.tracking.detalle_tracking.index',compact(
             'list_base',
             'list_anio',
