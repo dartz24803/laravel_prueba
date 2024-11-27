@@ -2854,7 +2854,7 @@ class TrackingController extends Controller
                                 <b>Base:</b> '.$get_id->hacia.'<br>
                                 <b>Distrito:</b> '.$get_id->nombre_distrito.'<br>
                                 <b>Fecha - Reporte de diferencias:</b> '.$fecha_formateada.'<br><br>
-                                Hola '.$get_id->hacia.', regularizar los sobrantes y faltantes indicados.<br><br>
+                                Hola '.$get_id->hacia.' - '.$get_id->desde.', regularizar los sobrantes y faltantes indicados.<br><br>
                                 <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                     <thead>
                                         <tr align="center" style="background-color:#0093C6;">
