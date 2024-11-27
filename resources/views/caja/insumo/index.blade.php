@@ -16,7 +16,8 @@
                                 session('usuario')->id_puesto == 9 ||
                                 session('usuario')->id_puesto == 27 ||
                                 session('usuario')->id_puesto == 128 ||
-                                session('usuario')->id_puesto == 148)
+                                session('usuario')->id_puesto == 148 ||
+                                session('usuario')->id_puesto == 209)
                                     <li class="nav-item">
                                         <a id="a_eins" class="nav-link" onclick="Entrada_Insumo();" style="cursor: pointer;">Entrada de insumo</a>
                                     </li>
@@ -31,7 +32,8 @@
                                 session('usuario')->id_puesto == 9 ||
                                 session('usuario')->id_puesto == 27 ||
                                 session('usuario')->id_puesto == 128 ||
-                                session('usuario')->id_puesto == 148)
+                                session('usuario')->id_puesto == 148 ||
+                                session('usuario')->id_puesto == 209)
                                     <li class="nav-item">
                                         <a id="a_roins" class="nav-link" onclick="Reporte_Insumo();" style="cursor: pointer;">Reporte de insumo</a>
                                     </li>
@@ -61,7 +63,8 @@
             session('usuario')->id_puesto == 9 ||
             session('usuario')->id_puesto == 27 ||
             session('usuario')->id_puesto == 128 ||
-            session('usuario')->id_puesto == 148)
+            session('usuario')->id_puesto == 148 ||
+            session('usuario')->id_puesto == 209)
                 Entrada_Insumo();
             @else 
                 Salida_Insumo();
