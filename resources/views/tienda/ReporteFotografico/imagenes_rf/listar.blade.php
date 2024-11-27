@@ -10,7 +10,7 @@ foreach ($list_rf as $index => $row) {
             data-toggle="modal" 
             data-target="#ModalUpdate" 
             app_elim="<?= url('Modal_Detalle_RF/'.$row['id']. '/'. $prev_id. '/' .$next_id) ?>" 
-            class="btn btn-primary p-0">
+            class="btn btn-light p-0">
             <img src="https://lanumerounocloud.com/intranet/REPORTE_FOTOGRAFICO/<?= $row['foto'] ?>?t=<?= time() ?>" class="card-img-top" alt="..." app_detalle="<?= url('ReporteFotografico/Modal_Slider') ?>">
         </a>
         <div class="card-body">
@@ -27,17 +27,10 @@ foreach ($list_rf as $index => $row) {
         </div>
     </div>
 <?php } ?>
-<script>/*
-    $(document).on('click', '.open-modal', function() {
-        var currentId = $(this).attr('app_elim').split('/').pop();
-        var prevId = $(this).data('prev-id');
-        var nextId = $(this).data('next-id');
-
-        console.log(prevId);
-        console.log(currentId);
-        console.log(nextId);
-        
-        $('#ModalUpdate').data('prev-id', prevId);
-        $('#ModalUpdate').data('next-id', nextId);
-    });*/
-</script>
+<style>
+    .btn-light{
+        background-image: url('/template/plugins/select2/select2-spinner.gif');
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+</style>
