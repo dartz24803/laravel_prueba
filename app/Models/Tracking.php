@@ -250,7 +250,6 @@ class Tracking extends Model
                 WHERE id_proceso!=5
                 GROUP BY id_tracking) mp ON tr.id=mp.id_tracking
                 INNER JOIN tracking_detalle_proceso dp ON mp.ultimo_id=dp.id
-                /*INNER JOIN tracking_proceso tp ON dp.id_proceso=tp.id*/
                 INNER JOIN (SELECT MAX(id) AS ultimo_id,id_detalle
                 FROM tracking_detalle_estado
                 GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
