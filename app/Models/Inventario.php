@@ -52,7 +52,7 @@ class Inventario extends Model
     public static function get_list_inventario()
     {
         $sql = "SELECT a.*, 
-                       DATE_FORMAT(a.fecha, '%d/%m/%Y') AS fecha, 
+                       DATE_FORMAT(a.fecha, '%d/%m/%Y') AS fecha_f, 
                        b.usuario_nombres, 
                        b.usuario_apater, 
                        b.usuario_amater,

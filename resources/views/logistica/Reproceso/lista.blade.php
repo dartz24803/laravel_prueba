@@ -18,7 +18,7 @@
             <tr>
                 <td><?php echo $list['orden']; ?></td>
                 <td><?php echo $list['mes']; ?></td>
-                <td><?php echo $list['fecha_documento']; ?></td> 
+                <td data-order="{{ \Carbon\Carbon::createFromFormat('d/m/Y', $list['fecha_documento'])->format('Y-m-d') }}" ><?php echo $list['fecha_documento']; ?></td> 
                 <td><?php echo $list['documento']; ?></td>
                 <td><?php echo $list['usuario']; ?></td>
                 <td><?php echo $list['descripcion']; ?></td>

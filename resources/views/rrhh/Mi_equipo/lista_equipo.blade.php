@@ -40,7 +40,7 @@
                 <td><?php echo $list['num_celp']; ?></td>
                 <td><?php echo $list['nom_puesto']; ?></td>
                 <td><?php echo $list['nom_area']; ?></td>
-                <td><?php echo $list['fecha_ingreso']; ?></td>
+                <td data-order="{{ $list['ini_funciones'] }}"><?php echo $list['fecha_ingreso']; ?></td>
                 <td><?php if($list['fecha_baja']!="00-00-0000"){echo $list['fecha_baja'];} ?></td>
                 <td>
                     <div class="progress br-30">

@@ -821,12 +821,12 @@ class Usuario extends Model
     {
         $id_nivel = session('usuario')->id_nivel;
         $id_pueston = session('usuario')->id_puesto;
-
+/*
         if (isset($id_puesto) && $id_puesto != '0' && $id_puesto != '') {
             $buscar = "id_puesto in ($id_puesto) AND";
-        } else {
+        } else {*/
             $buscar = "";
-        }
+        // }
 
         if ($id_nivel == 1 || $id_pueston == 39) {
             $sql = "SELECT * FROM users

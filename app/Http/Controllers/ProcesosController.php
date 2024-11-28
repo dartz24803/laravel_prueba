@@ -70,7 +70,6 @@ class ProcesosController extends Controller
     {
         // Obtener la lista de procesos con los campos requeridos
         $list_procesos = ProcesosHistorial::select(
-            'portal_procesos_historial.fecha AS orden',
             'portal_procesos_historial.id_portal_historial',
             'portal_procesos_historial.id_portal',
             'portal_procesos_historial.codigo',

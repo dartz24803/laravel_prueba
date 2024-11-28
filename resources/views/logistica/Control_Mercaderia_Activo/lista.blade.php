@@ -31,7 +31,7 @@ $id_nivel = session('usuario')->id_nivel;
     <?php if($tvista=="C"){
         foreach($list_reporte as $list){?>
         <tr>
-            <td><?php echo $list['Fecha_Doc'] ?></td>
+            <td data-order="{{ \Carbon\Carbon::createFromFormat('d/m/Y', $list['Fecha_Doc'])->format('Y-m-d') }}" ><?php echo $list['Fecha_Doc'] ?></td>
             <td><?php echo $base ?></td>
             <td><?php echo $list['Doc_Despacho'] ?></td>
             <td><?php echo $list['Observacion'] ?></td>

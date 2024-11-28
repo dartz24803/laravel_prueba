@@ -19,25 +19,12 @@
 <table id="tabla_js" class="table table-hover" style="width:100%">
     <thead class="text-center">
         <tr>
-            <th>Orden</th>
             <th>Código</th>
             <th>Título</th>
             <th>Tipo</th>
             <th>Área</th>
             <th>Responsable</th>
-            <th id="ordenar-fechas" onclick="OrdenarFechas()" style="cursor: pointer;">
-                <div class="col-md-12 row p-0">
-                    <div class="offset-1 col-md-6">
-                        Fecha
-                    </div>
-                    <div class="offset-1 col-md-2">
-                        <div class="d-flex flex-column orden-icono">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </div>
-                    </div>
-                </div>
-            </th>
+            <th>Fecha</th>
             <th>Estado</th>
             <th>Acciones</th>
 
@@ -46,7 +33,6 @@
     <tbody>
         @foreach ($list_procesos as $proceso)
         <tr class="text-center">
-            <td>{{ $proceso->orden }}</td>
             <td>{{ $proceso->codigo }}</td>
             <td>{{ $proceso->nombre }}</td>
             <td>{{ $proceso->nombre_tipo_portal }}</td>
@@ -54,7 +40,7 @@
                 {{ $proceso->nombres_area }}
             </td>
             <td>{{ $proceso->nombre_responsable }}</td>
-            <td>{{ \Carbon\Carbon::parse($proceso->fecha)->locale('es')->translatedFormat('D d M y') }}</td>
+            <td data-order="{{ $proceso->fecha }}">{{ \Carbon\Carbon::parse($proceso->fecha)->locale('es')->translatedFormat('D d M y') }}</td>
 
             <td>{{ $proceso->estado_texto }}</td>
 
@@ -101,16 +87,6 @@
 <script>
     var tabla = $('#tabla_js').DataTable({
         order: [[0, "desc"]],
-        "columnDefs": [
-            {
-                'targets': 6,
-                'orderable': false
-            },
-            {
-                'targets': 0, // Índice de la columna que quieres ocultar
-                'visible': false // Oculta la columna
-            }
-        ],
         "autoWidth": false, // Desactiva el auto ajuste de ancho de DataTables
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
             "<'table-responsive'tr>" +
@@ -132,14 +108,6 @@
         "pageLength": 10
     });
     
-    $('#tabla_js thead').on('click', 'th', function() {
-        if ($(this).attr('id') !== 'ordenar-fechas') {
-            $('#tabla_js thead th .orden-icono').html(`
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            `);
-        }
-    });
     /*$('#toggle').change(function() {
         var visible = this.checked;
         tabla.column(6).visible(visible);
@@ -147,38 +115,4 @@
         tabla.column(14).visible(visible);
         tabla.column(18).visible(visible);
     });*/
-
-    function OrdenarFechas() {
-        var tabla = $('#tabla_js').DataTable();
-        var currentOrder = tabla.order(); // Obtiene el orden actual
-
-        var header = $('#ordenar-fechas'); // Selecciona el encabezado
-        var icono = header.find('.orden-icono'); // Selecciona el ícono de la flecha
-
-        // Alterna entre ascendente y descendente
-        if (currentOrder[0][0] === 0) { // Si la columna 0 está ordenada
-            var newOrder = (currentOrder[0][1] === 'asc') ? 'desc' : 'asc';
-            tabla.order([0, newOrder]).draw();
-
-            // Cambia la clase del ícono según el nuevo orden
-            if (newOrder === 'asc') {
-                icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            } else {
-                icono.removeClass('asc').addClass('desc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            }
-        } else {
-            // Si no está ordenada, establece como ascendente por defecto
-            tabla.order([0, 'asc']).draw();
-            icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-        }
-    }
 </script>

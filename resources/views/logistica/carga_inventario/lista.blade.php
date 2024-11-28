@@ -31,7 +31,7 @@
     <tbody>
         @foreach ($list_inventario as $list)
         <tr>
-            <td>{{ $list->fecha }}</td>
+            <td data-order="{{ $list->fecha }}">{{ $list->fecha_f }}</td>
             <td>{{ $list->base }}</td>
             <td>{{ $list->usuario_nombres }}</td>
             <td>{{ $list->conteo }}</td>
