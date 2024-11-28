@@ -169,7 +169,7 @@
             <th>Fecha Documento</th>
             <th>Guía Remisión</th>
             <th>Empresa</th>
-            <th>Enviado</th>
+            <th>Facturado</th>
             <th>Estado</th>
         </tr>
     </thead>

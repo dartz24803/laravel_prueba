@@ -153,7 +153,7 @@
                                 <th>Alm PB</th>
                                 <th>Alm FAM</th>
                                 <th>Alm MAD</th>
-                                <th>Enviado</th>
+                                <th>Despachado</th>
                                 <th>Costo Prom</th>
                                 <th>Color</th>
                                 <th>Talla</th>
@@ -242,13 +242,12 @@
             </select>
         </div>
         <div class="form-group col-lg-1">
-            <label for="mostrarSeleccionados">Filtrar:
+            <label for="mostrarSeleccionados">Contar:
             </label>
             <div class="d-block">
                 <input type="checkbox" id="mostrarSeleccionados" class="custom-checkbox mb-2" />
                 <span id="cantidadSeleccionados">0</span>
             </div>
-
         </div>
 
 
@@ -332,7 +331,7 @@
             <th>Fecha Documento</th>
             <th>Guía Remisión</th>
             <th>Empresa</th>
-            <th>Enviado</th>
+            <th>Despachado</th>
             <th>Estado</th>
         </tr>
     </thead>
@@ -404,7 +403,7 @@
                 }
             },
             // "pageLength": 50, 
-            "lengthMenu": [100, 500, 1000],
+            "lengthMenu": [1000, 5000],
             "order": [
                 [0, "asc"]
             ],
@@ -818,8 +817,6 @@
                                     },
                                 });
                             });
-
-                            // Abrir el modal
                             $('#modalFacturados').modal('show');
                         } else {
                             alert('No se encontraron registros para mostrar.');
