@@ -30,6 +30,7 @@ use App\Models\TrackingToken;
 use Google\Client as GoogleClient;
 use Illuminate\Support\Facades\DB;
 use App\Models\TrackingEstado;
+use App\Models\TrackingProceso;
 use App\Models\TrackingTransporte;
 use App\Models\TrackingTransporteArchivo;
 use Mpdf\Mpdf;
@@ -474,8 +475,8 @@ class TrackingController extends Controller
 
     public function index_tra()
     {
-        $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
-        return view('logistica.tracking.tracking.index', compact('list_mercaderia_nueva'));
+        //$list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
+        return view('logistica.tracking.tracking.index'/*, compact('list_mercaderia_nueva')*/);
     }
 
     public function list(){
@@ -4604,21 +4605,30 @@ class TrackingController extends Controller
         }
         $list_anio = Anio::select('cod_anio')->where('estado',1)
                     ->where('cod_anio','>=','2024')->get();
+        $list_proceso = TrackingProceso::all();
         $list_estado = TrackingEstado::orderBy('id_proceso','ASC')->get();                    
         return view('logistica.tracking.detalle_tracking.index',compact(
             'list_base',
             'list_anio',
+            'list_proceso',
             'list_estado'
         ));
+    }
+
+    public function traer_estado_det(Request $request)
+    {
+        $list_estado = TrackingEstado::where('id_proceso',$request->proceso)->get();                    
+        return view('logistica.tracking.detalle_tracking.estado',compact('list_estado'));
     }
 
     public function list_det(Request $request)
     {
         $list_detalle = Tracking::get_list_detalle_tracking([
-            'base'=>$request->base,
-            'anio'=>$request->anio,
-            'semana'=>$request->semana,
-            'estado'=>$request->estado
+            'base' => $request->base,
+            'anio' => $request->anio,
+            'semana' => $request->semana,
+            'estado' => $request->estado,
+            'progreso' => $request->progreso
         ]);
         return view('logistica.tracking.detalle_tracking.lista', compact('list_detalle'));
     }

@@ -343,19 +343,14 @@ use App\Models\TrackingDetalleProceso;
     }
 </style>
 
-@php
-    $total = count($list_tracking);
-    if($total>0){
-        $terminados = count(array_filter($list_tracking, fn($item) => $item->id_estado == "21"));
-        $porcentaje = 100*$terminados/$total;
-    }else{
-        $porcentaje = 0;
-    }
-@endphp
-<div class="progress mb-3">
-    <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ $porcentaje }}%;" aria-valuenow="{{ $porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ number_format($porcentaje,2) }}</div>
+<div class="col-md-12 row d-flex justify-content-end mb-3">
+    <div class="col-md-3">
+        <input type="text" id="buscador_externo" class="form-control" placeholder="Buscar en la tabla...">
+    </div>
+    <div class="d-flex align-items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+    </div>
 </div>
-
 <table id="tabla_js" class="table" style="width:100%">
     <thead>
         <tr class="text-center">
@@ -1182,6 +1177,32 @@ use App\Models\TrackingDetalleProceso;
 
 <script>
     $(document).ready(function() {
+        const table = $('#tabla_js');
+        // Escuchar cambios en el buscador externo
+        $('#buscador_externo').on('keyup', function () {
+            const value = $(this).val().toLowerCase();
+
+            table.find('tbody tr').each(function () {
+                const row = $(this);
+                const nextRow = row.next(); // Obtiene la siguiente fila relacionada
+                
+                // Verificar si esta fila es un tr de datos (la primera fila)
+                const isFirstRow = row.index() % 2 === 0;
+
+                // Solo hacer la búsqueda en el primer tr (fila de datos)
+                if (isFirstRow) {
+                    const text = row.text().toLowerCase();
+                    
+                    if (text.includes(value)) {
+                        row.show();       // Mostrar esta fila
+                        nextRow.show();   // Mostrar la siguiente fila relacionada
+                    } else {
+                        row.hide();       // Ocultar esta fila
+                        nextRow.hide();   // Ocultar la siguiente fila relacionada
+                    }
+                }
+            });
+        });
         $('#tabla_js').DataTable({
             "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
                 "<'table-responsive'tr>" +

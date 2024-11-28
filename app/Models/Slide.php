@@ -49,7 +49,7 @@ class Slide extends Model
             }else{
                 $btipo = "= '".$dato['tipo']."'";
             }
-            $sql = "SELECT sl.id_slide,sl.orden,CASE WHEN sl.tipo_slide=1 THEN 'Imagen' 
+            $sql = "SELECT sl.id_slide,sl.orden,sl.fec_reg,CASE WHEN sl.tipo_slide=1 THEN 'Imagen'
                     WHEN sl.tipo_slide=2 THEN 'Video' ELSE '' END AS tipo_slide,sl.duracion,sl.titulo,
                     sl.descripcion,DATE_FORMAT(sl.fec_reg,'%d-%m-%Y') AS creado,sl.archivoslide
                     FROM slide sl
