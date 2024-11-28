@@ -75,82 +75,47 @@ class TbContabilidad extends Model
 
     public function scopeFiltros($query, $filters)
     {
-        // Filtrar por fecha si se pasan las fechas
-        if (isset($filters['fecha_inicio']) && isset($filters['fecha_fin'])) {
-            $fechaInicio = $filters['fecha_inicio'] . ' 00:00:00';
-            $fechaFin = $filters['fecha_fin'] . ' 23:59:59';
-            $query->whereBetween('fecha_documento', [$fechaInicio, $fechaFin]);
+        if (!empty($filters['fecha_inicio']) && !empty($filters['fecha_fin'])) {
+            $query->whereBetween('fecha_documento', [
+                $filters['fecha_inicio'] . ' 00:00:00',
+                $filters['fecha_fin'] . ' 23:59:59',
+            ]);
         }
-
-        // Filtrar por estado de stock
-        if (isset($filters['estado']) && $filters['estado'] !== '') {
+        if (!empty($filters['estado'])) {
             $query->where('stock', $filters['estado']);
         }
-        // Filtrar solo los registros donde 'cerrado' es igual a 0
         $query->where('cerrado', 0);
-        // Filtrar por SKU si se pasa un valor
-        if (isset($filters['sku']) && $filters['sku'] !== '') {
+        if (!empty($filters['sku'])) {
             $query->where('sku', 'like', "%{$filters['sku']}%");
         }
-        // Filtrar por Empresa si se pasa un valor
-        if (isset($filters['empresa']) && $filters['empresa'] !== '') {
+        if (!empty($filters['empresa'])) {
             $query->where('empresa', 'like', "%{$filters['empresa']}%");
         }
-        // Filtrar por búsqueda de texto
-        if (isset($filters['search']) && $filters['search'] !== '') {
+        if (!empty($filters['search']) && strlen($filters['search']) > 3) {
             $query->where(function ($q) use ($filters) {
                 $search = $filters['search'];
-                if (strlen($search) > 3) {
-                    $q->where('sku', 'like', "$search%")
-                        ->orWhere('guia_remision', 'like', "$search%")
-                        ->orWhere('estilo', 'like', "$search%")
-                        ->orWhere('color', 'like', "$search%")
-                        ->orWhere('descripcion', 'like', "%$search%");
-                }
+                $q->where('sku', 'like', "$search%")
+                    ->orWhere('guia_remision', 'like', "$search%")
+                    ->orWhere('estilo', 'like', "$search%")
+                    ->orWhere('color', 'like', "$search%")
+                    ->orWhere('descripcion', 'like', "%$search%");
             });
         }
-        // Filtros adicionales de almacenes
-        if (isset($filters['alm_dsc']) && $filters['alm_dsc'] == 1) {
-            $query->where('alm_dsc', '>', 0)
-                ->where('alm_discotela', 0)
-                ->where('alm_pb', 0)
-                ->where('alm_mad', 0)
-                ->where('alm_fam', 0);
+        if (!empty($filters['almacen'])) {
+            $query->where($filters['almacen'], '>', 0)
+                ->where(function ($q) use ($filters) {
+                    $almacenes = ['alm_dsc', 'alm_discotela', 'alm_pb', 'alm_mad', 'alm_fam'];
+                    foreach ($almacenes as $almacen) {
+                        if ($almacen !== $filters['almacen']) {
+                            $q->where($almacen, 0);
+                        }
+                    }
+                });
         }
 
-        if (isset($filters['alm_discotela']) && $filters['alm_discotela'] == 1) {
-            $query->where('alm_discotela', '>', 0)
-                ->where('alm_dsc', 0)
-                ->where('alm_pb', 0)
-                ->where('alm_mad', 0)
-                ->where('alm_fam', 0);
-        }
-
-        if (isset($filters['alm_pb']) && $filters['alm_pb'] == 1) {
-            $query->where('alm_pb', '>', 0)
-                ->where('alm_dsc', 0)
-                ->where('alm_discotela', 0)
-                ->where('alm_mad', 0)
-                ->where('alm_fam', 0);
-        }
-
-        if (isset($filters['alm_mad']) && $filters['alm_mad'] == 1) {
-            $query->where('alm_mad', '>', 0)
-                ->where('alm_dsc', 0)
-                ->where('alm_discotela', 0)
-                ->where('alm_pb', 0)
-                ->where('alm_fam', 0);
-        }
-
-        if (isset($filters['alm_fam']) && $filters['alm_fam'] == 1) {
-            $query->where('alm_fam', '>', 0)
-                ->where('alm_dsc', 0)
-                ->where('alm_discotela', 0)
-                ->where('alm_pb', 0)
-                ->where('alm_mad', 0);
-        }
         return $query;
     }
+
 
     public static function sincronizarContabilidad()
     {
@@ -164,18 +129,18 @@ class TbContabilidad extends Model
             // Paso 1: Obtener los registros existentes en MySQL con claves compuestas de la tabla tb_contabilidad
             $mysqlRecords = DB::table('tb_contabilidad')
                 ->where('fecha_documento', '>=', $fechaInicioAnoMysql)
-                ->select('guia_remision', 'sku', 'empresa') // Seleccionar también el campo 'empresa'
+                ->select('guia_remision', 'sku', 'empresa')
                 ->get()
                 ->map(function ($record) {
-                    return $record->guia_remision . '|' . $record->sku . '|' . $record->empresa; // Crear clave compuesta con 'empresa'
+                    return $record->guia_remision . '|' . $record->sku . '|' . $record->empresa;
                 })
                 ->toArray(); // Convertir a un arreglo para búsqueda eficiente
             $mysqlRecordsCerrados = DB::table('tb_contabilidad_cerrados')
                 ->where('fecha_documento', '>=', $fechaInicioAnoMysql)
-                ->select('guia_remision', 'sku', 'empresa') // Seleccionar también el campo 'empresa'
+                ->select('guia_remision', 'sku', 'empresa')
                 ->get()
                 ->map(function ($record) {
-                    return $record->guia_remision . '|' . $record->sku . '|' . $record->empresa; // Crear clave compuesta con 'empresa'
+                    return $record->guia_remision . '|' . $record->sku . '|' . $record->empresa;
                 })
                 ->toArray(); // Convertir a un arreglo para búsqueda eficiente
             $combinedRecords = array_merge($mysqlRecords, $mysqlRecordsCerrados);
@@ -301,6 +266,7 @@ class TbContabilidad extends Model
             // Paso 4: Insertar en lotes
             $totalInserted = 0; // Inicializar el contador
 
+
             if (!empty($datosAInsertar)) {
                 foreach ($datosAInsertar as $dato) {
                     try {
@@ -312,14 +278,16 @@ class TbContabilidad extends Model
                 }
             }
             // Actualizar configuración
-
+            $cantidadRegistrosUpdate = DB::table('tb_contabilidad')
+                ->count();
             DB::table('tb_contabilidad_configuracion')
-                ->where('tipo', 1)
+                ->where('tipo', 1) //CONFIGURACIÓN DE REGISTROS 
                 ->update([
                     'fecha_actualizacion' => now(),
                     'estado' => 1,
-                    'cantidad_registros' => count($mysqlRecords),
+                    'cantidad_registros' => $cantidadRegistrosUpdate,
                 ]);
+
 
 
             // Retornar el total de registros insertados
@@ -331,7 +299,9 @@ class TbContabilidad extends Model
 
 
     public static function sincronizarEnviadosContabilidad()
+
     {
+
         try {
             set_time_limit(600);
 
@@ -466,6 +436,8 @@ class TbContabilidad extends Model
                     }
                 }
             }
+
+
             // Paso 4: Actualizar en MySQL
             $totalUpdated = 0; // Inicializar el contador
             if (!empty($datosAActualizar)) {
@@ -486,12 +458,14 @@ class TbContabilidad extends Model
                 }
             }
             // Actualizar configuración
+            $cantidadRegistrosUpdate = DB::table('tb_contabilidad')
+                ->count();
             DB::table('tb_contabilidad_configuracion')
-                ->where('tipo', 2)
+                ->where('tipo', 2) //CONFIGURACIÓN PARA ACTUALIZAR "enviados"
                 ->update([
                     'fecha_actualizacion' => now(),
                     'estado' => 1,
-                    'cantidad_registros' => 0,
+                    'cantidad_registros' => $cantidadRegistrosUpdate,
                 ]);
 
             // Retornar el total de registros actualizados
