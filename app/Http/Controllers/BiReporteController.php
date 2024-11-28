@@ -87,6 +87,7 @@ class BiReporteController extends Controller
             'acceso_bi_reporte.estado',
             'acceso_bi_reporte.id_area', // Asegúrate de incluir id_area en la selección
             'acceso_bi_reporte.fec_reg',
+            'acceso_bi_reporte.fec_act',
             'acceso_bi_reporte.fec_valid',
             'acceso_bi_reporte.estado_valid'
         )
@@ -133,6 +134,7 @@ class BiReporteController extends Controller
                 $reporte->dias_sin_atencion = $interval->days;
             }
         }
+        // dd($list_bi_reporte->toArray());
 
         return view('interna.bi.reportes.registroacceso_reportes.lista', compact('list_bi_reporte'));
     }

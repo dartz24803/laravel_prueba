@@ -373,8 +373,6 @@
 
     var selectedIds = [];
     $(document).ready(function() {
-
-
         var table = $('#tabla_js').DataTable({
             "processing": true,
             "serverSide": true,
