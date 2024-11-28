@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('navbar')
-    @include('caja.navbar')
+    @include('comercial.navbar')
 @endsection
 
 @section('content')
