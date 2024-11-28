@@ -1382,7 +1382,8 @@ use App\Models\TrackingDetalleProceso;
             showCancelButton: true,
             confirmButtonText: 'No',
             cancelButtonText: 'Si',
-            padding: '2em'
+            padding: '2em',
+            allowOutsideClick: true
         }).then((result) => {
             if (result.value) {
                 $.ajax({
@@ -1405,8 +1406,28 @@ use App\Models\TrackingDetalleProceso;
                         }
                     }
                 });
-            } else {
-                window.location = "{{ route('tracking.reporte_mercaderia', ':id') }}".replace(':id', id);
+            }else{
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {'devolucion':'1'},
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function(data) {
+                        if(data=="diferencia"){
+                            window.location = "{{ route('tracking.cuadre_diferencia', ':id') }}".replace(':id', id);
+                        }else{
+                            Swal(
+                                '¡Cambio de estado exitoso!',
+                                '¡Haga clic en el botón!',
+                                'success'
+                            ).then(function() {
+                                Lista_Tracking();
+                            });
+                        }
+                    }
+                }); 
             }
         })
     }

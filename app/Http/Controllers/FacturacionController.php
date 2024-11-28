@@ -402,7 +402,7 @@ class FacturacionController extends Controller
         $sheet->setCellValue("C1", 'Talla');
         $sheet->setCellValue("D1", 'SKU');
         $sheet->setCellValue("E1", 'Descripción');
-        $sheet->setCellValue("F1", 'Costo Precio');
+        $sheet->setCellValue("F1", 'Costo Prom');
         $sheet->setCellValue("G1", 'Empresa');
         $sheet->setCellValue("H1", 'Alm Dsc');
         $sheet->setCellValue("I1", 'Alm Ln1');
@@ -413,7 +413,7 @@ class FacturacionController extends Controller
         $sheet->setCellValue("N1", 'Fecha Documento');
         $sheet->setCellValue("O1", 'Guía Remisión');
         $sheet->setCellValue("P1", 'Base');
-        $sheet->setCellValue("Q1", 'Enviado');
+        $sheet->setCellValue("Q1", 'Despachado');
         $sheet->setCellValue("R1", 'Cia');
         $sheet->setCellValue("S1", 'Estado');
         $sheet->setCellValue("T1", 'Stock');
@@ -537,7 +537,7 @@ class FacturacionController extends Controller
         $sheet->setCellValue("C1", 'Talla');
         $sheet->setCellValue("D1", 'SKU');
         $sheet->setCellValue("E1", 'Descripción');
-        $sheet->setCellValue("F1", 'Costo Precio');
+        $sheet->setCellValue("F1", 'Costo Prom');
         $sheet->setCellValue("G1", 'Empresa');
         $sheet->setCellValue("H1", 'Almacen LN1');
         $sheet->setCellValue("I1", 'Almacen DSC');
@@ -547,7 +547,7 @@ class FacturacionController extends Controller
         $sheet->setCellValue("M1", 'Almacen Mad');
         $sheet->setCellValue("N1", 'Fecha Documento');
         $sheet->setCellValue("O1", 'Guía Remisión');
-        $sheet->setCellValue("P1", 'Enviado');
+        $sheet->setCellValue("P1", 'Despachado');
         $sheet->setCellValue("Q1", 'Estado');
         $sheet->setCellValue("R1", 'Base');
         $sheet->setCellValue("S1", 'CIA');
