@@ -12,7 +12,7 @@ $id_puesto = Session('usuario')->id_puesto;
             <th>DNI</th>
             <th>Colaborador</th>
             <th id="ordenar-fechas" onclick="OrdenarFechas()" style="cursor: pointer;">
-                <div class="col-md-12 row p-0">
+                <div class="row p-0" style="width: 155%;">
                     <div class="offset-1 col-md-6">
                         Fecha
                     </div>
