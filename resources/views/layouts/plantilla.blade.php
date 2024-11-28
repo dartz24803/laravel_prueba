@@ -677,17 +677,14 @@
         })();
     </script>
     <style>
-        .dkuywW {
-            display: none !important;
+        [id^="gb-widget-"] > div:first-child {
+            height: auto;
         }
 
-        .iLsXYi {
-            height: 0% !important;
+        [id^="gb-widget-"] > a{
+            display: none;
         }
 
-        .gNhLue{
-            height: min-content !important;
-        }
         @media (max-width: 900px) {
             #div_imagen_header {
                 display: none

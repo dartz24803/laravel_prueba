@@ -60,83 +60,131 @@
     }
 
     $('#btnActualizar').on('click', function() {
-        $.ajax({
-            url: "{{ route('tabla_facturacion.update') }}", // Ruta donde se procesarán los IDs
-            type: "GET",
-            success: function(data) {
-                console.log("Respuesta del servidor:", data); // Para depuración
+        const fechaInicio = `Julio 01 del ${new Date().getFullYear()}`;
+        const fechaActual = new Date();
+        const meses = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+        const dia = fechaActual.getDate().toString().padStart(2, "0");
+        const mes = meses[fechaActual.getMonth()];
+        const anio = fechaActual.getFullYear();
+        const fechaActualM = `${mes} ${dia} del ${anio}`;
 
-                if (data.success) {
-                    // Actualizar los valores en el DOM
-                    $('#ultimaActualizacion').text(data.fecha_actualizacion);
-                    $('#totalRegistros').text(data.cantidad_registros);
+        Swal({
+            title: '¿Estás seguro?',
+            text: `Se procederá a actualizar la tabla de datos desde ${fechaInicio}  hasta  ${fechaActualM}.`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, Actualizar',
+            cancelButtonText: 'Cancelar',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: "{{ route('tabla_facturacion.update') }}",
+                    type: "GET",
+                    success: function(data) {
+                        console.log("Respuesta del servidor:", data);
 
-                    Swal.fire(
-                        '¡Actualización Exitosa!',
-                        '¡' + data.cantidad_insertados + ' registros han sido actualizados correctamente!',
-                        'success'
-                    ).then(function() {
-                        table.ajax.reload();
-                    });
-                } else {
-                    Swal.fire(
-                        'Sin cambios',
-                        'No hay datos nuevos para actualizar',
-                        'info'
-                    ).then(function() {
-                        table.ajax.reload();
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                Swal.fire({
-                    title: '¡Error al Actualizar!',
-                    text: 'Ha ocurrido un error: ' + error,
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK'
+                        if (data.success) {
+                            // Actualizar los valores en el DOM
+                            $('#ultimaActualizacion').text(data.fecha_actualizacion);
+                            $('#totalRegistros').text(data.cantidad_registros);
+
+                            Swal.fire(
+                                '¡Actualización Exitosa!',
+                                '¡' + data.cantidad_insertados + ' registros han sido actualizados correctamente!',
+                                'success'
+                            ).then(function() {
+                                table.ajax.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Sin cambios',
+                                'No hay datos nuevos para actualizar',
+                                'info'
+                            ).then(function() {
+                                table.ajax.reload();
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: '¡Error al Actualizar!',
+                            text: 'Ha ocurrido un error: ' + error,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 });
             }
         });
     });
 
 
-    $('#btnActualizarEnviados').on('click', function() {
-        $.ajax({
-            url: "{{ route('tabla_facturacion.updateEnviados') }}",
-            type: "GET",
-            success: function(data) {
-                console.log("Respuesta del servidor:", data);
-                if (data.success) {
-                    // Actualizar los valores en el DOM
-                    $('#ultimaActualizacionEnviados').text(data.fecha_actualizacion_enviados);
 
-                    Swal.fire(
-                        '¡Actualización Exitosa!',
-                        '¡' + data.cantidad_insertados_enviados + ' registros han sido actualizados correctamente!',
-                        'success'
-                    ).then(function() {
-                        table.ajax.reload();
-                    });
-                } else {
-                    Swal.fire(
-                        'Sin cambios',
-                        'No hay datos nuevos para actualizar',
-                        'info'
-                    ).then(function() {
-                        table.ajax.reload();
-                    });
-                }
-            },
-            error: function(xhr, status, error) {
-                Swal.fire({
-                    title: '¡Error al Actualizar!',
-                    text: 'Ha ocurrido un error: ' + error,
-                    icon: 'error',
-                    confirmButtonColor: '#3085d6',
-                    confirmButtonText: 'OK'
+    $('#btnActualizarEnviados').on('click', function() {
+        const fechaInicio = `Julio 01 del ${new Date().getFullYear()}`;
+        const fechaActual = new Date();
+        const meses = [
+            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+        ];
+        const dia = fechaActual.getDate().toString().padStart(2, "0");
+        const mes = meses[fechaActual.getMonth()];
+        const anio = fechaActual.getFullYear();
+        const fechaActualM = `${mes} ${dia} del ${anio}`;
+
+        Swal({
+            title: '¿Estás seguro?',
+            text: `Se procederá a actualizar la cantidad de "enviados", en todos los registros desde ${fechaInicio} hasta  ${fechaActualM}..`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, Actualizar',
+            cancelButtonText: 'Cancelar',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: "{{ route('tabla_facturacion.updateEnviados') }}",
+                    type: "GET",
+                    success: function(data) {
+                        console.log("Respuesta del servidor:", data);
+                        if (data.success) {
+                            // Actualizar los valores en el DOM
+                            $('#ultimaActualizacionEnviados').text(data.fecha_actualizacion_enviados);
+
+                            Swal.fire(
+                                '¡Actualización Exitosa!',
+                                '¡' + data.cantidad_insertados_enviados + ' registros han sido actualizados correctamente!',
+                                'success'
+                            ).then(function() {
+                                table.ajax.reload();
+                            });
+                        } else {
+                            Swal.fire(
+                                'Sin cambios',
+                                'No hay datos nuevos para actualizar',
+                                'info'
+                            ).then(function() {
+                                table.ajax.reload();
+                            });
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        Swal.fire({
+                            title: '¡Error al Actualizar!',
+                            text: 'Ha ocurrido un error: ' + error,
+                            icon: 'error',
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK'
+                        });
+                    }
                 });
             }
         });
+
     });
 </script>
