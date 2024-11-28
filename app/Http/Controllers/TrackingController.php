@@ -2805,7 +2805,8 @@ class TrackingController extends Controller
         }
 
         //MENSAJE 5
-        $t_comentario = TrackingComentario::where('id_tracking',$id)->where('pantalla','CUADRE_DIFERENCIA')->first();
+        $t_comentario = TrackingComentario::where('id_tracking',$id)
+                        ->where('pantalla','CUADRE_DIFERENCIA')->orderBy('id','DESC')->first();
 
         $mail = new PHPMailer(true);
 
