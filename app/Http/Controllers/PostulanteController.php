@@ -96,8 +96,11 @@ class PostulanteController extends Controller
         if(session('usuario')->id_nivel=="1" || 
         session('usuario')->id_puesto=="21" || 
         session('usuario')->id_puesto=="22" || 
+        session('usuario')->id_puesto=="158" || 
+        session('usuario')->id_puesto=="209" ||         
         session('usuario')->id_puesto=="277" ||
-        session('usuario')->id_puesto=="278"){
+        session('usuario')->id_puesto=="278" ||
+        session('usuario')->id_puesto=="314"){
             $list_area = Area::select('id_area', 'nom_area')->where('estado', 1)
                         ->orderBy('nom_area','ASC')->get();
         }else{
@@ -134,6 +137,8 @@ class PostulanteController extends Controller
         if(session('usuario')->id_nivel=="1" ||
         session('usuario')->id_puesto=="21" ||
         session('usuario')->id_puesto=="22" ||
+        session('usuario')->id_puesto=="158" || 
+        session('usuario')->id_puesto=="209" ||         
         session('usuario')->id_puesto=="277" ||
         session('usuario')->id_puesto=="278" ||
         session('usuario')->id_puesto=="314"){

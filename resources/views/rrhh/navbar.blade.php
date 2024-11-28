@@ -151,16 +151,20 @@
         session('usuario')->id_puesto == "22" ||
         session('usuario')->id_puesto == "30" ||
         session('usuario')->id_puesto == "128" ||
+        //JEFE DE DTO. GESTIÓN DE TIENDAS
+        session('usuario')->id_puesto == 158 ||        
         session('usuario')->id_puesto == "161" ||
+        //PUESTO ASISTENTE DE COMPENSACIONES
+        session('usuario')->id_puesto == 209 ||        
         session('usuario')->id_puesto == "277" ||
         session('usuario')->id_puesto == "278" ||
         session('usuario')->id_puesto == "314" ||
-        session('usuario')->id_sede_laboral == 6 )
-        <li id="postulantes">
-            <a href="{{ route('postulante') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Postulantes</p>
-            </a>
-        </li>
+        session('usuario')->id_sede_laboral == 6)
+            <li id="postulantes">
+                <a href="{{ route('postulante') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Postulantes</p>
+                </a>
+            </li>
         @endif
 
         <?php if ( //MI EQUIPO
@@ -196,7 +200,13 @@
                 </a>
             </li>
         <?php } ?>
-        <?php if (session('usuario')->visualizar_responsable_area == 1 || session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 || session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 133 || session('usuario')->id_puesto == 22 || session('usuario')->id_puesto == 146 || session('usuario')->id_puesto == 21 || session('usuario')->id_puesto == 278 || session('usuario')->id_puesto == 279) { ?>
+        <?php if (session('usuario')->visualizar_responsable_area == 1 || 
+        session('usuario')->id_nivel == 1 || 
+        session('usuario')->id_puesto == 21 || 
+        session('usuario')->id_puesto == 22 || 
+        session('usuario')->id_puesto == 27 || 
+        session('usuario')->id_puesto == 277 || 
+        session('usuario')->id_puesto == 278) { ?>
             <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2) {
                 $hreclutamiento2 = "<br>• Completados";
             } else {

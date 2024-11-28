@@ -45,8 +45,8 @@
 
 
     /* Reducir tamaño de fuente en filas y encabezados */
-    #tabla_js_fp thead th,
-    #tabla_js_fp tbody td {
+    #tabla_js_ft thead th,
+    #tabla_js_ft tbody td {
         /* font-size: 10px; */
         /* Ajusta el tamaño de letra */
         padding-top: 2px;
@@ -54,18 +54,6 @@
 
         /* Padding vertical (10px) y horizontal por defecto (auto) */
     }
-
-    #tabla_jsver tbody td {
-        /* font-size: 10px; */
-        /* Ajusta el tamaño de letra */
-        padding-top: 1px;
-        padding-bottom: 1px;
-
-        /* Padding vertical (10px) y horizontal por defecto (auto) */
-    }
-
-    /* Reducir tamaño del checkbox */
-
 
 
     .custom-checkbox {
@@ -88,7 +76,7 @@
     }
 
     /* Fijar el encabezado de la tabla */
-    #tabla_js_fp thead th {
+    #tabla_js_ft thead th {
         position: sticky;
         top: 0;
         z-index: 2;
@@ -159,7 +147,7 @@
 </div>
 
 
-<table id="tabla_js_fp" class="table" style="width:100%">
+<table id="tabla_js_ft" class="table" style="width:100%">
     <thead>
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -224,7 +212,7 @@
     var selectedIds = [];
     $(document).ready(function() {
 
-        var table = $('#tabla_js_fp').DataTable({
+        var table_ft = $('#tabla_js_ft').DataTable({
             "processing": true,
             "serverSide": true,
             "stateSave": true, // Guarda el estado de la tabla (incluido el filtro, paginación, etc.)
@@ -350,9 +338,9 @@
 
 
         // Manejo de eventos para los checkboxes
-        $('#tabla_js_fp tbody').on('change', '.row-selector', function() {
+        $('#tabla_js_ft tbody').on('change', '.row-selector', function() {
             var $row = $(this).closest('tr');
-            var data = table.row($row).data();
+            var data = table_ft.row($row).data();
             var rowId = data.id;
 
             if (this.checked) {
@@ -367,85 +355,15 @@
                 $row.removeClass('highlight-row');
             }
             // VALIDAR BUTTON DE FACTURAR
-            var selectedRows = $('#tabla_js_fp tbody .row-selector:checked').length; // Contar cuántas filas están seleccionadas
+            var selectedRows = $('#tabla_js_ft tbody .row-selector:checked').length; // Contar cuántas filas están seleccionadas
             // Habilitar o deshabilitar el botón según el número de filas seleccionadas
 
-        });
-
-        // Evento para el checkbox global en el encabezado
-
-
-
-
-
-        $('#btnFacturar').on('click', function() {
-            let filas = []; // Arreglo para almacenar los datos de todas las filas
-
-            // Recorremos cada campo de entrada en la columna "Enviado"
-            $('#tablaContenido .enviado-input').each(function() {
-                let enviadoActual = $(this).val(); // Valor actual del campo input
-                let enviadoOriginal = $(this).attr('data-original'); // Valor original
-
-                // Determinar si hay cambios en la fila
-                let parcial = enviadoActual != enviadoOriginal ? 1 : 0;
-
-                // Capturar los datos de la fila
-                let fila = $(this).closest('tr'); // Obtiene la fila actual
-                let datosFila = {
-                    id: $(this).data('id'), // ID del input
-                    enviado: enviadoActual, // Valor actual de enviado
-                    parcial: parcial // Indicador de cambio
-                };
-
-                // Agregar la fila al arreglo
-                filas.push(datosFila);
-            });
-
-            // Mostrar el arreglo en consola
-            console.log("Filas procesadas:", filas);
-            $.ajax({
-                url: "{{ route('tabla_facturacion.facturar_cerrar') }}",
-                type: "GET", // Método GET
-                data: {
-                    filas: filas,
-                    _token: $('meta[name="csrf-token"]').attr('content')
-                },
-                success: function(data) {
-                    if (data == "error") {
-                        Swal.fire({
-                            title: '¡Error al Actualizar!',
-                            text: "¡El registro ya existe o hay un problema con los datos!",
-                            icon: 'error',
-                            confirmButtonColor: '#3085d6',
-                            confirmButtonText: 'OK'
-                        });
-                    } else {
-                        Swal.fire(
-                            '¡Actualización Exitosa!',
-                            '¡Los registros han sido actualizados correctamente!',
-                            'success'
-                        ).then(function() {
-                            table.ajax.reload();
-                        });
-                    }
-                },
-                error: function(xhr, status, error) {
-                    Swal.fire({
-                        title: '¡Error!',
-                        text: "Ocurrió un error al procesar la actualización.",
-                        icon: 'error',
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK'
-                    });
-                }
-
-            });
         });
 
 
         // Función para manejar la búsqueda
         $('#btnBuscar').on('click', function() {
-            table.ajax.reload();
+            table_ft.ajax.reload();
         });
 
         $('#btnVer').on('click', function() {
@@ -586,7 +504,7 @@
             if (this.checked) {
                 var cantidadSeleccionados = selectedIds.length + 1;
                 $('#cantidadSeleccionados').text(cantidadSeleccionados);
-                table.rows().every(function() {
+                table_ft.rows().every(function() {
                     var rowData = this.data();
                     var rowId = rowData.id;
                     if (!selectedIds.includes(rowId)) {
@@ -600,7 +518,7 @@
                 var cantidadSeleccionados = 0;
                 $('#cantidadSeleccionados').text(cantidadSeleccionados);
                 // Mostrar todas las filas
-                table.rows().every(function() {
+                table_ft.rows().every(function() {
                     this.nodes().to$().show();
                 });
             }

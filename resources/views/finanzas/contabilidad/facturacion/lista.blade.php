@@ -242,11 +242,15 @@
             </select>
         </div>
         <div class="form-group col-lg-1">
-            <label for="mostrarSeleccionados">Todos:</label>
+            <label for="mostrarSeleccionados">Filtrar:
+            </label>
             <div class="d-block">
                 <input type="checkbox" id="mostrarSeleccionados" class="custom-checkbox mb-2" />
+                <span id="cantidadSeleccionados">0</span>
             </div>
+
         </div>
+
 
         <div class="form-group col-lg-2">
             <button type="button" class="btn btn-primary w-100 d-flex align-items-center justify-content-center" title="Buscar" id="btnBuscar">
@@ -272,15 +276,12 @@
             </a>
         </div>
         <div class="form-group col-lg-1">
-            <button type="button" class="btn btn-primary w-100" title="Facturar" id="btnVer" disabled>
+            <button type="button" class="btn btn-primary w-100" title="Ver" id="btnVer" disabled>
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
                     <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                     <circle cx="12" cy="12" r="3"></circle>
                 </svg>
             </button>
-        </div>
-        <div class="form-group col-lg-3">
-            Registros seleccionados: <span id="cantidadSeleccionados">0</span>
         </div>
         <div class="form-group col-lg-5">
             <label>
@@ -374,6 +375,7 @@
     var selectedIds = [];
     $(document).ready(function() {
 
+
         var table = $('#tabla_js').DataTable({
             "processing": true,
             "serverSide": true,
@@ -402,7 +404,7 @@
                 }
             },
             // "pageLength": 50, 
-            "lengthMenu": [10, 25, 50, 100],
+            "lengthMenu": [10, 25, 50, 100, 500, 1000],
             "order": [
                 [0, "asc"]
             ],
@@ -501,7 +503,41 @@
             "scrollX": true,
             "scrollY": 400,
         });
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name="almacen"]');
 
+        checkboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', function() {
+                // Restablecer todos los checkboxes, y marcar sólo el seleccionado
+                checkboxes.forEach((otherCheckbox) => {
+                    if (otherCheckbox !== checkbox) {
+                        otherCheckbox.checked = false; // Desmarcar otros checkboxes
+                    }
+                });
+                // Enviar los datos del checkbox seleccionado
+                enviarDatosSeleccionado();
+            });
+        });
+
+        function enviarDatosSeleccionado() {
+            let selectedAlmacenId = null;
+            // Buscar el checkbox seleccionado
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    selectedAlmacenId = checkbox.value; // Captura el valor del checkbox seleccionado
+                }
+            });
+
+            // Si hay un checkbox seleccionado, enviar su valor, sino enviar 0
+            if (selectedAlmacenId) {
+                $('#almacenSeleccionadoInput').val(selectedAlmacenId);
+            } else {
+                $('#almacenSeleccionadoInput').val(0); // Si no hay ninguno seleccionado, poner 0
+            }
+
+            // Mostrar el valor del input donde se está enviando el valor
+            var almacenSeleccionadoInput = $('#almacenSeleccionadoInput').val();
+            console.log(almacenSeleccionadoInput);
+        }
 
 
         // Manejo de eventos para los checkboxes
@@ -902,42 +938,5 @@
     function Excel_Facturacion_Filtrado() {
         var ids = selectedIds.join(','); // Asegúrate de que los IDs estén en el formato correcto
         window.location.replace("{{ route('tabla_facturacion.excel_filtrado', ['ids' => ':ids']) }}".replace(':ids', ids));
-    }
-
-
-
-    const checkboxes = document.querySelectorAll('input[type="checkbox"][name="almacen"]');
-
-    checkboxes.forEach((checkbox) => {
-        console.log("####1");
-
-        checkbox.addEventListener('change', function() {
-            // Restablecer todos los checkboxes, y marcar sólo el seleccionado
-            checkboxes.forEach((otherCheckbox) => {
-                if (otherCheckbox !== checkbox) {
-                    otherCheckbox.checked = false; // Desmarcar otros checkboxes
-                }
-            });
-            // Enviar los datos del checkbox seleccionado
-            enviarDatosSeleccionado();
-        });
-    });
-
-    function enviarDatosSeleccionado() {
-        let selectedAlmacenId = null;
-        // Buscar el checkbox seleccionado
-        checkboxes.forEach((checkbox) => {
-            if (checkbox.checked) {
-                selectedAlmacenId = checkbox.value; // Captura el valor del checkbox seleccionado
-            }
-        });
-        if (selectedAlmacenId) {
-            $('#almacenSeleccionadoInput').val(selectedAlmacenId);
-
-        } else {
-            $('#almacenSeleccionadoInput').val(0);
-        }
-
-        var almacenSeleccionadoInput = $('#almacenSeleccionadoInput').val();
     }
 </script>

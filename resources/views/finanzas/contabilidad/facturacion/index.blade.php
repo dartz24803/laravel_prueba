@@ -1,7 +1,7 @@
 @csrf
 <div class="form-group row">
     <div class="col-lg-2">
-        <button type="button" class="btn btn-secondary w-100" title="Actualizar" id="btnActualizar" disabled>
+        <button type="button" class="btn btn-secondary w-100" title="Actualizar" id="btnActualizar">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw">
                 <polyline points="23 4 23 10 17 10"></polyline>
                 <polyline points="1 20 1 14 7 14"></polyline>
@@ -10,10 +10,22 @@
         </button>
     </div>
     <div class="col-lg-4">
-        Última Fecha de actualización: <span id="ultimaActualizacion">{{ $fecha_actualizacion }}</span><br>
-        Cantidad total de Registros: <span id="totalRegistros">{{ $cantidad_registros }}</span>
+        <span id="ultimaActualizacion">{{ $fecha_actualizacion }}</span><br>
+        Registros Totales: <span id="totalRegistros">{{ $cantidad_registros }}</span>
     </div>
-
+    <div class="col-lg-2">
+        <button type="button" class="btn btn-primary w-100" title="Actualizar" id="btnActualizarEnviados">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw">
+                <polyline points="23 4 23 10 17 10"></polyline>
+                <polyline points="1 20 1 14 7 14"></polyline>
+                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            Enviados
+        </button>
+    </div>
+    <div class="col-lg-4">
+        <span id="ultimaActualizacionEnviados">{{ $fecha_actualizacion_enviados }}</span><br>
+    </div>
 </div>
 
 <div class="row" id="cancel-row">
@@ -51,10 +63,14 @@
         $.ajax({
             url: "{{ route('tabla_facturacion.update') }}", // Ruta donde se procesarán los IDs
             type: "GET",
-
             success: function(data) {
-                console.log("Respuesta del servidor:", data); // Para ver los datos completos
+                console.log("Respuesta del servidor:", data); // Para depuración
+
                 if (data.success) {
+                    // Actualizar los valores en el DOM
+                    $('#ultimaActualizacion').text(data.fecha_actualizacion);
+                    $('#totalRegistros').text(data.cantidad_registros);
+
                     Swal.fire(
                         '¡Actualización Exitosa!',
                         '¡' + data.cantidad_insertados + ' registros han sido actualizados correctamente!',
@@ -62,12 +78,11 @@
                     ).then(function() {
                         table.ajax.reload();
                     });
-
                 } else {
                     Swal.fire(
-                        '¡Actualización Exitosa!',
-                        '¡No hay Datos para Actualizar',
-                        'success'
+                        'Sin cambios',
+                        'No hay datos nuevos para actualizar',
+                        'info'
                     ).then(function() {
                         table.ajax.reload();
                     });
@@ -76,7 +91,47 @@
             error: function(xhr, status, error) {
                 Swal.fire({
                     title: '¡Error al Actualizar!',
-                    text: error,
+                    text: 'Ha ocurrido un error: ' + error,
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    });
+
+
+    $('#btnActualizarEnviados').on('click', function() {
+        $.ajax({
+            url: "{{ route('tabla_facturacion.updateEnviados') }}",
+            type: "GET",
+            success: function(data) {
+                console.log("Respuesta del servidor:", data);
+                if (data.success) {
+                    // Actualizar los valores en el DOM
+                    $('#ultimaActualizacionEnviados').text(data.fecha_actualizacion_enviados);
+
+                    Swal.fire(
+                        '¡Actualización Exitosa!',
+                        '¡' + data.cantidad_insertados_enviados + ' registros han sido actualizados correctamente!',
+                        'success'
+                    ).then(function() {
+                        table.ajax.reload();
+                    });
+                } else {
+                    Swal.fire(
+                        'Sin cambios',
+                        'No hay datos nuevos para actualizar',
+                        'info'
+                    ).then(function() {
+                        table.ajax.reload();
+                    });
+                }
+            },
+            error: function(xhr, status, error) {
+                Swal.fire({
+                    title: '¡Error al Actualizar!',
+                    text: 'Ha ocurrido un error: ' + error,
                     icon: 'error',
                     confirmButtonColor: '#3085d6',
                     confirmButtonText: 'OK'

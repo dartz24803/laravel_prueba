@@ -41,28 +41,32 @@ class FacturacionController extends Controller
     public function index_ic()
     {
         // Obtener el último registro de la tabla tb_contabilidad_configuracion
-        $configuracion = DB::table('tb_contabilidad_configuracion')->first();
-
+        $configuracion = DB::table('tb_contabilidad_configuracion')
+            ->where('tipo', 1)
+            ->first();
+        $configuracion_enviados = DB::table('tb_contabilidad_configuracion')
+            ->where('tipo', 2)
+            ->first();
         // Si no hay registros, podemos manejarlo según sea necesario
         if ($configuracion) {
-            // Establecer el idioma a español (Perú) para Carbon
-            Carbon::setLocale('es');  // Establece el idioma en español
-            $peruTimezone = 'America/Lima';  // Zona horaria de Perú
-
+            Carbon::setLocale('es');
+            $peruTimezone = 'America/Lima';
             // Establecer la fecha y hora en la zona horaria de Perú
             $fecha_actualizacion = Carbon::parse($configuracion->fecha_actualizacion, $peruTimezone)
-                ->translatedFormat('l. d M y');
-
+                ->translatedFormat('l, d M y H:i');
+            $fecha_actualizacion_enviados = Carbon::parse($configuracion_enviados->fecha_actualizacion, $peruTimezone)
+                ->translatedFormat('l, d M y H:i');
 
             $cantidad_registros = $configuracion->cantidad_registros;
         } else {
             // En caso de que no haya registros, asignar valores predeterminados o vacíos
             $fecha_actualizacion = 'No disponible';
+            $fecha_actualizacion_enviados = 'No disponible';
             $cantidad_registros = 0;
         }
 
         // Pasar los datos a la vista
-        return view('finanzas.contabilidad.facturacion.index', compact('fecha_actualizacion', 'cantidad_registros'));
+        return view('finanzas.contabilidad.facturacion.index', compact('fecha_actualizacion', 'cantidad_registros', 'fecha_actualizacion_enviados'));
     }
 
     public function index_fp()
@@ -290,9 +294,71 @@ class FacturacionController extends Controller
 
     public function actualizarTabla(Request $request)
     {
-
-        TbContabilidad::sincronizarContabilidad();
+        try {
+            // Llamar a la función para sincronizar datos
+            $cantidadRegistrosActualizados = TbContabilidad::sincronizarContabilidad();
+            // Obtener la configuración
+            $configuracion = DB::table('tb_contabilidad_configuracion')
+                ->where('tipo', 1)
+                ->first();
+            if ($configuracion) {
+                Carbon::setLocale('es');
+                $peruTimezone = 'America/Lima';
+                $fecha_actualizacion = Carbon::parse($configuracion->fecha_actualizacion, $peruTimezone)
+                    ->translatedFormat('l, d M y H:i');
+                $cantidad_registros = $configuracion->cantidad_registros;
+                // Retornar una respuesta JSON
+                return response()->json([
+                    'success' => true,
+                    'fecha_actualizacion' => $fecha_actualizacion,
+                    'cantidad_registros' => $cantidad_registros,
+                    'cantidad_insertados' => $cantidadRegistrosActualizados,
+                ]);
+            }
+            // Si no hay configuración, devolver valores predeterminados
+            return response()->json([
+                'success' => false,
+                'fecha_actualizacion' => 'No disponible',
+                'cantidad_registros' => 0,
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
     }
+
+
+    public function actualizarEnviadosTabla()
+    {
+        try {
+            // Llamar a la función para sincronizar datos
+            $cantidadRegistrosActualizados = TbContabilidad::sincronizarEnviadosContabilidad();
+            // Obtener la configuración
+            $configuracion = DB::table('tb_contabilidad_configuracion')
+                ->where('tipo', 2)
+                ->first();
+            if ($configuracion) {
+                Carbon::setLocale('es');
+                $peruTimezone = 'America/Lima';
+                $fecha_actualizacion_enviados = Carbon::parse($configuracion->fecha_actualizacion, $peruTimezone)
+                    ->translatedFormat('l, d M y H:i');
+                // Retornar una respuesta JSON
+                return response()->json([
+                    'success' => true,
+                    'fecha_actualizacion_enviados' => $fecha_actualizacion_enviados,
+                    'cantidad_insertados_enviados' => $cantidadRegistrosActualizados,
+                ]);
+            }
+            // Si no hay configuración, devolver valores predeterminados
+            return response()->json([
+                'success' => false,
+                'fecha_actualizacion_enviados' => 'No disponible',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+        }
+    }
+
+
 
 
     public function excel_ic($fecha_inicio, $fecha_fin)
