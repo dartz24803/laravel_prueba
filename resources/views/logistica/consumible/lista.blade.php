@@ -31,7 +31,7 @@
     <tbody>
         @foreach ($list_inventario as $list)
         <tr>
-            <td>{{ \Carbon\Carbon::parse($list->fecha_solicitud)->locale('es')->translatedFormat('D d M y') }}</td>
+            <td data-order="{{ $list->fecha_solicitud }}">{{ \Carbon\Carbon::parse($list->fecha_solicitud)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $list->cod_consumible }}</td>
             <td>{{ $list->nom_area }}</td>
             <td>{{ $list->centro_labores }}</td>
