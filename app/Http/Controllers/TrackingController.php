@@ -475,8 +475,8 @@ class TrackingController extends Controller
 
     public function index_tra()
     {
-        $list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
-        return view('logistica.tracking.tracking.index', compact('list_mercaderia_nueva'));
+        //$list_mercaderia_nueva = MercaderiaSurtida::where('anio',date('Y'))->where('semana',date('W'))->exists();
+        return view('logistica.tracking.tracking.index'/*, compact('list_mercaderia_nueva')*/);
     }
 
     public function list(){
