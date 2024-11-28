@@ -343,18 +343,6 @@ use App\Models\TrackingDetalleProceso;
     }
 </style>
 
-@php
-    $total = count($list_tracking);
-    if($total>0){
-        $terminados = count(array_filter($list_tracking, fn($item) => $item->id_estado == "21"));
-        $porcentaje = 100*$terminados/$total;
-    }else{
-        $porcentaje = 0;
-    }
-@endphp
-<div class="progress mb-3">
-    <div class="progress-bar bg-secondary" role="progressbar" style="width: {{ $porcentaje }}%;" aria-valuenow="{{ $porcentaje }}" aria-valuemin="0" aria-valuemax="100">{{ number_format($porcentaje,2) }}</div>
-</div>
 <div class="col-md-12 row d-flex justify-content-end mb-3">
     <div class="col-md-3">
         <input type="text" id="buscador_externo" class="form-control" placeholder="Buscar en la tabla...">

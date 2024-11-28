@@ -40,14 +40,30 @@
     </div>
 
     <div class="form-group col-lg-2">
-        <label>Estado:</label>
-        <select class="form-control" id="estadob" name="estadob" onchange="Lista_Detalle();">
+        <label>Proceso:</label>
+        <select class="form-control" id="procesob" name="procesob" onchange="Traer_Estado();">
             <option value="0">Todos</option>
-            @foreach ($list_estado as $list)
+            @foreach ($list_proceso as $list)
                 <option value="{{ $list->id }}">
                     {{ $list->descripcion }}
                 </option>
             @endforeach
+        </select>
+    </div>
+
+    <div class="form-group col-lg-2">
+        <label>Estado:</label>
+        <select class="form-control" id="estadob" name="estadob" onchange="Lista_Detalle();">
+            <option value="0">Todos</option>
+        </select>
+    </div>
+
+    <div class="form-group col-lg-2">
+        <label>Progreso:</label>
+        <select class="form-control" id="progresob" name="progresob" onchange="Lista_Detalle();">
+            <option value="0">Todos</option>
+            <option value="1">Incompleto</option>
+            <option value="2">Completo</option>
         </select>
     </div>
 </div>
@@ -58,6 +74,26 @@
 <script>
     Lista_Detalle();
 
+    function Traer_Estado(){
+        Cargando();
+        
+        var proceso = $('#procesob').val();
+        var url = "{{ route('tracking_det.traer_estado') }}";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {'proceso':proceso},
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success:function (resp) {
+                $('#estadob').html(resp);
+                Lista_Detalle();
+            }
+        });
+    }
+
     function Lista_Detalle(){
         Cargando();
         
@@ -65,12 +101,13 @@
         var anio = $('#aniob').val();
         var semana = $('#semanab').val();
         var estado = $('#estadob').val();
+        var progreso = $('#progresob').val();
         var url = "{{ route('tracking_det.list') }}";
 
         $.ajax({
             url: url,
             type: "POST",
-            data: {'base':base,'anio':anio,'semana':semana,'estado':estado},
+            data: {'base':base,'anio':anio,'semana':semana,'estado':estado,'progreso':progreso},
             headers: {
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
