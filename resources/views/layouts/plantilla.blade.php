@@ -681,6 +681,10 @@
             height: auto;
         }
 
+        [id^="gb-widget-"] > a{
+            display: none;
+        }
+
         @media (max-width: 900px) {
             #div_imagen_header {
                 display: none
