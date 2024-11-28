@@ -191,6 +191,7 @@ Route::controller(TrackingController::class)->group(function () {
     Route::post('tracking_bd/list', 'list_bd')->name('tracking_bd.list');
     //DETALLE TRACKING
     Route::get('tracking_det', 'index_det')->name('tracking_det');
+    Route::post('tracking_det/traer_estado', 'traer_estado_det')->name('tracking_det.traer_estado');
     Route::post('tracking_det/list', 'list_det')->name('tracking_det.list');
     Route::get('tracking_det/{id}/detalle', 'detalle_det')->name('tracking_det.detalle');
     Route::get('tracking_det/{id}/excel_guia_despacho', 'excel_guia_despacho')->name('tracking_det.excel_guia_despacho');

@@ -240,7 +240,13 @@ class Tracking extends Model
         }
         $parte_estado = "";
         if($dato['estado']!="0"){
-            $parte_estado = "de.id_estado='".$dato['estado']."' AND";
+            $parte_estado = "AND de.id_estado='".$dato['estado']."'";
+        }
+        $parte_progreso = "";
+        if($dato['progreso']=="1"){
+            $parte_progreso = "AND dp.id_proceso!=9";
+        }elseif($dato['progreso']=="2"){
+            $parte_progreso = "AND dp.id_proceso=9";
         }
         $sql = "SELECT tr.id,tr.fec_reg AS orden,tr.n_requerimiento,tr.semana,
                 bd.cod_base AS desde,bh.cod_base AS hacia,
@@ -253,13 +259,13 @@ class Tracking extends Model
                 FROM tracking_detalle_proceso
                 WHERE id_proceso!=5
                 GROUP BY id_tracking) mp ON tr.id=mp.id_tracking
-                INNER JOIN tracking_detalle_proceso dp ON mp.ultimo_id=dp.id
+                INNER JOIN tracking_detalle_proceso dp ON mp.ultimo_id=dp.id $parte_progreso
                 INNER JOIN (SELECT MAX(id) AS ultimo_id,id_detalle
                 FROM tracking_detalle_estado
                 GROUP BY id_detalle) me ON mp.ultimo_id=me.id_detalle
-                INNER JOIN tracking_detalle_estado de ON me.ultimo_id=de.id
+                INNER JOIN tracking_detalle_estado de ON me.ultimo_id=de.id $parte_estado
                 INNER JOIN tracking_estado te ON de.id_estado=te.id
-                WHERE $parte_anio $parte_semana $parte_base $parte_estado tr.estado=1";
+                WHERE $parte_anio $parte_semana $parte_base tr.estado=1";
         $query = DB::select($sql);
         return $query;
     }
