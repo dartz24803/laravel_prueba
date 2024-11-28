@@ -26,7 +26,7 @@ $id_nivel = session('usuario')->id_nivel;
             ?>
         <tr>
             <td><?php echo $list['id_reclutamiento'] ?></td>
-            <td><?php echo $list['fecha_registro']; ?></td>
+            <td data-order="{{ $list['fec_reg'] }}"><?php echo $list['fecha_registro']; ?></td>
             <td><?php echo $list['nom_puesto']; ?></td>
             <td><?php echo $list['cod_ubi']; ?></td>
             <td><?php echo $list['vacantes']; ?></td>
@@ -37,7 +37,7 @@ $id_nivel = session('usuario')->id_nivel;
             <?php } ?>
             <td><?php echo $list['nom_estado_reclutamiento']; ?></td>
 
-            <td><?php if($list['fecha_cierre']!="00-00-0000"){echo $list['fecha_cierre'];} ?></td>
+            <td data-order="{{ $list['fec_cierre'] }}"><?php if($list['fecha_cierre']!="00-00-0000"){echo $list['fecha_cierre'];} ?></td>
             <td>
                 <div class="dropdown">
                     <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
