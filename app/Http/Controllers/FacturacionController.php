@@ -228,34 +228,17 @@ class FacturacionController extends Controller
         $start = intval($request->input('start'));
         $length = intval($request->input('length'));
         $search = $request->input('search')['value'] ?? '';
-        $order = $request->input('order'); // Parámetros de ordenamiento
-        $columns = $request->input('columns'); // Información de las columnas
+        $order = $request->input('order');
+        $columns = $request->input('columns');
         $almacenSeleccionadoInput = $request->input('almacenSeleccionadoInput');
-        $almDsc = 0;
-        $almDiscotela = 0;
-        $almPb = 0;
-        $almMad = 0;
-        $almFam = 0;
-        switch ($almacenSeleccionadoInput) {
-            case '1':
-                $almDsc = 1;
-                break;
-            case '2':
-                $almDiscotela = 1;
-                break;
-            case '3':
-                $almPb = 1;
-                break;
-            case '4':
-                $almMad = 1;
-                break;
-            case '5':
-                $almFam = 1;
-                break;
-            default:
-                break;
-        }
-        // Aplicar los filtros basados en los valores de los almacenes
+        $almacenes = [
+            '1' => 'alm_dsc',
+            '2' => 'alm_discotela',
+            '3' => 'alm_pb',
+            '4' => 'alm_mad',
+            '5' => 'alm_fam',
+        ];
+        $almacenActivo = $almacenes[$almacenSeleccionadoInput] ?? null;
         $query = TbContabilidad::filtros([
             'fecha_inicio' => $request->input('fecha_inicio'),
             'fecha_fin' => $request->input('fecha_fin'),
@@ -263,14 +246,8 @@ class FacturacionController extends Controller
             'sku' => $request->input('filtroSku'),
             'empresa' => $request->input('filtroEmpresa'),
             'search' => $search,
-            'alm_dsc' => $almDsc,
-            'alm_discotela' => $almDiscotela,
-            'alm_pb' => $almPb,
-            'alm_mad' => $almMad,
-            'alm_fam' => $almFam,
+            'almacen' => $almacenActivo,
         ]);
-
-        // Manejo de ordenamiento
         if ($order) {
             $columnIndex = $order[0]['column'];
             $columnName = $columns[$columnIndex]['data'];
@@ -279,17 +256,16 @@ class FacturacionController extends Controller
                 $query->orderBy($columnName, $columnSortOrder);
             }
         }
-
         $totalRecords = $query->count();
         $data = $query->skip($start)->take($length)->get();
-
         return response()->json([
             'draw' => $draw,
             'recordsTotal' => $totalRecords,
             'recordsFiltered' => $totalRecords,
-            'data' => $data
+            'data' => $data,
         ]);
     }
+
 
 
     public function actualizarTabla(Request $request)
