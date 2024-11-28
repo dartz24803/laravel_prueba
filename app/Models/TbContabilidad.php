@@ -121,12 +121,8 @@ class TbContabilidad extends Model
     {
         try {
             set_time_limit(600); // 10 minutos
-
-            // Obtener el primer día del AÑO actual
             $fechaInicioAnoMysql = Carbon::now()->startOfYear()->toDateString();
-            // Obtener el primer día de Julio del año actual
             $fechaInicioAno = Carbon::now()->setMonth(7)->day(1)->toDateString();
-            // Paso 1: Obtener los registros existentes en MySQL con claves compuestas de la tabla tb_contabilidad
             $mysqlRecords = DB::table('tb_contabilidad')
                 ->where('fecha_documento', '>=', $fechaInicioAnoMysql)
                 ->select('guia_remision', 'sku', 'empresa')
@@ -142,13 +138,11 @@ class TbContabilidad extends Model
                 ->map(function ($record) {
                     return $record->guia_remision . '|' . $record->sku . '|' . $record->empresa;
                 })
-                ->toArray(); // Convertir a un arreglo para búsqueda eficiente
+                ->toArray();
             $combinedRecords = array_merge($mysqlRecords, $mysqlRecordsCerrados);
             $mysqlRecordsSet = array_flip($combinedRecords);
-            // dd(count($mysqlRecordsSet));
-            // Paso 2: Obtener datos de SQL Server
             $data_sql = DB::connection('sqlsrv_dbmsrt')->select("
-                SELECT 
+                SELECT DISTINCT
                     s.Estilo,
                     s.Descripcion,
                     s.SKU,
@@ -230,13 +224,8 @@ class TbContabilidad extends Model
                     egr.Referencia_1 IS NOT NULL
                 ORDER BY s.SKU
             ", [$fechaInicioAno]);
-
-            // Paso 3: Filtrar registros que no están en MySQL
             $datosAInsertar = [];
-
-
             foreach ($data_sql as $row) {
-
                 $compositeKey = $row->Guía_de_Remisión . '|' . $row->SKU . '|' . $row->Empresa;
                 if (!isset($mysqlRecordsSet[$compositeKey])) {
                     $datosAInsertar[] = [
@@ -263,10 +252,7 @@ class TbContabilidad extends Model
                     ];
                 }
             }
-            // Paso 4: Insertar en lotes
             $totalInserted = 0; // Inicializar el contador
-
-
             if (!empty($datosAInsertar)) {
                 foreach ($datosAInsertar as $dato) {
                     try {
@@ -277,7 +263,6 @@ class TbContabilidad extends Model
                     }
                 }
             }
-            // Actualizar configuración
             $cantidadRegistrosUpdate = DB::table('tb_contabilidad')
                 ->count();
             DB::table('tb_contabilidad_configuracion')
@@ -287,10 +272,6 @@ class TbContabilidad extends Model
                     'estado' => 1,
                     'cantidad_registros' => $cantidadRegistrosUpdate,
                 ]);
-
-
-
-            // Retornar el total de registros insertados
             return $totalInserted;
         } catch (\Exception $e) {
             throw new \Exception("Error al sincronizar datos: " . $e->getMessage());
@@ -301,15 +282,12 @@ class TbContabilidad extends Model
     public static function sincronizarEnviadosContabilidad()
 
     {
-
         try {
             set_time_limit(600);
-
             // Obtener el primer día del AÑO actual
             $fechaInicioAnoMysql = Carbon::now()->startOfYear()->toDateString();
             // Obtener el primer día de Julio del año actual
             $fechaInicioAno = Carbon::now()->setMonth(7)->day(1)->toDateString();
-
             // Paso 1: Obtener los registros existentes en MySQL con claves compuestas de la tabla tb_contabilidad
             $mysqlRecords = DB::table('tb_contabilidad')
                 ->where('fecha_documento', '>=', $fechaInicioAnoMysql)
@@ -325,7 +303,7 @@ class TbContabilidad extends Model
 
             // Paso 2: Obtener datos de SQL Server
             $data_sql = DB::connection('sqlsrv_dbmsrt')->select("
-            SELECT 
+            SELECT DISTINCT
                 s.Estilo,
                 s.Descripcion,
                 s.SKU,
@@ -408,53 +386,84 @@ class TbContabilidad extends Model
             ORDER BY s.SKU
         ", [$fechaInicioAno]);
 
-            // Paso 3: Filtrar registros que han cambiado en "enviado"
             $datosAActualizar = [];
+            $keys = [];
+            $batchSize = 1000;  // Número máximo de elementos por consulta
+            $keysChunks = array_chunk($keys, $batchSize);
+            $mysqlRecords = collect();
+            foreach ($keysChunks as $chunk) {
+                $records = DB::table('tb_contabilidad')
+                    ->whereIn(DB::raw('CONCAT(guia_remision, "|", sku, "|", empresa)'), $chunk)
+                    ->select('guia_remision', 'sku', 'empresa', 'alm_discotela', 'alm_dsc', 'alm_pb', 'alm_ln1', 'alm_fam', 'alm_mad')
+                    ->get();
+                $mysqlRecords = $mysqlRecords->merge($records);
+            }
+
+            $mysqlRecords = $mysqlRecords->keyBy(function ($item) {
+                return $item->guia_remision . '|' . $item->sku . '|' . $item->empresa;
+            });
+
+            // Procesar cada fila de datos y comparar con los valores de MySQL
             foreach ($data_sql as $row) {
-
-
                 $compositeKey = $row->Guía_de_Remisión . '|' . $row->SKU . '|' . $row->Empresa;
+                // Verificar si el registro existe en los registros de MySQL
+                if (isset($mysqlRecords[$compositeKey])) {
 
-                if (isset($mysqlRecordsSet[$compositeKey])) {
-                    // Verificar si el valor de "enviado" ha cambiado
-                    $enviadoActual = (int) $row->Enviado;
-                    $enviadoMysql = DB::table('tb_contabilidad')
-                        ->where('guia_remision', $row->Guía_de_Remisión)
-                        ->where('sku', $row->SKU)
-                        ->where('empresa', $row->Empresa)
-                        ->value('enviado');
+                    $almDiscotelaActual = (int) $row->ALM_DISCOTELA;
+                    $almDscActual = (int) $row->ALM_DSC;
+                    $almPbActual = (int) $row->ALM_PB;
+                    $almLn1Actual = (int) $row->ALM_LN1;
+                    $almFamActual = (int) $row->ALM_FAM;
+                    $almMadActual = (int) $row->ALM_MAD;
+                    // Obtener los valores de los almacenes actuales en MySQL
+                    $almDiscotelaMysql = (int) $mysqlRecords[$compositeKey]->alm_discotela;
+                    $almDscMysql = (int) $mysqlRecords[$compositeKey]->alm_dsc;
+                    $almPbMysql = (int) $mysqlRecords[$compositeKey]->alm_pb;
+                    $almLn1Mysql = (int) $mysqlRecords[$compositeKey]->alm_ln1;
+                    $almFamMysql = (int) $mysqlRecords[$compositeKey]->alm_fam;
+                    $almMadMysql = (int) $mysqlRecords[$compositeKey]->alm_mad;
+                    // Comparar los valores y agregar a la lista de actualización si es necesario
+                    if (
+                        $almDiscotelaActual !== $almDiscotelaMysql ||
+                        $almDscActual !== $almDscMysql ||
+                        $almPbActual !== $almPbMysql ||
+                        $almLn1Actual !== $almLn1Mysql ||
+                        $almFamActual !== $almFamMysql ||
+                        $almMadActual !== $almMadMysql
+                    ) {
 
-                    if ($enviadoActual !== $enviadoMysql) {
-
-                        // Solo actualizar si ha cambiado
                         $datosAActualizar[] = [
                             'guia_remision' => $row->Guía_de_Remisión,
                             'sku' => $row->SKU,
                             'empresa' => $row->Empresa,
-                            'enviado' => $enviadoActual,
+                            'alm_discotela' => $almDiscotelaActual,
+                            'alm_dsc' => $almDscActual,
+                            'alm_pb' => $almPbActual,
+                            'alm_ln1' => $almLn1Actual,
+                            'alm_fam' => $almFamActual,
+                            'alm_mad' => $almMadActual,
                         ];
                     }
                 }
             }
-
+            // dd(count($datosAActualizar));
 
             // Paso 4: Actualizar en MySQL
-            $totalUpdated = 0; // Inicializar el contador
-            if (!empty($datosAActualizar)) {
-
+            $totalUpdated = 0;
+            if (count($datosAActualizar) > 0) {
                 foreach ($datosAActualizar as $dato) {
-                    try {
-                        DB::table('tb_contabilidad')
-                            ->where('guia_remision', $dato['guia_remision'])
-                            ->where('sku', $dato['sku'])
-                            ->where('empresa', $dato['empresa'])
-                            ->update([
-                                'enviado' => $dato['enviado'],
-                            ]);
-                        $totalUpdated++;
-                    } catch (\Exception $e) {
-                        // Manejar errores específicos si es necesario
-                    }
+                    DB::table('tb_contabilidad')
+                        ->where('guia_remision', $dato['guia_remision'])
+                        ->where('sku', $dato['sku'])
+                        ->where('empresa', $dato['empresa'])
+                        ->update([
+                            'alm_discotela' => $dato['alm_discotela'],
+                            'alm_dsc' => $dato['alm_dsc'],
+                            'alm_pb' => $dato['alm_pb'],
+                            'alm_ln1' => $dato['alm_ln1'],
+                            'alm_fam' => $dato['alm_fam'],
+                            'alm_mad' => $dato['alm_mad'],
+                        ]);
                 }
             }
             // Actualizar configuración

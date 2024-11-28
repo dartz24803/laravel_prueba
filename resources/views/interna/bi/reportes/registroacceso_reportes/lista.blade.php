@@ -57,7 +57,11 @@
     <tbody>
         @foreach ($list_bi_reporte as $reporte)
         <tr class="text-center">
-            <td>{{ \Carbon\Carbon::parse($reporte->fec_act)->locale('es')->translatedFormat('D d M y') }}</td>
+
+            <td data-order="{{ $reporte->fec_act }}">
+                {{ \Carbon\Carbon::parse($reporte->fec_act)->locale('es')->translatedFormat('D d M y') }}
+            </td>
+            <!-- <td>{{ \Carbon\Carbon::parse($reporte->fec_act)->locale('es')->translatedFormat('D d M y') }}</td> -->
             <td>{{ $reporte->nom_bi }}</td>
             <td>
                 @if ($reporte->actividad == 1)
@@ -161,7 +165,7 @@
             "width": "300px",
             "targets": [2]
         }],
-        "ordering": false,
+        "ordering": true,
         "autoWidth": false,
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
             "<'table-responsive'tr>" +

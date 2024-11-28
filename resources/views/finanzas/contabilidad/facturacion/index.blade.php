@@ -20,7 +20,7 @@
                 <polyline points="1 20 1 14 7 14"></polyline>
                 <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
             </svg>
-            Enviados
+            Almacenes
         </button>
     </div>
     <div class="col-lg-4">
@@ -139,7 +139,7 @@
 
         Swal({
             title: '¿Estás seguro?',
-            text: `Se procederá a actualizar la cantidad de "enviados", en todos los registros desde ${fechaInicio} hasta  ${fechaActualM}..`,
+            text: `Se procederá a actualizar la cantidad de "stock", en todos los almacenes desde ${fechaInicio} hasta  ${fechaActualM}.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sí, Actualizar',
