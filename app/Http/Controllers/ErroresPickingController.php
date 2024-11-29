@@ -62,7 +62,7 @@ class ErroresPickingController extends Controller
                                 'ep.encontrado','ar.nom_area','ep.estilo','ep.color','ta.nom_talla',
                                 'ep.prendas_devueltas','ti.nom_tipo_error',
                                 DB::raw("CONCAT(SUBSTRING_INDEX(us.usuario_nombres, ' ', 1),' ',
-                                us.usuario_apater) AS nom_responsable"),
+                                (CASE WHEN us.usuario_apater IS NULL THEN '' ELSE us.usuario_apater END)) AS nom_responsable"),
                                 DB::raw("CASE WHEN ep.solucion = 1 THEN 'SI' WHEN ep.solucion = 2 THEN 'NO' 
                                 ELSE '' END AS solucion"),'ep.observacion')
                                 ->join('vw_area_error_picking AS ar', 'ep.id_area', '=', 'ar.id_area')
