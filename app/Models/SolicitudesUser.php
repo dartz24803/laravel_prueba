@@ -163,7 +163,8 @@ class SolicitudesUser extends Model
         // Construcción de condiciones dinámicas
         $motivo = "";
         if (isset($separado_por_comas_puestos) && $separado_por_comas_puestos != '') {
-            $puesto = " and u.id_puesto in ($separado_por_comas_puestos)";
+            // $puesto = " and u.id_puesto in ($separado_por_comas_puestos)";
+            $puesto = "";
             if ($id_puesto == 122) {
                 $motivo = " and su.id_motivo=1 ";
             }
