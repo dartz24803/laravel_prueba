@@ -123,7 +123,7 @@
             </li>
         <?php } ?>
         <?php
-        if (
+        if (session('usuario')->estadopps==1 ||
             session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 19 || session('usuario')->id_puesto == 21 || session('usuario')->id_puesto == 278 ||
             session('usuario')->id_puesto == 279 || session('usuario')->id_puesto == 23 || session('usuario')->id_puesto == 40 || session('usuario')->id_puesto == 10 ||
             session('usuario')->id_puesto == 93 || session('usuario')->id_puesto == 30 || session('usuario')->id_puesto == 314
@@ -142,7 +142,7 @@
         }
         ?>
 
-        <?php if(session('usuario')->id_nivel==1 || session('usuario')->id_puesto==19 || session('usuario')->id_puesto==21 || session('usuario')->id_puesto==23 || session('usuario')->id_puesto==40 ||
+        <?php if(session('usuario')->estadopps==1 || session('usuario')->id_nivel==1 || session('usuario')->id_puesto==19 || session('usuario')->id_puesto==21 || session('usuario')->id_puesto==23 || session('usuario')->id_puesto==40 ||
                                     session('usuario')->id_puesto==10 || session('usuario')->id_puesto==93 || session('usuario')->id_puesto==314 || session('usuario')->id_puesto==315){?>
             <li id="papeletas">
                 <a id="hpapeletas" href="{{ url('Papeletas/Lista_Papeletas_Salida_seguridad') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="<?= $hpapeletas2 ?> <?= $hpapeletas3 ?>">
