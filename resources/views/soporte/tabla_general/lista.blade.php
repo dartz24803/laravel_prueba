@@ -11,19 +11,7 @@
             <th>Orden</th>
             <th>Código</th>
             <th>Sede Laboral</th>
-            <th id="ordenar-fechas" onclick="OrdenarFechas()" style="cursor: pointer;">
-                <div class="row p-0" style="width: 155%">
-                    <div class="offset-1 col-md-6">
-                        F. Registro
-                    </div>
-                    <div class="offset-1 col-md-2">
-                        <div class="d-flex flex-column orden-icono">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </div>
-                    </div>
-                </div>
-            </th>
+            <th>F. de Registro</th>
             <th>Usuario</th>
             <th>Área</th>
             <th>Responsable</th>
@@ -43,7 +31,7 @@
             <td>{{ $list->fec_reg }}</td>
             <td>{{ $list->codigo }}</td>
             <td>{{ $list->base }}</td>
-            <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
+            <td data-order"{{ $list->fec_reg }}">{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $list->usuario_nombre }}</td>
             <td>{{ $list->nombre_area }}</td>
             <td>{{ $list->nombres_responsables }}</td>
@@ -51,9 +39,9 @@
             <td>{{ $list->nombre_especialidad }}</td>
             <td>{{ $list->nombre_elemento }}</td>
             <td>{{ $list->nombre_asunto }}</td>
-            <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
-            <td>{{ \Carbon\Carbon::parse($list->fec_vencimiento)->locale('es')->translatedFormat('D d M y') }}</td>
-            <td>{{ \Carbon\Carbon::parse($list->fecha_completado)->locale('es')->translatedFormat('D d M y') }}</td>
+            <td data-order"{{ $list->fec_reg }}">{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
+            <td data-order"{{ $list->fec_vencimiento }}">{{ \Carbon\Carbon::parse($list->fec_vencimiento)->locale('es')->translatedFormat('D d M y') }}</td>
+            <td data-order"{{ $list->fecha_completado }}">{{ \Carbon\Carbon::parse($list->fecha_completado)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $list->status_ticket }}</td>
 
         </tr>
@@ -85,56 +73,10 @@
             "pageLength": 10,
             "columnDefs": [
                 {
-                    'targets': 3,
-                    'orderable': false
-                },
-                {
                     'targets': 0, // Índice de la columna que quieres ocultar
                     'visible': false // Oculta la columna
                 }
             ],
         });
-        $('#tabla_js thead').on('click', 'th', function() {
-            if ($(this).attr('id') !== 'ordenar-fechas') {
-                $('#tabla_js thead th .orden-icono').html(`
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                `);
-            }
-        });
     });
-
-    function OrdenarFechas() {
-        var tabla = $('#tabla_js').DataTable();
-        var currentOrder = tabla.order(); // Obtiene el orden actual
-
-        var header = $('#ordenar-fechas'); // Selecciona el encabezado
-        var icono = header.find('.orden-icono'); // Selecciona el ícono de la flecha
-
-        // Alterna entre ascendente y descendente
-        if (currentOrder[0][0] === 0) { // Si la columna 0 está ordenada
-            var newOrder = (currentOrder[0][1] === 'asc') ? 'desc' : 'asc';
-            tabla.order([0, newOrder]).draw();
-
-            // Cambia la clase del ícono según el nuevo orden
-            if (newOrder === 'asc') {
-                icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            } else {
-                icono.removeClass('asc').addClass('desc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            }
-        } else {
-            // Si no está ordenada, establece como ascendente por defecto
-            tabla.order([0, 'asc']).draw();
-            icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-        }
-    }
 </script>

@@ -7,25 +7,13 @@
             <th>Duración</th>
             <th>Título</th>
             <th>Descripción</th>
-            <th id="ordenar-fechas" onclick="OrdenarFechas()" style="cursor: pointer;">
-                <div class="row p-0" style="width: 155%">
-                    <div class="offset-1 col-md-6">
-                        Creado
-                    </div>
-                    <div class="offset-1 col-md-2">
-                        <div class="d-flex flex-column orden-icono">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </div>
-                    </div>
-                </div>
-            </th>
+            <th>Creado</th>
             <th>Archivo</th>
             <th class="no-content"></th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach($list_slider_rrhh as $list) {  ?>   
+        <?php foreach($list_slider_rrhh as $list) {  ?>
             <tr>
                 <td>{{ $list['fec_reg'] }}</td>
                 <td><?= $list['orden']; ?></td>
@@ -33,7 +21,7 @@
                 <td><?= $list['duracion']; ?></td>
                 <td><?= $list['titulo']; ?></td>
                 <td><?= $list['descripcion']; ?></td>
-                <td><?= $list['creado']; ?></td>
+                <td data-order="{{ $list['fec_reg'] }}"><?= $list['creado']; ?></td>
                 <td>
                     <?php if(substr($list['archivoslide'],-3) === "mp4"){ ?>
                         <video loading="lazy" class="img-thumbnail img-presentation-small" controls >
@@ -44,8 +32,8 @@
                     <?php } ?>
                 </td>
                 <td class="text-center">
-                    <a href="javascript:void(0);" title="Editar" 
-                    data-toggle="modal" data-target="#ModalUpdateSlide" 
+                    <a href="javascript:void(0);" title="Editar"
+                    data-toggle="modal" data-target="#ModalUpdateSlide"
                     app_upd_slide="{{ url('Modal_Update_Slider_Rrhh/' . $list['id_slide'])  }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
@@ -96,10 +84,6 @@
             order: [[1, "asc"]],
             "columnDefs": [
                 {
-                    'targets': 6,
-                    'orderable': false
-                },
-                {
                     'targets': 0, // Índice de la columna que quieres ocultar
                     'visible': false // Oculta la columna
                 }
@@ -107,46 +91,4 @@
         });
     });
     
-    $('#tabla_js thead').on('click', 'th', function() {
-        if ($(this).attr('id') !== 'ordenar-fechas') {
-            $('#tabla_js thead th .orden-icono').html(`
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            `);
-        }
-    });
-
-    function OrdenarFechas() {
-        var tabla = $('#tabla_js').DataTable();
-        var currentOrder = tabla.order(); // Obtiene el orden actual
-
-        var header = $('#ordenar-fechas'); // Selecciona el encabezado
-        var icono = header.find('.orden-icono'); // Selecciona el ícono de la flecha
-
-        // Alterna entre ascendente y descendente
-        if (currentOrder[0][0] === 0) { // Si la columna 0 está ordenada
-            var newOrder = (currentOrder[0][1] === 'asc') ? 'desc' : 'asc';
-            tabla.order([0, newOrder]).draw();
-
-            // Cambia la clase del ícono según el nuevo orden
-            if (newOrder === 'asc') {
-                icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            } else {
-                icono.removeClass('asc').addClass('desc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            }
-        } else {
-            // Si no está ordenada, establece como ascendente por defecto
-            tabla.order([0, 'asc']).draw();
-            icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-        }
-    }
 </script>

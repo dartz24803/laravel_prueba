@@ -8,25 +8,13 @@
             <th>Duración</th>
             <th>Título</th>
             <th>Descripción</th>
-            <th id="ordenar-fechas" onclick="OrdenarFechas()" style="cursor: pointer;">
-                <div class="col-md-12 row p-0">
-                    <div class="offset-1 col-md-6">
-                        Creado
-                    </div>
-                    <div class="offset-1 col-md-2">
-                        <div class="d-flex flex-column orden-icono">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </div>
-                    </div>
-                </div>
-            </th>
+            <th>Creado</th>
             <th>Archivo</th>
             <th class="no-content"></th>
         </tr>
     </thead>
     <tbody>
-        <?php foreach($slider as $list) {  ?>   
+        <?php foreach($slider as $list) {  ?>
             <tr>
                 <td>{{ $list['fec_reg'] }}</td>
                 <td><?php echo $list['orden']; ?></td>
@@ -35,20 +23,20 @@
                 <td><?php echo $list['duracion']; ?></td>
                 <td>{{ Str::words($list['titulo'], 4) }}</td>
                 <td>{{ Str::words($list['descripcion'], 4) }}</td>
-                <td>{{ \Carbon\Carbon::parse($list['fec_reg'])->format('d/m/Y') }}</td>
+                <td data-order="{{ $list['fec_reg'] }}">{{ \Carbon\Carbon::parse($list['fec_reg'])->format('d/m/Y') }}</td>
                 <td>
                     <?php if(substr($list['archivoslide'],-3) === "mp4"){ ?>
-                            <?php echo ' 
+                            <?php echo '
                                     <video loading="lazy" class="img-thumbnail img-presentation-small" controls >
                                         <source class="img_post img-thumbnail img-presentation-small" src="' . $url[0]['url_config'] . $list['archivoslide'] . '" type="video/mp4">
                                     </video>';
                             ?>
                     <?php } else {
-                        echo'<img loading="lazy" class="img_post img-thumbnail img-presentation-small" src="' . $url[0]['url_config'] . $list['archivoslide'] . '">'; 
+                        echo'<img loading="lazy" class="img_post img-thumbnail img-presentation-small" src="' . $url[0]['url_config'] . $list['archivoslide'] . '">';
                     } ?>
                 </td>
                 <td class="text-center">
-                    <a href="javascript:void(0);" title="Editar" 
+                    <a href="javascript:void(0);" title="Editar"
                     data-toggle="modal" data-target="#ModalUpdateSlide" app_upd_slide="{{ url('Marketing/Modal_Update_Slide_Comercial/'.$list['id_slide']) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                             <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
@@ -87,62 +75,17 @@
             "pageLength": 10,
             "columnDefs": [
                 {
-                    'targets': 7,
-                    'orderable': false
-                },
-                {
                     'targets': 0, // Índice de la columna que quieres ocultar
                     'visible': false // Oculta la columna
                 }
             ],
         });
-        $('#zero-configg thead').on('click', 'th', function() {
-            if ($(this).attr('id') !== 'ordenar-fechas') {
-                $('#zero-configg thead th .orden-icono').html(`
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                `);
-            }
-        });
     });
     $(".img_post").click(function () {
-        window.open($(this).attr("src"), 'popUpWindow', 
+        window.open($(this).attr("src"), 'popUpWindow',
         "height=" + this.naturalHeight + ",width=" + this.naturalWidth + ",resizable=yes,toolbar=yes,menubar=no')");
     });
-    
-    function OrdenarFechas() {
-        var tabla = $('#zero-configg').DataTable();
-        var currentOrder = tabla.order(); // Obtiene el orden actual
 
-        var header = $('#ordenar-fechas'); // Selecciona el encabezado
-        var icono = header.find('.orden-icono'); // Selecciona el ícono de la flecha
-
-        // Alterna entre ascendente y descendente
-        if (currentOrder[0][0] === 0) { // Si la columna 0 está ordenada
-            var newOrder = (currentOrder[0][1] === 'asc') ? 'desc' : 'asc';
-            tabla.order([0, newOrder]).draw();
-
-            // Cambia la clase del ícono según el nuevo orden
-            if (newOrder === 'asc') {
-                icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            } else {
-                icono.removeClass('asc').addClass('desc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            }
-        } else {
-            // Si no está ordenada, establece como ascendente por defecto
-            tabla.order([0, 'asc']).draw();
-            icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-        }
-    }
     /*function Delete_slide_Comercial(id) {
         var csrfToken = $('input[name="_token"]').val();
         var id = id;

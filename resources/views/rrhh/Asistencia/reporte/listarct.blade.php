@@ -11,19 +11,7 @@ $id_puesto = Session('usuario')->id_puesto;
             <th>Centro de Labores</th>
             <th>DNI</th>
             <th>Colaborador</th>
-            <th id="ordenar-fechas" onclick="OrdenarFechas()" style="cursor: pointer;">
-                <div class="row p-0" style="width: 155%;">
-                    <div class="offset-1 col-md-6">
-                        Fecha
-                    </div>
-                    <div class="offset-1 col-md-2">
-                        <div class="d-flex flex-column orden-icono">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </div>
-                    </div>
-                </div>
-            </th>
+            <th>Fecha</th>
             <th>Ingreso</th>
             <th>Inicio Descanso</th>
             <th>Fin Descanso</th>
@@ -33,9 +21,9 @@ $id_puesto = Session('usuario')->id_puesto;
         </tr>
     </thead>
     <tbody>
-        <?php 
+        <?php
             foreach($list_asistencia as $num_doc=>$registros){
-                foreach($registros as $list) { 
+                foreach($registros as $list) {
                     $cadenaConvert = str_replace(" ", "-", $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']);
                     ?>
                     <tr>
@@ -43,8 +31,8 @@ $id_puesto = Session('usuario')->id_puesto;
                         <td class="text-center"> <?php echo $list['centro_labores']; ?> </td>
                         <td class="text-center"> <?php echo $list['num_doc']; ?> </td>
                         <td class="text-center"> <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?></td>
-                        <td class="text-center"> <?php echo $list['fecha'];?> </td>
-                        <td class="text-center"> 
+                        <td class="text-center" data-order="{{ $list['orden'} }}"> <?php echo $list['fecha'];?> </td>
+                        <td class="text-center">
                             <?php if($list['ingreso']!==null){ ?>
                                 <?php echo Carbon::parse($list['ingreso'])->format('H:i A'); ?>
                                 <?php $ingreso = Carbon::parse($list['ingreso'])->format('H:i:s'); ?>
@@ -53,7 +41,7 @@ $id_puesto = Session('usuario')->id_puesto;
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
-                            <?php }else{ 
+                            <?php }else{
                                 $ingreso = 0; ?>
                                 <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('Asistencia/Modal_Registro_Dia/'. $cadenaConvert . "/" .$list['num_doc'] ."/". $list['orden'] . "/". $ingreso) }}" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
@@ -62,7 +50,7 @@ $id_puesto = Session('usuario')->id_puesto;
                                 </a>
                             <?php } ?>
                         </td>
-                        <td class="text-center"> 
+                        <td class="text-center">
                             <?php if($list['inicio_refrigerio']!==null){ ?>
                                 <?php echo Carbon::parse($list['inicio_refrigerio'])->format('H:i A'); ?>
                                 <?php $inicio_refrigerio = Carbon::parse($list['inicio_refrigerio'])->format('H:i:s'); ?>
@@ -71,7 +59,7 @@ $id_puesto = Session('usuario')->id_puesto;
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
-                            <?php }else{ 
+                            <?php }else{
                                 $inicio_refrigerio = 0; ?>
                                 <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('Asistencia/Modal_Registro_Dia/'. $cadenaConvert . "/" .$list['num_doc'] ."/". $list['orden'] . "/". $inicio_refrigerio) }}" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
@@ -80,7 +68,7 @@ $id_puesto = Session('usuario')->id_puesto;
                                 </a>
                             <?php } ?>
                         </td>
-                        <td class="text-center"> 
+                        <td class="text-center">
                             <?php if($list['fin_refrigerio']!==null){ ?>
                                 <?php echo Carbon::parse($list['fin_refrigerio'])->format('H:i A'); ?>
                                 <?php $fin_refrigerio = Carbon::parse($list['fin_refrigerio'])->format('H:i:s'); ?>
@@ -89,7 +77,7 @@ $id_puesto = Session('usuario')->id_puesto;
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
-                            <?php }else{ 
+                            <?php }else{
                                 $fin_refrigerio = 0; ?>
                                 <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('Asistencia/Modal_Registro_Dia/'. $cadenaConvert . "/" .$list['num_doc'] ."/". $list['orden'] . "/". $fin_refrigerio) }}" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
@@ -98,7 +86,7 @@ $id_puesto = Session('usuario')->id_puesto;
                                 </a>
                             <?php } ?>
                         </td>
-                        <td class="text-center"> 
+                        <td class="text-center">
                             <?php if($list['salida']!==null){ ?>
                                 <?php echo Carbon::parse($list['salida'])->format('H:i A'); ?>
                                 <?php $salida = Carbon::parse($list['salida'])->format('H:i:s'); ?>
@@ -107,7 +95,7 @@ $id_puesto = Session('usuario')->id_puesto;
                                         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                                     </svg>
                                 </a>
-                            <?php }else{ 
+                            <?php }else{
                                 $salida = 0; ?>
                                 <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('Asistencia/Modal_Registro_Dia/'. $cadenaConvert . "/" .$list['num_doc'] ."/". $list['orden'] . "/". $salida) }}" >
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
@@ -119,9 +107,9 @@ $id_puesto = Session('usuario')->id_puesto;
                         <td class="text-center">
                             <?php
                             if($list['salida']!=""){
-                                echo "1"; 
+                                echo "1";
                             }else{
-                                echo "0"; 
+                                echo "0";
                             } ?>
                         </td>
                         <td class="text-center"></td>
@@ -153,56 +141,10 @@ $('#multi-column-orderingg').DataTable({
     "pageLength": 50,
     "columnDefs": [
         {
-            'targets': 4,
-            'orderable': false
-        },
-        {
             'targets': 0, // Índice de la columna que quieres ocultar
             'visible': false // Oculta la columna
         }
     ],
 });
 
-$('#multi-column-orderingg thead').on('click', 'th', function() {
-    if ($(this).attr('id') !== 'ordenar-fechas') {
-        $('#multi-column-orderingg thead th .orden-icono').html(`
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-        `);
-    }
-});
-
-function OrdenarFechas() {
-    var tabla = $('#multi-column-orderingg').DataTable();
-    var currentOrder = tabla.order(); // Obtiene el orden actual
-
-    var header = $('#ordenar-fechas'); // Selecciona el encabezado
-    var icono = header.find('.orden-icono'); // Selecciona el ícono de la flecha
-
-    // Alterna entre ascendente y descendente
-    if (currentOrder[0][0] === 0) { // Si la columna 0 está ordenada
-        var newOrder = (currentOrder[0][1] === 'asc') ? 'desc' : 'asc';
-        tabla.order([0, newOrder]).draw();
-
-        // Cambia la clase del ícono según el nuevo orden
-        if (newOrder === 'asc') {
-            icono.removeClass('desc').addClass('asc').html(`
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    `);
-        } else {
-            icono.removeClass('asc').addClass('desc').html(`
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    `);
-        }
-    } else {
-        // Si no está ordenada, establece como ascendente por defecto
-        tabla.order([0, 'asc']).draw();
-        icono.removeClass('desc').addClass('asc').html(`
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                    `);
-    }
-}
 </script>
