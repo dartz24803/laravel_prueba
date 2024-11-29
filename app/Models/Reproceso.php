@@ -42,7 +42,8 @@ class Reproceso extends Model
                     FROM reproceso re
                     LEFT JOIN mes me ON MONTH(re.fecha_documento)=me.id_mes
                     LEFT JOIN usuario_reproceso ur ON re.usuario=ur.id
-                    WHERE re.estado=1";
+                    WHERE re.estado=1
+                    ORDER BY re.fecha_documento DESC";
         $query = DB::select($sql);
         return json_decode(json_encode($query), true);
     }
