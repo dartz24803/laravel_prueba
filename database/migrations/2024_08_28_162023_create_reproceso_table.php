@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer('user_act');
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-            $table->foreign('usuario', 'reproceso_fk_usuario')->references('id')->on('usuario_reproceso');
+            $table->foreign('usuario', 'rep_fk_usu')->references('id')->on('usuario_reproceso');
         });
     }
 
