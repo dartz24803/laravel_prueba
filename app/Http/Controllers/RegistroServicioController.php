@@ -442,6 +442,7 @@ class RegistroServicioController extends Controller
 
     public function excel($todos,$cod_base,$estado,$id_servicio,$id_lugar_servicio,$mes,$anio)
     {
+        $cod_base = explode(",",$cod_base);
         $list_registro_servicio = GastoServicio::get_list_registro_servicio([
             'todos'=>$todos,
             'cod_base'=>$cod_base,
