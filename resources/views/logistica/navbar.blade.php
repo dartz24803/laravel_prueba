@@ -235,11 +235,11 @@
     </a>
 
     <ul class="collapse submenu list-unstyled" id="rlogisticaconf" data-parent="#accordionExample">
-        <li>
+        {{--<li>
             <a id="errorespickingta" href="{{ route('errorespickingta_conf') }}">
                 <p class="romperpalabra"><span id="icono_active2"></span> Errores Picking</p>
             </a>
-        </li>
+        </li>--}}
         <li>
             <a id="consumibles" href="{{ route('consumible_art') }}">
                 <p class="romperpalabra"><span id="icono_active2"></span> Consumibles</p>
