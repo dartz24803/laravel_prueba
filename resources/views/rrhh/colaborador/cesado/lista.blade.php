@@ -56,19 +56,7 @@
             <th>Apellido Paterno</th>
             <th>Apellido Materno</th>
             <th>Nombres</th>
-            <th id="ordenar-fechas" onclick="OrdenarFechas()" style="cursor: pointer;">
-                <div class="row p-0" style="width: 155%">
-                    <div class="offset-1 col-md-6">
-                        Inicio Labores
-                    </div>
-                    <div class="offset-1 col-md-2">
-                        <div class="d-flex flex-column orden-icono">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </div>
-                    </div>
-                </div>
-            </th>
+            <th>F. Inicio Labores</th>
             <th>Tipo Documento</th>
             <th>N° Documento</th>
             <th>Teléfono Celular</th>
@@ -114,7 +102,7 @@
             <td class="text-left">{{ $list->usuario_apater }}</td>
             <td class="text-left">{{ $list->usuario_amater }}</td>
             <td class="text-left">{{ $list->usuario_nombres }}</td>
-            <td>{{ $list->fecha_ingreso }}</td>
+            <td data-order="{{ $list->fecha_ingreso }}">{{ $list->fecha_ingreso }}</td>
             <td>{{ $list->cod_tipo_documento }}</td>
             <td>{{ $list->num_doc }}</td>
             <td>
@@ -286,7 +274,7 @@
             }
         ],
     });
-    
+
     $('#tabla_js thead').on('click', 'th', function() {
         if ($(this).attr('id') !== 'ordenar-fechas') {
             $('#tabla_js thead th .orden-icono').html(`

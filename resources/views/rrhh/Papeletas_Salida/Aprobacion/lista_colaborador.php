@@ -11,19 +11,7 @@
             <th>Especificación</th>
             <th>Trámite</th>
             <th>Especificación</th>
-            <th id="ordenar-fechas" onclick="OrdenarFechas()" style="cursor: pointer;">
-                <div class="row p-0" style="width: 155%;">
-                    <div class="offset-1 col-md-6">
-                        Fecha
-                    </div>
-                    <div class="offset-1 col-md-2">
-                        <div class="d-flex flex-column orden-icono">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </div>
-                    </div>
-                </div>
-            </th>
+            <th>Fecha</th>
             <th>H. Salida</th>
             <th>H. Retorno</th>
             <th>H. Real Salida</th>
@@ -99,7 +87,7 @@
             <td>
                 <?php echo $list['especificacion_tramite']; ?>
             </td>
-            <td>
+            <td data-order="<?= $list['fec_solicitud'] ?>">
                 <?php
                     echo date_format(date_create($list['fec_solicitud']), "d/m/Y");
                 ?>
@@ -167,56 +155,9 @@
         "pageLength": 10,
         "columnDefs": [
             {
-                'targets': 10,
-                'orderable': false
-            },
-            {
                 'targets': 0, // Índice de la columna que quieres ocultar
                 'visible': false // Oculta la columna
             }
         ],
     });
-
-    $('#zero-config323 thead').on('click', 'th', function() {
-        if ($(this).attr('id') !== 'ordenar-fechas') {
-            $('#zero-config323 thead th .orden-icono').html(`
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            `);
-        }
-    });
-
-    function OrdenarFechas() {
-        var tabla = $('#zero-config323').DataTable();
-        var currentOrder = tabla.order(); // Obtiene el orden actual
-
-        var header = $('#ordenar-fechas'); // Selecciona el encabezado
-        var icono = header.find('.orden-icono'); // Selecciona el ícono de la flecha
-
-        // Alterna entre ascendente y descendente
-        if (currentOrder[0][0] === 0) { // Si la columna 0 está ordenada
-            var newOrder = (currentOrder[0][1] === 'asc') ? 'desc' : 'asc';
-            tabla.order([0, newOrder]).draw();
-
-            // Cambia la clase del ícono según el nuevo orden
-            if (newOrder === 'asc') {
-                icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            } else {
-                icono.removeClass('asc').addClass('desc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            }
-        } else {
-            // Si no está ordenada, establece como ascendente por defecto
-            tabla.order([0, 'asc']).draw();
-            icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-        }
-    }
 </script>

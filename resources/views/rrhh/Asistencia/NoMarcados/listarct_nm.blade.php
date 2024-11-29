@@ -20,9 +20,9 @@ $id_puesto = Session('usuario')->id_puesto;
         </tr>
     </thead>
     <tbody>
-        <?php 
+        <?php
             foreach($list_asistencia as $num_doc=>$registros){
-                foreach($registros as $list) { 
+                foreach($registros as $list) {
                     $cadenaConvert = str_replace(" ", "-", $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']);
                     ?>
                     <tr>
@@ -30,7 +30,7 @@ $id_puesto = Session('usuario')->id_puesto;
                         <td class="text-center"> <?php echo $list['centro_labores']; ?> </td>
                         <td class="text-center"> <?php echo $list['num_doc']; ?> </td>
                         <td class="text-center"> <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?></td>
-                        <td class="text-center"> <?php echo $list['fecha'];?> </td>
+                        <td class="text-center" data-order="{{ $list['orden'] }}"> <?php echo $list['fecha'];?> </td>
                         <td class="text-center">
                             <?php $ingreso = 0; ?>
                             <a href="javascript:void(0);"  title="Editar" data-toggle="modal" data-target="#ModalRegistro" app_reg="{{ url('Asistencia/Modal_Registro_Dia/'. $cadenaConvert . "/" .$list['num_doc'] ."/". $list['orden'] . "/". $ingreso) }}" >
