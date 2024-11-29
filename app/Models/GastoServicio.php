@@ -97,8 +97,9 @@ class GastoServicio extends Model
                 (CASE WHEN gs.lact_dato IS NOT NULL THEN 1 ELSE 0 END) AS lactdato,
                 (CASE WHEN gs.lact_fecha IS NOT NULL THEN 1 ELSE 0 END) AS lactfecha,
                 /**/
-                gs.estado_servicio,gs.comprobante,gs.documento,gs.importe AS total,gs.fec_pago,
-                gs.num_operacion,gs.lant_dato,
+                gs.estado_servicio,CASE WHEN SUBSTRING(gs.comprobante,1,5)='https' 
+                THEN gs.comprobante ELSE CONCAT('https://grupolanumero1.com.pe/intranet/',gs.comprobante) 
+                END AS comprobante,gs.documento,gs.importe AS total,gs.fec_pago,gs.num_operacion,gs.lant_dato,
                 CASE WHEN gs.lant_fecha IS NOT NULL AND gs.lant_fecha NOT LIKE '%0000%' THEN gs.lant_fecha 
                 ELSE '' END AS lant_fecha,gs.lact_dato,
                 CASE WHEN gs.lact_fecha IS NOT NULL AND gs.lact_fecha NOT LIKE '%0000%' THEN gs.lact_fecha 
