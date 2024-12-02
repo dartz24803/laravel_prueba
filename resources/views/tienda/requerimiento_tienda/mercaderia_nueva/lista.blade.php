@@ -3,6 +3,7 @@
         <tr class="text-center">
             <th>Orden</th>
             <th></th>
+            <th>Estado</th>
             <th>SKU</th>
             <th>Estilo</th>
             <th>Tipo usuario</th>
@@ -11,7 +12,6 @@
             <th>Talla</th>
             <th>Descripción</th>
             <th>Cantidad</th>
-            <th>Estado</th>
         </tr>
     </thead>
     <tbody>
@@ -28,6 +28,7 @@
                         </a>
                     @endif
                 </td>
+                <td>{{ $list->cantidad }}</td>
                 <td>{{ $list->sku }}</td>
                 <td>{{ $list->estilo }}</td>
                 <td>{{ $list->tipo_usuario }}</td>
@@ -35,7 +36,6 @@
                 <td class="text-left">{{ $list->color }}</td>
                 <td>{{ $list->talla }}</td>
                 <td class="text-left">{{ $list->descripcion }}</td>
-                <td>{{ $list->cantidad }}</td>
                 <td>{{ $list->nom_estado }}</td>
             </tr>
         @endforeach
