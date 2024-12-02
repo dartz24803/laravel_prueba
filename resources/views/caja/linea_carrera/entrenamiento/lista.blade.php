@@ -1,3 +1,5 @@
+<?php use Carbon\Carbon; ?>
+
 <table id="tabla_js" class="table non-hover" style="width:100%">
     <thead>
         <tr class="text-center">
@@ -18,22 +20,22 @@
             <tr class="text-center" style="background-color:{{ $list->color_fondo }}">
                 <td>{{ $list->orden }}</td>
                 <td class="text-left">{{ ucfirst($list->nom_puesto_aspirado) }}</td>
-                <td>{{ $list->base }}</td> 
+                <td>{{ $list->base }}</td>
                 <td class="text-left">{{ ucwords($list->nombre_completo) }}</td>
-                <td>{{ $list->fecha_inicio }}</td> 
-                <td>{{ $list->fecha_fin }}</td> 
+                <td data-order="{{  Carbon::createFromFormat('d-m-Y', $list->fecha_inicio)->format('Y-m-d'); }}">{{ $list->fecha_inicio }}</td>
+                <td data-order="{{  Carbon::createFromFormat('d-m-Y', $list->fecha_fin)->format('Y-m-d'); }}">{{ $list->fecha_fin }}</td>
                 <td>
                     <span class="badge badge-{{ $list->color_estado }}">{{ $list->nom_estado }}</span>
                 </td>
                 <td @if ($list->nota<14) style="color: red;" @endif>{{ $list->nota }}</td>
                 <td class="text-left">{{ $list->nom_evaluacion }}</td>
                 <td class="text-center">
-                    <div class="btn-group dropleft" role="group"> 
+                    <div class="btn-group dropleft" role="group">
                         <a id="btnDropLeft" type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                         </a>
                         <div class="dropdown-menu" aria-labelledby="btnDropLeft" style="padding:0;">
-                            <a href="javascript:void(0);" class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate" 
+                            <a href="javascript:void(0);" class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate"
                             app_elim="{{ route('linea_carrera_en.evaluacion', $list->id) }}">
                                 Evaluaciones
                             </a>
@@ -45,10 +47,10 @@
                         </div>
                     </div>
                 </td>
-            </tr>  
+            </tr>
         @endforeach
     </tbody>
-</table>  
+</table>
 
 <script>
     $('#tabla_js').DataTable({
@@ -68,11 +70,11 @@
         "stripeClasses": [],
         "lengthMenu": [10, 20, 50],
         "pageLength": 10,
-        "aoColumnDefs" : [ 
+        "aoColumnDefs" : [
             {
                 'targets' : [ 0 ],
                 'visible' : false
-            } 
+            }
         ]
     });
 </script>

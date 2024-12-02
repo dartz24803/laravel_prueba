@@ -1,3 +1,5 @@
+<?php use Carbon\Carbon; ?>
+
 <table id="tabla_js" class="table" style="width:100%">
     <thead>
         <tr class="text-center">
@@ -18,7 +20,7 @@
                 <td>{{ $list->cantidad }}</td>
                 <td>{{ $list->n_factura }}</td>
                 <td>{{ $list->n_guia }}</td>
-                <td>{{ $list->fecha }}</td>
+                <td data-order="{{  Carbon::createFromFormat('d-m-Y', $list->fecha)->format('Y-m-d'); }}">{{ $list->fecha }}</td>
                 <td>
                     <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('insumo_en.edit', $list->id_contometro) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
