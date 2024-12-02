@@ -17,30 +17,30 @@
         @foreach ($list_solicitud_puesto as $list)
             <tr class="text-center">
                 <td>{{ $list->orden }}</td>
-                <td>{{ $list->fecha_solicitud }}</td>
-                <td>{{ $list->base }}</td> 
+                <td data-order="{{ $list->fecha_solicitud }}">{{ $list->fecha_solicitud }}</td>
+                <td>{{ $list->base }}</td>
                 <td class="text-left">{{ ucfirst($list->nom_puesto) }}</td>
                 <td class="text-left">{{ ucfirst($list->nom_puesto_aspirado) }}</td>
                 <td class="text-left">{{ ucwords($list->nom_usuario) }}</td>
-                <td class="text-left">{{ $list->grado_instruccion }}</td> 
-                <td>{{ $list->observacion }}</td> 
+                <td class="text-left">{{ $list->grado_instruccion }}</td>
+                <td>{{ $list->observacion }}</td>
                 <td>
                     <span class="badge badge-{{ $list->color_estado }}">{{ $list->nom_estado }}</span>
-                </td> 
+                </td>
                 <td class="text-center">
                     @if ($list->estado_s==1)
-                        <div class="btn-group dropleft" role="group"> 
+                        <div class="btn-group dropleft" role="group">
                             <a class="dropdown-toggle" href="#" role="button" id="btnDropLeft" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-more-vertical"><circle cx="12" cy="12" r="1"></circle><circle cx="12" cy="5" r="1"></circle><circle cx="12" cy="19" r="1"></circle></svg>
                             </a>
                             <div class="dropdown-menu" aria-labelledby="btnDropLeft">
                                 @if ($list->observacion=="Si")
-                                    <a href="javascript:void(0);" class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate" 
+                                    <a href="javascript:void(0);" class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate"
                                     app_elim="{{ route('linea_carrera_so.obs', $list->id_usuario) }}">
                                         Ver observaciones
                                     </a>
                                 @endif
-                                <a href="javascript:void(0);" class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate" 
+                                <a href="javascript:void(0);" class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate"
                                 app_elim="{{ route('linea_carrera_so.edit', $list->id) }}">
                                     Aprobar
                                 </a>
@@ -51,10 +51,10 @@
                         </div>
                     @endif
                 </td>
-            </tr>  
+            </tr>
         @endforeach
     </tbody>
-</table>    
+</table>
 
 <script>
     $('#tabla_js').DataTable({
@@ -74,11 +74,11 @@
         "stripeClasses": [],
         "lengthMenu": [10, 20, 50],
         "pageLength": 10,
-        "aoColumnDefs" : [ 
+        "aoColumnDefs" : [
             {
                 'targets' : [ 0 ],
                 'visible' : false
-            } 
+            }
         ]
     });
 </script>

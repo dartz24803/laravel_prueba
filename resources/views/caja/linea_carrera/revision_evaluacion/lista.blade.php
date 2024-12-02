@@ -17,11 +17,11 @@
     <tbody>
         @foreach ($list_examen_entrenamiento as $list)
             <tr class="text-center">
-                <td>{{ $list->orden }}</td> 
+                <td>{{ $list->orden }}</td>
                 <td class="text-left">{{ ucfirst($list->nom_puesto_aspirado) }}</td>
-                <td>{{ $list->base }}</td> 
+                <td>{{ $list->base }}</td>
                 <td class="text-left">{{ ucwords($list->nombre_completo) }}</td>
-                <td>{{ $list->fecha }}</td>
+                <td data-order="{{ $list->orden }}">{{ $list->fecha }}</td>
                 <td>{{ $list->hora_inicio }}</td>
                 <td>{{ $list->hora_fin }}</td>
                 <td>{{ $list->hora_fin_real }}</td>
@@ -48,7 +48,7 @@
             </tr>
         @endforeach
     </tbody>
-</table>    
+</table>
 
 <script>
     $(document).ready(function() {
@@ -69,11 +69,11 @@
             "stripeClasses": [],
             "lengthMenu": [10, 20, 50],
             "pageLength": 10,
-            "aoColumnDefs" : [ 
+            "aoColumnDefs" : [
                 {
                     'targets' : [ 0 ],
                     'visible' : false
-                } 
+                }
             ]
         });
     });
