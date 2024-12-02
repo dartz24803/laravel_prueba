@@ -299,8 +299,10 @@ class RegistroLetraController extends Controller
         for ($row = 2; $row <= $highestRow; $row++) {
             $ruc_empresa = $worksheet->getCell("A{$row}")->getValue();
             $nom_empresa = $worksheet->getCell("B{$row}")->getValue();
+            $columna_c = $worksheet->getCell("C{$row}")->getValue();
             $excelDate = $worksheet->getCell("C{$row}")->getValue();
             $fec_emision = NumberFormat::toFormattedString($excelDate, 'YYYY-MM-DD');
+            $columna_d = $worksheet->getCell("D{$row}")->getValue();
             $excelDate = $worksheet->getCell("D{$row}")->getValue();
             $fec_vencimiento = NumberFormat::toFormattedString($excelDate, 'YYYY-MM-DD');
             $tipo_doc = $worksheet->getCell("E{$row}")->getValue();
@@ -312,6 +314,13 @@ class RegistroLetraController extends Controller
             $n_comprobante = $worksheet->getCell("K{$row}")->getValue();
             $tipo_moneda = $worksheet->getCell("L{$row}")->getValue();
             $importe = $worksheet->getCell("M{$row}")->getValue();
+
+            if($ruc_empresa=="" && $nom_empresa=="" && $columna_c=="" && $columna_d=="" && 
+            $tipo_doc=="" && $n_letra=="" && $tipo_doc_aceptante=="" && $num_doc_aceptante=="" && 
+            $nom_aceptante=="" && $tipo_comprobante=="" && $n_comprobante=="" && $tipo_moneda=="" && 
+            $importe==""){
+                break;
+            }
             
             $validacion = true;
             $obs = "";
