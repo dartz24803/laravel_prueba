@@ -15,7 +15,7 @@
                 <label class="control-label text-bold">Semana: </label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="semanae" id="semanae" placeholder="Semana" value="{{ $get_id->semana }}" onkeypress="return soloNumeros(event)">
+                <input type="text" class="form-control" name="semanae" id="semanae" placeholder="Semana" value="{{ $get_id->semana }}" onkeypress="return solo_Numeros(event)">
             </div>
 
             <div class="form-group col-lg-2">
@@ -57,8 +57,8 @@
                 <select class="form-control" id="id_areae" name="id_areae">
                     <option value="0">Seleccione</option>
                     @foreach ($list_area as $list)
-                    <option value="{{ $list->id }}" {{ $list->id == $get_id->id_area ? 'selected' : '' }}>
-                        {{ $list->nombre }}
+                    <option value="{{ $list->id_area }}" {{ $list->id_area == $get_id->id_area ? 'selected' : '' }}>
+                        {{ $list->nom_area }}
                     </option>
                     @endforeach
                 </select>
@@ -89,8 +89,8 @@
                 <select class="form-control" id="id_tallae" name="id_tallae">
                     <option value="0">Seleccione</option>
                     @foreach ($list_talla as $list)
-                    <option value="{{ $list->id }}" {{ $list->id == $get_id->id_talla ? 'selected' : '' }}>
-                        {{ $list->nombre }}
+                    <option value="{{ $list->id_talla }}" {{ $list->id_talla == $get_id->id_talla ? 'selected' : '' }}>
+                        {{ $list->nom_talla }}
                     </option>
                     @endforeach
                 </select>
@@ -100,7 +100,7 @@
                 <label class="control-label text-bold">Prendas devueltas: </label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="prendas_devueltase" id="prendas_devueltase" placeholder="Prendas devueltas" value="{{ $get_id->prendas_devueltas }}" onkeypress="return soloNumeros(event)">
+                <input type="text" class="form-control" name="prendas_devueltase" id="prendas_devueltase" placeholder="Prendas devueltas" value="{{ $get_id->prendas_devueltas }}" onkeypress="return solo_Numeros(event)">
             </div>
         </div>
 
@@ -112,8 +112,8 @@
                 <select class="form-control" name="id_tipo_errore" id="id_tipo_errore">
                     <option value="0">Seleccione</option>
                     @foreach ($list_tipo_error as $list)
-                    <option value="{{ $list->id }}" {{ $list->id == $get_id->id_tipo_error ? 'selected' : '' }}>
-                        {{ $list->nombre }}
+                    <option value="{{ $list->id_tipo_error }}" {{ $list->id_tipo_error == $get_id->id_tipo_error ? 'selected' : '' }}>
+                        {{ $list->nom_tipo_error }}
                     </option>
                     @endforeach
                 </select>
@@ -126,8 +126,8 @@
                 <select class="form-control" name="id_responsablee" id="id_responsablee">
                     <option value="0">Seleccione</option>
                     @foreach ($list_responsable as $list)
-                    <option value="{{ $list['id_usuario'] }}" {{ $list['id_usuario'] == $get_id->id_responsable ? 'selected' : '' }}>
-                        {{ $list['usuario_nombres'] }}
+                    <option value="{{ $list->id_responsable }}" {{ $list->id_responsable == $get_id->id_responsable ? 'selected' : '' }}>
+                        {{ $list->nom_responsable }}
                     </option>
                     @endforeach
                 </select>
@@ -179,25 +179,14 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                if (data == "error") {
-                    Swal({
-                        title: '¡Actualización Denegada!',
-                        text: "¡El registro ya existe!",
-                        type: 'error',
-                        showCancelButton: false,
-                        confirmButtonColor: '#3085d6',
-                        confirmButtonText: 'OK',
-                    });
-                } else {
-                    swal.fire(
-                        '¡Actualización Exitosa!',
-                        '¡Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        Lista_ErroresPicking();
-                        $("#ModalUpdate .close").click();
-                    });
-                }
+                swal.fire(
+                    '¡Actualización Exitosa!',
+                    '¡Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    Lista_ErroresPicking();
+                    $("#ModalUpdate .close").click();
+                });
             },
             error: function(xhr) {
                 var errors = xhr.responseJSON.errors;

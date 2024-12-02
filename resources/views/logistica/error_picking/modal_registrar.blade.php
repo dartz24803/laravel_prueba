@@ -16,7 +16,7 @@
                 <label class="control-label text-bold">Semana:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="semana" id="semana" placeholder="Semana" onkeypress="return soloNumeros(event)">
+                <input type="text" class="form-control" name="semana" id="semana" placeholder="Semana" onkeypress="return solo_Numeros(event);">
             </div>
 
             <!-- Pertenece -->
@@ -27,7 +27,7 @@
                 <select class="form-control" id="pertenece" name="pertenece">
                     <option value="0">Seleccione</option>
                     @foreach ($list_base as $list)
-                    <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
+                        <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
                     @endforeach
                     <option value="BEC">BEC</option>
                 </select>
@@ -43,7 +43,7 @@
                 <select class="form-control" id="encontrado" name="encontrado">
                     <option value="0">Seleccione</option>
                     @foreach ($list_base as $list)
-                    <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
+                        <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
                     @endforeach
                 </select>
             </div>
@@ -56,7 +56,7 @@
                 <select class="form-control" id="id_area" name="id_area">
                     <option value="0">Seleccione</option>
                     @foreach ($list_area as $list)
-                    <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                        <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
                     @endforeach
                 </select>
             </div>
@@ -89,7 +89,7 @@
                 <select class="form-control" id="id_talla" name="id_talla">
                     <option value="0">Seleccione</option>
                     @foreach ($list_talla as $list)
-                    <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                        <option value="{{ $list->id_talla }}">{{ $list->nom_talla }}</option>
                     @endforeach
                 </select>
             </div>
@@ -99,7 +99,7 @@
                 <label class="control-label text-bold">Prendas devueltas:</label>
             </div>
             <div class="form-group col-lg-4">
-                <input type="text" class="form-control" name="prendas_devueltas" id="prendas_devueltas" placeholder="Prendas devueltas" onkeypress="return soloNumeros(event)">
+                <input type="text" class="form-control" name="prendas_devueltas" id="prendas_devueltas" placeholder="Prendas devueltas" onkeypress="return solo_Numeros(event)">
             </div>
         </div>
 
@@ -112,7 +112,7 @@
                 <select class="form-control" name="id_tipo_error" id="id_tipo_error">
                     <option value="0">Seleccione</option>
                     @foreach ($list_tipo_error as $list)
-                    <option value="{{ $list->id }}">{{ $list->nombre }}</option>
+                        <option value="{{ $list->id_tipo_error }}">{{ $list->nom_tipo_error }}</option>
                     @endforeach
                 </select>
             </div>
@@ -125,7 +125,7 @@
                 <select class="form-control" name="id_responsable" id="id_responsable">
                     <option value="0">Seleccione</option>
                     @foreach ($list_responsable as $list)
-                    <option value="{{ $list['id_usuario'] }}">{{ $list['usuario_nombres'] }}</option>
+                        <option value="{{ $list->id_responsable }}">{{ $list->nom_responsable }}</option>
                     @endforeach
                 </select>
             </div>
