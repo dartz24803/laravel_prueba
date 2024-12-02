@@ -28,7 +28,7 @@
         @foreach ($list_tabla_maestra as $list)
         <tr class="text-center">
             <td>{{ $list->orden }}</td>
-            <td class="text-left">{{ $list->fecha }}</td>
+            <td data-order="{{ $list->orden }}" class="text-left">{{ $list->fecha }}</td>
             <td class="text-left">{{ $list->nom_pago }}</td>
             <td>{{ $list->nom_tipo_pago }}</td>
             <td>{{ $list->cuenta_1 }}</td>

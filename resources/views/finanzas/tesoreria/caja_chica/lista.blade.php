@@ -21,11 +21,11 @@
         </tr>
     </thead>
     <tbody>
-        @php 
-            $ing_soles = 0; 
-            $ing_dolares = 0; 
-            $sal_soles = 0; 
-            $sal_dolares = 0; 
+        @php
+            $ing_soles = 0;
+            $ing_dolares = 0;
+            $sal_soles = 0;
+            $sal_dolares = 0;
         @endphp
         @foreach ($list_caja_chica as $list)
             @php
@@ -44,7 +44,7 @@
             @endphp
             <tr class="text-center">
                 <td>{{ $list->orden }}</td>
-                <td>{{ $list->fecha }}</td>
+                <td data-order="{{ $list->orden }}">{{ $list->fecha }}</td>
                 <td>{{ $list->cod_ubi }}</td>
                 <td class="text-left">{{ $list->nom_categoria }}</td>
                 <td class="text-left">{{ $list->nombre }}</td>
@@ -56,8 +56,8 @@
                 <td>{{ $list->ruc }}</td>
                 <td class="text-left">{{ $list->razon_social }}</td>
                 <td>
-                    <a href="javascript:void(0);" data-toggle="modal" 
-                    data-target="#ModalUpdate" 
+                    <a href="javascript:void(0);" data-toggle="modal"
+                    data-target="#ModalUpdate"
                     app_elim="{{ route('caja_chica.show', $list->id) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye text-success">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -75,7 +75,7 @@
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                                 <polyline points="22 4 12 14.01 9 11.01"></polyline>
                             </svg>
-                        </a> 
+                        </a>
                         <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('caja_chica.edit', $list->id) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
@@ -165,11 +165,11 @@
         "stripeClasses": [],
         "lengthMenu": [10, 20, 50],
         "pageLength": 10,
-        "aoColumnDefs" : [ 
+        "aoColumnDefs" : [
             {
                 'targets' : [ 0,4,5,6,8,10,12 ],
                 'visible' : false
-            } 
+            }
         ]
     });
 
