@@ -104,7 +104,12 @@ class ChequesLetras extends Model
                 ELSE '' END AS num_unico,
                 CASE WHEN cl.estado_registro=1 THEN 'Por Cancelar' 
                 WHEN cl.estado_registro=2 THEN 'Cancelado' ELSE '' END AS nom_estado,cl.estado_registro,
-                cl.documento,cl.banco,cl.comprobante_pago,cl.id_moneda,cl.monto,cl.noperacion
+                (CASE WHEN SUBSTRING(cl.documento,1,5)='https' THEN cl.documento 
+                ELSE CONCAT('https://lanumerounocloud.com/intranet/ADM_FINANZAS/CHEQUES_LETRAS/',cl.documento) 
+                END) END AS documento,cl.banco,
+                (CASE WHEN SUBSTRING(cl.comprobante_pago,1,5)='https' THEN cl.comprobante_pago 
+                ELSE CONCAT('https://lanumerounocloud.com/intranet/ADM_FINANZAS/CHEQUES_LETRAS/',cl.comprobante_pago) 
+                END) END AS comprobante_pago,cl.id_moneda,cl.monto,cl.noperacion
                 FROM cheques_letras cl
                 INNER JOIN empresas em ON em.id_empresa=cl.id_empresa
                 INNER JOIN vw_tipo_comprobante tc ON tc.id=cl.id_tipo_comprobante
