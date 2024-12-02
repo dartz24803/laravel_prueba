@@ -3,8 +3,8 @@
         <tr class="text-center">
             <th>Orden</th>
             <th></th>
-            <th>Estado</th>
             <th>SKU</th>
+            <th>Estado</th>
             <th>Estilo</th>
             <th>Tipo usuario</th>
             <th>Tipo prenda</th>
@@ -28,8 +28,8 @@
                         </a>
                     @endif
                 </td>
-                <td>{{ $list->nom_estado }}</td>
                 <td>{{ $list->sku }}</td>
+                <td>{{ $list->nom_estado }}</td>
                 <td>{{ $list->estilo }}</td>
                 <td>{{ $list->tipo_usuario }}</td>
                 <td class="text-left">{{ $list->tipo_prenda }}</td>
