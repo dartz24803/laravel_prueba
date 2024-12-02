@@ -28,7 +28,7 @@
                         </a>
                     @endif
                 </td>
-                <td>{{ $list->cantidad }}</td>
+                <td>{{ $list->nom_estado }}</td>
                 <td>{{ $list->sku }}</td>
                 <td>{{ $list->estilo }}</td>
                 <td>{{ $list->tipo_usuario }}</td>
@@ -36,7 +36,7 @@
                 <td class="text-left">{{ $list->color }}</td>
                 <td>{{ $list->talla }}</td>
                 <td class="text-left">{{ $list->descripcion }}</td>
-                <td>{{ $list->nom_estado }}</td>
+                <td>{{ $list->cantidad }}</td>
             </tr>
         @endforeach
     </tbody>
