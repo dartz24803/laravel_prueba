@@ -21,6 +21,7 @@ use App\Http\Controllers\BiReporteDepartamentoController;
 use App\Http\Controllers\CajaChicaConfController;
 use App\Http\Controllers\CajaChicaController;
 use App\Http\Controllers\CajaInicioController;
+use App\Http\Controllers\CalendarioLogisticoController;
 use App\Http\Controllers\CambioPrendaConfController;
 use App\Http\Controllers\CambioPrendaController;
 use App\Http\Controllers\CapacitacionCajeroController;
@@ -1801,6 +1802,16 @@ Route::controller(RequerimientoTiendaController::class)->group(function () {
     Route::get('requerimiento_tienda_mn', 'index_mn')->name('requerimiento_tienda_mn');
     Route::post('requerimiento_tienda_mn/list', 'list_mn')->name('requerimiento_tienda_mn.list');
     Route::get('requerimiento_tienda_mn/{base}/{anio}/{semana}/excel', 'excel_mn')->name('requerimiento_tienda_mn.excel');
+});
+//COMERCIAL - REQUERIMIENTO DE TIENDA
+Route::controller(CalendarioLogisticoController::class)->group(function () {
+    Route::get('calendario_logistico', 'index_re')->name('calendario_logistico');
+    Route::post('calendario_logistico/list', 'list_re')->name('calendario_logistico.list');
+    Route::get('calendario_logistico/create', 'create')->name('calendario_logistico.create');
+    Route::post('calendario_logistico', 'store')->name('calendario_logistico.store');
+    Route::get('calendario_logistico/{id}/edit', 'edit')->name('calendario_logistico.edit');
+    Route::put('calendario_logistico/{id}', 'update')->name('calendario_logistico.update');
+    Route::delete('calendario_logistico/{id}', 'destroy')->name('calendario_logistico.destroy');
 });
 
 
