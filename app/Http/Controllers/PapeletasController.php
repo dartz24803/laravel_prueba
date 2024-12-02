@@ -668,7 +668,7 @@ class PapeletasController extends Controller
                                             ->where('estado', 1)
                                             ->get();
         }
-        return view('papeletas.Registro.index', $dato);
+        return view('papeletas.index', $dato);
     }
 
     public function Delete_Papeletas_Salida(){
