@@ -10,10 +10,10 @@
             <th>Monto</th>
             <th>Suceso</th>
             <th>Responsable</th>
-            @if (session('usuario')->id_nivel==1 || 
-            session('usuario')->id_puesto==9 || 
-            session('usuario')->id_puesto==29 || 
-            session('usuario')->id_puesto==31 || 
+            @if (session('usuario')->id_nivel==1 ||
+            session('usuario')->id_puesto==9 ||
+            session('usuario')->id_puesto==29 ||
+            session('usuario')->id_puesto==31 ||
             session('usuario')->id_puesto==32 ||
             session('usuario')->id_puesto==128)
                 <th class="no-content"></th>
@@ -24,7 +24,7 @@
         @foreach ($list_suceso as $list)
             <tr class="text-center">
                 <td>{{ $list->orden }}</td>
-                <td>{{ $list->fecha }}</td>
+                <td  data-order="{{ $list->orden }}">{{ $list->fecha }}</td>
                 <td>{{ $list->centro_labores }}</td>
                 <td>{{ $list->cod_suceso }}</td>
                 <td class="text-left">{{ $list->nom_tipo_error }}</td>
@@ -32,8 +32,8 @@
                 <td>{{ number_format($list->monto,2) }}</td>
                 <td class="text-left">
                     @if ($list->nom_suceso!="")
-                        <a href="javascript:void(0);" title="Suceso" data-toggle="modal" 
-                        data-target="#ModalUpdate" 
+                        <a href="javascript:void(0);" title="Suceso" data-toggle="modal"
+                        data-target="#ModalUpdate"
                         app_elim="{{ route('observacion.modal_suceso', $list->id_suceso) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-circle">
                                 <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
@@ -43,10 +43,10 @@
                     {{ $list->nom_suceso }}
                 </td>
                 <td class="text-left">{{ $list->user_suceso }}</td>
-                @if (session('usuario')->id_nivel==1 || 
-                session('usuario')->id_puesto==9 || 
-                session('usuario')->id_puesto==29 || 
-                session('usuario')->id_puesto==31 || 
+                @if (session('usuario')->id_nivel==1 ||
+                session('usuario')->id_puesto==9 ||
+                session('usuario')->id_puesto==29 ||
+                session('usuario')->id_puesto==31 ||
                 session('usuario')->id_puesto==32 ||
                 session('usuario')->id_puesto==128)
                     <td class="text-center">
@@ -63,12 +63,12 @@
                                         s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z"/>
                                     <path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733
                                         c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z"/>
-                                    
+
                                 </svg>
                             </a>
                         @endif
                         @if ($list->estado_suceso==1)
-                            @if (session('usuario')->id_nivel==1 || 
+                            @if (session('usuario')->id_nivel==1 ||
                             session('usuario')->id_puesto==9 ||
                             session('usuario')->id_puesto==128)
                                 <a href="javascript:void(0);" title="Cambiar Estado" onclick="Cambiar_Estado_Suceso('{{ $list->id_suceso }}')">
@@ -90,9 +90,9 @@
                                     <line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line>
                                 </svg>
                             </a>
-                        @elseif($list->estado_suceso==2 && 
+                        @elseif($list->estado_suceso==2 &&
                         (session('usuario')->id_nivel==1 ||
-                        session('usuario')->id_puesto==128 || 
+                        session('usuario')->id_puesto==128 ||
                         session('usuario')->id_puesto==9))
                             <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('observacion.edit', $list->id_suceso) }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
@@ -100,12 +100,12 @@
                                 </svg>
                             </a>
                         @endif
-                    </td>                    
+                    </td>
                 @endif
             </tr>
         @endforeach
     </tbody>
-</table>    
+</table>
 
 <script>
     $(document).ready(function() {
@@ -126,11 +126,11 @@
             "stripeClasses": [],
             "lengthMenu": [10, 20, 50],
             "pageLength": 10,
-            "aoColumnDefs" : [ 
+            "aoColumnDefs" : [
                 {
                     'targets' : [ 0 ],
                     'visible' : false
-                } 
+                }
             ]
         });
     });

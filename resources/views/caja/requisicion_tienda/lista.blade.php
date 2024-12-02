@@ -18,7 +18,7 @@
         @foreach ($list_requisicion_tienda as $list)
             <tr class="text-center">
                 <td>{{ $list->orden }}</td>
-                <td>{{ $list->fecha }}</td>
+                <td data-order="{{ $list->orden; }}">{{ $list->fecha }}</td>
                 <td>{{ $list->base }}</td>
                 <td class="text-left">{{ $list->nom_usuario }}</td>
                 @if (session('usuario')->id_nivel == "1" ||
@@ -31,16 +31,16 @@
                     @if (session('usuario')->id_nivel=="1"||
                     session('usuario')->id_puesto=="9"||
                     session('usuario')->id_puesto=="128")
-                        <a href="javascript:void(0);" title="Editar" data-toggle="modal" 
-                        data-target="#ModalUpdate" 
+                        <a href="javascript:void(0);" title="Editar" data-toggle="modal"
+                        data-target="#ModalUpdate"
                         app_elim="{{ route('requisicion_tienda.edit', $list->id_requisicion) }}">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                             </svg>
                         </a>
                     @endif
-                    <a href="javascript:void(0);" title="Detalle" data-toggle="modal" 
-                    data-target="#ModalRegistroGrande" 
+                    <a href="javascript:void(0);" title="Detalle" data-toggle="modal"
+                    data-target="#ModalRegistroGrande"
                     app_reg_grande="{{ route('requisicion_tienda.show', $list->id_requisicion) }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -51,7 +51,7 @@
                     (session('usuario')->id_nivel=="1"||
                     session('usuario')->id_puesto=="9"||
                     session('usuario')->id_puesto=="128"))
-                        <a href="javascript:void(0);" title="Aprobar" 
+                        <a href="javascript:void(0);" title="Aprobar"
                         onclick="Aprobar_Requisicion_Tienda('{{ $list->id_requisicion }}')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle text-success">
                                 <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
@@ -61,7 +61,7 @@
                     @endif
                     @if ($list->estado_registro=="1" &&
                     session('usuario')->id_nivel=="1")
-                        <a href="javascript:void(0);" title="Eliminar" 
+                        <a href="javascript:void(0);" title="Eliminar"
                         onclick="Delete_Requisicion_Tienda('{{ $list->id_requisicion }}')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                                 <polyline points="3 6 5 6 21 6"></polyline>
@@ -74,7 +74,7 @@
             </tr>
         @endforeach
     </tbody>
-</table>    
+</table>
 
 <script>
     $(document).ready(function() {
@@ -95,11 +95,11 @@
             "stripeClasses": [],
             "lengthMenu": [10, 20, 50],
             "pageLength": 10,
-            "aoColumnDefs" : [ 
+            "aoColumnDefs" : [
                 {
                     'targets' : [ 0 ],
                     'visible' : false
-                } 
+                }
             ]
         });
     });
