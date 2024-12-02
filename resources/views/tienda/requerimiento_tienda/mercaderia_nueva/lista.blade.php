@@ -63,13 +63,13 @@
             "pageLength": 10,
             "columnDefs": [
                 {
-                    'targets': [0,7],
+                    'targets': [0,9],
                     'visible': false
                 }
             ],
         });
         $('#toggle').change(function() {
-            var columnIndex = 7;
+            var columnIndex = 9;
             var visible = this.checked;
             tabla.column(columnIndex).visible(visible);
         });
