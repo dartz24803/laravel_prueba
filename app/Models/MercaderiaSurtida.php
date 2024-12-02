@@ -221,9 +221,9 @@ class MercaderiaSurtida extends Model
         if($dato['estado']!=""){
             $parte_estado = "AND estado=?";
         }
-        $sql = "SELECT fecha AS orden,base,sku,estilo,tipo_usuario,tipo_prenda,color,talla,descripcion,
-                cantidad,CASE WHEN estado=0 THEN 'Pendiente' WHEN estado=1 THEN 'Surtido' 
-                ELSE '' END AS nom_estado
+        $sql = "SELECT id,fecha AS orden,base,sku,estilo,tipo_usuario,tipo_prenda,color,talla,
+                descripcion,cantidad,CASE WHEN estado=0 THEN 'Pendiente' WHEN estado=1 THEN 'Surtido' 
+                ELSE '' END AS nom_estado,estado
                 FROM mercaderia_surtida 
                 WHERE tipo=1 $parte_anio $parte_semana AND base=? $parte_estado AND
                 TRY_CAST(fecha AS DATE) >= DATEADD(WEEK, -1, GETDATE())

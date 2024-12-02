@@ -77,6 +77,30 @@
         });
     }
 
+    function Update_Mercaderia_Nueva(id) {
+        Cargando();
+
+        var url = "{{ route('trequerimiento_tienda_mn.update', ':id') }}".replace(':id', id);
+
+        $.ajax({
+            type: "PUT",
+            url: url,
+            data: {'id':id},
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function() {
+                Swal(
+                    'Actualización Exitosa!',
+                    '¡Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    Lista_Mercaderia_Nueva();
+                });    
+            }
+        });
+    }
+
     function Excel_Mercaderia_Nueva() {
         var anio = $('#aniob').val();
         var semana = $('#semanab').val();

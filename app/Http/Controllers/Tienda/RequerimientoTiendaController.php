@@ -48,6 +48,14 @@ class RequerimientoTiendaController extends Controller
         return view('tienda.requerimiento_tienda.mercaderia_nueva.lista', compact('list_mercaderia_nueva'));
     }
 
+    public function update_mn(Request $request, $id)
+    {
+        MercaderiaSurtida::findOrFail($id)->update([
+            'estado' => 1,
+            'usuario' => session('usuario')->id_usuario
+        ]);
+    }
+
     public function excel_mn($anio, $semana, $estado)
     {
         $list_requerimiento_resposicion = MercaderiaSurtida::get_list_mercaderia_nueva_tienda([
