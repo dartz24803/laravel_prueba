@@ -37,7 +37,7 @@ class Base extends Model
     public static function get_list_bases_tienda()
     {
         $sql = "SELECT id_base,cod_base FROM base
-                WHERE id_base IN (2,3,4,5,6,7,8,9,10,31,13,27,14,37)
+                WHERE id_base IN (2,3,4,5,6,7,8,9,10,31,13,27,14,37,68)
                 ORDER BY cod_base ASC";
         $query = DB::select($sql);
         return $query;
@@ -80,9 +80,9 @@ class Base extends Model
         $id_puesto = session('usuario')->id_puesto;
         $id_nivel = session('usuario')->id_nivel;
 
-        if ($id_nivel == 1 || 
-        $id_puesto == 23 || 
-        $id_puesto == 26 || 
+        if ($id_nivel == 1 ||
+        $id_puesto == 23 ||
+        $id_puesto == 26 ||
         $id_puesto == 27 ||
         $id_puesto == 158 ||
         $id_puesto == 209) {

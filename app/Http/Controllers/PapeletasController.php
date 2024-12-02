@@ -57,7 +57,7 @@ class PapeletasController extends Controller
                                             ->where('estado', 1)
                                             ->get();
         }
-        return view('rrhh.Papeletas_Salida.Registro.index', $dato);
+        return view('papeletas.index', $dato);
     }
 
     public function Buscar_Estado_Solicitud_Papeletas_Salida_Usuario(){
@@ -67,7 +67,7 @@ class PapeletasController extends Controller
 
             $dato['list_papeletas_salida'] = $this->Model_Solicitudes->get_list_papeletas_salida($estado_solicitud);
 
-            return view('rrhh.Papeletas_Salida.Registro.lista_colaborador', $dato);
+            return view('papeletas.lista_colaborador', $dato);
     }
 
     public function Modal_Papeletas_Salida($parametro){
@@ -80,21 +80,21 @@ class PapeletasController extends Controller
                 $dato['list_vendedor'] = Usuario::get_list_vendedor($centro_labores, $separado_por_comas_puestos);
             }
 
-            return view('rrhh.Papeletas_Salida.Registro.modal_registrar', $dato);
+            return view('papeletas.modal_registrar', $dato);
     }
 
     public function Cambiar_Motivo(){
             $dato['id_motivo'] = $this->input->post("id_motivo");
             $dato['list_destino'] = Destino::where('id_motivo', $dato['id_motivo'])
                                 ->get();
-            return view('rrhh.Papeletas_Salida.Registro.destino', $dato);
+            return view('papeletas.destino', $dato);
     }
 
     public function Traer_Tramite(){
             $id_destino = $this->input->post("id_destino");
             $dato['list_tramite'] = Tramite::where('id_destino', $id_destino)
                                 ->get();
-            return view('rrhh.Papeletas_Salida.Registro.tramite', $dato);
+            return view('papeletas.tramite', $dato);
     }
 
     public function Buscar_Base_Papeletas_Seguridad(){
@@ -599,7 +599,7 @@ class PapeletasController extends Controller
 
 		$writer->save('php://output');
     }
-    
+
     public function Update_Papeletas_Salida_seguridad_Retorno() {
         $this->Model_Solicitudes->where('id_solicitudes_user', $this->input->post("id_solicitudes_user"))
             ->update([
@@ -615,7 +615,7 @@ class PapeletasController extends Controller
                 'user_horar_entrada' => session('usuario')->id_usuario
             ]);
     }
-    
+
     public function Update_Papeletas_Salida_seguridad_Salida() {
             $this->Model_Solicitudes->verificacion_papeletas();
 
@@ -673,7 +673,7 @@ class PapeletasController extends Controller
 
     public function Delete_Papeletas_Salida(){
             $dato['id_solicitudes_user']= $this->input->post("id_solicitudes_user");
-            
+
         $this->Model_Solicitudes::where('id_solicitudes_user', $dato['id_solicitudes_user'])
         ->update([
             'estado' => 2,
