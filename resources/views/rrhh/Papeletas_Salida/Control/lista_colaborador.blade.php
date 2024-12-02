@@ -18,19 +18,7 @@
                 <th>Trámite</th>
                 <th>Especificación</th>
             <?php } ?>
-            <th id="ordenar-fechas" onclick="OrdenarFechas()" style="cursor: pointer;">
-                <div class="row p-0" style="width: 155%;">
-                    <div class="offset-1 col-md-6">
-                        Fecha
-                    </div>
-                    <div class="offset-1 col-md-2">
-                        <div class="d-flex flex-column orden-icono">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        </div>
-                    </div>
-                </div>
-            </th>
+            <th>Fecha</th>
             <th>H. Salida</th>
             <th>H. Retorno</th>
             <th>H. Real Salida</th>
@@ -44,7 +32,7 @@
         </tr>
     </thead>
     <tbody>
-    <?php foreach($list_papeletas_salida as $list) {  ?>   
+    <?php foreach($list_papeletas_salida as $list) {  ?>
         <tr>
             <td>{{ $list['fec_solicitud'] }}</td>
             <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==128 || $id_puesto==26 || $centro_labores=="CD" || $centro_labores=="OFC" || $centro_labores=="AMT"){ ?>
@@ -52,15 +40,15 @@
             <?php } ?>
             <td><?php echo $list['usuario_apater']." ".$list['usuario_amater']." ".$list['usuario_nombres']; ?></td>
             <td>
-                <?php 
+                <?php
                     if( $list['id_motivo']==1){
-                        echo "Laboral"; 
+                        echo "Laboral";
                     }else if ($list['id_motivo']==2){
-                        echo "Personal"; 
+                        echo "Personal";
                     }else{
-                        echo $list['motivo']; 
+                        echo $list['motivo'];
                     }
-                ?>                                        
+                ?>
             </td>
             <?php if($id_nivel==1 || $id_puesto==19 || $id_puesto==21 || $id_puesto==279 || $id_puesto==23 || $id_puesto==128 || $id_puesto==26){ ?>
                 <td><?php echo $list['nom_destino']; ?></td>
@@ -68,13 +56,13 @@
                 <td><?php echo $list['nom_tramite']; ?></td>
                 <td><?php echo $list['especificacion_tramite']; ?></td>
             <?php } ?>
-            <td><?php echo date_format(date_create($list['fec_solicitud']), "d/m/Y"); ?></td>
+            <td data-order="{{ $list['fec_solicitud'] }}"><?php echo date_format(date_create($list['fec_solicitud']), "d/m/Y"); ?></td>
             <td>
                 <?php
                     if($list['sin_ingreso'] == 1 ){
                         echo "Sin Ingreso";
                     }else{
-                        echo $list['hora_salida']; 
+                        echo $list['hora_salida'];
                     }
                 ?>
             </td>
@@ -83,51 +71,51 @@
                     if($list['sin_retorno'] == 1 ){
                         echo "Sin Retorno";
                     }else{
-                        echo $list['hora_retorno']; 
+                        echo $list['hora_retorno'];
                     }
                 ?>
-            </td>                                        
+            </td>
             <td>
                 <?php
                     if($list['sin_ingreso'] == 1 ){
                         echo "Sin Ingreso";
                     }else{
                         if($list['horar_salida']!="00:00:00"){
-                            echo $list['horar_salida']; 
+                            echo $list['horar_salida'];
                         }
                     }
                 ?>
             </td>
             <td>
-                <?php 
+                <?php
                     if( $list['sin_retorno']==1){
-                        echo "Sin retorno"; 
+                        echo "Sin retorno";
                     }else{
                         if($list['horar_retorno']!="00:00:00"){
-                            echo $list['horar_retorno']; 
+                            echo $list['horar_retorno'];
                         }
                     }
                 ?>
             </td>
-            <td> 
-                <?php 
+            <td>
+                <?php
                     if( $list['estado_solicitud']=='1'){
-                        echo "<span class='shadow-none badge badge-warning'>En proceso</span>"; 
+                        echo "<span class='shadow-none badge badge-warning'>En proceso</span>";
                     }else if ($list['estado_solicitud']=='2'){
-                        echo "<span class='shadow-none badge badge-primary'>Aprobado</span>"; 
+                        echo "<span class='shadow-none badge badge-primary'>Aprobado</span>";
                     }else if ($list['estado_solicitud']=='3'){
-                        echo " <span class='shadow-none badge badge-danger'>Denegado</span>"; 
+                        echo " <span class='shadow-none badge badge-danger'>Denegado</span>";
                     }else if ($list['estado_solicitud']=='4'){
-                        echo " <span class='shadow-none badge badge-warning'>En proceso - Aprobación Gerencia</span>"; 
+                        echo " <span class='shadow-none badge badge-warning'>En proceso - Aprobación Gerencia</span>";
                     }else if ($list['estado_solicitud']=='5'){
-                        echo " <span class='shadow-none badge badge-warning'>En proceso - Aprobación RRHH</span>"; 
+                        echo " <span class='shadow-none badge badge-warning'>En proceso - Aprobación RRHH</span>";
                     }else{
-                        echo "<span class='shadow-none badge badge-primary'>Error</span>"; 
+                        echo "<span class='shadow-none badge badge-primary'>Error</span>";
                     }
                 ?>
             </td>
             <td class="text-center">
-                <?php if( $list['estado_solicitud']==2) {  ?> 
+                <?php if( $list['estado_solicitud']==2) {  ?>
                     <?php if($list['sin_ingreso']==1 && $list['sin_retorno']==0){ ?>
                         <?php if($list['horar_retorno']=="00:00:00" || $list['horar_retorno']==null){ ?>
                             <a style="cursor: pointer;display: block;" title="Retorno"  onclick="Retorno_solicitud_papeletas_seguridad('<?php echo $list['id_solicitudes_user']; ?>')"  class="retornoo" role="button">
@@ -208,58 +196,12 @@
         "pageLength": 50,
         "columnDefs": [
             {
-                'targets': 8,
-                'orderable': false
-            },
-            {
                 'targets': 0, // Índice de la columna que quieres ocultar
                 'visible': false // Oculta la columna
             }
         ],
     });
 
-    $('#style-322 thead').on('click', 'th', function() {
-        if ($(this).attr('id') !== 'ordenar-fechas') {
-            $('#style-322 thead th .orden-icono').html(`
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-            `);
-        }
-    });
-
-    function OrdenarFechas() {
-        var tabla = $('#style-322').DataTable();
-        var currentOrder = tabla.order(); // Obtiene el orden actual
-
-        var header = $('#ordenar-fechas'); // Selecciona el encabezado
-        var icono = header.find('.orden-icono'); // Selecciona el ícono de la flecha
-
-        // Alterna entre ascendente y descendente
-        if (currentOrder[0][0] === 0) { // Si la columna 0 está ordenada
-            var newOrder = (currentOrder[0][1] === 'asc') ? 'desc' : 'asc';
-            tabla.order([0, newOrder]).draw();
-
-            // Cambia la clase del ícono según el nuevo orden
-            if (newOrder === 'asc') {
-                icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            } else {
-                icono.removeClass('asc').addClass('desc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-            }
-        } else {
-            // Si no está ordenada, establece como ascendente por defecto
-            tabla.order([0, 'asc']).draw();
-            icono.removeClass('desc').addClass('asc').html(`
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#333333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-up"><polyline points="18 15 12 9 6 15"></polyline></svg>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="12" viewBox="0 0 24 24" fill="none" stroke="#231b2e4b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-down"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                        `);
-        }
-    }
     function Cambiar_solicitud_papeletas_seguridad(id) {
         Cargando();
 
@@ -341,7 +283,7 @@
             }
         })
     }
-    
+
     function Salida_solicitud_papeletas_seguridad(id) {
         Cargando();
 
