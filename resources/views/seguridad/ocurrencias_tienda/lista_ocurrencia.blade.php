@@ -1,7 +1,10 @@
-<?php 
+<?php
 $id_puesto=session('usuario')->id_puesto;
 $id_nivel=session('usuario')->id_nivel;
 ?>
+@php
+    use Carbon\Carbon;
+@endphp
 <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==24 || $id_puesto==26 ){ ?>
 {{-- <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css">
 <script src="<?php echo base_url(); ?>template/table-responsive/datatables.responsive.min.js"></script> --}}
@@ -24,10 +27,10 @@ $id_nivel=session('usuario')->id_nivel;
         </thead>
 
         <tbody>
-            <?php foreach($list_ocurrencia as $list) {  ?>                                           
+            <?php foreach($list_ocurrencia as $list) {  ?>
                 <tr>
-                    <td><?php echo $list['cod_ocurrencia']; ?></td> 
-                    <td nowrap><?php echo $list['fecha_ocurrencia']; ?></td>
+                    <td><?php echo $list['cod_ocurrencia']; ?></td>
+                    <td data-order="{{ Carbon::createFromFormat('d-m-Y', $list['fecha_ocurrencia'])->format('Y-m-d'); }}"><?php echo $list['fecha_ocurrencia']; ?></td>
                     <td><?php echo $list['cod_base']; ?></td>
                     <td><?php echo $list['colaborador']; ?></td>
                     <td><?php echo $list['nom_tipo_ocurrencia']; ?></td>
@@ -55,7 +58,7 @@ $id_nivel=session('usuario')->id_nivel;
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-check-circle text-success"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                             </a>
                         <?php } ?>
-                    </td> 
+                    </td>
                 </tr>
             <?php } ?>
         </tbody>

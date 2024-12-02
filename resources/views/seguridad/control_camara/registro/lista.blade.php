@@ -1,3 +1,6 @@
+@php
+    use Carbon\Carbon;
+@endphp
 <table id="tabla_js" class="table table-hover" style="width:100%">
     <thead class="text-center">
         <tr>
@@ -20,7 +23,7 @@
             <tr class="text-center">
                 <td>{{ $list->id }}</td>
                 <td class="text-left">{{ $list->nombre_sede }}</td>
-                <td>{{ $list->fecha }}</td>
+                <td data-order="{{ Carbon::createFromFormat('d-m-Y', $list->fecha)->format('Y-m-d'); }}">{{ $list->fecha }}</td>
                 <td class="text-left">{{ $list->colaborador }}</td>
                 <td>{{ $list->hora_programada }}</td>
                 <td>{{ $list->hora_registro }}</td>
