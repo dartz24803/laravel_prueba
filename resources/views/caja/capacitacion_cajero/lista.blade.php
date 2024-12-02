@@ -6,7 +6,7 @@
             <th>Base</th>
             <th>Caja</th>
             <th>Cajero</th>
-            <th>Hora inicio</th> 
+            <th>Hora inicio</th>
             <th>Hora fin</th>
             <th>Tiempo</th>
         </tr>
@@ -15,7 +15,7 @@
         @foreach ($list_capacitacion_cajero as $list)
             <tr class="text-center">
                 <td>{{ $list->orden }}</td>
-                <td>{{ $list->fecha }}</td>
+                <td data-order="{{$list->orden }}">{{ $list->fecha }}</td>
                 <td>{{ $list->base }}</td>
                 <td class="text-left">{{ $list->c_usua_caja }}</td>
                 <td class="text-left">{{ $list->c_usua_nomb }}</td>
@@ -25,7 +25,7 @@
             </tr>
         @endforeach
     </tbody>
-</table>    
+</table>
 
 <script>
     $(document).ready(function() {
@@ -44,13 +44,13 @@
                 "sEmptyTable": "No hay datos disponibles en la tabla",
             },
             "stripeClasses": [],
-            "lengthMenu": [10, 20, 50], 
+            "lengthMenu": [10, 20, 50],
             "pageLength": 10,
-            "aoColumnDefs" : [ 
+            "aoColumnDefs" : [
                 {
                     'targets' : [ 0 ],
                     'visible' : false
-                } 
+                }
             ]
         });
     });
