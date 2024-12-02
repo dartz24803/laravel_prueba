@@ -338,6 +338,7 @@ Route::controller(ErroresPickingController::class)->group(function () {
     Route::post('errorespicking/store', 'store_le')->name('errorespicking.store');
     Route::post('errorespicking/{id}', 'update_le')->name('errorespicking.update');
     Route::get('errorespicking/{id}/ver', 'ver_le')->name('errorespicking.ver');
+    Route::get('errorespicking/excel', 'excel_ep')->name('errorespicking.excel');
 });
 
 
