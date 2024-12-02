@@ -295,12 +295,15 @@ class RegistroLetraController extends Controller
         $object = IOFactory::load($path);
         $worksheet = $object->getSheet(0);
         $highestRow = $worksheet->getHighestRow(); 
+        $contador_filas = 0;
 
         for ($row = 2; $row <= $highestRow; $row++) {
             $ruc_empresa = $worksheet->getCell("A{$row}")->getValue();
             $nom_empresa = $worksheet->getCell("B{$row}")->getValue();
+            $columna_c = $worksheet->getCell("C{$row}")->getValue();
             $excelDate = $worksheet->getCell("C{$row}")->getValue();
             $fec_emision = NumberFormat::toFormattedString($excelDate, 'YYYY-MM-DD');
+            $columna_d = $worksheet->getCell("D{$row}")->getValue();
             $excelDate = $worksheet->getCell("D{$row}")->getValue();
             $fec_vencimiento = NumberFormat::toFormattedString($excelDate, 'YYYY-MM-DD');
             $tipo_doc = $worksheet->getCell("E{$row}")->getValue();
@@ -312,7 +315,15 @@ class RegistroLetraController extends Controller
             $n_comprobante = $worksheet->getCell("K{$row}")->getValue();
             $tipo_moneda = $worksheet->getCell("L{$row}")->getValue();
             $importe = $worksheet->getCell("M{$row}")->getValue();
+
+            if($ruc_empresa=="" && $nom_empresa=="" && $columna_c=="" && $columna_d=="" && 
+            $tipo_doc=="" && $n_letra=="" && $tipo_doc_aceptante=="" && $num_doc_aceptante=="" && 
+            $nom_aceptante=="" && $tipo_comprobante=="" && $n_comprobante=="" && $tipo_moneda=="" && 
+            $importe==""){
+                break;
+            }
             
+            $contador_filas++;
             $validacion = true;
             $obs = "";
 
@@ -545,7 +556,7 @@ class RegistroLetraController extends Controller
             echo "<p align='center'>
                     Excel con errores<br>
                     Errores: ".$temporal."<br>
-                    Total: ".($highestRow-1)."<br>
+                    Total: ".$contador_filas."<br>
                     <a class='btn mt-2' style='background-color: #28a745 !important;font-size: 3px!important;' href='".route('registro_letra.excel_error')."'>
                         <svg xmlns='http://www.w3.org/2000/svg' x='0px' y='0px' width='64' height='64' viewBox='0 0 172 172' style=' fill:#000000;'>
                             <g fill='none' fill-rule='nonzero' stroke='none' stroke-width='1' stroke-linecap='butt' stroke-linejoin='miter' stroke-miterlimit='10' stroke-dasharray='' stroke-dashoffset='0' font-family='none' font-weight='none' font-size='none' text-anchor='none' style='mix-blend-mode: normal'>

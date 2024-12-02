@@ -4,6 +4,7 @@
             <th>Orden</th>
             <th></th>
             <th>SKU</th>
+            <th>Estado</th>
             <th>Estilo</th>
             <th>Tipo usuario</th>
             <th>Tipo prenda</th>
@@ -11,7 +12,6 @@
             <th>Talla</th>
             <th>Descripción</th>
             <th>Cantidad</th>
-            <th>Estado</th>
         </tr>
     </thead>
     <tbody>
@@ -29,6 +29,7 @@
                     @endif
                 </td>
                 <td>{{ $list->sku }}</td>
+                <td>{{ $list->nom_estado }}</td>
                 <td>{{ $list->estilo }}</td>
                 <td>{{ $list->tipo_usuario }}</td>
                 <td class="text-left">{{ $list->tipo_prenda }}</td>
@@ -36,7 +37,6 @@
                 <td>{{ $list->talla }}</td>
                 <td class="text-left">{{ $list->descripcion }}</td>
                 <td>{{ $list->cantidad }}</td>
-                <td>{{ $list->nom_estado }}</td>
             </tr>
         @endforeach
     </tbody>
@@ -63,13 +63,13 @@
             "pageLength": 10,
             "columnDefs": [
                 {
-                    'targets': [0,7],
+                    'targets': [0,9],
                     'visible': false
                 }
             ],
         });
         $('#toggle').change(function() {
-            var columnIndex = 7;
+            var columnIndex = 9;
             var visible = this.checked;
             tabla.column(columnIndex).visible(visible);
         });
