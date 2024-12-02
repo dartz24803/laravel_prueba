@@ -1819,6 +1819,7 @@ Route::controller(TiendaRequerimientoTiendaController::class)->group(function ()
     Route::get('trequerimiento_tienda', 'index')->name('trequerimiento_tienda');
     Route::get('trequerimiento_tienda_mn', 'index_mn')->name('trequerimiento_tienda_mn');
     Route::post('trequerimiento_tienda_mn/list', 'list_mn')->name('trequerimiento_tienda_mn.list');
+    Route::put('trequerimiento_tienda_mn/{id}', 'update_mn')->name('trequerimiento_tienda_mn.update');
     Route::get('trequerimiento_tienda_mn/{anio}/{semana}/{estado}/excel', 'excel_mn')->name('trequerimiento_tienda_mn.excel');
 });
 
