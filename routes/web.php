@@ -85,6 +85,7 @@ use App\Http\Controllers\SoporteConfController;
 use App\Http\Controllers\SoporteController;
 use App\Http\Controllers\StockInfosapController;
 use App\Http\Controllers\TablaMaestraTesoreriaController;
+use App\Http\Controllers\Tienda\RequerimientoTiendaController as TiendaRequerimientoTiendaController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
@@ -1803,7 +1804,7 @@ Route::controller(RequerimientoTiendaController::class)->group(function () {
     Route::post('requerimiento_tienda_mn/list', 'list_mn')->name('requerimiento_tienda_mn.list');
     Route::get('requerimiento_tienda_mn/{base}/{anio}/{semana}/excel', 'excel_mn')->name('requerimiento_tienda_mn.excel');
 });
-//COMERCIAL - REQUERIMIENTO DE TIENDA
+//CALENDARIO LOGÍSTICO
 Route::controller(CalendarioLogisticoController::class)->group(function () {
     Route::get('calendario_logistico', 'index_re')->name('calendario_logistico');
     Route::post('calendario_logistico/list', 'list_re')->name('calendario_logistico.list');
@@ -1812,6 +1813,13 @@ Route::controller(CalendarioLogisticoController::class)->group(function () {
     Route::get('calendario_logistico/{id}/edit', 'edit')->name('calendario_logistico.edit');
     Route::put('calendario_logistico/{id}', 'update')->name('calendario_logistico.update');
     Route::delete('calendario_logistico/{id}', 'destroy')->name('calendario_logistico.destroy');
+});
+//TIENDA - REQUERIMIENTO DE TIENDA
+Route::controller(TiendaRequerimientoTiendaController::class)->group(function () {
+    Route::get('trequerimiento_tienda', 'index')->name('trequerimiento_tienda');
+    Route::get('trequerimiento_tienda_mn', 'index_mn')->name('trequerimiento_tienda_mn');
+    Route::post('trequerimiento_tienda_mn/list', 'list_mn')->name('trequerimiento_tienda_mn.list');
+    Route::get('trequerimiento_tienda_mn/{anio}/{semana}/{estado}/excel', 'excel_mn')->name('trequerimiento_tienda_mn.excel');
 });
 
 

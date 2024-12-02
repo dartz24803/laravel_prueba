@@ -162,15 +162,15 @@ class MercaderiaSurtida extends Model
     public static function get_list_requerimiento_reposicion($dato=null)
     {
         $parte_anio = "";
-        if($dato['anio']){
+        if($dato['anio']!="0"){
             $parte_anio = "AND anio=?";
         }
         $parte_semana = "";
-        if($dato['semana']){
+        if($dato['semana']!="0"){
             $parte_semana = "AND semana=?";
         }
         $parte_base = "";
-        if($dato['base']){
+        if($dato['base']!="0"){
             $parte_base = "AND base=?";
         }
         $sql = "SELECT fecha AS orden,base,estilo,tipo_usuario,color,talla,descripcion,cantidad,
@@ -186,15 +186,15 @@ class MercaderiaSurtida extends Model
     public static function get_list_mercaderia_nueva($dato=null)
     {
         $parte_anio = "";
-        if($dato['anio']){
+        if($dato['anio']!="0"){
             $parte_anio = "AND anio=?";
         }
         $parte_semana = "";
-        if($dato['semana']){
+        if($dato['semana']!="0"){
             $parte_semana = "AND semana=?";
         }
         $parte_base = "";
-        if($dato['base']){
+        if($dato['base']!="0"){
             $parte_base = "AND base=?";
         }
         $sql = "SELECT fecha AS orden,base,sku,estilo,tipo_usuario,tipo_prenda,color,talla,descripcion,
@@ -204,6 +204,31 @@ class MercaderiaSurtida extends Model
                 WHERE tipo=1 $parte_anio $parte_semana $parte_base
                 ORDER BY fecha DESC";
         $query = DB::connection('sqlsrv')->select($sql, [$dato['anio'],$dato['semana'],$dato['base']]);
+        return $query;
+    }
+    //MÓDULO DE TIENDA (MERCADERÍA NUEVA)
+    public static function get_list_mercaderia_nueva_tienda($dato=null)
+    {
+        $parte_anio = "";
+        if($dato['anio']!="0"){
+            $parte_anio = "AND anio=?";
+        }
+        $parte_semana = "";
+        if($dato['semana']!="0"){
+            $parte_semana = "AND semana=?";
+        }
+        $parte_estado = "";
+        if($dato['estado']!=""){
+            $parte_estado = "AND estado=?";
+        }
+        $sql = "SELECT fecha AS orden,base,sku,estilo,tipo_usuario,tipo_prenda,color,talla,descripcion,
+                cantidad,CASE WHEN estado=0 THEN 'Pendiente' WHEN estado=1 THEN 'Surtido' 
+                ELSE '' END AS nom_estado
+                FROM mercaderia_surtida 
+                WHERE tipo=1 $parte_anio $parte_semana AND base=? $parte_estado AND
+                TRY_CAST(fecha AS DATE) >= DATEADD(WEEK, -1, GETDATE())
+                ORDER BY fecha DESC";
+        $query = DB::connection('sqlsrv')->select($sql, [$dato['anio'],$dato['semana'],$dato['base'],$dato['estado']]);
         return $query;
     }
 }
