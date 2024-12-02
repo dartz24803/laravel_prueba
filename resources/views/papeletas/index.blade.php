@@ -10,7 +10,7 @@
     $centro_labores = session('usuario')->centro_labores;
 
     $usuario_codigo = session('usuario')->usuario_codigo;
-    $permiso_pps =   session('usuario')->estadopps; 
+    $permiso_pps =   session('usuario')->estadopps;
 
     $registro_masivo = session('usuario')->registro_masivo;
 ?>
@@ -30,7 +30,7 @@
                                 <div class="col-md-5 col-lg-3">
                                     <label class="control-label text-bold">Estado Solicitud:</label>
                                     <select id="estado_solicitud" name="estado_solicitud" class="form-control" onchange="Busca_Registro_Papeleta()">
-                                        <option value="0">Todos</option>    
+                                        <option value="0">Todos</option>
                                         <option value="1" selected>En Proceso de aprobacion</option>
                                         <option value="2">Aprobados</option>
                                         <option value="3">Denegados</option>
@@ -43,7 +43,7 @@
                                     </button>
                                 </div>
 
-                                <?php if($registro_masivo == 1 || $id_nivel==1 || $id_puesto==314) {  ?>  
+                                <?php if($registro_masivo == 1 || $id_nivel==1 || $id_puesto==314) {  ?>
                                     <div class="col-md-4 col-lg-3">
                                         <button type="button" class="btn btn-primary" title="Registrar Masivo" data-toggle="modal" data-target="#ModalRegistroGrande" app_reg_grande="{{ url('Papeletas/Modal_Papeletas_Salida/1') }}" >
                                             Registro Masivo
@@ -68,16 +68,16 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                <?php foreach($list_papeletas_salida as $list) {  ?>   
+                                <?php foreach($list_papeletas_salida as $list) {  ?>
                                     <tr>
                                         <td>
-                                            <?php 
+                                            <?php
                                                 if( $list['id_motivo']==1){
-                                                    echo "Laboral"; 
+                                                    echo "Laboral";
                                                 }else if ($list['id_motivo']==2){
-                                                    echo "Personal"; 
+                                                    echo "Personal";
                                                 }else{
-                                                    echo $list['motivo']; 
+                                                    echo $list['motivo'];
                                                 }
                                             ?>
                                         </td>
@@ -90,40 +90,40 @@
                                         <td align="center">
                                             <?php
                                                 echo date_format(date_create($list['fec_solicitud']), "d/m/Y");
-                                            ?>     
+                                            ?>
                                         </td>
                                         <td align="center">
                                             <?php
                                                 if($list['sin_ingreso'] == 1 ){
                                                     echo "Sin Ingreso";
                                                 }else{
-                                                    echo $list['hora_salida']; 
+                                                    echo $list['hora_salida'];
                                                 }
                                             ?>
                                         </td>
                                         <td align="center">
-                                            <?php 
+                                            <?php
                                                 if($list['sin_retorno'] == 1 ){
                                                     echo "Sin Retorno";
-                                                }else{ 
+                                                }else{
                                                     echo $list['hora_retorno'];
-                                                } 
+                                                }
                                             ?>
                                         </td>
                                         <td align="center">
-                                            <?php 
+                                            <?php
                                                 if( $list['estado_solicitud']=='1'){
-                                                    echo "<span class='shadow-none badge badge-warning'>En proceso</span>"; 
+                                                    echo "<span class='shadow-none badge badge-warning'>En proceso</span>";
                                                 }else if ($list['estado_solicitud']=='2'){
-                                                    echo "<span class='shadow-none badge badge-primary'>Aprobado</span>"; 
+                                                    echo "<span class='shadow-none badge badge-primary'>Aprobado</span>";
                                                 }else if ($list['estado_solicitud']=='3'){
-                                                    echo " <span class='shadow-none badge badge-danger'>Denegado</span>"; 
+                                                    echo " <span class='shadow-none badge badge-danger'>Denegado</span>";
                                                 }else if ($list['estado_solicitud']=='4'){
-                                                    echo "<span class='shadow-none badge badge-warning'>En proceso - Aprobación Gerencia</span>"; 
+                                                    echo "<span class='shadow-none badge badge-warning'>En proceso - Aprobación Gerencia</span>";
                                                 }else if($list['estado_solicitud']=='5') {
-                                                    echo "<span class='shadow-none badge badge-warning'>En proceso - Aprobación RRHH</span>"; 
+                                                    echo "<span class='shadow-none badge badge-warning'>En proceso - Aprobación RRHH</span>";
                                                 }else{
-                                                    echo "<span class='shadow-none badge badge-primary'>Error</span>"; 
+                                                    echo "<span class='shadow-none badge badge-primary'>Error</span>";
                                                 }
                                             ?>
                                         </td>
@@ -184,10 +184,10 @@
                 "pageLength": 10
             });
     });
-    
+
     function Delete_Papeletas_Salida(id) {
         Cargando();
-        
+
         var id = id;
         var url = "{{ url('Papeletas/Delete_Papeletas_Salida') }}";
         var csrfToken = $('input[name="_token"]').val();
@@ -223,7 +223,7 @@
             }
         })
     }
-    
+
     function Busca_Registro_Papeleta(){
         var estado_solicitud = $('#estado_solicitud').val();//this.value;
         var url = "{{ url('Papeletas/Buscar_Estado_Solicitud_Papeletas_Salida_Usuario') }}";
