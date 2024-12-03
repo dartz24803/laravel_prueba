@@ -1076,21 +1076,28 @@ class SoporteController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ];
             // CARGAR DOCUMENTOS
-            // Verifica si hay archivos seleccionados antes de procesarlos
             if (!empty($_FILES["documentoa1"]["name"][0])) {
                 $uploaded_files = [];
+                $documentosCargados = [
+                    'documento1' => $get_id->documento1,
+                    'documento2' => $get_id->documento2,
+                    'documento3' => $get_id->documento3
+                ];
+
+                // Recorremos los archivos seleccionados
                 for ($count = 0; $count < count($_FILES["documentoa1"]["name"]); $count++) {
                     $path = $_FILES["documentoa1"]["name"][$count];
+
                     // Verifica si el archivo tiene un nombre (es decir, si ha sido cargado)
                     if (empty($path)) {
                         continue; // Salta al siguiente archivo si no hay nombre
                     }
                     $nameDoc = $_FILES["documentoa1"]["name"];
-                    // dd($nameDoc);
                     $fecha = date('Y-m-d');
                     $ext = pathinfo($path, PATHINFO_EXTENSION);
-                    $nombre_soli = $nameDoc[0] . "_" . $fecha . "_" . rand(10, 999);
+                    $nombre_soli = $nameDoc[$count] . "_" . $fecha . "_" . rand(10, 999);
                     $nombre = $nombre_soli . "." . $ext;
+
                     // Asigna propiedades del archivo actual
                     $_FILES["file"]["name"] = $nombre;
                     $_FILES["file"]["type"] = $_FILES["documentoa1"]["type"][$count];
@@ -1111,10 +1118,27 @@ class SoporteController extends Controller
                     } else {
                         echo "Error al cargar el archivo: " . $nombre;
                     }
+
+                    // Limitar a un máximo de 3 archivos
+                    if (count($uploaded_files) == 3) {
+                        break; // Detenemos el ciclo si ya hemos subido 3 archivos
+                    }
                 }
-                // Une los nombres de los archivos en una sola cadena separada por comas
+
+                // Verifica si se subieron archivos correctamente
                 if (!empty($uploaded_files)) {
-                    $data['documento1'] = implode(",", $uploaded_files);
+                    // Asigna los archivos a las columnas documento1, documento2, documento3 solo si no están ocupadas
+                    $columns = ['documento1', 'documento2', 'documento3'];
+
+                    // Iteramos sobre los archivos subidos
+                    foreach ($uploaded_files as $index => $file) {
+                        // Comprobamos la columna correspondiente y solo la asignamos si está vacía
+                        if (isset($columns[$index]) && empty($documentosCargados[$columns[$index]])) {
+                            $data[$columns[$index]] = $file; // Asignamos el archivo solo si la columna está vacía
+                        }
+                    }
+
+
                     echo "Archivos subidos correctamente: " . implode(", ", $uploaded_files);
                 } else {
                     echo "No se subieron archivos correctamente.";
@@ -1123,6 +1147,10 @@ class SoporteController extends Controller
                 // Mensaje en caso de que no haya archivos cargados
                 echo "No se seleccionaron archivos.";
             }
+
+
+
+
             // dd($documento1);
             // dd($resultados);
             if (!empty($resultados)) {

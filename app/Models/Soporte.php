@@ -153,6 +153,7 @@ class Soporte extends Model
             'soporte_solucion.archivo5 as archivo5',
             'soporte_solucion.documento1 as documento1',
             'soporte_solucion.documento2 as documento2',
+            'soporte_solucion.documento3 as documento3',
             'area.nom_area as nombre_area',
             'area_cancelacion.cod_area as cod_area',
             'users.usuario_nombres as usuario_nombre',

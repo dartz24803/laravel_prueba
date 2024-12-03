@@ -14,6 +14,32 @@
         /* Margen horizontal automático */
     }
 
+
+
+    #documentos-cargados h3 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    #documentos-cargados ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    #documentos-cargados ul li {
+        margin-bottom: 8px;
+    }
+
+    #documentos-cargados a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    #documentos-cargados a:hover {
+        text-decoration: underline;
+        color: #0056b3;
+    }
+
     .center {
         display: flex;
         justify-content: center;
@@ -558,11 +584,41 @@
                         <div class="d-flex align-items-center">
                             <input type="file" class="form-control-file" name="documentoa1[]" id="documentoa1" multiple onchange="handleFileChange()">
                         </div>
+
                     </div>
+                    <div class="form-group col-md-4" id="documentos-cargados">
 
+                        <label>Documentos Cargados:</label>
+                        @if ($get_id->documento1 || $get_id->documento2 || $get_id->documento3)
+                        <ul>
+                            @if ($get_id->documento1)
+                            <li>Documento 1:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento1 }}" target="_blank">
+                                    {{ $get_id->documento1 }}
+                                </a>
+                            </li>
+                            @endif
 
+                            @if ($get_id->documento2)
+                            <li>Documento 2:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento2 }}" target="_blank">
+                                    {{ $get_id->documento2 }}
+                                </a>
+                            </li>
+                            @endif
 
-
+                            @if ($get_id->documento3)
+                            <li>Documento 3:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento3 }}" target="_blank">
+                                    {{ $get_id->documento3 }}
+                                </a>
+                            </li>
+                            @endif
+                        </ul>
+                        @else
+                        <p>No se han cargado documentos.</p>
+                        @endif
+                    </div>
                     <div class="form-group col-lg-12 d-flex justify-content-center" id="div_camara" style="display: none;">
                         <video id="video" autoplay style="max-width: 95%; display: none;"></video>
                     </div>
@@ -1259,8 +1315,20 @@
         const documentList = document.getElementById('documento-list');
         const files = Array.from(fileInput.files); // Convertimos FileList en un Array
 
-        if (files.length > 3) {
-            alert('Solo puedes seleccionar un máximo de 3 archivos.');
+        // Contar cuántos documentos ya están cargados
+        const documentosCargados = [
+            '{{ $get_id->documento1 }}',
+            '{{ $get_id->documento2 }}',
+            '{{ $get_id->documento3 }}'
+        ];
+
+        const documentosDisponibles = documentosCargados.filter(doc => doc !== '').length;
+
+        // Limitar la carga de archivos
+        const documentosRestantes = 3 - documentosDisponibles;
+
+        if (files.length > documentosRestantes) {
+            alert(`Solo puedes seleccionar un máximo de ${documentosRestantes} archivo(s).`);
             fileInput.value = ''; // Limpiamos el input
             documentList.innerHTML = ''; // Limpiamos la lista de documentos
             return;
