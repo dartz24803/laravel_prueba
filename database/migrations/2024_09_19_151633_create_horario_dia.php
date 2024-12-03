@@ -15,32 +15,30 @@ return new class extends Migration
             $table->id('id_horario_dia');
             $table->unsignedBigInteger('id_horario');
             $table->unsignedBigInteger('id_turno');
-            $table->integer('con_descanso');
-            $table->integer('dia');
-            $table->string('nom_dia', 10);
-            $table->time('hora_entrada');
-            $table->time('hora_entrada_desde');
-            $table->time('hora_entrada_hasta');
-            $table->time('hora_salida');
-            $table->time('hora_salida_desde');
-            $table->time('hora_salida_hasta');
+            $table->integer('con_descanso')->nullable();
+            $table->integer('dia')->nullable();
+            $table->string('nom_dia', 10)->nullable();
+            $table->time('hora_entrada')->nullable();
+            $table->time('hora_entrada_desde')->nullable();
+            $table->time('hora_entrada_hasta')->nullable();
+            $table->time('hora_salida')->nullable();
+            $table->time('hora_salida_desde')->nullable();
+            $table->time('hora_salida_hasta')->nullable();
             $table->time('hora_descanso_e')->nullable();
             $table->time('hora_descanso_e_desde')->nullable();
             $table->time('hora_descanso_e_hasta')->nullable();
             $table->time('hora_descanso_s')->nullable();
             $table->time('hora_descanso_s_desde')->nullable();
             $table->time('hora_descanso_s_hasta')->nullable();
-            $table->integer('estado');
-            $table->dateTime('fec_reg');
-            $table->integer('user_reg');
+            $table->integer('estado')->nullable();
+            $table->dateTime('fec_reg')->nullable();
+            $table->integer('user_reg')->nullable();
             $table->dateTime('fec_act')->nullable();
             $table->integer('user_act')->nullable();
             $table->dateTime('fec_eli')->nullable();
             $table->integer('user_eli')->nullable();
-
-            // Definición de las llaves foráneas
-            $table->foreign('id_horario', 'table_horario_dia_fk_id_horario')->references('id_horario')->on('horario');
-            $table->foreign('id_turno', 'table_horario_dia_fk_id_turno')->references('id_turno')->on('turno');
+            $table->foreign('id_horario', 'hdia_fk_id_hor')->references('id_horario')->on('horario');
+            $table->foreign('id_turno', 'hdia_fk_id_tur')->references('id_turno')->on('turno');
         });
     }
 
@@ -49,6 +47,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('table_horario_dia');
+        Schema::dropIfExists('horario_dia');
     }
 };
