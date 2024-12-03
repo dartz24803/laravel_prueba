@@ -31,7 +31,7 @@ $id_puesto = Session('usuario')->id_puesto;
                         <td class="text-center"> <?php echo $list['centro_labores']; ?> </td>
                         <td class="text-center"> <?php echo $list['num_doc']; ?> </td>
                         <td class="text-center"> <?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?></td>
-                        <td class="text-center" data-order="{{ $list['orden'} }}"> <?php echo $list['fecha'];?> </td>
+                        <td class="text-center" data-order="{{ $list['orden']} }}"> <?php echo $list['fecha'];?> </td>
                         <td class="text-center">
                             <?php if($list['ingreso']!==null){ ?>
                                 <?php echo Carbon::parse($list['ingreso'])->format('H:i A'); ?>

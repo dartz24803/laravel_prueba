@@ -520,4 +520,16 @@ class AsistenciaController extends Controller
             return view('rrhh.Asistencia.NoMarcados.listar_nm', compact('fecha_inicio', 'fecha_fin', 'list_asistencia', 'list_colaborador', 'n_documento'));
         }
     }
+    
+    public function Modal_Update_Asistencia($nombres,$dni,$orden,$time){
+        $dato['nombres']=$nombres;
+        $dato['get_id'] = DB::connection('second_mysql')
+                        ->table('iclock_transaction')
+                        ->whereDate('punch_time',$orden)
+                        ->where('punch_time', 'LIKE', '%' .$time .'%')
+                        ->where('emp_code',$dni)
+                        ->get();
+        //print_r($dato['get_id']);
+        return view('rrhh.Asistencia.reporte.modal_editar',$dato);
+    }
 }
