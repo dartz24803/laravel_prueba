@@ -236,23 +236,23 @@ class TbContabilidad extends Model
                         'descripcion' => $row->Descripcion,
                         'costo_precio' => $row->Costo_Prom,
                         'empresa' => $row->Empresa,
-                        'alm_discotela' => (int) $row->ALM_DISCOTELA,  // Convertir a entero
-                        'alm_dsc' => (int) $row->ALM_DSC,  // Convertir a entero
-                        'alm_ln1' => (int) $row->ALM_LN1,  // Convertir a entero
-                        'alm_pb' => (int) $row->ALM_PB,  // Convertir a entero
-                        'alm_fam' => (int) $row->ALM_FAM,  // Convertir a entero
-                        'alm_mad' => (int) $row->ALM_MAD,  // Convertir a entero
+                        'alm_discotela' => (int) $row->ALM_DISCOTELA,
+                        'alm_dsc' => (int) $row->ALM_DSC,
+                        'alm_ln1' => (int) $row->ALM_LN1,
+                        'alm_pb' => (int) $row->ALM_PB,
+                        'alm_fam' => (int) $row->ALM_FAM,
+                        'alm_mad' => (int) $row->ALM_MAD,
                         'cia' => $row->CIA,
                         'base' => $row->Base,
                         'fecha_documento' => $row->Fecha_Documento,
                         'guia_remision' => $row->Guía_de_Remisión,
-                        'enviado' => (int) $row->Enviado,  // Convertir a entero
+                        'enviado' => (int) $row->Enviado,
                         'estado' => $row->Estado,
                         'stock' => ($row->Estado == 'sin Stock') ? 0 : 1, // Verificar stock
                     ];
                 }
             }
-            $totalInserted = 0; // Inicializar el contador
+            $totalInserted = 0;
             if (!empty($datosAInsertar)) {
                 foreach ($datosAInsertar as $dato) {
                     try {
@@ -266,7 +266,7 @@ class TbContabilidad extends Model
             $cantidadRegistrosUpdate = DB::table('tb_contabilidad')
                 ->count();
             DB::table('tb_contabilidad_configuracion')
-                ->where('tipo', 1) //CONFIGURACIÓN DE REGISTROS 
+                ->where('tipo', 1)
                 ->update([
                     'fecha_actualizacion' => now(),
                     'estado' => 1,
