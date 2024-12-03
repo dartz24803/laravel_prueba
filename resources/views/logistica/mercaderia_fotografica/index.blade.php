@@ -9,8 +9,7 @@
     <div class="layout-px-spacing">
         <div class="page-header">
             <div class="page-title">
-                <h3>Registro de Requerimiento
-                </h3>
+                <h3>Mercadería a enviar para fotografía</h3>
             </div>
         </div>
 
