@@ -93,8 +93,8 @@ class AsistenciaController extends Controller
     }
 
     public function Buscar_Reporte_Control_Asistencia(Request $request){
-        set_time_limit(300);
-        ini_set('max_execution_time', 300);
+        set_time_limit(600);
+        ini_set('max_execution_time', 600);
 
         $id_puesto = Session('usuario')->id_puesto;
         $cod_mes = $request->input("cod_mes");
@@ -176,6 +176,8 @@ class AsistenciaController extends Controller
     }
 
     public function Excel_Reporte_Asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $area, $estado, $tipo, $finicio, $ffin, Request $request) {
+        set_time_limit(600);
+        ini_set('max_execution_time', 600);
         // Crear una nueva instancia de Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -202,7 +204,9 @@ class AsistenciaController extends Controller
             $usuarios->leftJoin('puesto', 'users.id_puesto', 'puesto.id_puesto');
             $usuarios->where('puesto.id_area', $area);
         }
+        $usuarios->whereRaw('usuario_codigo REGEXP "^[0-9]+$"');
         $usuarios = $usuarios->get();
+        // print_r($usuarios);
 
         // Establecer fechas de inicio y fin
         $fechas = [];
@@ -247,19 +251,7 @@ class AsistenciaController extends Controller
             'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]
         ]);
 
-        $sheet->getStyle("D3:AC3")->getFont()->setBold(true);/*
-        $styleArray = [
-            'font' => [
-                'bold'  =>  true,
-                'size'  =>  12,
-                'color' => ['rgb' => '000000']
-            ],
-            'alignment' => [
-                'horizontal' => Alignment::HORIZONTAL_CENTER,
-                'vertical' => Alignment::VERTICAL_CENTER
-            ]
-        ];
-        $sheet->getStyle('C1:X1')->applyFromArray($styleArray);*/
+        $sheet->getStyle("D3:AC3")->getFont()->setBold(true);
 
         $colIndex = 3; // Comenzamos en la columna C
         foreach ($fechas as $fecha) {
@@ -365,6 +357,7 @@ class AsistenciaController extends Controller
 
         // Guardar y enviar el archivo al navegador
         $writer->save('php://output');
+
     }
 
     public function Update_Asistencia_Diaria(Request $request){
