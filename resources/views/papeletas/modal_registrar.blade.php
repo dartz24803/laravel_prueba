@@ -315,7 +315,17 @@
                 return false;
             }
         }
-
+        if ($('#fecha_actual').val() === $('#fec_solicitud').val()) {
+            if ($('#sin_ingreso').is(":checked")) {
+                msgDate = 'No puede seleccionar sin ingreso para el día de hoy';
+                Swal.fire(
+                    '¡Ups!',
+                    msgDate,
+                    'warning'
+                );
+                return false;
+            }
+        }
         return true;
     }
 </script>

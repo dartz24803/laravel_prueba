@@ -384,10 +384,10 @@ class MercaderiaEnviarFotografia extends Controller
         $dato['mes'] = $mes;
 
         $data = RequerimientoPrendaDetalle::getListRequerimientoPrenda($dato);
-
+        /*
         if (count($data) == 0) {
             dd("data no tiene contenido");
-        }
+        }*/
 
         $fila = 1;
         // Iterar sobre los datos
