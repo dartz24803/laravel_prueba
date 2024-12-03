@@ -780,12 +780,13 @@ class Usuario extends Model
         $sql = "SELECT u.*, p.nom_puesto, m.nom_mes, g.cod_genero, g.nom_genero,a.nom_area,t.cod_tipo_documento,ge.nom_gerencia,
                 u.usuario_email
                 FROM users u
-                left join area a on a.id_area=u.id_area
                 left join puesto p on p.id_puesto=u.id_puesto
                 left join mes m on m.id_mes=u.mes_nac
                 left join genero g on g.id_genero=u.id_genero
                 left join tipo_documento t on t.id_tipo_documento=u.id_tipo_documento
-                left join gerencia ge on ge.id_gerencia = u.id_gerencia
+                LEFT JOIN area a on a.id_area=p.id_area
+                LEFT JOIN sub_gerencia sg on sg.id_sub_gerencia=a.id_departamento
+                LEFT JOIN gerencia ge on ge.id_gerencia=sg.id_gerencia
                 WHERE u.estado=1 and u.id_nivel in (1,9)";
 
         $query = DB::select($sql);

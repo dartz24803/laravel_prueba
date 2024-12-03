@@ -166,6 +166,7 @@ class FacturacionController extends Controller
                         'guia_remision' => $registro->guia_remision,
                         'base' => $registro->base,
                         'enviado' => $fila['enviado'],
+                        'pendiente' =>  $registro->enviado - $fila['enviado'],
                         'cia' => $registro->cia,
                         'estado' => $registro->estado,
                         'stock' => $registro->stock,
@@ -200,7 +201,6 @@ class FacturacionController extends Controller
                         'stock' => $registro->stock,
                         'cerrado' => 1,
                         'fecha_cerrado_total' => now()
-
                     ]);
                     // Eliminar el registro de la tabla tb_contabilidad
                     $registro->delete();  // Eliminar el registro

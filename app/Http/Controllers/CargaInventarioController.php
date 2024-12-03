@@ -100,19 +100,19 @@ class CargaInventarioController extends Controller
         $request->validate([
             'fechae' => 'required',
             'basee' => 'required',
-            'responsablee' => 'required',
+            'id_responsablee' => 'required',
 
         ], [
-            'fecha.required' => 'Debe ingresar fecha.',
-            'base.required' => 'Debe ingresar nase.',
-            'responsable.required' => 'Debe seleccionar responsable',
+            'fechae.required' => 'Debe ingresar fecha.',
+            'basee.required' => 'Debe ingresar nase.',
+            'id_responsablee.required' => 'Debe seleccionar responsable',
 
         ]);
 
         $dato['id_inventario'] = $request->id_inventario;
         $dato['fecha'] = $request->fechae;
         $dato['base'] = $request->basee;
-        $dato['id_responsable'] = $request->responsablee;
+        $dato['id_responsable'] = $request->id_responsablee;
 
         $path = $_FILES["archivoe"]["tmp_name"];
 
@@ -287,12 +287,13 @@ class CargaInventarioController extends Controller
                     </a><br>ERRORES: $error<br>TOTAL: $total";
             } else {
                 $dato['get_id'] = Inventario::busca_carga_inventario($dato['id_inventario']);
-                $dato['cod_inventario'] = $dato['get_id'][0]['cod_inventario'];
+                $dato['cod_inventario'] = $dato['get_id'][0]->cod_inventario;
                 Inventario::update_carga_inventario($dato);
                 Inventario::elimina_carga_inventario_temporal($dato);
                 echo "3TOTAL: $total";
             }
         }
+
     }
 
     public function store_ci(Request $request)

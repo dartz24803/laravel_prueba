@@ -182,6 +182,7 @@
             <th>Guía Remisión</th>
             <th>Empresa</th>
             <th>Facturado</th>
+            <th>Pendiente</th>
             <th>Estado</th>
         </tr>
     </thead>
@@ -325,6 +326,10 @@
                 },
                 {
                     "data": "enviado",
+                    "orderable": true
+                },
+                {
+                    "data": "pendiente",
                     "orderable": true
                 },
                 {
