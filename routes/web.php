@@ -2382,7 +2382,7 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
     Route::post('dotacion_colaborador/list', 'list_dotacion_colaborador')->name('dotacion_colaborador.list');
 
     // TARDANZA
-    Route::get('tardanza_colaborador/excel/{base}/{area}/{usuario}/{tipo_fecha}/{dia}/{mes}', 'Excel_Tardanza')->name('tardanza_colaborador.excel');
+    Route::get('tardanza_colaborador/excel/{base}/{area}/{usuario}/{tipo_fecha}/{dia}/{mes}/{semana}', 'Excel_Tardanza')->name('tardanza_colaborador.excel');
 
 
     // DOTACIÓN

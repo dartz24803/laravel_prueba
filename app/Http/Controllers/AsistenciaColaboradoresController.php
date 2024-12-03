@@ -1098,12 +1098,14 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $this->input->post("tipo_fecha");
         $dato['dia'] = $this->input->post("dia");
         $dato['mes'] = $this->input->post("mes");
+        $dato['semana']=$request->semana;
+        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
         $list_tardanza =  AsistenciaColaborador::get_list_tardanza($dato);
         // Retornar la vista con los datos
-        return view('rrhh.AsistenciaColaboradores.tardanza.lista', compact('list_tardanza'));
+        return view('rrhh.AsistenciaColaboradores.tardanza.lista', compact('list_tardanza', 'dato'));
     }
 
-    public function Excel_Tardanza($base, $area, $usuario, $tipo_fecha, $dia, $mes)
+    public function Excel_Tardanza($base, $area, $usuario, $tipo_fecha, $dia, $mes, $semana)
     {
         $dato['base'] = $base;
         $dato['area'] = $area;
@@ -1111,6 +1113,8 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $tipo_fecha;
         $dato['dia'] = $dia;
         $dato['mes'] = $mes;
+        $dato['semana'] = $semana;
+        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
         $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
 
         $spreadsheet = new Spreadsheet();
