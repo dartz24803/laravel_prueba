@@ -101,6 +101,18 @@ class TbContabilidadCerrados extends Model
             });
         }
 
+        if (!empty($filters['almacen'])) {
+            $query->where($filters['almacen'], '>', 0)
+                ->where(function ($q) use ($filters) {
+                    $almacenes = ['alm_dsc', 'alm_discotela', 'alm_pb', 'alm_mad', 'alm_fam'];
+                    foreach ($almacenes as $almacen) {
+                        if ($almacen !== $filters['almacen']) {
+                            $q->where($almacen, 0);
+                        }
+                    }
+                });
+        }
+
         return $query;
     }
 
