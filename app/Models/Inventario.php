@@ -181,7 +181,7 @@ class Inventario extends Model
             GROUP BY a.id_inventario";
         }
 
-        $query = DB::select(DB::raw($sql));
+        $query = DB::select($sql);
         return $query;
     }
 

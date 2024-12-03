@@ -46,11 +46,6 @@
                     <p class="romperpalabra"><span id="icono_active2"></span> Slider Marketing</p>
                 </a>
             </li>
-            <li id="mercaderiamkt">
-                <a id="rmercaderiamkt" href="{{ url('Marketing/Mercaderia_Fotografia/2') }}">
-                    <p class="romperpalabra" title="Mercadería a enviar para fotografía"><span id="icono_active2"></span> Mercadería a Enviar para fotografía</p>
-                </a>
-            </li>
         </ul>
     </li>
 <?php } ?>

@@ -120,10 +120,15 @@
 
         var dataString = new FormData(document.getElementById('formularioe'));
         var url = "{{ route('cargainventario.update', ':id') }}"
-        if (Valida_Carga_Inventario('2')) {
+        var csrfToken = $('input[name="_token"]').val();
+
+        // if (Valida_Carga_Inventario('2')) {
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 data: dataString,
                 processData: false,
                 contentType: false,
@@ -154,21 +159,21 @@
                             'success'
                         ).then(function() {
                             $('#ModalUpdate .close').click();
-                            Buscar_Carga_Inventario();
+                            Lista_CargaInventario();
                         });
                     }
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-        }
+        // } else {
+        //     bootbox.alert(msgDate)
+        //     var input = $(inputFocus).parent();
+        //     $(input).addClass("has-error");
+        //     $(input).on("change", function() {
+        //         if ($(input).hasClass("has-error")) {
+        //             $(input).removeClass("has-error");
+        //         }
+        //     });
+        // }
     }
 </script>
 
