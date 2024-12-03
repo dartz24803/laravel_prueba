@@ -36,6 +36,7 @@ class TbContabilidadCerradosParcial extends Model
         'fecha_documento',
         'guia_remision',
         'enviado',
+        'pendiente',
         'estado',
         'base',
         'cia',

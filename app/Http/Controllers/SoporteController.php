@@ -804,7 +804,9 @@ class SoporteController extends Controller
             $list_responsable = $list_segundo_responsable;
         }
         // dd($list_responsable);
-        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
+        // dd($idArea->id_area);
+        $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto, $idArea->id_area);
+        // dd($list_ejecutores_responsables);
         $cantAreasEjecut = count($list_ejecutores_responsables);
         if ($cantAreasEjecut > 3) {
             $ejecutoresMultiples = true;
