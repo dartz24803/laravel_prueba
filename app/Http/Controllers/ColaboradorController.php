@@ -1413,6 +1413,7 @@ class ColaboradorController extends Controller
 
             $get_id = Usuario::findOrFail($id_usuario);
             $valida = Organigrama::where('id_usuario',$id_usuario)
+                    ->where('id_puesto',$get_id->id_puesto)
                     ->where('id_centro_labor',$get_id->id_centro_labor)->count();
             if($valida==0){
                 $org = Organigrama::where('id_puesto',$get_id->id_puesto)
@@ -1619,6 +1620,7 @@ class ColaboradorController extends Controller
                 if($valida==0){
                     $get_id = Usuario::findOrFail($get_id->id_usuario);
                     $org = Organigrama::where('id_puesto',$get_id->id_puesto)
+                        ->where('id_puesto',$get_id->id_puesto)
                         ->where('id_centro_labor',$get_id->id_centro_labor)->first();
                     if(isset($org->id)){
                         Organigrama::findOrFail($org->id)->update([
