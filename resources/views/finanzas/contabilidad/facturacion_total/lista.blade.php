@@ -142,12 +142,35 @@
                 Buscar
             </button>
         </div>
+        <div class="form-group col-lg-5">
+            <label>
+                <input type="checkbox" name="almacenFT" value="1" id="alm_dscFT"> Alm DSC
+            </label>
+            <label>
+                <input type="checkbox" name="almacenFT" value="2" id="alm_discotelaFT"> Alm Discotela
+            </label>
+            <label>
+                <input type="checkbox" name="almacenFT" value="3" id="alm_pbFT"> Alm PB
+            </label>
+            <label>
+                <input type="checkbox" name="almacenFT" value="4" id="alm_madFT"> Alm Mad
+            </label>
+            <label>
+                <input type="checkbox" name="almacenFT" value="5" id="alm_famFT"> Alm Fam
+            </label>
+        </div>
+        <input type="hidden" id="almacenSeleccionadoInputFT" name="almacenSeleccionadoFT">
+
 
     </div>
 </div>
 
 
 <table id="tabla_js_ft" class="table" style="width:100%">
+    <div id="facturadosTotalContainer" class="alert alert-info" style="text-align: center; font-weight: bold;">
+        Total Facturado: <span id="facturadosTotalValue">0</span>
+    </div>
+
     <thead>
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -176,6 +199,22 @@
     <tbody>
         <!-- Los datos se llenarán mediante DataTables -->
     </tbody>
+    <tfoot id="tablaTotales">
+        <tr>
+            <!-- <td colspan="2">Total General:</td> -->
+            <td colspan="8"></td>
+            <td id="totalAlmLN1T"></td>
+            <td id="totalAlmDSCT"></td>
+            <td id="totalAlmDISCOTELAT"></td>
+            <td id="totalAlmPBTT"></td>
+            <td id="totalAlmFAMT"></td>
+            <td id="totalAlmMADT"></td>
+            <td colspan="3"></td>
+            <td id="totalFacturadoT"></td>
+
+            <!-- <td colspan="6"></td> -->
+        </tr>
+    </tfoot>
 </table>
 
 <script>
@@ -226,15 +265,26 @@
                     var estado = $('#estadoFiltro').val();
                     var filtroSku = $('#skuFiltro').val();
                     var filtroEmpresa = $('#empresaFiltro').val();
+                    var almacenSeleccionadoInput = $('#almacenSeleccionadoInputFT').val();
+
                     d.fecha_inicio = fechaInicio;
                     d.fecha_fin = fechaFin;
                     d.estado = estado;
                     d.filtroSku = filtroSku;
                     d.filtroEmpresa = filtroEmpresa;
+                    d.almacenSeleccionadoInput = almacenSeleccionadoInput;
+
                 },
                 "headers": {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                "dataSrc": function(json) {
+                    // Asignar directamente el texto al span
+                    $('#facturadosTotalValue').text(json.facturadosTotal);
+                    return json.data;
                 }
+
+
             },
             // "pageLength": 50, // Número de registros por página
             "lengthMenu": [10, 25, 50, 100],
@@ -333,9 +383,54 @@
             "scrollCollapse": true,
             "scrollX": true,
             "scrollY": 400,
+            "initComplete": function() {
+                calcularTotalesT(); // Llama al calcular totales cuando la tabla se inicia
+            },
+            "drawCallback": function(settings) {
+                calcularTotalesT(); // Llama al calcular totales después de cada actualización de la tabla
+            }
         });
 
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name="almacenFT"]');
 
+        checkboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', function() {
+                // Restablecer todos los checkboxes, y marcar sólo el seleccionado
+                checkboxes.forEach((otherCheckbox) => {
+                    if (otherCheckbox !== checkbox) {
+                        otherCheckbox.checked = false; // Desmarcar otros checkboxes
+                    }
+                });
+                // Enviar los datos del checkbox seleccionado
+                enviarDatosSeleccionado();
+            });
+        });
+
+        function enviarDatosSeleccionado() {
+            let selectedAlmacenId = null;
+            // Buscar el checkbox seleccionado
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    selectedAlmacenId = checkbox.value; // Captura el valor del checkbox seleccionado
+                }
+            });
+
+            // Si hay un checkbox seleccionado, enviar su valor, sino enviar 0
+            if (selectedAlmacenId) {
+                $('#almacenSeleccionadoInputFT').val(selectedAlmacenId);
+            } else {
+                $('#almacenSeleccionadoInputFT').val(0); // Si no hay ninguno seleccionado, poner 0
+            }
+
+            // Mostrar el valor del input donde se está enviando el valor
+            var almacenSeleccionadoInput = $('#almacenSeleccionadoInputFT').val();
+        }
+
+
+
+        table_ft.on('draw', function() {
+            calcularTotalesT();
+        });
 
         // Manejo de eventos para los checkboxes
         $('#tabla_js_ft tbody').on('change', '.row-selector', function() {
@@ -363,130 +458,11 @@
 
         // Función para manejar la búsqueda
         $('#btnBuscar').on('click', function() {
+            calcularTotalesT();
             table_ft.ajax.reload();
         });
 
-        $('#btnVer').on('click', function() {
-            if (selectedIds.length > 0) {
 
-                $.ajax({
-                    url: "{{ route('tabla_facturacion.facturar_ver') }}", // Ruta donde se procesarán los IDs
-                    type: "GET",
-                    data: {
-                        ids: selectedIds,
-                        _token: $('meta[name="csrf-token"]').attr('content')
-                    },
-
-                    success: function(response) {
-                        // Verificar si la respuesta contiene los registros actualizados
-                        if (response.updated_records && response.updated_records.length > 0) {
-
-                            // Generar la tabla con los registros
-                            let tableContent = '';
-                            response.updated_records.forEach(function(record) {
-                                tableContent += `
-                        <tr>
-                                            
-                            <td>${record.estilo}</td>
-                            <td>${record.sku}</td>
-                            <td>${record.alm_ln1}</td>
-                            <td>${record.alm_dsc}</td>
-                            <td>${record.alm_discotela}</td>
-                            <td>${record.alm_pb}</td>
-                            <td>${record.alm_fam}</td>
-                            <td>${record.alm_mad}</td>
-                            <td>
-                            <input type="number" value="${record.enviado}" 
-                                class="form-control enviado-input" 
-                                data-id="${record.id}" 
-                                data-original="${record.enviado}" 
-                                style="width: 100px; height:24px" />
-
-                            </td>
-                            <td>${record.costo_precio}</td>
-                            <td>${record.color}</td>
-                            <td>${record.talla}</td>
-                            <td>${record.empresa}</td>
-                            <td>${record.guia_remision}</td>
-                            <td>${record.descripcion}</td>
-                            <td>${record.estado}</td>
-                        </tr>
-                    `;
-                            });
-
-                            // Insertar la tabla en el modal
-                            $('#tablaContenido').html(tableContent);
-                            // Calcular totales
-                            calcularTotales();
-                            // Destruir cualquier instancia previa de DataTable antes de crear una nueva
-                            if ($.fn.dataTable.isDataTable('#modalFacturados table')) {
-                                $('#modalFacturados table').DataTable().clear().destroy();
-                            }
-
-                            // Inicializar DataTables después de que el modal haya sido mostrado
-                            $('#modalFacturados').on('shown.bs.modal', function() {
-                                // Inicializa DataTables solo cuando el modal esté visible
-                                $('#modalFacturados table').DataTable({
-                                    "destroy": true,
-                                    "scrollX": true,
-                                    "scrollY": 300,
-                                    // "responsive": true,
-                                    "columnDefs": [{
-                                            "width": "80px",
-                                            "targets": 0
-                                        },
-                                        {
-                                            "width": "80px",
-                                            "targets": 1
-                                        },
-                                        {
-                                            "width": "80px",
-                                            "targets": 2
-                                        },
-                                        {
-                                            "width": "80px",
-                                            "targets": 3
-                                        },
-                                        {
-                                            "width": "80px",
-                                            "targets": 4
-                                        },
-                                        {
-                                            "width": "80px",
-                                            "targets": 5
-                                        },
-                                        {
-                                            "width": "80px",
-                                            "targets": 6
-                                        }
-                                    ],
-                                    "oLanguage": {
-                                        "oPaginate": {
-                                            "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
-                                            "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>'
-                                        },
-                                        "sInfo": "Mostrando página _PAGE_ de _PAGES_",
-                                        "sSearch": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>',
-                                        "sSearchPlaceholder": "Buscar...",
-                                        "sLengthMenu": "Resultados :  _MENU_",
-                                    },
-                                });
-                            });
-
-                            // Abrir el modal
-                            $('#modalFacturados').modal('show');
-                        } else {
-                            alert('No se encontraron registros para mostrar.');
-                        }
-                    },
-                    error: function(xhr, status, error) {
-                        alert('Error al procesar la facturación.');
-                    }
-                });
-            } else {
-                alert('No has seleccionado ninguna fila para facturar');
-            }
-        });
 
         // Asegurarse de que el modal se cierra correctamente y se destruye la instancia de DataTable
         $('#modalFacturados').on('hidden.bs.modal', function() {
@@ -535,51 +511,59 @@
 
 
 
-    // Función para calcular y actualizar los totales
-    function calcularTotales() {
-        let totalAlmLN1 = 0;
-        let totalAlmDSC = 0;
-        let totalAlmDISCOTELA = 0;
-        let totalAlmPB = 0;
-        let totalAlmFAM = 0;
-        let totalAlmMAD = 0;
-        let totalEnviado = 0;
-
-        // Recorre cada fila de la tabla
-        $('#tablaContenido tr').each(function() {
-            // Obtén los valores de las celdas y convierte a número
-            totalAlmLN1 += Number($(this).find('td:nth-child(3)').text()) || 0;
-            totalAlmDSC += Number($(this).find('td:nth-child(4)').text()) || 0;
-            totalAlmDISCOTELA += Number($(this).find('td:nth-child(5)').text()) || 0;
-            totalAlmPB += Number($(this).find('td:nth-child(6)').text()) || 0;
-            totalAlmFAM += Number($(this).find('td:nth-child(7)').text()) || 0;
-            totalAlmMAD += Number($(this).find('td:nth-child(8)').text()) || 0;
-            totalEnviado += Number($(this).find('.enviado-input').val()) || 0;
-        });
-
-        // Actualiza los totales en el pie de la tabla
-        $('#totalAlmLN1').text(totalAlmLN1);
-        $('#totalAlmDSC').text(totalAlmDSC);
-        $('#totalAlmDISCOTELA').text(totalAlmDISCOTELA);
-        $('#totalAlmPB').text(totalAlmPB);
-        $('#totalAlmFAM').text(totalAlmFAM);
-        $('#totalAlmMAD').text(totalAlmMAD);
-        $('#totalEnviado').text(totalEnviado);
-    }
 
     // Escuchar los cambios en los inputs dentro de la tabla
-    $(document).on('input', '.enviado-input', function() {
+    $(document).on('input', '.enviado-inputT', function() {
         actualizarTotalEnviado(); // Solo actualiza el total de la columna "Enviado"
     });
 
     // Función para actualizar solo el total de la columna "Enviado" en el <tfoot>
     function actualizarTotalEnviado() {
-        let totalEnviado = 0;
-        // Recorre cada input .enviado-input y suma los valores
-        $('.enviado-input').each(function() {
-            totalEnviado += Number($(this).val()) || 0; // Asegúrate de usar el valor actual del input
+        let totalFacturadoT = 0;
+        // Recorre cada input .enviado-inputT y suma los valores
+        $('.enviado-inputT').each(function() {
+            totalFacturadoT += Number($(this).val()) || 0; // Asegúrate de usar el valor actual del input
         });
         // Solo actualiza la celda de "Enviado" en el <tfoot> sin modificar la tabla completa
-        $('#tablaTotales #totalEnviado').text(totalEnviado);
+        $('#tablaTotales #totalFacturadoT').text(totalFacturadoT);
+    }
+
+    function calcularTotalesT() {
+        // Obtén la instancia de la tabla
+        var table = $('#tabla_js_ft').DataTable();
+
+        // Variables para almacenar los totales
+        let totalAlmLN1T = 0;
+        let totalAlmDSCT = 0;
+        let totalAlmDISCOTELAT = 0;
+        let totalAlmPBT = 0;
+        let totalAlmFAMT = 0;
+        let totalAlmMADT = 0;
+        let totalFacturadoT = 0;
+
+        // Itera sobre cada fila visible en la tabla
+        table.rows({
+            search: 'applied'
+        }).every(function(rowIdx, tableLoop, rowLoop) {
+            let data = this.data(); // Obtiene los datos de la fila
+
+            // Suma los valores correspondientes
+            totalAlmLN1T += Number(data.alm_ln1) || 0;
+            totalAlmDSCT += Number(data.alm_dsc) || 0;
+            totalAlmDISCOTELAT += Number(data.alm_discotela) || 0;
+            totalAlmPBT += Number(data.alm_pb) || 0;
+            totalAlmFAMT += Number(data.alm_fam) || 0;
+            totalAlmMADT += Number(data.alm_mad) || 0;
+            totalFacturadoT += Number(data.enviado) || 0;
+        });
+
+        // Actualiza los valores en el `<tfoot>`
+        $('#totalAlmLN1T').text(totalAlmLN1T.toFixed(0));
+        $('#totalAlmDSCT').text(totalAlmDSCT.toFixed(0));
+        $('#totalAlmDISCOTELAT').text(totalAlmDISCOTELAT.toFixed(0));
+        $('#totalAlmPBTT').text(totalAlmPBT.toFixed(0));
+        $('#totalAlmFAMT').text(totalAlmFAMT.toFixed(0));
+        $('#totalAlmMADT').text(totalAlmMADT.toFixed(0));
+        $('#totalFacturadoT').text(totalFacturadoT.toFixed(0));
     }
 </script>

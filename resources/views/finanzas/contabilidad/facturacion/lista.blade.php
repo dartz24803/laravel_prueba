@@ -401,7 +401,7 @@
                 }
             },
             // "pageLength": 50, 
-            "lengthMenu": [1000, 5000],
+            "lengthMenu": [250, 1000, 5000],
             "order": [
                 [0, "asc"]
             ],
