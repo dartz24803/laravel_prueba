@@ -49,6 +49,10 @@
                 <input type="radio" class="new-control-input" id="r_mes_t" value="2" name="tipo_fecha_t" onclick="Div_Tipo_Fecha_T()">
                 <span class="new-control-indicator"></span>Mes
             </label>
+            <label class="new-control new-radio radio-primary">
+                <input type="radio" class="new-control-input" id="r_semanah" value="3" name="tipo_fecha_t" onclick="Div_Tipo_Fecha_T()">
+                <span class="new-control-indicator"></span>Semana
+            </label>
         </div>
     </div>
 
@@ -69,14 +73,27 @@
                 <?php } ?>
             </select>
         </div>
+        <div id="div3_t" style="display:none">
+            <!-- Dropdown for selecting week -->
+            <select name="semanaih" id="semanaih" class="form-control basic">
+                <?php foreach ($data['list_semanas'] as $list) { ?>
+                    <option value="<?php echo $list->id_semanas ?>">
+                        <?php echo "Semana " . $list->nom_semana . " (" . date('d/m/Y', strtotime($list->fec_inicio)) . " - " . date('d/m/Y', strtotime($list->fec_fin)) . ")" ?>
+                    </option>
+                <?php } ?>
+            </select>
+        </div>
     </div>
 
 
-    <div class="form-group col-md-1">
+    <div class="form-group col-md-2">
         <label for="">&nbsp;</label>
         <div>
             <button type="button" class="btn btn-primary" onclick="Lista_Tardanza();">
-                Buscar
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search toggle-search">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
             </button>
             <a class="btn" style="background-color: #28a745 !important;" onclick="Excel_Tardanza();">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
@@ -121,10 +138,11 @@
         var tipo_fecha = $('input:radio[name=tipo_fecha_t]:checked').val();
         var dia = $('#dia_t').val();
         var mes = $('#mes_t').val();
+        var semana = $('#semanaih').val();
 
         var url = "{{ route('tardanza_colaborador.list') }}";
         var csrfToken = $('input[name="_token"]').val();
-        console.log(base)
+
         $.ajax({
             type: "POST",
             url: url,
@@ -134,7 +152,8 @@
                 'usuario': usuario,
                 'tipo_fecha': tipo_fecha,
                 'dia': dia,
-                'mes': mes
+                'mes': mes,
+                'semana' : semana
             },
             headers: {
                 'X-CSRF-TOKEN': csrfToken
@@ -150,12 +169,19 @@
         Cargando();
         var div1 = document.getElementById("div1_t");
         var div2 = document.getElementById("div2_t");
+        var div3 = document.getElementById("div3_t");
         if ($('#r_dia_t').is(":checked")) {
             div1.style.display = "block";
             div2.style.display = "none";
-        } else {
+            div3.style.display = "none";
+        } else if($('#r_mes_t').is(":checked")) {
             div1.style.display = "none";
             div2.style.display = "block";
+            div3.style.display = "none";
+        } else{
+            div1.style.display = "none";
+            div2.style.display = "none";
+            div3.style.display = "block";
         }
     }
 
@@ -169,13 +195,15 @@
         var tipo_fecha = $('input:radio[name=tipo_fecha_t]:checked').val();
         var dia = $('#dia_t').val();
         var mes = $('#mes_t').val();
-        window.location = "{{ route('tardanza_colaborador.excel', ['base' => ':base', 'area' => ':area', 'usuario' => ':usuario', 'tipo_fecha' => ':tipo_fecha', 'dia' => ':dia', 'mes' => ':mes']) }}"
+        var semana = $('#semanaih').val();
+        window.location = "{{ route('tardanza_colaborador.excel', ['base' => ':base', 'area' => ':area', 'usuario' => ':usuario', 'tipo_fecha' => ':tipo_fecha', 'dia' => ':dia', 'mes' => ':mes', 'semana' => ':semana']) }}"
             .replace(':base', base)
             .replace(':area', area)
             .replace(':usuario', usuario)
             .replace(':tipo_fecha', tipo_fecha)
             .replace(':dia', dia)
-            .replace(':mes', mes);
+            .replace(':mes', mes)
+            .replace(':semana', semana);
 
     }
 </script>

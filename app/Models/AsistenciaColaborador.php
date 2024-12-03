@@ -343,7 +343,7 @@ class AsistenciaColaborador extends Model
         if (isset($id_semanas) && $id_semanas > 0) {
             $sql = "SELECT a.* FROM semanas a where a.id_semanas='$id_semanas'";
         } else {
-            $sql = "SELECT a.* FROM semanas a where a.estado=1 and a.anio='" . $anio . "'";
+            $sql = "SELECT a.* FROM semanas a where a.estado=1 and a.anio='" . $anio . "' ORDER BY id_semanas ASC";
         }
 
         $query = DB::select($sql);
@@ -563,11 +563,14 @@ class AsistenciaColaborador extends Model
 
     public static function get_list_tardanza($dato)
     {
-        /*hd.id_turno>0 AND (WEEKDAY('$fecha')+1)=hd.dia AND*/
-        $parte_fecha = "vm.fecha='" . $dato['dia'] . "' AND";
-        if ($dato['tipo_fecha'] == "2") {
+        if ($dato['tipo_fecha'] == 1) {
+            $parte_fecha = "vm.fecha='" . $dato['dia'] . "' AND";
+        } else if ($dato['tipo_fecha'] == "2") {
             $parte_fecha = "YEAR(vm.fecha)='" . date('Y') . "' AND MONTH(vm.fecha)='" . $dato['mes'] . "' AND";
+        } else if ($dato['tipo_fecha'] == 3) {
+            $parte_fecha = "(vm.fecha BETWEEN '" . $dato['get_semana'][0]->fec_inicio . "' AND '" . $dato['get_semana'][0]->fec_fin . "') AND";
         }
+
         $parte_base = "";
         if ($dato['base'] != "0") {
             $parte_base = "ub.cod_ubi='" . $dato['base'] . "' AND";
@@ -585,15 +588,15 @@ class AsistenciaColaborador extends Model
                 DATE_FORMAT(vm.fecha,'%d/%m/%Y') AS fecha,
                 DATE_FORMAT(hd.hora_entrada,'%H:%i') AS hora_inicio_turno,vm.hora_llegada,
                 FLOOR(TIME_TO_SEC(TIMEDIFF(vm.hora_llegada, hd.hora_entrada))/60) AS minutos_atraso
-                FROM zkbiotime.vista_marcacion_minima vm
-                INNER JOIN users us ON vm.emp_code=us.num_doc
-                INNER JOIN ubicacion ub ON ub.id_ubicacion=us.id_centro_labor
-                INNER JOIN puesto pu ON us.id_puesto=pu.id_puesto
-                LEFT JOIN horario_dia hd ON us.id_horario=hd.id_horario AND 
+                FROM vista_marcacion_minima vm
+                INNER JOIN lanumerouno.users us ON vm.emp_code=us.num_doc
+                INNER JOIN lanumerouno.ubicacion ub ON ub.id_ubicacion=us.id_centro_labor
+                INNER JOIN lanumerouno.puesto pu ON us.id_puesto=pu.id_puesto
+                LEFT JOIN lanumerouno.horario_dia hd ON us.id_horario=hd.id_horario AND 
                 hd.id_turno>0 AND (WEEKDAY(vm.fecha)+1)=hd.dia
                 WHERE $parte_fecha $parte_base $parte_area $parte_usuario us.estado=1 AND 
                 hd.estado=1 AND FLOOR(TIME_TO_SEC(TIMEDIFF(vm.hora_llegada, hd.hora_entrada))/60)>0";
-        $query = DB::select($sql);
+        $query = DB::connection('second_mysql')->select($sql);
         return $query;
         // return json_decode(json_encode($query), true);
     }
@@ -601,11 +604,14 @@ class AsistenciaColaborador extends Model
 
     public static function get_list_tardanza_excel($dato)
     {
-        /*hd.id_turno>0 AND (WEEKDAY('$fecha')+1)=hd.dia AND*/
-        $parte_fecha = "vm.fecha='" . $dato['dia'] . "' AND";
-        if ($dato['tipo_fecha'] == "2") {
+        if ($dato['tipo_fecha'] == 1) {
+            $parte_fecha = "vm.fecha='" . $dato['dia'] . "' AND";
+        } else if ($dato['tipo_fecha'] == "2") {
             $parte_fecha = "YEAR(vm.fecha)='" . date('Y') . "' AND MONTH(vm.fecha)='" . $dato['mes'] . "' AND";
+        } else if ($dato['tipo_fecha'] == 3) {
+            $parte_fecha = "(vm.fecha BETWEEN '" . $dato['get_semana'][0]->fec_inicio . "' AND '" . $dato['get_semana'][0]->fec_fin . "') AND";
         }
+
         $parte_base = "";
         if ($dato['base'] != "0") {
             $parte_base = "ub.cod_ubi='" . $dato['base'] . "' AND";
@@ -623,15 +629,15 @@ class AsistenciaColaborador extends Model
                 DATE_FORMAT(vm.fecha,'%d/%m/%Y') AS fecha,
                 DATE_FORMAT(hd.hora_entrada,'%H:%i') AS hora_inicio_turno,vm.hora_llegada,
                 FLOOR(TIME_TO_SEC(TIMEDIFF(vm.hora_llegada, hd.hora_entrada))/60) AS minutos_atraso
-                FROM zkbiotime.vista_marcacion_minima vm
-                INNER JOIN users us ON vm.emp_code=us.num_doc
-                INNER JOIN ubicacion ub ON ub.id_ubicacion=us.id_centro_labor
-                INNER JOIN puesto pu ON us.id_puesto=pu.id_puesto
-                LEFT JOIN horario_dia hd ON us.id_horario=hd.id_horario AND 
+                FROM vista_marcacion_minima vm
+                INNER JOIN lanumerouno.users us ON vm.emp_code=us.num_doc
+                INNER JOIN lanumerouno.ubicacion ub ON ub.id_ubicacion=us.id_centro_labor
+                INNER JOIN lanumerouno.puesto pu ON us.id_puesto=pu.id_puesto
+                LEFT JOIN lanumerouno.horario_dia hd ON us.id_horario=hd.id_horario AND 
                 hd.id_turno>0 AND (WEEKDAY(vm.fecha)+1)=hd.dia
                 WHERE $parte_fecha $parte_base $parte_area $parte_usuario us.estado=1 AND 
                 hd.estado=1 AND FLOOR(TIME_TO_SEC(TIMEDIFF(vm.hora_llegada, hd.hora_entrada))/60)>0";
-        $query = DB::select($sql);
+        $query = DB::connection('second_mysql')->select($sql);
         // return $query;
         return json_decode(json_encode($query), true);
     }
