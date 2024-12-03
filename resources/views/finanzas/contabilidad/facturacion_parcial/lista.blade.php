@@ -154,12 +154,36 @@
                 Buscar
             </button>
         </div>
+        <div class="form-group col-lg-5">
+            <label>
+                <input type="checkbox" name="almacenFP" value="1" id="alm_dscFP"> Alm DSC
+            </label>
+            <label>
+                <input type="checkbox" name="almacenFP" value="2" id="alm_discotelaFP"> Alm Discotela
+            </label>
+            <label>
+                <input type="checkbox" name="almacenFP" value="3" id="alm_pbFP"> Alm PB
+            </label>
+            <label>
+                <input type="checkbox" name="almacenFP" value="4" id="alm_madFP"> Alm Mad
+            </label>
+            <label>
+                <input type="checkbox" name="almacenFP" value="5" id="alm_famFT"> Alm Fam
+            </label>
+        </div>
+        <input type="hidden" id="almacenSeleccionadoInputFP" name="almacenSeleccionadoFP">
+
 
     </div>
 </div>
 
 
 <table id="tabla_js_fp" class="table" style="width:100%">
+    <div id="facturadosTotalContainer" class="alert alert-info" style="text-align: center; font-weight: bold;">
+        <div>Total Facturado: <span id="facturadosTotalValueFP">0</span></div>
+        <div>Total Pendiente: <span id="facturadosPendienteValueFP">0</span></div>
+    </div>
+
     <thead>
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
@@ -239,15 +263,30 @@
                     var estado = $('#estadoFiltro').val();
                     var filtroSku = $('#skuFiltro').val();
                     var filtroEmpresa = $('#empresaFiltro').val();
+
+                    var almacenSeleccionadoInput = $('#almacenSeleccionadoInputFP').val();
+
+
                     d.fecha_inicio = fechaInicio;
                     d.fecha_fin = fechaFin;
                     d.estado = estado;
                     d.filtroSku = filtroSku;
                     d.filtroEmpresa = filtroEmpresa;
+                    d.almacenSeleccionadoInput = almacenSeleccionadoInput;
+
                 },
                 "headers": {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                "dataSrc": function(json) {
+                    // Asignar directamente el texto al span
+                    $('#facturadosTotalValueFP').text(json.facturadosParcial);
+                    $('#facturadosPendienteValueFP').text(json.facturadosPendiente);
+
+
+                    return json.data;
                 }
+
             },
             // "pageLength": 50, // Número de registros por página
             "lengthMenu": [10, 25, 50, 100],
@@ -352,7 +391,40 @@
             "scrollY": 400,
         });
 
+        const checkboxes = document.querySelectorAll('input[type="checkbox"][name="almacenFP"]');
 
+        checkboxes.forEach((checkbox) => {
+            checkbox.addEventListener('change', function() {
+                // Restablecer todos los checkboxes, y marcar sólo el seleccionado
+                checkboxes.forEach((otherCheckbox) => {
+                    if (otherCheckbox !== checkbox) {
+                        otherCheckbox.checked = false; // Desmarcar otros checkboxes
+                    }
+                });
+                // Enviar los datos del checkbox seleccionado
+                enviarDatosSeleccionado();
+            });
+        });
+
+        function enviarDatosSeleccionado() {
+            let selectedAlmacenId = null;
+            // Buscar el checkbox seleccionado
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    selectedAlmacenId = checkbox.value; // Captura el valor del checkbox seleccionado
+                }
+            });
+
+            // Si hay un checkbox seleccionado, enviar su valor, sino enviar 0
+            if (selectedAlmacenId) {
+                $('#almacenSeleccionadoInputFP').val(selectedAlmacenId);
+            } else {
+                $('#almacenSeleccionadoInputFP').val(0); // Si no hay ninguno seleccionado, poner 0
+            }
+
+            // Mostrar el valor del input donde se está enviando el valor
+            var almacenSeleccionadoInput = $('#almacenSeleccionadoInputFP').val();
+        }
 
         // Manejo de eventos para los checkboxes
         $('#tabla_js_fp tbody').on('change', '.row-selector', function() {
