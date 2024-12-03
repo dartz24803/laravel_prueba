@@ -9,14 +9,26 @@
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
             <div class="form-group col-lg-2">
+                <label>Área:</label>
+            </div>
+            <div class="form-group col-lg-10">
+                <select class="form-control basic" name="id_area" id="id_area" 
+                onchange="Traer_Puesto('');">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_area as $list)
+                        <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
                 <label>Puesto:</label>
             </div>
             <div class="form-group col-lg-10">
                 <select class="form-control basic" name="id_puesto" id="id_puesto">
                     <option value="0">Seleccione</option>
-                    @foreach ($list_puesto as $list)
-                        <option value="{{ $list->id_puesto }}">{{ $list->nom_puesto }}</option>
-                    @endforeach
                 </select>
             </div>
         </div>
@@ -32,6 +44,14 @@
                         <option value="{{ $list->id_ubicacion }}">{{ $list->cod_ubi }}</option>
                     @endforeach
                 </select>
+            </div>
+
+            <div class="form-group col-lg-2 ocultar" style="display: none;">
+                <label>Cantidad:</label>
+            </div>
+            <div class="form-group col-lg-4 ocultar" style="display: none;">
+                <input type="text" class="form-control" id="cantidad" name="cantidad" 
+                placeholder="Cantidad" onkeypress="return solo_Numeros(event);">
             </div>
         </div>
     </div>
