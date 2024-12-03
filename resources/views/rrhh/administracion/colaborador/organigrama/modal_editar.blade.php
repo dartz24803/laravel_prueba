@@ -9,6 +9,24 @@
     <div class="modal-body" style="max-height:700px; overflow:auto;">
         <div class="row">
             <div class="form-group col-lg-2">
+                <label>Área:</label>
+            </div>
+            <div class="form-group col-lg-10">
+                <select class="form-control basice" name="id_areae" id="id_areae" 
+                onchange="Traer_Puesto('e');">
+                    <option value="0">Seleccione</option>
+                    @foreach ($list_area as $list)
+                        <option value="{{ $list->id_area }}"
+                        @if ($list->id_area==$get_id->id_area) selected @endif>
+                            {{ $list->nom_area }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
                 <label>Puesto:</label>
             </div>
             <div class="form-group col-lg-10">

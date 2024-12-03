@@ -53,6 +53,7 @@ use Illuminate\Http\Request;
 use App\Models\Notificacion;
 use App\Models\Organigrama;
 use App\Models\Ubicacion;
+use App\Models\UsersHistoricoPuesto;
 use App\Models\Usuario;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx\Rels;
 
@@ -99,7 +100,8 @@ class ColaboradorConfController extends Controller
     public function traer_puesto(Request $request)
     {
         $list_puesto = Puesto::select('id_puesto', 'nom_puesto')
-            ->where('id_area', $request->id_area)->where('estado', 1)->get();
+                    ->where('id_area', $request->id_area)->where('estado', 1)
+                    ->orderBy('nom_puesto','ASC')->get();
         return view('rrhh.administracion.colaborador.puesto', compact('list_puesto'));
     }
 
@@ -1611,12 +1613,12 @@ class ColaboradorConfController extends Controller
 
     public function create_or()
     {
-        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('estado', 1)
-                    ->orderBy('nom_puesto', 'ASC')->get();
+        $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')
+                    ->get();
         $list_ubicacion = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)
                         ->orderBy('cod_ubi','ASC')->get();
         return view('rrhh.administracion.colaborador.organigrama.modal_registrar', compact(
-            'list_puesto',
+            'list_area',
             'list_ubicacion'
         ));
     }
@@ -1625,29 +1627,59 @@ class ColaboradorConfController extends Controller
     {
         $request->validate([
             'id_puesto' => 'gt:0',
-            'id_centro_labor' => 'gt:0'
+            'id_centro_labor' => 'gt:0',
+            'cantidad' => 'required_if:id_area,14'
         ], [
             'id_puesto.gt' => 'Debe seleccionar puesto.',
-            'id_centro_labor.gt' => 'Debe seleccionar centro de labor.'
+            'id_centro_labor.gt' => 'Debe seleccionar centro de labor.',
+            'cantidad.required_if' => 'Debe ingresar cantidad.'
         ]);
 
-        Organigrama::create([
-            'id_puesto' => $request->id_puesto,
-            'id_centro_labor' => $request->id_centro_labor,
-            'fecha' => now(),
-            'usuario' => session('usuario')->id_usuario
-        ]);
+        $errors = [];
+        if ($request->id_area=="14" && $request->cantidad=="0") {
+            $errors['cantidad_cero'] = ['Debe ingresar cantidad mayor a 0.'];
+        }
+        if (!empty($errors)) {
+            return response()->json(['errors' => $errors], 422);
+        }
+
+        if($request->cantidad>0){
+            $i = 0;
+            while($i<$request->cantidad){
+                Organigrama::create([
+                    'id_puesto' => $request->id_puesto,
+                    'id_centro_labor' => $request->id_centro_labor,
+                    'id_usuario' => 0,
+                    'fecha' => now(),
+                    'usuario' => session('usuario')->id_usuario
+                ]);
+                $i++;
+            }
+        }else{
+            Organigrama::create([
+                'id_puesto' => $request->id_puesto,
+                'id_centro_labor' => $request->id_centro_labor,
+                'id_usuario' => 0,
+                'fecha' => now(),
+                'usuario' => session('usuario')->id_usuario
+            ]);
+        }
     }
 
     public function edit_or($id)
     {
-        $get_id = Organigrama::findOrFail($id);
-        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('estado', 1)
-                    ->orderBy('nom_puesto', 'ASC')->get();
+        $get_id = Organigrama::from('organigrama AS og')->select('og.*','pu.id_area')
+                ->join('puesto AS pu','pu.id_puesto','=','og.id_puesto')
+                ->where('og.id',$id)->first();
+        $list_area = Area::select('id_area','nom_area')->where('estado',1)->orderBy('nom_area','ASC')
+                    ->get();
+        $list_puesto = Puesto::select('id_puesto', 'nom_puesto')->where('id_area',$get_id->id_area)
+                    ->where('estado', 1)->orderBy('nom_puesto', 'ASC')->get();
         $list_ubicacion = Ubicacion::select('id_ubicacion', 'cod_ubi')->where('estado', 1)
                         ->orderBy('cod_ubi','ASC')->get();
         return view('rrhh.administracion.colaborador.organigrama.modal_editar', compact(
             'get_id',
+            'list_area',
             'list_puesto',
             'list_ubicacion'
         ));
@@ -1700,6 +1732,19 @@ class ColaboradorConfController extends Controller
         $get_id = Organigrama::findOrFail($id);
         Usuario::findOrFail($get_id->id_usuario)->update([
             'id_centro_labor' => $request->id_centro_laborc,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+        //CREAR HISTÓRICO DE PUESTO, SE CONSIDERA DE TIPO TRASLADO (2)
+        UsersHistoricoPuesto::create([
+            'id_usuario' => $get_id->id_usuario,
+            'id_puesto' => $get_id->id_puesto,
+            'id_centro_labor' => $request->id_centro_laborc,
+            'fec_inicio' => now(),
+            'id_tipo_cambio' => 2,
+            'estado' => 1,
+            'fec_reg' => now(),
+            'user_reg' => session('usuario')->id_usuario,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);

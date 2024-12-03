@@ -41,6 +41,15 @@
         tags: true
     });
 
+    function solo_Numeros(e) {
+        var key = event.which || event.keyCode;
+        if (key >= 48 && key <= 57) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     Lista_Organigrama();
 
     function Lista_Organigrama(){
@@ -59,6 +68,30 @@
             },
             success: function(resp) {
                 $('#lista_organigrama').html(resp);
+            }
+        });
+    }
+
+    function Traer_Puesto(v){
+        Cargando();
+
+        var url = "{{ route('colaborador_conf.traer_puesto') }}";
+        var id_area = $('#id_area'+v).val();
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {'id_area':id_area},
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success:function (resp) {
+                $('#id_puesto'+v).html(resp);
+                if(id_area=="14"){
+                    $('.ocultar'+v).show();
+                }else{
+                    $('.ocultar'+v).hide();
+                }
             }
         });
     }
