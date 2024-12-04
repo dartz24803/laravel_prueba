@@ -51,12 +51,12 @@
 <?php } ?>
 
 <?php if (
-    session('usuario')->id_nivel == 1 || 
+    session('usuario')->id_nivel == 1 ||
     /*USUARIOS DE COMERCIAL*/
-    session('usuario')->id_nivel == 5 || 
-    session('usuario')->id_puesto == 115 || 
-    session('usuario')->id_puesto == 153 || 
-    session('usuario')->id_puesto == 66 || 
+    session('usuario')->id_nivel == 5 ||
+    session('usuario')->id_puesto == 115 ||
+    session('usuario')->id_puesto == 153 ||
+    session('usuario')->id_puesto == 66 ||
     session('usuario')->id_puesto == 173
 ) { ?>
     <li class="menu" id="comercial">

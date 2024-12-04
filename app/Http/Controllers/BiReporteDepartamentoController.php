@@ -13,15 +13,21 @@ class BiReporteDepartamentoController extends Controller
     {
         $list_notificacion = Notificacion::get_list_notificacion();
 
-        if ($id_subgerencia == 2) {
-            $list_subgerencia = SubGerencia::list_subgerencia_with_validation($id_subgerencia);
+        switch ($id_subgerencia) {
+            case 2:
+                // Validación para id_subgerencia igual a 2
+                $list_subgerencia = SubGerencia::list_subgerencia_with_validation_tienda($id_subgerencia);
+                break;
+            case 3:
+                // Validación para id_subgerencia igual a 3
+                $list_subgerencia = SubGerencia::list_subgerencia_with_validation_comercial($id_subgerencia);
+                break;
+            default:
+                // Para cualquier otro valor de id_subgerencia
+                $list_subgerencia = SubGerencia::list_subgerencia($id_subgerencia);
+                break;
         }
-        if ($id_subgerencia == 3) {
-            $list_subgerencia = SubGerencia::list_subgerencia_with_validation_comercial($id_subgerencia);
-        } else {
-            $list_subgerencia = SubGerencia::list_subgerencia($id_subgerencia);
-        }
-
+        // dd($list_subgerencia);
         $id_puesto = session('usuario')->id_puesto;
         $id_centro_labor = session('usuario')->id_centro_labor;
         // dd($id_centro_labor);

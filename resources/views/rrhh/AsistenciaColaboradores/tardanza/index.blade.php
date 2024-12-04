@@ -76,13 +76,18 @@
         <div id="div3_t" style="display:none">
             <!-- Dropdown for selecting week -->
             <select name="semanaih" id="semanaih" class="form-control basic">
-                <?php foreach ($data['list_semanas'] as $list) { ?>
-                    <option value="<?php echo $list->id_semanas ?>">
+                <?php
+                $current_date = date('Y-m-d'); // Fecha actual en formato 'Y-m-d'
+                foreach ($data['list_semanas'] as $list) {
+                    // Comparar la fecha actual con el rango de la semana
+                    $is_selected = ($current_date >= $list->fec_inicio && $current_date <= $list->fec_fin) ? 'selected' : '';
+                ?>
+                    <option value="<?php echo $list->id_semanas ?>" <?php echo $is_selected; ?>>
                         <?php echo "Semana " . $list->nom_semana . " (" . date('d/m/Y', strtotime($list->fec_inicio)) . " - " . date('d/m/Y', strtotime($list->fec_fin)) . ")" ?>
                     </option>
                 <?php } ?>
             </select>
-        </div>
+        </div>        
     </div>
 
 
@@ -95,6 +100,7 @@
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
             </button>
+            {{-- <button type="button" class="btn btn-danger" onclick="CorreoJG();">zzz</button> --}}
             <a class="btn" style="background-color: #28a745 !important;" onclick="Excel_Tardanza();">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
                     <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">
@@ -206,4 +212,26 @@
             .replace(':semana', semana);
 
     }
+    /*
+    function CorreoJG() {
+        Cargando();
+        var url = "{{ url('AsistenciaColaborador/Enviar_Correos_GerenteXJefe') }}";
+        var csrfToken = $('input[name="_token"]').val();
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            success: function(data) {
+                swal.fire(
+                    'Enviado!',
+                    '¡Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                });
+            },
+        });
+    }*/
 </script>

@@ -26,6 +26,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Carbon\Carbon;
 
 class AsistenciaColaboradoresController extends Controller
 {
@@ -1192,5 +1193,207 @@ class AsistenciaColaboradoresController extends Controller
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
+    }
+
+    public function Enviar_Correos_GerenteXJefe(){
+        $usuarios = Usuario::select('users.id_usuario', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp','area.nom_area')
+            ->leftJoin('puesto', 'users.id_puesto', '=', 'puesto.id_puesto')
+            ->leftJoin('area', 'puesto.id_area', '=', 'area.id_area')
+            ->whereIn('puesto.id_nivel', [2, 3])
+            ->where('users.estado', 1)
+            // ->where('users.id_usuario', 2692) // test comentar al subir
+            ->orderBy('users.id_usuario', 'ASC')
+            ->get();
+        // print_r($usuarios);
+      
+        $dato['base'] = 0;
+        $dato['area'] = $usuarios[0]->id_area;
+        // $dato['area'] = 18;
+        $dato['usuario'] = 0;
+        $dato['tipo_fecha'] = 3;
+        $dato['dia'] = null;
+        $dato['mes'] = null;
+        $data = AsistenciaColaborador::get_list_semanas();
+        $current_date = date('Y-m-d'); // Fecha actual en formato 'Y-m-d'
+
+        $id = null; // Inicializar el ID como null
+        foreach ($data as $list) {
+            // Comparar la fecha actual con el rango de la semana
+            if ($current_date >= $list->fec_inicio && $current_date <= $list->fec_fin) {
+                $id = $list->id_semanas; // Capturar el ID de la semana actual
+                break; // Salir del bucle al encontrar la semana actual
+            }
+        }
+
+        // Establecer el valor de semana si se encontró una coincidencia
+        if ($id !== null) {
+            $dato['semana'] = $id;
+        } else {
+            // Manejar el caso en que no se encontró una semana actual (opcional)
+            $dato['semana'] = null; // O algún valor predeterminado
+        }
+        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
+        $dato['excel'] = 1;
+        
+        $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
+
+        foreach($usuarios as $usuario){
+            $spreadsheet = new Spreadsheet();
+            $sheet = $spreadsheet->getActiveSheet();
+
+            $sheet->getStyle("A1:E3")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A1:E3")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+            $spreadsheet->getActiveSheet()->setTitle('Tardanza');
+
+            $sheet->setAutoFilter('A3:E3');
+
+            $sheet->getColumnDimension('A')->setWidth(30);
+            $sheet->getColumnDimension('B')->setWidth(30);
+            $sheet->getColumnDimension('C')->setWidth(30);
+            $sheet->getColumnDimension('D')->setWidth(20);
+            $sheet->getColumnDimension('E')->setWidth(25);
+
+            $sheet->setCellValue('A1', $usuario->nom_area);
+            $sheet->getStyle('A1:E3')->getFont()->setBold(true);
+
+            $spreadsheet->getActiveSheet()->getStyle("A3:E3")->getFill()
+                ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                ->getStartColor()->setARGB('DCE6F1');
+
+            $styleThinBlackBorderOutline = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['argb' => 'FF000000'],
+                    ],
+                ],
+            ];
+
+            $sheet->getStyle("A3:E3")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A3", 'Colaborador');
+            $sheet->setCellValue("B3", 'Fecha');
+            $sheet->setCellValue("C3", 'Hora de inicio de turno');
+            $sheet->setCellValue("D3", 'Hora de llegada');
+            $sheet->setCellValue("E3", 'Minutos de atraso');
+
+            $contador = 3;
+
+            foreach ($list_tardanza as $list) {
+                $contador++;
+
+                $sheet->getStyle("A{$contador}:E{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+                $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle("C{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+                $sheet->getStyle("A{$contador}:E{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+                $sheet->getStyle("A{$contador}:E{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+                $sheet->setCellValue("A{$contador}", ucwords($list['colaborador']));
+                Carbon::setLocale('es');
+                $formattedDate = Carbon::createFromFormat('d/m/Y', $list['fecha'])->translatedFormat('l d \d\e F \d\e Y');
+                $sheet->setCellValue("B{$contador}", ucfirst($formattedDate));
+                $sheet->setCellValue("C{$contador}", $list['hora_inicio_turno']);
+                $sheet->setCellValue("D{$contador}", $list['hora_llegada']);
+                $sheet->setCellValue("E{$contador}", $list['minutos_atraso']);
+            }
+
+            $fec_inicio = $dato['get_semana'][0]->fec_inicio;
+            $fec_fin = $dato['get_semana'][0]->fec_fin;
+            $writer = new Xlsx($spreadsheet);
+            $fileName = 'Tardanza_semanal_' . $fec_inicio . '_' . $fec_fin . '.xlsx';
+            $filePath = public_path('ARCHIVO_TEMPORAL/' . $fileName);
+
+            $semana = $dato['get_semana'][0]->nom_semana;
+            try {
+                $writer->save($filePath);
+                echo "Archivo guardado correctamente.";
+            } catch (Exception $e) {
+                echo "Error al guardar el archivo: " . $e->getMessage();
+            }
+
+            $mail = new PHPMailer(true);
+
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587;
+                $mail->setFrom('intranet@lanumero1.com.pe', 'La Número 1');
+
+                if (!empty($usuario->emailp)) {
+                    $mail->addAddress($usuario->emailp);
+                }
+                // $mail->addAddress('pcardenas@lanumero1.com.pe');
+
+                $mail->isHTML(true);
+
+                $mail->Subject = "REPORTE DE TARDANZAS - SEMANA $semana";
+                // Generar tabla HTML
+                $tableHtml = "
+                    <table border='1' cellspacing='0' cellpadding='5' style='border-collapse: collapse; width: 100%; text-align: center;'>
+                        <thead style='background-color: #DCE6F1; font-weight: bold;'>
+                            <tr>
+                                <th>Colaborador</th>
+                                <th>Fecha</th>
+                                <th>Hora de inicio de turno</th>
+                                <th>Hora de llegada</th>
+                                <th>Minutos de atraso</th>
+                            </tr>
+                        </thead>
+                        <tbody>";
+
+                foreach ($list_tardanza as $list) {
+                    Carbon::setLocale('es');
+                    $formattedDate = Carbon::createFromFormat('d/m/Y', $list['fecha'])->translatedFormat('l d \d\e F \d\e Y');
+                    $tableHtml .= "
+                        <tr>
+                            <td style='text-align: left;'>" . ucwords($list['colaborador']) . "</td>
+                            <td>" . ucfirst($formattedDate) . "</td>
+                            <td>{$list['hora_inicio_turno']}</td>
+                            <td>{$list['hora_llegada']}</td>
+                            <td>{$list['minutos_atraso']}</td>
+                        </tr>";
+                }
+
+                $tableHtml .= "
+                        </tbody>
+                    </table>";
+
+                $area = $usuario->nom_area;
+                $mail->Body =  "Te envío el archivo de ASISTENCIA Y MARCACION $area - SEM 43
+                    DEL $fec_inicio - $fec_fin <br><br>
+                    De a cuerdo a nuestras políticas del sábado free los colaboradores que llegaron tarde deberán asistir mañana.<br><br>
+                    $tableHtml
+                    <br>
+                    <a style='color:blue'> Recordatorio: El beneficio del sábado free se brinda cuando se cumple los 2 siguientes puntos.</a><br><br>
+                    1.- Cumplimiento de objetivos: El jefe inmediato dará la conformidad del cumplimiento de actividades planificados semanalmente.<br>
+                    2.- Puntualidad perfecta: No acumular ningún minuto de tardanza de lunes a viernes.<br><br>
+                    Saludos.";
+                $mail->addAttachment($filePath);
+
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
+                echo "Correo enviado";
+            } catch (Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
+
+        }
+        // Limpiar la carpeta ARCHIVO_TEMPORAL
+        $directoryPath = public_path('ARCHIVO_TEMPORAL');
+        if (is_dir($directoryPath)) {
+            $files = glob($directoryPath . '/*');
+            foreach ($files as $file) {
+                if (is_file($file)) {
+                    unlink($file); // Eliminar archivo
+                }
+            }
+        }
+
     }
 }

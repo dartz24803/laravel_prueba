@@ -63,7 +63,7 @@ class SubGerencia extends Model
 
 
     // Función para obtener departamentos por módulo + DTO LOGISTICA
-    public static function list_subgerencia_with_validation($subgerenciaId)
+    public static function list_subgerencia_with_validation_tienda($subgerenciaId)
     {
         // Obtener los datos de la subgerencia y las áreas relacionadas, filtrando por id_sub_gerencia y validando si es 7
         $results = DB::table('sub_gerencia')
