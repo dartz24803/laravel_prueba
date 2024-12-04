@@ -1,3 +1,4 @@
+<?php use Carbon\Carbon; ?>
 <table id="tabla_js_tardanza" class="table table-hover non-hover" style="width:100%">
     <thead>
         <tr>
@@ -18,7 +19,7 @@
                 <td><?php echo $list->base; ?></td>
                 <td class="text-left"><?php echo ucwords($list->puesto); ?></td>
                 <td><?php echo $list->dni; ?></td>
-                <td><?php echo $list->fecha; ?></td>
+                <td data-order="{{  Carbon::createFromFormat('d/m/Y', $list->fecha)->format('Y-m-d'); }}"><?php echo $list->fecha; ?></td>
                 <td><?php echo $list->hora_inicio_turno; ?></td>
                 <td><?php echo $list->hora_llegada; ?></td>
                 <td><?php echo $list->minutos_atraso; ?></td>

@@ -435,6 +435,8 @@ Route::controller(SoporteController::class)->group(function () {
     // COMENTARIOS
     Route::post('soporte_comentarios_master/edit/{id}', 'edit_comentarios_master')->name('soporte_comentarios_master.edit');
     Route::delete('soporte_delete_comentarios/{id}', 'destroy_comentarios')->name('soporte_delete_comentarios.destroy');
+    Route::delete('soporte_documento/{id}/{documento}', 'destroy_documentos')->name('soporte_documento.destroydoc');
+
     // Activación de cámara
     Route::post('previsualizacion_captura_soporte', 'previsualizacionCaptura')->name('previsualizacion_captura_soporte');
     // Tabla Generales
