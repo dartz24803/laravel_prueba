@@ -619,6 +619,9 @@ class AsistenciaColaborador extends Model
         $parte_area = "";
         if ($dato['area'] != "0") {
             $parte_area = "pu.id_area='" . $dato['area'] . "' AND";
+            if($dato['excel']==1 && $dato['area']==18){
+                $parte_area = "pu.id_area IN ('13','18') AND";
+            }
         }
         $parte_usuario = "";
         if ($dato['usuario'] != "0") {
@@ -638,7 +641,7 @@ class AsistenciaColaborador extends Model
                 WHERE $parte_fecha $parte_base $parte_area $parte_usuario us.estado=1 AND 
                 hd.estado=1 AND FLOOR(TIME_TO_SEC(TIMEDIFF(vm.hora_llegada, hd.hora_entrada))/60)>0";
         $query = DB::connection('second_mysql')->select($sql);
-        // return $query;
+        // print_r($sql);
         return json_decode(json_encode($query), true);
     }
 
