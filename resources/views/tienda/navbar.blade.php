@@ -114,13 +114,13 @@ session('usuario')->id_puesto == "314")
         <ul class="collapse submenu list-unstyled" id="rtienda" data-parent="#accordionExample">
             @if (session('usuario')->id_nivel == "1" ||
             session('usuario')->id_puesto == "161")
-                <li>
+                {{--<li>
                     <a id="administradores" href="{{ route('administrador') }}">
                         <p class="romperpalabra"><span id="icono_active2"></span> Administrador</p>
                     </a>
-                </li>
+                </li>--}}
             @endif
-            <li id="cuadrocontrolvisual">
+            {{--<li id="cuadrocontrolvisual">
                 <a id="hrpreorden" href="{{ url('Cuadro_Control_Visual_Vista')}}">
                     <p class="romperpalabra"><span id="icono_active2"></span> Cuadro Control Visual</p>
                 </a>
@@ -129,7 +129,7 @@ session('usuario')->id_puesto == "314")
                 <a id="funciones_temporales" href="{{ route('funcion_temporal') }}">
                     <p class="romperpalabra"><span id="icono_active2"></span> Funciones temporales</p>
                 </a>
-            </li>
+            </li>--}}
             <li>
                 <a id="ocurrencias" href="{{ route('ocurrencia_tienda') }}">
                     <p class="romperpalabra"><span id="icono_active2"></span> Ocurrencias</p>

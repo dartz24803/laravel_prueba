@@ -14,6 +14,32 @@
         /* Margen horizontal automático */
     }
 
+
+
+    #documentos-cargados h3 {
+        font-size: 1.5em;
+        margin-bottom: 10px;
+    }
+
+    #documentos-cargados ul {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    #documentos-cargados ul li {
+        margin-bottom: 8px;
+    }
+
+    #documentos-cargados a {
+        text-decoration: none;
+        color: #007bff;
+    }
+
+    #documentos-cargados a:hover {
+        text-decoration: underline;
+        color: #0056b3;
+    }
+
     .center {
         display: flex;
         justify-content: center;
@@ -556,13 +582,43 @@
                             <!-- Los enlaces de descarga se agregarán aquí dinámicamente -->
                         </div>
                         <div class="d-flex align-items-center">
-                            <input type="file" class="form-control-file" name="documentoa1[]" id="documentoa1" multiple onchange="handleFileSelection(event)">
+                            <input type="file" class="form-control-file" name="documentoa1[]" id="documentoa1" multiple onchange="handleFileChange()">
                         </div>
+
                     </div>
+                    <div class="form-group col-md-4" id="documentos-cargados">
 
+                        <label>Documentos Cargados:</label>
+                        @if ($get_id->documento1 || $get_id->documento2 || $get_id->documento3)
+                        <ul>
+                            @if ($get_id->documento1)
+                            <li>Documento 1:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento1 }}" target="_blank">
+                                    {{ $get_id->documento1 }}
+                                </a>
+                            </li>
+                            @endif
 
+                            @if ($get_id->documento2)
+                            <li>Documento 2:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento2 }}" target="_blank">
+                                    {{ $get_id->documento2 }}
+                                </a>
+                            </li>
+                            @endif
 
-
+                            @if ($get_id->documento3)
+                            <li>Documento 3:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento3 }}" target="_blank">
+                                    {{ $get_id->documento3 }}
+                                </a>
+                            </li>
+                            @endif
+                        </ul>
+                        @else
+                        <p>No se han cargado documentos.</p>
+                        @endif
+                    </div>
                     <div class="form-group col-lg-12 d-flex justify-content-center" id="div_camara" style="display: none;">
                         <video id="video" autoplay style="max-width: 95%; display: none;"></video>
                     </div>
@@ -637,7 +693,9 @@
         toggleCierreMultiplesResponsables();
         toggleEjecutor();
         toggleCierreUnResponsable();
-        simulateFileSelection();
+        // simulateFileSelection();
+
+
 
 
     });
@@ -1236,190 +1294,54 @@
         });
     }
 
-    $('#documentoa1').fileinput({
-        theme: 'fas',
-        language: 'es',
-        uploadUrl: '#',
-        maxTotalFileCount: 5,
-        showUpload: false,
-        showPreview: false, // Desactiva la vista previa de archivos
-        showRemove: false, // Desactiva el botón para remover archivos
-        allowedFileExtensions: ['jpg', 'png', 'txt', 'pdf', 'xlsx', 'pptx', 'docx', 'jpeg', 'xls', 'ppt', 'doc'],
-        browseOnZoneClick: true, // Hace que el botón de selección sea el único activo
-        dragDrop: false // Desactiva la funcionalidad de arrastrar y soltar
-    });
+    // $('#documentoa1').fileinput({
+    //     theme: 'fas',
+    //     language: 'es',
+    //     uploadUrl: '#',
+    //     maxTotalFileCount: 5,
+    //     showUpload: false,
+    //     showPreview: false, // Desactiva la vista previa de archivos
+    //     showRemove: false, // Desactiva el botón para remover archivos
+    //     allowedFileExtensions: ['jpg', 'png', 'txt', 'pdf', 'xlsx', 'pptx', 'docx', 'jpeg', 'xls', 'ppt', 'doc'],
+    //     browseOnZoneClick: true, // Hace que el botón de selección sea el único activo
+    //     dragDrop: false // Desactiva la funcionalidad de arrastrar y soltar
+    // });
 
 
 
-    // Maneja tanto la selección de archivos como la simulación de carga de archivos
-    function handleFileSelection(event) {
-        const baseUrl = "https://lanumerounocloud.com/intranet/SOPORTE/";
-        const documento1 = "{{ $get_id->documento1 }}"; // Archivos iniciales desde el backend
 
-        const filesArray = documento1.split(',').map(file => file.trim()); // Archivos del backend
-
-        const fileListContainer = document.getElementById('documento-list');
-
-        // Limpiar enlaces existentes antes de añadir nuevos archivos
-        fileListContainer.innerHTML = '';
-
-        // Crear una lista de archivos para comprobar duplicados
-        const existingFiles = new Set();
-
-        // Verifica y añade archivos existentes del backend
-        filesArray.forEach((fileName) => {
-            if (!existingFiles.has(fileName)) {
-                console.log(fileName)
-                console.log("###########11")
-                existingFiles.add(fileName); // Evitar duplicados
-                addFileToContainer(fileName, baseUrl, fileListContainer, existingFiles);
-            }
-        });
-
-        // Agregar archivos seleccionados por el usuario
-        const files = event.target.files;
-        if (files.length > 0) {
-            Array.from(files).forEach(file => {
-                if (!existingFiles.has(file.name)) {
-                    existingFiles.add(file.name); // Evitar duplicados
-                    addFileToContainer(file.name, URL.createObjectURL(file), fileListContainer, existingFiles);
-                }
-            });
-        }
-    }
-
-    // Agregar un archivo al contenedor
-    function addFileToContainer(fileName, fileUrl, fileListContainer, existingFiles) {
-        const fileLink = document.createElement('a');
-
-        // Concatenamos correctamente el nombre del archivo con la URL base
-        // fileLink.href = `${fileUrl}`; // URL completa del archivo (servidor o local)
-
-        fileLink.textContent = fileName; // Nombre del archivo
-        fileLink.target = "_blank"; // Abre en una nueva pestaña
-        fileLink.download = fileName; // Habilita la descarga
-        fileLink.classList.add('btn', 'btn-link');
-        fileLink.href = `${fileUrl}${fileName}`;
-        // Crear el botón de eliminación
-        const deleteButton = document.createElement('button');
-        deleteButton.textContent = 'Eliminar';
-        deleteButton.classList.add('btn', 'btn-danger', 'ml-2');
-        deleteButton.onclick = () => removeFile(fileName, fileLinkWrapper, existingFiles);
-
-        // Crear el contenedor para cada enlace
-        const fileLinkWrapper = document.createElement('div');
-        fileLinkWrapper.classList.add('d-flex', 'align-items-center', 'my-2');
-        fileLinkWrapper.appendChild(fileLink);
-        fileLinkWrapper.appendChild(deleteButton); // Agregar el botón de eliminación al contenedor
-
-        fileListContainer.appendChild(fileLinkWrapper);
-    }
-
-    // Eliminar un archivo
-    function removeFile(fileName, fileLinkWrapper, existingFiles) {
-        // Eliminar el archivo del contenedor
-        fileLinkWrapper.remove();
-
-        // Eliminar el archivo de la lista de archivos existentes
-        existingFiles.delete(fileName);
-
-        // Aquí podrías agregar una lógica para eliminar el archivo del servidor o actualizar el estado en el backend
-        console.log(`El archivo ${fileName} ha sido eliminado.`);
-    }
-
-    // Función para simular la selección de archivos desde el backend
-    function simulateFileSelection() {
-        const initialFiles = "{{ $get_id->documento1 }}".split(',');
-
-        if (initialFiles.length > 0 && initialFiles[0] !== "") {
-            // Creamos un objeto FileList falso (para simular archivos seleccionados)
-            const fileInput = document.getElementById('documentoa1');
-            const fakeEvent = new Event('change', {
-                bubbles: true,
-                cancelable: true
-            });
-
-            // Simulamos un objeto `files` en el evento
-            const fakeFiles = initialFiles.map(fileName => {
-                const blob = new Blob([], {
-                    type: 'application/octet-stream'
-                });
-                blob.name = fileName.trim(); // Usamos el nombre del archivo original
-                return blob;
-            });
-
-            // Creamos una propiedad `files` en el evento falso
-            Object.defineProperty(fakeEvent, 'target', {
-                value: {
-                    files: fakeFiles
-                },
-                writable: false
-            });
-
-            // Llamamos a la función `handleFileSelection` pasando el evento simulado
-            handleFileSelection(fakeEvent);
-        }
-    }
-
-    // Ejecutar después de que el DOM esté listo
-    document.addEventListener('DOMContentLoaded', () => {
+    function handleFileChange() {
         const fileInput = document.getElementById('documentoa1');
-        if (fileInput) {
-            fileInput.addEventListener('change', handleFileSelection);
+        const documentList = document.getElementById('documento-list');
+        const files = Array.from(fileInput.files); // Convertimos FileList en un Array
+
+        // Contar cuántos documentos ya están cargados
+        const documentosCargados = [
+            '{{ $get_id->documento1 }}',
+            '{{ $get_id->documento2 }}',
+            '{{ $get_id->documento3 }}'
+        ];
+
+        const documentosDisponibles = documentosCargados.filter(doc => doc !== '').length;
+
+        // Limitar la carga de archivos
+        const documentosRestantes = 3 - documentosDisponibles;
+
+        if (files.length > documentosRestantes) {
+            alert(`Solo puedes seleccionar un máximo de ${documentosRestantes} archivo(s).`);
+            fileInput.value = ''; // Limpiamos el input
+            documentList.innerHTML = ''; // Limpiamos la lista de documentos
+            return;
         }
-        // Llama a simulateFileSelection después de asegurar que el DOM está listo
-        simulateFileSelection();
-    });
 
-
-    // function handleFileSelection(event) {
-    //     const baseUrl = "https://lanumerounocloud.com/intranet/SOPORTE/";
-    //     const documento1 = "{{ $get_id->documento1 }}"; // Nombres de los archivos separados por coma desde el backend
-
-    //     // Verifica si documento1 tiene varios archivos
-    //     const filesArray = documento1.split(','); // Dividir los nombres de archivos en un array
-
-    //     const fileListContainer = document.getElementById('documento-list');
-
-    //     // Verifica que el contenedor exista
-    //     if (!fileListContainer) {
-    //         console.error('El contenedor de la lista de documentos no se encontró en el DOM.');
-    //         return;
-    //     }
-
-    //     // Limpiar enlaces existentes
-    //     fileListContainer.innerHTML = '';
-
-    //     // Obtener los archivos seleccionados
-    //     const files = event.target.files;
-
-    //     if (files.length === 0) {
-    //         fileListContainer.innerHTML = '<p>No hay documentos seleccionados.</p>';
-    //         return;
-    //     }
-    //     // Iterar sobre cada archivo en el array
-    //     filesArray.forEach((fileName) => {
-    //         // Asegurarse de que el nombre del archivo es correcto (quitar posibles espacios)
-    //         fileName = fileName.trim();
-
-    //         // Crear el enlace de descarga para el archivo
-    //         const fileLink = document.createElement('a');
-    //         fileLink.href = `${baseUrl}${fileName}`; // URL completa del archivo
-    //         fileLink.textContent = fileName; // Nombre del archivo
-    //         fileLink.target = "_blank"; // Abre en una nueva pestaña
-    //         fileLink.download = fileName; // Habilita la descarga
-    //         fileLink.classList.add('btn', 'btn-link');
-
-    //         // Crear el contenedor para cada enlace
-    //         const fileLinkWrapper = document.createElement('div');
-    //         fileLinkWrapper.classList.add('d-flex', 'align-items-center', 'my-2');
-    //         fileLinkWrapper.appendChild(fileLink);
-
-    //         // Agregar el contenedor al DOM
-    //         fileListContainer.appendChild(fileLinkWrapper);
-    //     });
-    // }
-
+        // Limpiamos y mostramos los nombres de los archivos seleccionados
+        documentList.innerHTML = '';
+        files.forEach(file => {
+            const fileNameDiv = document.createElement('div');
+            fileNameDiv.textContent = file.name;
+            documentList.appendChild(fileNameDiv);
+        });
+    }
 
 
 

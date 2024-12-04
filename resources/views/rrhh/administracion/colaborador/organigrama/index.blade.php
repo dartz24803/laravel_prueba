@@ -1,7 +1,7 @@
 <div class="row mr-1 ml-1 mt-2">
     <div class="col-lg-3 col-xl-2 mb-3">
         <label>Puesto:</label>
-        <select class="form-control basic" name="id_puestob" id="id_puestob" 
+        <select class="form-control basicb" name="id_puestob" id="id_puestob" 
         onchange="Lista_Organigrama();">
             <option value="0">Todos</option>
             @foreach ($list_puesto as $list)
@@ -37,9 +37,18 @@
 </div>
 
 <script>
-    $(".basic").select2({
+    $(".basicb").select2({
         tags: true
     });
+
+    function solo_Numeros(e) {
+        var key = event.which || event.keyCode;
+        if (key >= 48 && key <= 57) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     Lista_Organigrama();
 
@@ -59,6 +68,30 @@
             },
             success: function(resp) {
                 $('#lista_organigrama').html(resp);
+            }
+        });
+    }
+
+    function Traer_Puesto(v){
+        Cargando();
+
+        var url = "{{ route('colaborador_conf.traer_puesto') }}";
+        var id_area = $('#id_area'+v).val();
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {'id_area':id_area},
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success:function (resp) {
+                $('#id_puesto'+v).html(resp);
+                if(id_area=="14"){
+                    $('.ocultar'+v).show();
+                }else{
+                    $('.ocultar'+v).hide();
+                }
             }
         });
     }

@@ -6,8 +6,8 @@
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing" id="cancel-row">
             <div id="tabsSimple" class="col-lg-12 col-12 layout-spacing">
-                <div class="statbox widget box box-shadow row">
-                    <div class="widget-content simple-tab col-md-10" style="background-color: #f0f3f3;">
+                <div class="statbox widget box box-shadow row" style=" height: 100vh;">
+                    <div class="widget-content simple-tab col-md-10" style="background-color: #f0f3f3;  ">
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                                 <div class="container" id="container" style="background-image: url('{{ asset('inicio/NEW.Intranet-Icono-Fondo2.jpg') }}');">
@@ -171,10 +171,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2" style="z-index: 1">
-                        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                    <div class="col-md-2" style="z-index: 1; height: 100%; position: relative; ">
+                        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel"
+                            style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;">
                             <div class="carousel-inner">
-                                <div class="carousel-item active">
+                                <div class="carousel-item active" style="width: 100%; height:100%;">
                                     <div class="d-flex justify-content-center align-items-center">
                                         <div class="card-body">
                                             <div class="row">
@@ -195,26 +196,26 @@
                                                                                     if ($i < 6) { ?>
                                                                                         <tr>
                                                                                             <td>
-                                                                                            <div class="d-flex justify-content-center">
-                                                                                                <img style="max-width:100px;max-height:70px;margin:0 10px 10px 0;" src="{{ asset('template/assets/img/torta_saludo.png')}}">
-                                                                                                <img style="max-width:70px;max-height:70px;border-radius: 10%;border: 3px solid #e0e6ed;" src="<?php if ($list['foto_nombre'] != "") {
-                                                                                                                                                                                                echo $get_foto[0]['url_config'] . $list['foto_nombre'];
-                                                                                                                                                                                            } else {
-                                                                                                                                                                                                echo asset("template/assets/especiales/user-mini.png");
-                                                                                                                                                                                            }  ?>" alt="avatar" title="<?php echo $list['foto_nombre'] ?>">
-                                                                                            </div>
-                                                                                    <div class="d-flex justify-content-center">
-                                                                                        <span style="color:#3b3f71"><b><?php $nombre = explode(" ", $list['nombres_min']);
-                                                                                                                        echo mb_convert_case($nombre[0] . " " . $list['apater_min'], MB_CASE_TITLE, "UTF-8"); ?></b></span>
-                                                                                    </div>
-                                                                                    <div class="d-flex justify-content-center">
-                                                                                        <span><?php echo $list['nom_area'] ?> - <?php echo $list['centro_labores'] ?></span>
-                                                                                    </div>
-                                                                                    <div class="d-flex justify-content-center">
-                                                                                        <span><?php echo date('d', strtotime($list['cumpleanio'])) . " de " . strtolower($list['nom_mes']) ?></span>
-                                                                                    </div>
-                                                                                    </td>
-                                                                                    </tr>
+                                                                                                <div class="d-flex justify-content-center">
+                                                                                                    <img style="max-width:100px;max-height:70px;margin:0 10px 10px 0;" src="{{ asset('template/assets/img/torta_saludo.png')}}">
+                                                                                                    <img style="max-width:70px;max-height:70px;border-radius: 10%;border: 3px solid #e0e6ed;" src="<?php if ($list['foto_nombre'] != "") {
+                                                                                                                                                                                                        echo $get_foto[0]['url_config'] . $list['foto_nombre'];
+                                                                                                                                                                                                    } else {
+                                                                                                                                                                                                        echo asset("template/assets/especiales/user-mini.png");
+                                                                                                                                                                                                    }  ?>" alt="avatar" title="<?php echo $list['foto_nombre'] ?>">
+                                                                                                </div>
+                                                                                                <div class="d-flex justify-content-center">
+                                                                                                    <span style="color:#3b3f71"><b><?php $nombre = explode(" ", $list['nombres_min']);
+                                                                                                                                    echo mb_convert_case($nombre[0] . " " . $list['apater_min'], MB_CASE_TITLE, "UTF-8"); ?></b></span>
+                                                                                                </div>
+                                                                                                <div class="d-flex justify-content-center">
+                                                                                                    <span><?php echo $list['nom_area'] ?> - <?php echo $list['centro_labores'] ?></span>
+                                                                                                </div>
+                                                                                                <div class="d-flex justify-content-center">
+                                                                                                    <span><?php echo date('d', strtotime($list['cumpleanio'])) . " de " . strtolower($list['nom_mes']) ?></span>
+                                                                                                </div>
+                                                                                            </td>
+                                                                                        </tr>
                                                                                 <?php }
                                                                                 } ?>
                                                                             </tbody>
@@ -255,19 +256,19 @@
                                         $image = asset('inicio/NEW.Intranet-Slide-01Procesos.png');
                                     }
                                 ?>
-                                <div class="carousel-item <?= $active ?>">
-                                    <img id="imagen_fondo_slider" style="max-width: 101%" src="<?= $image ?>">
-                                    <div id="carousel-caption" class="carousel-caption d-none d-block text-left">
-                                        <p class="mensaje_nuevo_slider" style="color: <?= $color ?>; margin-bottom: 0%; margin-left: 0.2rem"><?= $row['descripcion'] ?></p>
-                                        <span class="d-flex align-items-center titulo_slider" style="color: <?= $color ?>;"><?= $row['titulo'] ?></span>
-                                        <a href="<?= $row['link'] ?>" target="_blank" style="max-width:100%;">
-                                            <span class="badge" style="background-color: #fea600; color:white; margin-top: 1%;">
-                                                <img id="mano_slider" style="max-width: 10%; margin-right: 1%;" src="{{ asset('inicio/LN1-Intranet-Mano.png') }}" alt="">
-                                                DESCÚBRELO
-                                            </span>
-                                        </a>
+                                    <div class="carousel-item <?= $active ?>" style="width: 100%; height: 100vh;">
+                                        <img id="imagen_fondo_slider" src="<?= $image ?>" style="width: 100%; height: 100%; object-fit: cover;" alt="Slider Image">
+                                        <div id="carousel-caption" class="carousel-caption d-none d-block text-left">
+                                            <p class="mensaje_nuevo_slider" style="color: <?= $color ?>; margin-bottom: 0%; margin-left: 0.2rem"><?= $row['descripcion'] ?></p>
+                                            <span class="d-flex align-items-center titulo_slider" style="color: <?= $color ?>;"><?= $row['titulo'] ?></span>
+                                            <a href="<?= $row['link'] ?>" target="_blank" style="max-width:100%;">
+                                                <span class="badge" style="background-color: #fea600; color:white; margin-top: 1%;">
+                                                    <img id="mano_slider" style="max-width: 10%; margin-right: 1%;" src="{{ asset('inicio/LN1-Intranet-Mano.png') }}" alt="">
+                                                    DESCÚBRELO
+                                                </span>
+                                            </a>
+                                        </div>
                                     </div>
-                                </div>
                                 <?php endforeach ?>
                             </div>
                             <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
@@ -418,7 +419,7 @@
     .carousel-control-next {
         background-color: gray;
         border-radius: 50%;
-        padding: 10px;
+        padding: 0.4rem;
         height: 3rem;
         margin-top: 17rem;
     }

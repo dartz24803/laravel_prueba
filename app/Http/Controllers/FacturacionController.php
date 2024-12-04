@@ -625,14 +625,25 @@ class FacturacionController extends Controller
         $search = $request->input('search')['value'] ?? '';
         $order = $request->input('order'); // Parámetros de ordenamiento
         $columns = $request->input('columns'); // Información de las columnas
+        $almacenSeleccionadoInput = $request->input('almacenSeleccionadoInput');
 
+        $almacenes = [
+            '1' => 'alm_dsc',
+            '2' => 'alm_discotela',
+            '3' => 'alm_pb',
+            '4' => 'alm_mad',
+            '5' => 'alm_fam',
+        ];
+        $almacenActivo = $almacenes[$almacenSeleccionadoInput] ?? null;
         $query = TbContabilidadCerradosParcial::filtros([
             'fecha_inicio' => $request->input('fecha_inicio'),
             'fecha_fin' => $request->input('fecha_fin'),
             'estado' => $request->input('estado'),
             'sku' => $request->input('filtroSku'),
             'empresa' => $request->input('filtroEmpresa'),
-            'search' => $search
+            'search' => $search,
+            'almacen' => $almacenActivo,
+
         ]);
 
         // Manejo de ordenamiento
@@ -649,11 +660,17 @@ class FacturacionController extends Controller
         $totalRecords = $query->count();
         $data = $query->skip($start)->take($length)->get();
 
+        $facturadosParcial = $query->sum('enviado');
+        $facturadosPendiente = $query->sum('pendiente');
+        // dd($facturadosParcial);
         return response()->json([
             'draw' => $draw,
             'recordsTotal' => $totalRecords,
             'recordsFiltered' => $totalRecords,
-            'data' => $data
+            'data' => $data,
+            'facturadosParcial' => $facturadosParcial,
+            'facturadosPendiente' => $facturadosPendiente
+
         ]);
     }
 
@@ -673,13 +690,26 @@ class FacturacionController extends Controller
         $order = $request->input('order'); // Parámetros de ordenamiento
         $columns = $request->input('columns'); // Información de las columnas
 
+        $almacenSeleccionadoInput = $request->input('almacenSeleccionadoInput');
+
+        $almacenes = [
+            '1' => 'alm_dsc',
+            '2' => 'alm_discotela',
+            '3' => 'alm_pb',
+            '4' => 'alm_mad',
+            '5' => 'alm_fam',
+        ];
+        $almacenActivo = $almacenes[$almacenSeleccionadoInput] ?? null;
+        // dd($almacenActivo);
         $query = TbContabilidadCerrados::filtros([
             'fecha_inicio' => $request->input('fecha_inicio'),
             'fecha_fin' => $request->input('fecha_fin'),
             'estado' => $request->input('estado'),
             'sku' => $request->input('filtroSku'),
             'empresa' => $request->input('filtroEmpresa'),
-            'search' => $search
+            'search' => $search,
+            'almacen' => $almacenActivo,
+
         ]);
 
         // Manejo de ordenamiento
@@ -695,11 +725,14 @@ class FacturacionController extends Controller
         $totalRecords = $query->count();
         $data = $query->skip($start)->take($length)->get();
 
+        $facturadosTotal = $query->sum('enviado');
+        // dd($facturadosTotal);
         return response()->json([
             'draw' => $draw,
             'recordsTotal' => $totalRecords,
             'recordsFiltered' => $totalRecords,
-            'data' => $data
+            'data' => $data,
+            'facturadosTotal' => $facturadosTotal
         ]);
     }
 }

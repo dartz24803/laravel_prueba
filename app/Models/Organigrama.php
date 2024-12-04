@@ -33,7 +33,8 @@ class Organigrama extends Model
             $parte_centro_labor = "AND og.id_centro_labor=".$dato['id_centro_labor'];
         }
         $sql = "SELECT og.id,pu.nom_puesto,ub.cod_ubi,
-                CONCAT(us.usuario_nombres,' ',us.usuario_apater,' ',us.usuario_amater) AS nom_usuario,
+                CONCAT(IFNULL(us.usuario_nombres,''),' ',
+                IFNULL(us.usuario_apater,''),' ',IFNULL(us.usuario_amater,'')) AS nom_usuario,
                 og.id_usuario
                 FROM organigrama og
                 INNER JOIN puesto pu ON pu.id_puesto=og.id_puesto
