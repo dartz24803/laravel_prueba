@@ -1005,7 +1005,13 @@ class SoporteController extends Controller
                     'fec_act' => now(),
                 ];
 
-                SoporteComentarios::create($data);
+                // Primero, verifica si descripcione_solucion no es null ni vacío
+                if (!is_null($request->descripcione_solucion) && $request->descripcione_solucion !== '') {
+                    // Si no es null ni vacío, entonces ejecuta la creación de los datos
+                    SoporteComentarios::create($data);
+                } else {
+                    // Si es null o vacío, puedes realizar alguna acción o devolver una respuesta de error, si es necesario
+                }
             }
         }
 
@@ -1075,43 +1081,47 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ];
+
             // CARGAR DOCUMENTOS
             if (!empty($_FILES["documentoa1"]["name"][0])) {
                 $uploaded_files = [];
                 $documentosCargados = [
                     'documento1' => $get_id->documento1,
                     'documento2' => $get_id->documento2,
-                    'documento3' => $get_id->documento3
+                    'documento3' => $get_id->documento3,
                 ];
 
                 // Recorremos los archivos seleccionados
                 for ($count = 0; $count < count($_FILES["documentoa1"]["name"]); $count++) {
                     $path = $_FILES["documentoa1"]["name"][$count];
 
-                    // Verifica si el archivo tiene un nombre (es decir, si ha sido cargado)
                     if (empty($path)) {
-                        continue; // Salta al siguiente archivo si no hay nombre
+                        continue; // Salta si no hay archivo
                     }
-                    $nameDoc = $_FILES["documentoa1"]["name"];
-                    $fecha = date('Y-m-d');
-                    $ext = pathinfo($path, PATHINFO_EXTENSION);
-                    $nombre_soli = $nameDoc[$count] . "_" . $fecha . "_" . rand(10, 999);
-                    $nombre = $nombre_soli . "." . $ext;
 
-                    // Asigna propiedades del archivo actual
+                    $nameDoc = $_FILES["documentoa1"]["name"][$count]; // Accede al nombre del archivo individual
+                    $fecha = date('Y-m-d');
+                    $ext = pathinfo($nameDoc, PATHINFO_EXTENSION); // Obtiene la extensión correctamente
+
+                    // Eliminar la extensión original del nombre del archivo
+                    $nombre_soli = pathinfo($nameDoc, PATHINFO_FILENAME);
+
+                    // Crear el nombre con el formato deseado
+                    $nombre = $nombre_soli . "_" . $fecha . "_" . rand(10, 999) . "." . $ext;
+
+                    // Asignar propiedades para subir
                     $_FILES["file"]["name"] = $nombre;
                     $_FILES["file"]["type"] = $_FILES["documentoa1"]["type"][$count];
                     $source_file = $_FILES["documentoa1"]["tmp_name"][$count];
                     $_FILES["file"]["error"] = $_FILES["documentoa1"]["error"][$count];
                     $_FILES["file"]["size"] = $_FILES["documentoa1"]["size"][$count];
 
-                    // Verifica si el archivo existe y no tiene errores antes de subirlo
                     if ($_FILES["file"]["error"] == 0 && is_uploaded_file($source_file)) {
                         ftp_pasv($con_id, true);
                         $subio = ftp_put($con_id, "SOPORTE/" . $nombre, $source_file, FTP_BINARY);
 
                         if ($subio) {
-                            $uploaded_files[] = $nombre; // Agrega el nombre del archivo a la lista
+                            $uploaded_files[] = $nombre;
                         } else {
                             echo "Archivo no subido correctamente: " . $nombre;
                         }
@@ -1119,36 +1129,34 @@ class SoporteController extends Controller
                         echo "Error al cargar el archivo: " . $nombre;
                     }
 
-                    // Limitar a un máximo de 3 archivos
                     if (count($uploaded_files) == 3) {
-                        break; // Detenemos el ciclo si ya hemos subido 3 archivos
+                        break; // Detener después de subir 3 archivos
                     }
                 }
 
                 // Verifica si se subieron archivos correctamente
                 if (!empty($uploaded_files)) {
-                    // Asigna los archivos a las columnas documento1, documento2, documento3 solo si no están ocupadas
                     $columns = ['documento1', 'documento2', 'documento3'];
 
-                    // Iteramos sobre los archivos subidos
-                    foreach ($uploaded_files as $index => $file) {
-                        // Comprobamos la columna correspondiente y solo la asignamos si está vacía
-                        if (isset($columns[$index]) && empty($documentosCargados[$columns[$index]])) {
-                            $data[$columns[$index]] = $file; // Asignamos el archivo solo si la columna está vacía
+                    foreach ($uploaded_files as $file) {
+                        foreach ($columns as $column) {
+                            if (empty($documentosCargados[$column])) {
+                                $data[$column] = $file; // Asignar al primer espacio vacío
+                                $documentosCargados[$column] = $file; // Marcar como ocupado
+                                break; // Salir del bucle una vez asignado
+                            }
                         }
                     }
-
 
                     echo "Archivos subidos correctamente: " . implode(", ", $uploaded_files);
                 } else {
                     echo "No se subieron archivos correctamente.";
                 }
             } else {
-                // Mensaje en caso de que no haya archivos cargados
                 echo "No se seleccionaron archivos.";
             }
 
-
+            // dd($data);
 
 
             // dd($documento1);
@@ -1176,21 +1184,33 @@ class SoporteController extends Controller
 
 
 
-    private function removeFileFromDocumento1($documento1, $fileName)
+
+    public function destroy_documentos($id, $documento)
     {
-        // Si documento1 contiene un valor, lo dividimos en un array
-        if (!empty($documento1)) {
-            $documentoArray = explode(',', $documento1);
-            // Filtrar para eliminar el fileName de la lista
-            $documentoArray = array_filter($documentoArray, function ($doc) use ($fileName) {
-                return $doc !== $fileName;
-            });
-            // Volver a unir el array en una cadena
-            $newDocumento1 = implode(',', $documentoArray);
-            return $newDocumento1;
+        // Buscar el soporte en la tabla soporte_solucion por su ID
+        $soporte = SoporteSolucion::find($id);
+
+        if (!$soporte) {
+            return response()->json(['success' => false, 'message' => 'Soporte no encontrado']);
         }
 
-        return $documento1; // Si documento1 está vacío o no contiene el archivo, devolvemos el valor tal como está
+        // Crear el nombre de la columna basado en el valor de $documento
+        $documentoColumna = 'documento' . $documento;
+
+        // Verificar si la columna existe en el modelo SoporteSolucion
+        if (in_array($documentoColumna, ['documento1', 'documento2', 'documento3'])) {
+            // Limpiar la columna correspondiente
+            $soporte->$documentoColumna = null;
+
+            // Guardar los cambios
+            if ($soporte->save()) {
+                return response()->json(['success' => true, 'message' => 'Documento eliminado correctamente']);
+            } else {
+                return response()->json(['success' => false, 'message' => 'Error al eliminar el documento']);
+            }
+        } else {
+            return response()->json(['success' => false, 'message' => 'Documento no válido']);
+        }
     }
 
     public function cancelar_tick_master(Request $request, $id)

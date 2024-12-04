@@ -576,6 +576,7 @@
                         <label>Imágenes:</label><br>
                         <button type="button" class="btn btn-secondary" id="boton_camara" onclick="Activar_Camara();">Activar cámara</button>
                     </div>
+
                     <div class="form-group col-md-4">
                         <label>Documentos:</label>
                         <div id="documento-list">
@@ -586,32 +587,52 @@
                         </div>
 
                     </div>
-                    <div class="form-group col-md-4" id="documentos-cargados">
 
+                    <div class="form-group col-md-4" id="documentos-cargados">
+                        @csrf
                         <label>Documentos Cargados:</label>
                         @if ($get_id->documento1 || $get_id->documento2 || $get_id->documento3)
-                        <ul>
+                        <ul id="documentos-lista">
+
                             @if ($get_id->documento1)
-                            <li>Documento 1:
+                            <li id="doc-item-1">Documento 1:
                                 <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento1 }}" target="_blank">
                                     {{ $get_id->documento1 }}
                                 </a>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="cursor: pointer;" onclick="eliminarDocumento('{{ $get_id->idsoporte_solucion }}', 1)">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                </svg>
                             </li>
                             @endif
 
                             @if ($get_id->documento2)
-                            <li>Documento 2:
+                            <li id="doc-item-2">Documento 2:
                                 <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento2 }}" target="_blank">
                                     {{ $get_id->documento2 }}
                                 </a>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="cursor: pointer;" onclick="eliminarDocumento('{{ $get_id->idsoporte_solucion }}',2)">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                </svg>
                             </li>
                             @endif
 
                             @if ($get_id->documento3)
-                            <li>Documento 3:
+                            <li id="doc-item-3">Documento 3:
                                 <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento3 }}" target="_blank">
                                     {{ $get_id->documento3 }}
                                 </a>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="cursor: pointer;" onclick="eliminarDocumento('{{ $get_id->idsoporte_solucion }}',3)">
+                                    <polyline points="3 6 5 6 21 6"></polyline>
+                                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                                </svg>
                             </li>
                             @endif
                         </ul>
@@ -619,6 +640,7 @@
                         <p>No se han cargado documentos.</p>
                         @endif
                     </div>
+
                     <div class="form-group col-lg-12 d-flex justify-content-center" id="div_camara" style="display: none;">
                         <video id="video" autoplay style="max-width: 95%; display: none;"></video>
                     </div>
@@ -630,6 +652,7 @@
                     <div class="d-flex justify-content-center" style="display:none !important;" id="div_canvas">
                         <canvas id="canvas" width="640" height="480" style="max-width:95%;"></canvas>
                     </div>
+
                     <div class="d-flex justify-content-center" style="max-width: 100%; overflow-x: auto;" id="div_imagenes">
                         <input type="hidden" id="imagenes_input" name="imagenes" value="">
                         <div id="imagenes_container" class="carousel-container">
@@ -669,7 +692,6 @@
                                 @endif
                         </div>
                     </div>
-
 
                 </div>
             </div>
@@ -1294,19 +1316,6 @@
         });
     }
 
-    // $('#documentoa1').fileinput({
-    //     theme: 'fas',
-    //     language: 'es',
-    //     uploadUrl: '#',
-    //     maxTotalFileCount: 5,
-    //     showUpload: false,
-    //     showPreview: false, // Desactiva la vista previa de archivos
-    //     showRemove: false, // Desactiva el botón para remover archivos
-    //     allowedFileExtensions: ['jpg', 'png', 'txt', 'pdf', 'xlsx', 'pptx', 'docx', 'jpeg', 'xls', 'ppt', 'doc'],
-    //     browseOnZoneClick: true, // Hace que el botón de selección sea el único activo
-    //     dragDrop: false // Desactiva la funcionalidad de arrastrar y soltar
-    // });
-
 
 
 
@@ -1314,14 +1323,12 @@
         const fileInput = document.getElementById('documentoa1');
         const documentList = document.getElementById('documento-list');
         const files = Array.from(fileInput.files); // Convertimos FileList en un Array
-
         // Contar cuántos documentos ya están cargados
-        const documentosCargados = [
+        let documentosCargados = [
             '{{ $get_id->documento1 }}',
             '{{ $get_id->documento2 }}',
             '{{ $get_id->documento3 }}'
         ];
-
         const documentosDisponibles = documentosCargados.filter(doc => doc !== '').length;
 
         // Limitar la carga de archivos
@@ -1345,24 +1352,53 @@
 
 
 
+    function eliminarDocumento(soporteId, documento) {
+        // Utiliza SweetAlert para la confirmación
+        Swal.fire({
+            title: '¿Realmente desea eliminar el documento?',
+            text: "El documento será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                console.log(soporteId)
+                console.log(documento)
+                console.log("#######################")
+                $.ajax({
+                    url: `/soporte_documento/${soporteId}/${documento}`,
+                    method: 'DELETE',
+                    data: {
+                        _token: '{{ csrf_token() }}' // Incluye el token CSRF
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            $('#doc-item-' + documento).remove(); // Eliminar el <li> correspondiente al documento
+                            Swal.fire(
+                                'Eliminado!',
+                                'El documento ha sido eliminado.',
+                                'success'
+                            );
+                        } else {
+                            Swal.fire(
+                                'Error',
+                                'No se pudo eliminar el documento. Intenta de nuevo.',
+                                'error'
+                            );
+                        }
+                    },
+                    error: function() {
+                        Swal.fire(
+                            'Error',
+                            'Hubo un problema al eliminar el documento.',
+                            'error'
+                        );
+                    }
 
-
-
-    function deleteFileOnServer(fileName, documento1, id_soportesolucion) {
-        // Aquí asumimos que `documento1` es un array de nombres de archivos y necesitamos eliminar `fileName` de él
-        const updatedDocumentos = documento1.filter(file => file !== fileName); // Elimina el archivo de la lista
-        // Actualiza el array documento1 con el nuevo array sin el archivo eliminado
-        // Esto lo puedes enviar en una solicitud posterior para actualizar el estado del servidor, si lo necesitas
-        documento1 = updatedDocumentos;
-        // Eliminar el archivo visualmente (suponiendo que el archivo tiene un ID o clase específica)
-        $(`#file-${fileName}`).remove(); // Esto eliminará el archivo de la lista en el DOM (ajusta el selector si es necesario)
-        // Actualiza el documento1 antes de enviarlo (si es necesario)
-        console.log("Documento actualizado:", documento1);
-        // Si deseas hacer algo adicional, como mostrar una notificación:
-        Swal(
-            '¡Eliminado!',
-            'El archivo ha sido eliminado de la lista.',
-            'success'
-        );
+                });
+            }
+        });
     }
 </script>

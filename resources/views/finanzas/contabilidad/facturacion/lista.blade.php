@@ -639,23 +639,22 @@
         });
 
 
+
         $('#btnFacturar').on('click', function() {
             let filas = []; // Arreglo para almacenar los datos de todas las filas
-
             // Recorremos cada campo de entrada en la columna "Enviado"
             $('#tablaContenido .enviado-input').each(function() {
                 let enviadoActual = $(this).val(); // Valor actual del campo input
                 let enviadoOriginal = $(this).attr('data-original'); // Valor original
-
                 // Determinar si hay cambios en la fila
                 let parcial = enviadoActual != enviadoOriginal ? 1 : 0;
 
                 // Capturar los datos de la fila
                 let fila = $(this).closest('tr'); // Obtiene la fila actual
                 let datosFila = {
-                    id: $(this).data('id'), // ID del input
-                    enviado: enviadoActual, // Valor actual de enviado
-                    parcial: parcial // Indicador de cambio
+                    id: $(this).data('id'),
+                    enviado: enviadoActual,
+                    parcial: parcial
                 };
 
                 // Agregar la fila al arreglo
@@ -803,6 +802,7 @@
                                             "targets": 6
                                         }
                                     ],
+                                    "lengthMenu": [250],
                                     "oLanguage": {
                                         "oPaginate": {
                                             "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>',
