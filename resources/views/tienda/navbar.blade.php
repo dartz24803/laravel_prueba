@@ -44,115 +44,115 @@
     </div>
 </li>
 
-@if (session('usuario')->id_nivel == "1" || 
-session('usuario')->centro_labores == "OFC" || 
+@if (session('usuario')->id_nivel == "1" ||
+session('usuario')->centro_labores == "OFC" ||
 //COORDINADOR DE CONTROL INTERNO (9)
-session('usuario')->id_puesto == "9" || 
+session('usuario')->id_puesto == "9" ||
 //JEFE DE DTO. GESTIÓN DE INFRAESTRUCTURA (12)
 session('usuario')->id_puesto == "12" ||
 //DISEÑADOR DE VISUAL MERCHANDISING (15)
 session('usuario')->id_puesto == "15" ||
 //JEFE DE DTO. GESTIÓN DEL TALENTO HUMANO (19)
-session('usuario')->id_puesto == "19" || 
+session('usuario')->id_puesto == "19" ||
 //COORD. DE CULTURA, BIENESTAR Y DESARROLLO (21)
-session('usuario')->id_puesto == "21" || 
+session('usuario')->id_puesto == "21" ||
 //ASISTENTE DE RECURSOS HUMANOS (22)
 session('usuario')->id_puesto == "22" ||
 //COORDINADOR SR. DE TECNOLOGÍAS DE LA INFORMACIÓN (27)
-session('usuario')->id_puesto == "27" || 
+session('usuario')->id_puesto == "27" ||
 //ALMACENERO TIENDA (35)
-session('usuario')->id_puesto == "35" || 
+session('usuario')->id_puesto == "35" ||
 //COORDINADOR COMERCIAL CATEGORÍA DAMAS (41)
 session('usuario')->id_puesto == "41" ||
 //COORDINADOR COMERCIAL CATEGORÍA CABALLEROS (66)
-session('usuario')->id_puesto == "66" || 
+session('usuario')->id_puesto == "66" ||
 //COORDINADOR DE MARKETING (68)
-session('usuario')->id_puesto == "68" || 
+session('usuario')->id_puesto == "68" ||
 //CREADOR DE CONTENIDOS (72)
-session('usuario')->id_puesto == "72" || 
+session('usuario')->id_puesto == "72" ||
 //COORDINADOR COMERCIAL CATEGORÍA NIÑOS Y ACCESORIOS (73)
-session('usuario')->id_puesto == "73" || 
+session('usuario')->id_puesto == "73" ||
 //SUPERVISOR DE DISTRIBUCIÓN (76)
-session('usuario')->id_puesto == "76" || 
+session('usuario')->id_puesto == "76" ||
 //COORDINADOR SR. DE CAJA (128)
-session('usuario')->id_puesto == "128" || 
+session('usuario')->id_puesto == "128" ||
 //SUPERVISOR NACIONAL DE ABASTECIMIENTO E INVENTARIOS (131)
 session('usuario')->id_puesto == "131" ||
 //DISEÑADOR DE MODAS (144)
-session('usuario')->id_puesto == "144" || 
+session('usuario')->id_puesto == "144" ||
 //ASISTENTE DE TECNOLOGÍAS DE LA INFORMACIÓN (148)
-session('usuario')->id_puesto == "148" || 
+session('usuario')->id_puesto == "148" ||
 //SUPERVISOR DE MANTENIMIENTO (155)
-session('usuario')->id_puesto == "155" || 
+session('usuario')->id_puesto == "155" ||
 //JEFE DE DTO. GESTIÓN DE TIENDAS (158)
-session('usuario')->id_puesto == "158" || 
+session('usuario')->id_puesto == "158" ||
 //ADMINISTRADOR DE TIENDA (161)
 session('usuario')->id_puesto == "161" ||
 //GERENTE DE GESTIÓN COMERCIAL (251)
-session('usuario')->id_puesto == "251" || 
+session('usuario')->id_puesto == "251" ||
 ///BASE (311)
 session('usuario')->id_puesto == "311" ||
 //COORDINADOR DE TIENDA (314)
 session('usuario')->id_puesto == "314")
-    <li class="menu" id="tienda">
-        <a href="#rtienda" id="htienda" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
-            <div class="">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart">
-                    <circle cx="9" cy="21" r="1"></circle>
-                    <circle cx="20" cy="21" r="1"></circle>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                </svg>
-                <span>Tienda</span>
-            </div>
-            <div>
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
-                    <polyline points="9 18 15 12 9 6"></polyline>
-                </svg>
-            </div>
-        </a>
+<li class="menu" id="tienda">
+    <a href="#rtienda" id="htienda" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+        <div class="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-shopping-cart">
+                <circle cx="9" cy="21" r="1"></circle>
+                <circle cx="20" cy="21" r="1"></circle>
+                <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+            </svg>
+            <span>Tienda</span>
+        </div>
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </div>
+    </a>
 
-        <ul class="collapse submenu list-unstyled" id="rtienda" data-parent="#accordionExample">
-            @if (session('usuario')->id_nivel == "1" ||
-            session('usuario')->id_puesto == "161")
-                {{--<li>
+    <ul class="collapse submenu list-unstyled" id="rtienda" data-parent="#accordionExample">
+        @if (session('usuario')->id_nivel == "1" ||
+        session('usuario')->id_puesto == "161")
+        {{--<li>
                     <a id="administradores" href="{{ route('administrador') }}">
-                        <p class="romperpalabra"><span id="icono_active2"></span> Administrador</p>
-                    </a>
-                </li>--}}
-            @endif
-            {{--<li id="cuadrocontrolvisual">
+        <p class="romperpalabra"><span id="icono_active2"></span> Administrador</p>
+        </a>
+</li>--}}
+@endif
+{{--<li id="cuadrocontrolvisual">
                 <a id="hrpreorden" href="{{ url('Cuadro_Control_Visual_Vista')}}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Cuadro Control Visual</p>
-                </a>
-            </li>
-            <li>
-                <a id="funciones_temporales" href="{{ route('funcion_temporal') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Funciones temporales</p>
-                </a>
-            </li>--}}
-            <li>
-                <a id="ocurrencias" href="{{ route('ocurrencia_tienda') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Ocurrencias</p>
-                </a>
-            </li>
-            <li id="reportefoto">
-                <a id="reporte_foto" href="{{ url('/ReporteFotografico')}}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Reporte fotográfico</p>
-                </a>
-            </li>
-            @if (session('usuario')->id_nivel == "1" ||
-            session('usuario')->id_puesto == "35" ||
-            session('usuario')->id_puesto == "161" ||
-            session('usuario')->id_puesto == "311" ||
-            session('usuario')->id_puesto == "314")
-                <li id="requerimientos_tiendas">
-                    <a href="{{ route('trequerimiento_tienda') }}">
-                        <p class="romperpalabra"><span id="icono_active2"></span> Requerimientos de tienda</p>
-                    </a>
-                </li>
-            @endif
-        </ul>
-    </li>
+<p class="romperpalabra"><span id="icono_active2"></span> Cuadro Control Visual</p>
+</a>
+</li>
+<li>
+    <a id="funciones_temporales" href="{{ route('funcion_temporal') }}">
+        <p class="romperpalabra"><span id="icono_active2"></span> Funciones temporales</p>
+    </a>
+</li>--}}
+<li>
+    <a id="ocurrencias" href="{{ route('ocurrencia_tienda') }}">
+        <p class="romperpalabra"><span id="icono_active2"></span> Ocurrencias</p>
+    </a>
+</li>
+<li id="reportefoto">
+    <a id="reporte_foto" href="{{ url('/ReporteFotografico')}}">
+        <p class="romperpalabra"><span id="icono_active2"></span> Reporte fotográfico</p>
+    </a>
+</li>
+@if (session('usuario')->id_nivel == "1" ||
+session('usuario')->id_puesto == "35" ||
+session('usuario')->id_puesto == "161" ||
+session('usuario')->id_puesto == "311" ||
+session('usuario')->id_puesto == "314")
+<li id="requerimientos_tiendas">
+    <a href="{{ route('trequerimiento_tienda') }}">
+        <p class="romperpalabra"><span id="icono_active2"></span> Requerimientos de tienda</p>
+    </a>
+</li>
+@endif
+</ul>
+</li>
 @endif
 
 
