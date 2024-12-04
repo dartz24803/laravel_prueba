@@ -1201,13 +1201,12 @@ class AsistenciaColaboradoresController extends Controller
             ->leftJoin('area', 'puesto.id_area', '=', 'area.id_area')
             ->whereIn('puesto.id_nivel', [2, 3])
             ->where('users.estado', 1)
-            // ->where('users.id_usuario', 2692) // test comentar al subir
+            //->whereIn('users.id_usuario', [2692]) // test comentar al subir
             ->orderBy('users.id_usuario', 'ASC')
             ->get();
         // print_r($usuarios);
-      
+
         $dato['base'] = 0;
-        $dato['area'] = $usuarios[0]->id_area;
         // $dato['area'] = 18;
         $dato['usuario'] = 0;
         $dato['tipo_fecha'] = 3;
@@ -1235,9 +1234,10 @@ class AsistenciaColaboradoresController extends Controller
         $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
         $dato['excel'] = 1;
         
-        $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
-
+        
         foreach($usuarios as $usuario){
+            $dato['area'] = $usuario->id_area;
+            $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
 
@@ -1284,8 +1284,6 @@ class AsistenciaColaboradoresController extends Controller
                 $contador++;
 
                 $sheet->getStyle("A{$contador}:E{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
-                $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-                $sheet->getStyle("C{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
                 $sheet->getStyle("A{$contador}:E{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
                 $sheet->getStyle("A{$contador}:E{$contador}")->applyFromArray($styleThinBlackBorderOutline);
 
@@ -1352,7 +1350,7 @@ class AsistenciaColaboradoresController extends Controller
                     $formattedDate = Carbon::createFromFormat('d/m/Y', $list['fecha'])->translatedFormat('l d \d\e F \d\e Y');
                     $tableHtml .= "
                         <tr>
-                            <td style='text-align: left;'>" . ucwords($list['colaborador']) . "</td>
+                            <td>" . ucwords($list['colaborador']) . "</td>
                             <td>" . ucfirst($formattedDate) . "</td>
                             <td>{$list['hora_inicio_turno']}</td>
                             <td>{$list['hora_llegada']}</td>
@@ -1365,7 +1363,10 @@ class AsistenciaColaboradoresController extends Controller
                     </table>";
 
                 $area = $usuario->nom_area;
-                $mail->Body =  "Te envío el archivo de ASISTENCIA Y MARCACION $area - SEM 43
+                $nombre = $usuario->usuario_nombres;
+                $primerNombre = explode(' ', $nombre)[0]; // Obtiene "Juan"
+                $mail->Body =  "Estimado/a $primerNombre
+                    Te envío el archivo de ASISTENCIA Y MARCACION $area - SEM 43
                     DEL $fec_inicio - $fec_fin <br><br>
                     De acuerdo a nuestras políticas del sábado free los colaboradores que llegaron tarde deberán asistir mañana.<br><br>
                     $tableHtml
