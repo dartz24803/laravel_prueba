@@ -3786,6 +3786,7 @@ if($get_id[0]['edicion_perfil']==1){
 </div>
 
 
+<script src="{{ asset('template/plugins/input-mask/jquery.inputmask.bundle.min.js') }}"></script>
 
 <script>
     function validarFotoHijo(){
