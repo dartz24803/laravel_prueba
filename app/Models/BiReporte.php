@@ -53,6 +53,7 @@ class BiReporte extends Model
     {
         // Construir la consulta base
         $query = self::select('acceso_bi_reporte.*')
+            ->distinct()
             ->join('bi_puesto_acceso', 'acceso_bi_reporte.id_acceso_bi_reporte', '=', 'bi_puesto_acceso.id_acceso_bi_reporte')
             ->where('acceso_bi_reporte.id_area_destino', $id_area_destino)
             ->where('acceso_bi_reporte.estado', 1)
@@ -65,7 +66,7 @@ class BiReporte extends Model
             $subQuery->where('acceso_bi_reporte.filtro_ubicaciones', '=', '')
                 ->orWhereRaw("FIND_IN_SET(?, acceso_bi_reporte.filtro_ubicaciones) > 0", [$id_centro_labor]);
         });
-
+        // dd($query);
         return $query->get();
     }
 

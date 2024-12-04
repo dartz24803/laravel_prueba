@@ -45,7 +45,7 @@ class SoporteSolucion extends Model
                 'sc.fec_comentario',
                 'sc.estado',
                 'usr.foto',
-                DB::raw("CONCAT(usr.usuario_nombres, ' ', usr.usuario_apater, ' ', usr.usuario_amater) AS nombre_responsable_solucion")
+                DB::raw("CONCAT(usr.usuario_nombres, ' ', usr.usuario_apater) AS nombre_responsable_solucion")
             )
             ->where('sc.idsoporte_solucion', $idsoporte_solucion)
             ->orderBy('sc.fec_comentario', 'DESC')
@@ -66,7 +66,7 @@ class SoporteSolucion extends Model
                 'sc.fec_comentario',
                 'sc.estado',
                 'usr.foto',
-                DB::raw("CONCAT(usr.usuario_nombres, ' ', usr.usuario_apater, ' ', usr.usuario_amater) AS nombre_responsable_solucion")
+                DB::raw("CONCAT(usr.usuario_nombres, ' ', usr.usuario_apater) AS nombre_responsable_solucion")
             )
             ->where('sc.idsoporte_solucion', $idsoporte_solucion)
             ->where('sc.id_responsable', $id_usuario)

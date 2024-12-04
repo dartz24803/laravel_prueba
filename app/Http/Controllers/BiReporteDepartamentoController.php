@@ -15,24 +15,18 @@ class BiReporteDepartamentoController extends Controller
 
         switch ($id_subgerencia) {
             case 2:
-                // Validación para id_subgerencia igual a 2
                 $list_subgerencia = SubGerencia::list_subgerencia_with_validation_tienda($id_subgerencia);
                 break;
             case 3:
-                // Validación para id_subgerencia igual a 3
                 $list_subgerencia = SubGerencia::list_subgerencia_with_validation_comercial($id_subgerencia);
                 break;
             default:
-                // Para cualquier otro valor de id_subgerencia
                 $list_subgerencia = SubGerencia::list_subgerencia($id_subgerencia);
                 break;
         }
-        // dd($list_subgerencia);
         $id_puesto = session('usuario')->id_puesto;
         $id_centro_labor = session('usuario')->id_centro_labor;
-        // dd($id_centro_labor);
         $list_reportes = BiReporte::getByAreaDestino($id_area, $id_puesto, $id_centro_labor);
-
         // Asignar el valor de $nominicio basado en $id_subgerencia
         switch ($id_subgerencia) {
             case 1:
