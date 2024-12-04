@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CronController;
 use App\Http\Controllers\TrackingController;
 use App\Http\Controllers\TrackingTokenController;
 use Illuminate\Http\Request;
@@ -28,3 +29,5 @@ Route::delete('mercaderia_surtida/{id}', [TrackingController::class, 'delete_mer
 Route::post('list_mercaderia_nueva', [TrackingController::class, 'list_mercaderia_nueva_app_new'])->name('tracking.list_mercaderia_nueva_app_new');
 //NUEVAS RUTAS REQUERIMIENTO DE REPOSICIÓN
 Route::post('list_requerimiento_reposicion', [TrackingController::class, 'list_requerimiento_reposicion_app_new'])->name('tracking.list_requerimiento_reposicion_app_new');
+//CRON DE ASISTENCIA COLABORADOR
+Route::get('asistencia_colaborador', [CronController::class, 'insert_asistencia_colaborador'])->name('insert_asistencia_colaborador');

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 
 class CronController extends Controller
 {
-    public function iniciar_tracking()
+    public function insert_asistencia_colaborador()
     {
         $hoy = "2024-12-03";
         $hoy = date('Y-m-d');
