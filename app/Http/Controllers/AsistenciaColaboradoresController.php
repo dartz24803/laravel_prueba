@@ -1367,7 +1367,7 @@ class AsistenciaColaboradoresController extends Controller
                 $area = $usuario->nom_area;
                 $mail->Body =  "Te envío el archivo de ASISTENCIA Y MARCACION $area - SEM 43
                     DEL $fec_inicio - $fec_fin <br><br>
-                    De a cuerdo a nuestras políticas del sábado free los colaboradores que llegaron tarde deberán asistir mañana.<br><br>
+                    De acuerdo a nuestras políticas del sábado free los colaboradores que llegaron tarde deberán asistir mañana.<br><br>
                     $tableHtml
                     <br>
                     <a style='color:blue'> Recordatorio: El beneficio del sábado free se brinda cuando se cumple los 2 siguientes puntos.</a><br><br>
