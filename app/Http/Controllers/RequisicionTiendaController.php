@@ -188,7 +188,9 @@ class RequisicionTiendaController extends Controller
             return response()->json(['errors' => $errors], 422);
         }
 
-        $get_usuario = Usuario::findOrFail($request->id_usuario);
+        $get_usuario = Usuario::from('users AS us')->select('ub.cod_ubi AS centro_labores')
+                    ->join('ubicacion AS ub','ub.id_ubicacion','=','us.id_centro_labor')
+                    ->where('us.id_usuario',$request->id_usuario)->first();
         $valida = RequisicionTda::where('base', $get_usuario->centro_labores)
                 ->where(DB::raw('MONTH(fecha)'),DB::raw('MONTH("'.$request->fecha.'")'))
                 ->where('estado', 1)->exists();
@@ -238,7 +240,9 @@ class RequisicionTiendaController extends Controller
             'fechae.required' => 'Debe ingresar fecha.'
         ]);
 
-        $get_usuario = Usuario::findOrFail($request->id_usuarioe);
+        $get_usuario = Usuario::from('users AS us')->select('ub.cod_ubi AS centro_labores')
+                    ->join('ubicacion AS ub','ub.id_ubicacion','=','us.id_centro_labor')
+                    ->where('us.id_usuario',$request->id_usuarioe)->first();
         $valida = RequisicionTda::where('base', $get_usuario->centro_labores)
                 ->where(DB::raw('MONTH(fecha)'),DB::raw('MONTH("'.$request->fechae.'")'))
                 ->where('estado', 1)->where('id_requisicion', '!=', $id)->exists();
