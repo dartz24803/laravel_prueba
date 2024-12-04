@@ -2413,4 +2413,6 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
     Route::post('inconsistencias_colaborador/listMarcacion', 'Listar_Asistencia_Inconsistencia')->name('inconsistencias_colaborador.listMarcacion');
 
     Route::get('asistencia_colaborador/inconsistencias_colaborador/{base}/{area}/{usuario}/{tipo_fecha}/{dia}/{semana}', 'Excel_Inconsistencias_Colaborador')->name('inconsistencias_colaborador.excel');
+
+    Route::post('AsistenciaColaborador/Enviar_Correos_GerenteXJefe', 'Enviar_Correos_GerenteXJefe');
 });
