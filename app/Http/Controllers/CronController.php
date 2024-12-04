@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AsistenciaColaborador;
+use App\Models\BiotimeTemp;
+use App\Models\Feriado;
 use App\Models\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -23,9 +26,24 @@ class CronController extends Controller
                         ->leftjoin('horario AS ho','us.id_horario','=','ho.id_horario')
                         ->where('us.ini_funciones','<=',DB::raw('CURDATE()'))
                         ->whereNotIn('us.id_nivel',[8,12])->where('us.estado',1)
-                        ->count();
+                        ->get();
 
         echo $list_usuario;
+
+        /*$dia_feriado = Feriado::where('fec_feriado','=',DB::raw('CURDATE()'))->where('estado',1)
+                    ->count();
+
+        foreach($list_usuario as $list){
+            if($list->id_horario>0){
+
+            }else{
+                $list_marcacion = BiotimeTemp::select(DB::raw("DATE_FORMAT(punch_time,'%H:%i:%s') AS 
+                                punch_time"),'work_code')
+                                ->where(DB::raw("LPAD(emp_code,8,'0')"),'=',$list->num_doc)
+                                ->orderBy('punch_time','ASC')
+                                ->get();
+            }
+        }*/
 
         /*TrackingTemporal::truncate();
         $list_tracking = DB::connection('sqlsrv')->select('EXEC usp_ver_despachos_tracking ?', ['T']);
