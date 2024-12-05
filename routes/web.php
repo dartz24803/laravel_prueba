@@ -85,6 +85,7 @@ use App\Http\Controllers\SoporteConfController;
 use App\Http\Controllers\SoporteController;
 use App\Http\Controllers\StockInfosapController;
 use App\Http\Controllers\TablaMaestraTesoreriaController;
+use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\Tienda\RequerimientoTiendaController as TiendaRequerimientoTiendaController;
 
 Route::middleware([NoCache::class])->group(function () {
@@ -1862,22 +1863,14 @@ Route::controller(CuadroControlVisualController::class)->group(function () {
     Route::post('/Insert_Cuadro_Control_Visual_Estado1', 'Insert_Cuadro_Control_Visual_Estado1');
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+//REGISTRO DE TICKETS
+Route::controller(TicketsController::class)->group(function () {
+    //------------------------------CCV------------------------------------//
+    Route::get('Tickets/index', 'Tickets_Vista');
+    Route::get('Tickets/Busqueda_Tickets_Admin/{busqu}/{base}/{area}/{ini}/{pro}/{fin}/{std}', 'Busqueda_Tickets_Admin');
+    Route::post('', '');
+    Route::post('', '');
+});
 
 
 
