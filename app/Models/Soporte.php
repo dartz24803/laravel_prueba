@@ -495,6 +495,9 @@ class Soporte extends Model
             if ($dato['ccancelado'] == 1) {
                 $q->orWhere('soporte.estado_registro', 5); // "Cancelado"
             }
+            if ($dato['cderivado'] == 1) {
+                $q->orWhere('soporte.estado_registro', 6); // "Derivado"
+            }
         });
         return $query->orderBy('soporte.fec_reg', 'DESC')->get();
     }

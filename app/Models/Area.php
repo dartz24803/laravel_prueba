@@ -60,4 +60,18 @@ class Area extends Model
         $query = DB::select($sql);
         return $query;
     }
+
+    public static function obtenerNombreArea($id_area)
+    {
+        if (!$id_area) {
+            throw new \InvalidArgumentException('El ID del área es requerido');
+        }
+        $nombreArea = DB::table('area')
+            ->where('id_area', $id_area)
+            ->value('nom_area');
+        if (!$nombreArea) {
+            throw new \Exception('Área no encontrada');
+        }
+        return $nombreArea;
+    }
 }
