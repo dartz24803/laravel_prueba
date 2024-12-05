@@ -553,4 +553,17 @@ class SoporteConfController extends Controller
             ->get();
         return response()->json($niveles);
     }
+
+    public function getAllDistinctAreaPorSede(Request $request)
+    {
+        $sedeId = $request->input('sede');
+
+        // Obtiene toda la lista de soporte_nivel con registros únicos según las columnas requeridas
+        $niveles = SoporteNivel::where('id_sede_laboral', $sedeId)
+            ->where('estado', 1)
+            ->distinct()
+            ->get(['id_sede_laboral', 'nombre']);
+
+        return response()->json($niveles);
+    }
 }

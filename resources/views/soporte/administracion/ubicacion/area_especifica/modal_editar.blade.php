@@ -18,10 +18,10 @@
                 <select class="form-control" name="sede_laborale" id="sede_laborale">
                     <option value="0">Seleccione</option>
                     @foreach ($list_sede as $list)
-                        <option value="{{ $list->id }}"
-                            {{ $list->id == $get_id->id_sede_laboral ? 'selected' : '' }}>
-                            {{ $list->descripcion }}
-                        </option>
+                    <option value="{{ $list->id }}"
+                        {{ $list->id == $get_id->id_sede_laboral ? 'selected' : '' }}>
+                        {{ $list->descripcion }}
+                    </option>
                     @endforeach
                 </select>
 
@@ -31,10 +31,10 @@
                 <label>Nivel:</label>
                 <select class="form-control" name="soporte_nivele" id="soporte_nivele">
                     @foreach ($list_nivel as $list)
-                        <option value="{{ $list->idsoporte_nivel }}"
-                            {{ $list->idsoporte_nivel == $get_id->idsoporte_nivel ? 'selected' : '' }}>
-                            {{ $list->nombre }}
-                        </option>
+                    <option value="{{ $list->idsoporte_nivel }}"
+                        {{ $list->idsoporte_nivel == $get_id->idsoporte_nivel ? 'selected' : '' }}>
+                        {{ $list->nombre }}
+                    </option>
                     @endforeach
 
                 </select>

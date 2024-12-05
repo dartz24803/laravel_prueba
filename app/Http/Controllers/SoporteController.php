@@ -93,6 +93,8 @@ class SoporteController extends Controller
             $ticket->status_completado = false;
             $ticket->status_standby = false;
             $ticket->status_cancelado = false;
+            $ticket->status_derivado = false;
+
             $multirepsonsable = Soporte::getResponsableMultipleByAsunto($ticket->id_asunto);
 
             if (($ticket->estado_registro_sr == 3 && $ticket->estado_registro == 3) || ($ticket->estado_registro == 3 && $multirepsonsable == 0)) {
@@ -105,6 +107,8 @@ class SoporteController extends Controller
                 $ticket->status_standby = true;
             } elseif ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2) {
                 $ticket->status_enproceso = true;
+            } elseif ($ticket->estado_registro == 6 || $ticket->estado_registro_sr == 6) {
+                $ticket->status_derivado = true;
             } else {
                 $ticket->status_enproceso = true;
             }
@@ -662,13 +666,18 @@ class SoporteController extends Controller
             $ticket->status_completado = false;
             $ticket->status_stand_by = false;
             $ticket->status_cancelado = false;
+            $ticket->status_derivado = false;
+
             // Obtener el responsable múltiple para el asunto del ticket
             $responsable_multiple = Soporte::getResponsableMultipleByAsunto($ticket->id_asunto);
             // Condicional para responsable múltiple
             if ($responsable_multiple == 1) {
                 // Si la subgerencia es 9, validamos los estados relacionados con estado_registro_sr
                 if ($id_subgerencia == 9) {
-                    switch ($ticket->estado_registro_sr) {
+                    switch ($ticket->estado_registro) {
+                        case 6:
+                            $ticket->status_derivado = true;
+                            break;
                         case 5:
                             $ticket->status_cancelado = true;
                             break;
@@ -689,7 +698,10 @@ class SoporteController extends Controller
                     }
                 } else {
                     // Si no es subgerencia 9, validamos los estados relacionados con estado_registro
-                    switch ($ticket->estado_registro) {
+                    switch ($ticket->estado_registro_sr) {
+                        case 6:
+                            $ticket->status_derivado = true;
+                            break;
                         case 5:
                             $ticket->status_cancelado = true;
                             break;
@@ -712,6 +724,9 @@ class SoporteController extends Controller
                 $estado_validar = $ticket->estado_registro_sr ?? $ticket->estado_registro;
 
                 switch ($estado_validar) {
+                    case 6:
+                        $ticket->status_derivado = true;
+                        break;
                     case 5:
                         $ticket->status_cancelado = true;
                         break;
@@ -962,6 +977,7 @@ class SoporteController extends Controller
         } else {
             $codigo_generado = $get_id->codigo;
         }
+        // dd($id_subgerencia);
         // GENERECIÓN DE CÓDIGO
         if ($request->responsable_indice == "0" && $cantAreasEjecut < 4) {
             // UN SOLO RESPONSABLE 
@@ -974,7 +990,7 @@ class SoporteController extends Controller
                 'tipo_otros' => $tipo_otros,
                 'codigo' => $codigo_generado
             ]);
-        } else if ($id_subgerencia == 10) {
+        } else if ($id_subgerencia == 9) {
 
             // RESPONSABLE PRINCIPAL
             Soporte::findOrFail($id)->update([
@@ -985,7 +1001,6 @@ class SoporteController extends Controller
                 'user_act' => session('usuario')->id_usuario,
                 'tipo_otros' => $tipo_otros,
                 'codigo' => $codigo_generado
-
             ]);
         } else {
             // SEGUNDO RESPONSABLE 
@@ -1279,7 +1294,7 @@ class SoporteController extends Controller
             $soporteActualizado  = Soporte::findOrFail($id)->update([
                 'idsoporte_motivo_cancelacion' => $request->motivo,
                 'area_cancelacion' => $request->id_areac,
-                'estado_registro' => 5,
+                'estado_registro' => 6,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
@@ -1341,38 +1356,38 @@ class SoporteController extends Controller
                 ]);
             }
         } else {
-            // $mail = new PHPMailer(true);
-            // try {
-            //     $mail->SMTPDebug = 0;
-            //     $mail->isSMTP();
-            //     $mail->Host       =  'mail.lanumero1.com.pe';
-            //     $mail->SMTPAuth   =  true;
-            //     $mail->Username   =  'intranet@lanumero1.com.pe';
-            //     $mail->Password   =  'lanumero1$1';
-            //     $mail->SMTPSecure =  'tls';
-            //     $mail->Port     =  587;
-            //     $mail->setFrom('intranet@lanumero1.com.pe', 'La Número 1');
+            $mail = new PHPMailer(true);
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587;
+                $mail->setFrom('intranet@lanumero1.com.pe', 'La Número 1');
 
-            //     $mail->addAddress($get_id->usuario_email);
+                $mail->addAddress($get_id->emailp);
 
-            //     $mail->isHTML(true);
+                $mail->isHTML(true);
 
-            //     $mail->Subject = "Prueba de Soporte";
+                $mail->Subject = "Prueba de Soporte";
 
-            //     $mail->Body =  "<h1> Hola, " . $get_id->usuario_nombre . "</h1>
-            //                     <p>Su solicitud no puede proceder debido a la siguiente razón:</p>
-            //                     <p>Necesitamos más detalle y/o brindenos una mejor sustentación, le invitamos a que lo corriga.
-            //                     </p>
-            //                     <p>Gracias.<br>Atte. Grupo La Número 1</p>";
-            //     $mail->CharSet = 'UTF-8';
-            //     $mail->send();
+                $mail->Body =  "<h1> Hola, " . $get_id->usuario_nombre . "</h1>
+                                <p>Su solicitud no puede proceder debido a la siguiente razón:</p>
+                                <p>Necesitamos más detalle y/o brindenos una mejor sustentación, le invitamos a que lo corriga.
+                                </p>
+                                <p>Gracias.<br>Atte. Grupo La Número 1</p>";
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
 
 
-            //     echo 'Nombre y Apellidos ' . $get_id->usuario_nombres .
-            //         $get_id->usuario_amater . '<br>Correo: ' . $get_id->usuario_email;
-            // } catch (Exception $e) {
-            //     echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-            // }
+                echo 'Nombre y Apellidos ' . $get_id->usuario_nombres .
+                    $get_id->usuario_amater . '<br>Correo: ' . $get_id->emailp;
+            } catch (Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
             Soporte::findOrFail($id)->update([
                 'idsoporte_motivo_cancelacion' => $request->motivo,
                 'estado_registro' => 5,
@@ -1511,7 +1526,6 @@ class SoporteController extends Controller
                     : $ticket->fec_cierre_sr;
                 $ticket->status_ticket = "En Proceso";
             } else {
-                // $ticket->status_enproceso = true;
                 $ticket->status_ticket = "En Proceso";
             }
 

@@ -488,6 +488,7 @@ Route::controller(SoporteConfController::class)->group(function () {
     Route::get('soporte_area_esp_conf/create', 'create_area_esp_conf')->name('soporte_area_esp_conf.create');
     Route::post('soporte_area_esp_conf', 'store_area_esp_conf')->name('soporte_area_esp_conf.store');
     Route::get('area_especifica_por_sede', 'getAreaEspecificaPorSede')->name('area_especifica_por_sede');
+    Route::get('area_distinct_por_sede', 'getAllDistinctAreaPorSede')->name('area_distinct_por_sede');
 });
 
 
