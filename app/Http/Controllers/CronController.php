@@ -58,8 +58,7 @@ class CronController extends Controller
     {
         /*SE COLOCA LA FECHA QUE SE VA CARGAR LA ASISTENCIA (POR DEFECTO LA DE HOY, 
         YA QUE SE EJECUTA EL CRON A LAS 23:00)*/
-        $hoy = "2024-12-03";
-        //$hoy = date('Y-m-d');
+        $hoy = date('Y-m-d');
         /*SE GUARDA EL DÍA DE LA SEMANA SEGÚN LA FECHA ESCOGIDA*/
         $numero_dia_semana = date('N', strtotime($hoy));
         /*SE EJECUTA EL STORE QUE VA CARGAR LA INFO DEL BIOTIME A LA BD DE LN1 
