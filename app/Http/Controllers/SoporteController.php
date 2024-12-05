@@ -475,29 +475,6 @@ class SoporteController extends Controller
         }
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
         return view('soporte.soporte.modal_ver', compact('get_id', 'list_areas_involucradas', 'ejecutoresMultiples', 'comentarios'));
-
-
-
-        $ticket->status_poriniciar = false;
-        $ticket->status_enproceso = false;
-        $ticket->status_completado = false;
-        $ticket->status_standby = false;
-        $ticket->status_cancelado = false;
-        $multirepsonsable = Soporte::getResponsableMultipleByAsunto($ticket->id_asunto);
-
-        if (($ticket->estado_registro_sr == 3 && $ticket->estado_registro == 3) || ($ticket->estado_registro == 3 && $multirepsonsable == 0)) {
-            $ticket->status_completado = true;
-        } elseif ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5) {
-            $ticket->status_cancelado = true;
-        } elseif ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1) {
-            $ticket->status_poriniciar = true;
-        } elseif ($ticket->estado_registro_sr == 4 || $ticket->estado_registro == 4) {
-            $ticket->status_standby = true;
-        } elseif ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2) {
-            $ticket->status_enproceso = true;
-        } else {
-            $ticket->status_enproceso = true;
-        }
     }
 
     public function update_tick(Request $request, $id)
@@ -673,36 +650,95 @@ class SoporteController extends Controller
 
     public function list_tick_master()
     {
+        // Obtener el id_subgerencia de la sesión
         $id_subgerencia = session('id_subgerenciam');
+        // Obtener la lista de tickets relacionados con el soporte
         $list_tickets_soporte = Soporte::listTicketsSoporteMaster($id_subgerencia);
-        // dd($list_tickets_soporte);
+        // Procesar cada ticket para determinar su estado
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) use ($id_subgerencia) {
+            // Inicializamos todos los estados como false
             $ticket->status_poriniciar = false;
             $ticket->status_enproceso = false;
             $ticket->status_completado = false;
             $ticket->status_stand_by = false;
             $ticket->status_cancelado = false;
+            // Obtener el responsable múltiple para el asunto del ticket
+            $responsable_multiple = Soporte::getResponsableMultipleByAsunto($ticket->id_asunto);
+            // Condicional para responsable múltiple
+            if ($responsable_multiple == 1) {
+                // Si la subgerencia es 9, validamos los estados relacionados con estado_registro_sr
+                if ($id_subgerencia == 9) {
+                    switch ($ticket->estado_registro_sr) {
+                        case 5:
+                            $ticket->status_cancelado = true;
+                            break;
+                        case 4:
+                            $ticket->status_stand_by = true;
+                            break;
+                        case 3:
+                            $ticket->status_completado = true;
+                            break;
+                        case 2:
+                            $ticket->status_enproceso = true;
+                            break;
+                        case 1:
+                        case null:
+                            // Validación de null para estado_registro_sr
+                            $ticket->status_poriniciar = true;
+                            break;
+                    }
+                } else {
+                    // Si no es subgerencia 9, validamos los estados relacionados con estado_registro
+                    switch ($ticket->estado_registro) {
+                        case 5:
+                            $ticket->status_cancelado = true;
+                            break;
+                        case 4:
+                            $ticket->status_stand_by = true;
+                            break;
+                        case 3:
+                            $ticket->status_completado = true;
+                            break;
+                        case 2:
+                            $ticket->status_enproceso = true;
+                            break;
+                        case 1:
+                            $ticket->status_poriniciar = true;
+                            break;
+                    }
+                }
+            } else {
+                // Si no es responsable múltiple, se validan ambos estado_registro y estado_registro_sr
+                $estado_validar = $ticket->estado_registro_sr ?? $ticket->estado_registro;
 
-            $isSubgerencia9or10 = in_array($id_subgerencia, ["9", "10"]);
-
-            // Evaluar y asignar un único estado según las condiciones
-            if (($isSubgerencia9or10 && ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5)) || $ticket->estado_registro == 5) {
-                $ticket->status_cancelado = true;
-            } elseif (($isSubgerencia9or10 && ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1)) || $ticket->estado_registro == 1) {
-                $ticket->status_poriniciar = true;
-            } elseif (($isSubgerencia9or10 && ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2)) || $ticket->estado_registro == 2) {
-                $ticket->status_enproceso = true;
-            } elseif (($isSubgerencia9or10 && ($ticket->estado_registro_sr == 3 || $ticket->estado_registro == 3)) || $ticket->estado_registro == 3) {
-                $ticket->status_completado = true;
-            } elseif (($isSubgerencia9or10 && ($ticket->estado_registro_sr == 4 || $ticket->estado_registro == 4)) || $ticket->estado_registro == 4) {
-                $ticket->status_stand_by = true;
+                switch ($estado_validar) {
+                    case 5:
+                        $ticket->status_cancelado = true;
+                        break;
+                    case 4:
+                        $ticket->status_stand_by = true;
+                        break;
+                    case 3:
+                        $ticket->status_completado = true;
+                        break;
+                    case 2:
+                        $ticket->status_enproceso = true;
+                        break;
+                    case 1:
+                    case null:
+                        // Validación para estado_registro_sr === null
+                        $ticket->status_poriniciar = true;
+                        break;
+                }
             }
+
             return $ticket;
         });
-        // dd($list_tickets_soporte);
 
+        // Devolver la vista con la lista de tickets procesados
         return view('soporte.soporte_master.lista', compact('list_tickets_soporte'));
     }
+
 
 
 
@@ -815,6 +851,7 @@ class SoporteController extends Controller
         }
         // dd($ejecutoresMultiples);
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
+        // dd($list_areas_involucradas);
         $list_ejecutores_responsables = collect($list_ejecutores_responsables);
 
         if ($list_ejecutores_responsables->count() > 3) {
@@ -937,7 +974,8 @@ class SoporteController extends Controller
                 'tipo_otros' => $tipo_otros,
                 'codigo' => $codigo_generado
             ]);
-        } else if ($request->responsable_indice == "0") {
+        } else if ($id_subgerencia == 10) {
+
             // RESPONSABLE PRINCIPAL
             Soporte::findOrFail($id)->update([
                 'id_responsable' => $request->id_responsablee_0,

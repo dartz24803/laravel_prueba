@@ -19,7 +19,6 @@
         /* Asegura que los elementos en línea no se rompan */
         overflow-x: auto;
         /* Habilita el scroll horizontal */
-        border: 1px solid #ccc;
         /* Opcional: Añade un borde para visualizar mejor el contenedor */
         padding: 10px;
         /* Opcional: Añade algo de padding para un mejor aspecto */
