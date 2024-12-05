@@ -14,6 +14,11 @@
         color: #007bff;
         /* Blue color */
     }
+    .url_img{
+        color: #1b55e2;
+        font-weight: 600;
+        text-decoration: underline;
+    }
 </style>
 
 <table id="tabla_js" class="table table-hover" style="width:100%">
