@@ -95,7 +95,7 @@
 
     $('#sede_laboral').on('change', function() {
         const selectedSede = $(this).val();
-        var url = "{{ route('area_especifica_por_sede') }}";
+        var url = "{{ route('area_distinct_por_sede') }}";
         $.ajax({
             url: url,
             method: 'GET',

@@ -158,6 +158,7 @@ class Soporte extends Model
             'area_cancelacion.cod_area as cod_area',
             'users.usuario_nombres as usuario_nombre',
             'users.usuario_email as usuario_email',
+            'users.emailp as emailp',
             'users.centro_labores as base',
             DB::raw("
                 CASE 
@@ -240,48 +241,69 @@ class Soporte extends Model
             )
             ->first();
 
+        $resultado = [];
+
         if (!empty($query->id_area)) {
-            $id_areas = $query->id_area;
-            $areasArray = explode(',', $id_areas);
-            $resultado = [];
+            $areasArray = explode(',', $query->id_area);
+
             // Primer área responsable
             $area1 = DB::table('area')
-                ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[0])) // LEFT JOIN con la tabla area
                 ->select('area.nom_area', 'area.id_departamento', 'area.cod_area')
-                ->where('soporte.id_soporte', $id_soporte)
+                ->where('area.id_area', $areasArray[0])
                 ->first();
 
             $resultado[] = [
-                "area_responsable" => $area1 ? $area1->nom_area : null,
-                "cod_area_responsable" => $area1 ? $area1->cod_area : null,
-                "id_departamento" => $area1 ? $area1->id_departamento : null,
-                "id_responsable" => $query->id_responsable,
-                "nom_responsable" => $query->nom_responsable_1, // Nombre completo primer responsable
-                "fec_cierre" => $query->fec_cierre,
-                "estado_registro" => $query->estado_registro
+                "area_responsable" => $area1->nom_area ?? null,
+                "cod_area_responsable" => $area1->cod_area ?? null,
+                "id_departamento" => $area1->id_departamento ?? null,
+                "id_responsable" => $query->id_responsable ?? null,
+                "nom_responsable" => $query->nom_responsable_1 ?? null,
+                "fec_cierre" => $query->fec_cierre ?? null,
+                "estado_registro" => $query->estado_registro ?? null,
             ];
 
             // Segundo área responsable
-            if (isset($areasArray[1])) {
-                $area2 = DB::table('area')
-                    ->leftJoin('soporte', 'area.id_area', '=', DB::raw($areasArray[1])) // LEFT JOIN con la tabla area
-                    ->select('area.nom_area', 'area.id_departamento', 'area.cod_area')
-                    ->where('soporte.id_soporte', $id_soporte)
-                    ->first();
-                $resultado[] = [
-                    "area_responsable" => $area2 ? $area2->nom_area : null,
-                    "cod_area_responsable" => $area2 ? $area2->cod_area : null,
-                    "id_departamento" => $area2 ? $area2->id_departamento : null,
-                    "id_responsable" => $query->id_segundo_responsable,
-                    "nom_responsable" => $query->nom_responsable_2, // Nombre completo segundo responsable
-                    "fec_cierre" => $query->fec_cierre_sr,
-                    "estado_registro" => $query->estado_registro_sr
-                ];
-            }
-            return $resultado;
+            $area2 = isset($areasArray[1]) ? DB::table('area')
+                ->select('area.nom_area', 'area.id_departamento', 'area.cod_area')
+                ->where('area.id_area', $areasArray[1])
+                ->first() : null;
+
+            $resultado[] = [
+                "area_responsable" => $area2->nom_area ?? null,
+                "cod_area_responsable" => $area2->cod_area ?? null,
+                "id_departamento" => $area2->id_departamento ?? null,
+                "id_responsable" => $query->id_segundo_responsable ?? null,
+                "nom_responsable" => $query->nom_responsable_2 ?? null,
+                "fec_cierre" => $query->fec_cierre_sr ?? null,
+                "estado_registro" => $query->estado_registro_sr ?? null,
+            ];
+        } else {
+            // Si no hay áreas, devolver posiciones vacías garantizando el formato
+            $resultado = [
+                [
+                    "area_responsable" => null,
+                    "cod_area_responsable" => null,
+                    "id_departamento" => null,
+                    "id_responsable" => null,
+                    "nom_responsable" => null,
+                    "fec_cierre" => null,
+                    "estado_registro" => null,
+                ],
+                [
+                    "area_responsable" => null,
+                    "cod_area_responsable" => null,
+                    "id_departamento" => null,
+                    "id_responsable" => null,
+                    "nom_responsable" => null,
+                    "fec_cierre" => null,
+                    "estado_registro" => null,
+                ]
+            ];
         }
-        return [];
+
+        return $resultado;
     }
+
 
 
 
