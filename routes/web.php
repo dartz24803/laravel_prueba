@@ -489,6 +489,7 @@ Route::controller(SoporteConfController::class)->group(function () {
     Route::get('soporte_area_esp_conf/create', 'create_area_esp_conf')->name('soporte_area_esp_conf.create');
     Route::post('soporte_area_esp_conf', 'store_area_esp_conf')->name('soporte_area_esp_conf.store');
     Route::get('area_especifica_por_sede', 'getAreaEspecificaPorSede')->name('area_especifica_por_sede');
+    Route::get('area_distinct_por_sede', 'getAllDistinctAreaPorSede')->name('area_distinct_por_sede');
 });
 
 
@@ -1809,8 +1810,8 @@ Route::controller(RequerimientoTiendaController::class)->group(function () {
 });
 //CALENDARIO LOGÍSTICO
 Route::controller(CalendarioLogisticoController::class)->group(function () {
-    Route::get('calendario_logistico', 'index_re')->name('calendario_logistico');
-    Route::post('calendario_logistico/list', 'list_re')->name('calendario_logistico.list');
+    Route::get('calendario_logistico', 'index')->name('calendario_logistico');
+    Route::post('calendario_logistico/list', 'list')->name('calendario_logistico.list');
     Route::get('calendario_logistico/create', 'create')->name('calendario_logistico.create');
     Route::post('calendario_logistico', 'store')->name('calendario_logistico.store');
     Route::get('calendario_logistico/{id}/edit', 'edit')->name('calendario_logistico.edit');

@@ -599,9 +599,10 @@
 
                         <div class="row align-items-center">
                             <div class="form-group col-md-12 mb-0">
-                                <textarea class="form-control" id="descripcione_solucion" name="descripcione_solucion" rows="3" placeholder="Ingresar solución">{{ $get_id->descripcion_solucion }}</textarea>
+                                <textarea class="form-control" id="descripcione_solucion" name="descripcione_solucion" rows="3" placeholder="Ingresar solución" maxlength="249">{{ $get_id->descripcion_solucion }}</textarea>
                             </div>
                         </div>
+
                     </div>
                 </div>
 

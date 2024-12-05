@@ -55,7 +55,7 @@ class Base extends Model
     public static function get_list_todas_bases_agrupadas()
     {
         $sql = "SELECT cod_base FROM base
-                WHERE estado=1 AND id_base NOT IN (1,11,12,30,33,35,36)
+                WHERE estado=1 AND id_base NOT IN (1,11,12,28,29,30,32,33,35,36)
                 GROUP BY cod_base
                 ORDER BY cod_base ASC";
         $query = DB::select($sql);

@@ -34,7 +34,10 @@
                                 <span style="font-weight:normal"><?php echo "Stand&nbsp;by"; ?></span><br>
 
                                 <input type="checkbox" id="ccancelado" name="ccancelado" value="1" onchange="Lista_Tabla_General_Estado();">
-                                <span style="font-weight:normal"><?php echo "Cancelado"; ?></span>
+                                <span style="font-weight:normal"><?php echo "Cancelado"; ?></span><br>
+
+                                <input type="checkbox" id="cderivado" name="cderivado" value="1" onchange="Lista_Tabla_General_Estado();">
+                                <span style="font-weight:normal"><?php echo "Derivado"; ?></span>
                             </div>
                         </div>
                         <div class="col-md-6 col-lg-2">
@@ -136,6 +139,7 @@
         var ccompletado = 0;
         var cstandby = 0;
         var ccancelado = 0;
+        var cderivado = 0;
 
         if ($('#cpiniciar').is(":checked")) {
             var cpiniciar = 1;
@@ -151,6 +155,9 @@
         }
         if ($('#ccancelado').is(":checked")) {
             var ccancelado = 1;
+        }
+        if ($('#cderivado').is(":checked")) {
+            var cderivado = 1;
         }
         var url = "{{ route('soporte_tablagenerales.list_filtro') }}";
         var csrfToken = $('input[name="_token"]').val();
@@ -168,7 +175,9 @@
                 'cproceso': cproceso,
                 'ccompletado': ccompletado,
                 'cstandby': cstandby,
-                'ccancelado': ccancelado
+                'ccancelado': ccancelado,
+                'cderivado': cderivado
+
             },
             success: function(data) {
                 $('#tabla_general').html(data);

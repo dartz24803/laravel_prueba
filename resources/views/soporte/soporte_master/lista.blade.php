@@ -55,9 +55,11 @@
                     ? '#FFE881'
                     : ($list->status_completado == true
                         ? '#5FB17B'
-                        : ($list->status_stand_by == true
+                       : ($list->status_standby == true
                             ? '#E2A03F'
-                            : '#bdc0cf'))) }};
+                            : ($list->status_derivado == true
+                                ? '#01b1f3'
+                                : '#bdc0cf')))) }};
             border-radius: 14px; padding: 1px; width: 80px;  color:
                    {{ $list->status_enproceso == true ? '#726f73' : 'white' }}; text-align: center; margin-right: 10px;">
                         @if ($list->status_poriniciar == true)
@@ -68,6 +70,8 @@
                         Completado
                         @elseif ($list->status_stand_by == true)
                         Stand By
+                        @elseif ($list->status_derivado == true)
+                        Derivado
                         @elseif ($list->status_cancelado == true)
                         Cancelado
                         @endif
@@ -88,7 +92,7 @@
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
                                 data-target="#ModalUpdate"
                                 app_elim="{{ url('soporte_ticket_master/ver/' . $list['id_soporte']) }}">Ver</a>
-                            @if ($list->status_cancelado === false && $list->status_completado === false)
+                            @if ($list->status_cancelado === false && $list->status_completado === false && $list->status_derivado === false)
                             <a class="dropdown-item" href="javascript:void(0);" data-toggle="modal"
                                 data-target="#ModalUpdate"
                                 app_elim="{{ url('soporte_ticket_master/edit/' . $list['id_soporte']) }}">Editar</a>
