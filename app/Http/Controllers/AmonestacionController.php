@@ -58,7 +58,7 @@ class AmonestacionController extends Controller
         $url = $this->modeloconfig->where('descrip_config', 'Documentos_Amonestacion')->where('estado', 1)->get();
         if (
             Session('usuario')->id_nivel == 1 || Session('usuario')->id_nivel == 2 ||
-            Session('usuario')->id_puesto == 128 || Session('usuario')->id_puesto == 22 ||
+            Session('usuario')->id_puesto == 22 || Session('usuario')->id_puesto == 128 ||
             Session('usuario')->id_puesto == 133 || Session('usuario')->id_puesto == 209 ||
             Session('usuario')->visualizar_amonestacion != "sin_acceso_amonestacion"
         ) {
