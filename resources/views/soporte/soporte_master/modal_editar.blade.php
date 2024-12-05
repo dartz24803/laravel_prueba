@@ -15,29 +15,65 @@
     }
 
 
-
-    #documentos-cargados h3 {
-        font-size: 1.5em;
-        margin-bottom: 10px;
+    .icon-link svg {
+        color: blue;
+        /* Color inicial */
+        cursor: pointer;
+        /* Cambia el cursor a mano */
+        transition: color 0.2s ease-in-out;
+        /* Animación suave */
     }
 
-    #documentos-cargados ul {
-        list-style-type: none;
-        padding: 0;
+    .icon-link svg:hover {
+        color: darkblue;
+        /* Cambia a azul más oscuro en hover */
+        transform: scale(1.1);
+        /* Efecto de agrandamiento */
     }
 
-    #documentos-cargados ul li {
-        margin-bottom: 8px;
+    .icon-link {
+        position: relative;
+        /* Posición relativa para el tooltip */
     }
 
-    #documentos-cargados a {
-        text-decoration: none;
-        color: #007bff;
+    .icon-link:hover::after {
+        content: attr(title);
+        /* Texto del tooltip desde el atributo title */
+        position: absolute;
+        /* Posición absoluta respecto al enlace */
+        top: 100%;
+        /* Aparece debajo del ícono */
+        left: 50%;
+        /* Centrado horizontalmente */
+        transform: translateX(-50%);
+        /* Ajusta el centrado */
+        background: #333;
+        /* Fondo oscuro para el tooltip */
+        color: #fff;
+        /* Texto blanco */
+        padding: 5px 10px;
+        /* Espaciado interno */
+        border-radius: 4px;
+        /* Bordes redondeados */
+        white-space: nowrap;
+        /* Evita el salto de línea */
+        font-size: 12px;
+        /* Tamaño de fuente reducido */
+        z-index: 10;
+        /* Asegura que esté encima de otros elementos */
+        opacity: 0;
+        /* Invisible por defecto */
+        visibility: hidden;
+        /* Oculto por defecto */
+        transition: opacity 0.2s ease-in-out, visibility 0.2s ease-in-out;
+        /* Animación suave */
     }
 
-    #documentos-cargados a:hover {
-        text-decoration: underline;
-        color: #0056b3;
+    .icon-link:hover::after {
+        opacity: 1;
+        /* Hace visible el tooltip en hover */
+        visibility: visible;
+        /* Hace visible el tooltip */
     }
 
     .center {
@@ -68,7 +104,6 @@
         /* Asegura que los elementos en línea no se rompan */
         overflow-x: auto;
         /* Habilita el scroll horizontal */
-        border: 1px solid #ccc;
         /* Opcional: Añade un borde para visualizar mejor el contenedor */
         padding: 10px;
         /* Opcional: Añade algo de padding para un mejor aspecto */
@@ -510,7 +545,6 @@
                             <div class="form-group col-md-12 mb-0">
                                 <label class="control-label text-bold">Solución Aplicada:</label>
                             </div>
-
                         </div>
                     </div>
                 </div>
@@ -519,18 +553,20 @@
                     <div class="col-xl-12 col-lg-12 col-sm-12">
                         @foreach ($comentarios_user as $comentario)
                         <div class="comment-box" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                            <p style="display: flex; justify-content: flex-end;margin-bottom: 0;">
+                                {{ $comentario->fec_comentario }}
+                            </p>
                             <div class="d-flex align-items-center">
                                 <div class="form-group text-center mx-3">
                                     <img src="{{ $comentario->foto ? $comentario->foto : asset('img/user-default.jpg') }}"
                                         alt="User Image" class="img-fluid rounded-circle img-user" style="max-width: 90px; height: 90px;">
                                 </div>
                                 <div class="form-group mx-3">
-                                    <p><strong>Fecha:</strong> {{ $comentario->fec_comentario }}</p>
-                                    <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
-                                    <!-- Comentario actual, que se convertirá en input cuando se edite -->
+
+                                    <p> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
                                     <p id="comentario-{{ $comentario->idsoporte_comentarios }}"
                                         style="max-width: 480px; word-wrap: break-word;">
-                                        <strong>Comentario:</strong>
+
                                         <span id="comentario-texto-{{ $comentario->idsoporte_comentarios }}">
                                             {{ $comentario->comentario ?: 'No hay comentario' }}
                                         </span>
@@ -596,7 +632,8 @@
 
                             @if ($get_id->documento1)
                             <li id="doc-item-1">Documento 1:
-                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento1 }}" target="_blank">
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento1 }}" target="_blank" class="icon-link ms-2"
+                                    title="Descargar">
                                     {{ $get_id->documento1 }}
                                 </a>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="cursor: pointer;" onclick="eliminarDocumento('{{ $get_id->idsoporte_solucion }}', 1)">
@@ -610,7 +647,8 @@
 
                             @if ($get_id->documento2)
                             <li id="doc-item-2">Documento 2:
-                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento2 }}" target="_blank">
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento2 }}" target="_blank" class="icon-link ms-2"
+                                    title="Descargar">
                                     {{ $get_id->documento2 }}
                                 </a>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="cursor: pointer;" onclick="eliminarDocumento('{{ $get_id->idsoporte_solucion }}',2)">
@@ -624,7 +662,8 @@
 
                             @if ($get_id->documento3)
                             <li id="doc-item-3">Documento 3:
-                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento3 }}" target="_blank">
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento3 }}" target="_blank" class="icon-link ms-2"
+                                    title="Descargar">
                                     {{ $get_id->documento3 }}
                                 </a>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2" style="cursor: pointer;" onclick="eliminarDocumento('{{ $get_id->idsoporte_solucion }}',3)">

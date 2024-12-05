@@ -14,6 +14,36 @@
         /* Margen horizontal automático */
     }
 
+    .document-link {
+        color: blue;
+        /* Color azul para los enlaces */
+        text-decoration: none;
+        /* Sin subrayado por defecto */
+        font-weight: bold;
+        /* Negrita para destacar */
+    }
+
+    .document-link:hover {
+        text-decoration: underline;
+        /* Subrayado al pasar el mouse */
+        color: darkblue;
+        /* Azul más oscuro en hover */
+    }
+
+    .icon-link svg {
+        color: blue;
+        /* Mismo color que los enlaces */
+        cursor: pointer;
+        /* Cambia el cursor a mano al pasar */
+        transition: color 0.2s ease-in-out;
+        /* Animación suave */
+    }
+
+    .icon-link svg:hover {
+        color: darkblue;
+        /* Azul más oscuro en hover */
+    }
+
     #div_imagenesver {
         display: flex;
         justify-content: center;
@@ -42,6 +72,13 @@
         width: 100%;
     }
 
+    #div_documentos_ver {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 100%;
+    }
+
     #div_imagenesver {
         display: flex;
         justify-content: center;
@@ -57,7 +94,6 @@
         overflow-x: auto;
         /* Scroll horizontal */
         gap: 10px;
-        border: 1px solid #ccc;
         padding: 10px;
     }
 
@@ -433,29 +469,38 @@
 
             <div class="tab-pane fade" id="solucion" role="tabpanel" aria-labelledby="solucion-tab">
 
-
-                <!-- Nueva sección para listar comentarios -->
-                <div class="row" id="comment-section" style="flex: 1; padding-top: 1rem;">
+                <div class="row" id="cancel-row" style="flex: 1; padding-top: 1rem;">
                     <div class="col-xl-12 col-lg-12 col-sm-12">
-                        <h5 class="text-bold">Solución Aplicada:</h5>
+                        <div class="row align-items-center">
+                            <div class="form-group col-md-12 mb-0">
+                                <label class="control-label text-bold">Solución Aplicada:</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row" style="flex: 1; padding-top: 1rem;">
+                    <div class="col-xl-12 col-lg-12 col-sm-12">
                         @foreach ($comentarios as $comentario)
                         <div class="comment-box" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">
+                            <p style="display: flex; justify-content: flex-end;margin-bottom: 0;">
+                                {{ $comentario->fec_comentario }}
+                            </p>
                             <div class="row align-items-center">
-                                <div class="form-group col-md-2 text-center">
+                                <div class="form-group text-center mx-3">
                                     <img src="{{ $comentario->foto ? $comentario->foto : asset('img/user-default.jpg') }}"
-                                        alt="User Image" class="img-fluid rounded-circle">
+                                        alt="User Image" class="img-fluid rounded-circle img-user" style="max-width: 90px; height: 90px;">
                                 </div>
-                                <div class="form-group col-md-10">
-                                    <!-- Contenedor de fecha y responsable -->
-                                    <div class="d-flex justify-content-between">
-                                        <p><strong>Responsable:</strong> {{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
-                                        <p>
-                                            {{ $comentario->fec_comentario 
-                                        ? \Carbon\Carbon::parse($comentario->fec_comentario)->locale('es')->translatedFormat('D d M Y H:i') 
-                                        : 'No especificado' }}
-                                        </p>
-                                    </div>
-                                    <p style="max-width: 480px; word-wrap: break-word;"> <strong>Comentario:</strong> {{ $comentario->comentario ?: 'No hay comentario' }}</p>
+                                <div class="form-group mx-3">
+
+                                    <p>{{ $comentario->nombre_responsable_solucion ?: 'No designado' }}</p>
+                                    <p id="comentario-{{ $comentario->idsoporte_comentarios }}"
+                                        style="max-width: 480px; word-wrap: break-word;">
+
+                                        <span id="comentario-texto-{{ $comentario->idsoporte_comentarios }}">
+                                            {{ $comentario->comentario ?: 'No hay comentario' }}
+                                        </span>
+                                    </p>
+
                                 </div>
                             </div>
                         </div>
@@ -463,8 +508,80 @@
                     </div>
                 </div>
 
+                <label class="d-block mb-3">Documentos Cargados:</label>
+
+                <div class="row justify-content-center" id="documentos-cargados">
+                    <div class="col-md-12 text-center" id="div_documentos_ver">
+                        @if ($get_id->documento1 || $get_id->documento2 || $get_id->documento3)
+                        <ul id="documentos-lista" class="list-unstyled">
+                            @if ($get_id->documento1)
+                            <li id="doc-item-1" class="mb-2">
+                                Documento 1:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento1 }}"
+                                    target="_blank"
+                                    class="document-link">
+                                    {{ $get_id->documento1 }}
+                                </a>
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento1 }}"
+                                    target="_blank"
+                                    class="icon-link ms-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download-cloud">
+                                        <polyline points="8 17 12 21 16 17"></polyline>
+                                        <line x1="12" y1="12" x2="12" y2="21"></line>
+                                        <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
+                                    </svg>
+                                </a>
+                            </li>
+                            @endif
+
+                            @if ($get_id->documento2)
+                            <li id="doc-item-2" class="mb-2">
+                                Documento 2:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento2 }}"
+                                    target="_blank"
+                                    class="document-link">
+                                    {{ $get_id->documento2 }}
+                                </a>
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento2 }}"
+                                    target="_blank"
+                                    class="icon-link ms-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download-cloud">
+                                        <polyline points="8 17 12 21 16 17"></polyline>
+                                        <line x1="12" y1="12" x2="12" y2="21"></line>
+                                        <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
+                                    </svg>
+                                </a>
+                            </li>
+                            @endif
+
+                            @if ($get_id->documento3)
+                            <li id="doc-item-3" class="mb-2">
+                                Documento 3:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento3 }}"
+                                    target="_blank"
+                                    class="document-link">
+                                    {{ $get_id->documento3 }}
+                                </a>
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento3 }}"
+                                    target="_blank"
+                                    class="icon-link ms-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download-cloud">
+                                        <polyline points="8 17 12 21 16 17"></polyline>
+                                        <line x1="12" y1="12" x2="12" y2="21"></line>
+                                        <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
+                                    </svg>
+                                </a>
+                            </li>
+                            @endif
+                        </ul>
+                        @else
+                        <p>No se han cargado documentos.</p>
+                        @endif
+                    </div>
+                </div>
 
 
+                <label class="d-block mb-3">Imagenes Cargadas:</label>
                 <div class="row" style="padding-top: 1rem;">
                     <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imagenes_ver">
                         <input type="hidden" id="imagenes_input" name="imagenes" value="">

@@ -8,11 +8,52 @@ use App\Models\AsistenciaColaboradorMarcaciones;
 use App\Models\BiotimeTemp;
 use App\Models\Feriado;
 use App\Models\HorarioDia;
+use App\Models\ToleranciaHorario;
+use App\Models\Turno;
 use App\Models\Usuario;
 use Illuminate\Support\Facades\DB;
 
 class CronController extends Controller
 {
+    public function update_tolerancia_horario()
+    {
+        $list_horario_dia = HorarioDia::select('id_horario_dia','id_turno')->where('estado',1)->get();
+
+        foreach($list_horario_dia as $list){
+            $get_id = Turno::findOrFail($list->id_turno);
+
+            HorarioDia::findOrFail($list->id_horario_dia)->update([
+                'hora_entrada' => $get_id->entrada,
+                'hora_salida' => $get_id->salida,
+                'con_descanso' => $get_id->t_refrigerio,
+                'hora_descanso_e' => $get_id->ini_refri,
+                'hora_descanso_s' => $get_id->fin_refri
+            ]);
+        }
+
+        $get_id = ToleranciaHorario::select(DB::raw("CASE WHEN tipo=1 THEN tolerancia 
+                WHEN tipo=2 THEN tolerancia*60 END AS minutos"))->where('estado',1)
+                ->where('estado_registro',1)->first();
+        if($get_id){
+            $minutos = $get_id->minutos;
+        }else{
+            $minutos = 0;
+        }
+
+        DB::update("
+            UPDATE horario_dia SET
+            hora_entrada_desde=(DATE_FORMAT(DATE_SUB(hora_entrada,INTERVAL ? MINUTE), '%H:%i:%s')),
+            hora_entrada_hasta=(DATE_FORMAT(DATE_ADD(hora_entrada,INTERVAL ? MINUTE), '%H:%i:%s')),
+            hora_salida_desde=(DATE_FORMAT(DATE_SUB(hora_salida,INTERVAL ? MINUTE), '%H:%i:%s')),
+            hora_salida_hasta=(DATE_FORMAT(DATE_ADD(hora_salida,INTERVAL ? MINUTE), '%H:%i:%s')),
+            hora_descanso_e_desde=(DATE_FORMAT(DATE_SUB(hora_descanso_e,INTERVAL ? MINUTE), '%H:%i:%s')),
+            hora_descanso_e_hasta=(DATE_FORMAT(DATE_ADD(hora_descanso_e,INTERVAL ? MINUTE), '%H:%i:%s')),
+            hora_descanso_s_desde=(DATE_FORMAT(DATE_SUB(hora_descanso_s,INTERVAL ? MINUTE), '%H:%i:%s')),
+            hora_descanso_s_hasta=(DATE_FORMAT(DATE_ADD(hora_descanso_s,INTERVAL ? MINUTE), '%H:%i:%s'))
+            WHERE estado=1
+        ", [$minutos,$minutos,$minutos,$minutos,$minutos,$minutos,$minutos,$minutos]);
+    }
+
     public function insert_asistencia_colaborador()
     {
         /*SE COLOCA LA FECHA QUE SE VA CARGAR LA ASISTENCIA (POR DEFECTO LA DE HOY, 
