@@ -1,6 +1,55 @@
 @extends('layouts.plantilla')
 
 @section('content')
+    <style>
+        @foreach($list_tipo_calendario_todo as $list)
+            .radio-<?= $list['id_tipo_calendario']; ?> span.new-control-indicator {
+                border: 2px solid <?= $list['color']; ?>; 
+            }
+            .new-control.new-checkbox.new-checkbox-text.checkbox-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-chk-content, .new-control.new-checkbox.new-checkbox-text.checkbox-outline-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-chk-content {
+                color: <?= $list['color']; ?>; 
+            }
+            .new-control.new-checkbox.checkbox-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator {
+                background: <?= $list['color']; ?>; 
+            }
+            .new-control.new-checkbox.checkbox-outline-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator {
+                border: 2px solid <?= $list['color']; ?>; 
+            }
+            .new-control.new-checkbox.checkbox-outline-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator:after {
+                border-color: <?= $list['color']; ?>; 
+            }
+            .new-control.new-radio.radio-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator {
+                background: <?= $list['color']; ?>; 
+            }
+            .new-control.new-radio.radio-classic-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator {
+                border: 3px solid <?= $list['color']; ?>; 
+            }
+            .new-control.new-radio.radio-classic-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator:after {
+                background-color: <?= $list['color']; ?>; 
+            }
+            .new-control.new-radio.new-radio-text.radio-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-radio-content, .new-control.new-radio.new-radio-text.radio-classic-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-radio-content {
+                color: <?= $list['color']; ?>; 
+            }
+            .label-<?= $list->id_tipo_calendario; ?>:before {
+                background: <?= $list->color." !important"; ?>
+            }
+            .bg-<?= $list->id_tipo_calendario; ?> {
+                background-color: <?= $list->background; ?> !important;
+                border-color: <?= $list->color; ?> !important;
+                color: #fff;
+                -webkit-box-shadow: none !important;
+                box-shadow: none !important; 
+            }
+            a.bg-<?= $list->id_tipo_calendario; ?>:hover {
+                background-color: inherit !important;
+                border-width: 2px !important; 
+            }
+            .fc-day-grid-event.bg-<?= $list->id_tipo_calendario; ?> .fc-content:before {
+                background: <?= $list->color; ?>; 
+            }
+        @endforeach
+    </style>
+
     <div id="content" class="main-content">
         <div class="layout-px-spacing">
             <div class="row layout-top-spacing" id="cancel-row">
@@ -11,19 +60,14 @@
                                 <div class="row">
                                     <div class="col-md-8 col-12">
                                         <div class="labels">
-                                            @foreach ($list_tipo_calendario as $list)
-                                                <style>
-                                                    .label-primary{{ $list->id_tipo_calendario }}:before {
-                                                        background: @php echo $list->color." !important" @endphp;
-                                                    }
-                                                </style>
-                                                <p class="label label-primary{{ $list->id_tipo_calendario }}">{{ $list->nom_tipo_calendario }}</p>
+                                            @foreach ($list_tipo_calendario_todo as $list)
+                                                <p class="label label-{{ $list->id_tipo_calendario }}">{{ $list->nom_tipo_calendario }}</p>
                                             @endforeach
                                         </div>
                                     </div>                                                
                                     <div class="col-md-4 col-12">
                                         <form action="javascript:void(0);" class="form-horizontal mt-md-0 mt-3 text-md-right text-center">
-                                            <button id="myBtn" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mr-2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Add Event</button>
+                                            <button id="myBtn" class="btn btn-primary"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar mr-2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Agregar Cita</button>
                                         </form>
                                     </div>
                                 </div>
@@ -34,99 +78,103 @@
                 </div>
 
                 <!-- The Modal -->
-                <div id="addEventsModal" class="modal animated fadeIn">
+                <div id="addEventsModal"data-backdrop="static"  class="modal animated fadeIn">
 
-                    <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-dialog modal-lg modal-dialog-centered">
                         
                         <!-- Modal content -->
                         <div class="modal-content">
 
                             <div class="modal-body">
 
-                                <span class="close">&times;</span>
+                                <span id="close_modal" class="close">&times;</span>
 
                                 <div class="add-edit-event-box">
                                     <div class="add-edit-event-content">
-                                        <h5 class="add-event-title modal-title">Add Events</h5>
-                                        <h5 class="edit-event-title modal-title">Edit Events</h5>
+                                        <h5 class="add-event-title modal-title">Registrar Nueva Cita</h5>
+                                        <h5 class="edit-event-title modal-title">Editar Cita</h5>
 
-                                        <form class="">
-
+                                        <form id="formulario_cal" method="POST" enctype="multipart/form-data" class="needs-validation">
                                             <div class="row">
-
-                                                <div class="col-md-12">
-                                                    <label for="start-date" class="">Event Title:</label>
-                                                    <div class="d-flex event-title">
-                                                        <input id="write-e" type="text" placeholder="Enter Title" class="form-control" name="task">
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6 col-sm-6 col-12">
-                                                    <div class="form-group start-date">
-                                                        <label for="start-date" class="">From:</label>
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="start-date" class="">De:</label>
                                                         <div class="d-flex">
-                                                            <input id="start-date" placeholder="Start Date" class="form-control" type="text">
+                                                            <input id="start-date" placeholder="Fecha Inicial" class="form-control" type="text" name="start-date" value="<?= date('Y-m-d h:i') ?>">
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-md-6 col-sm-6 col-12">
-                                                    <div class="form-group end-date">
-                                                        <label for="end-date" class="">To:</label>
+
+                                                <div class="col-lg-6">
+                                                    <div class="form-group">
+                                                        <label for="end-date" class="">Hasta:</label>
                                                         <div class="d-flex">
-                                                            <input id="end-date" placeholder="End Date" type="text" class="form-control">
+                                                            <input id="end-date" placeholder="Fecha Final" type="text" class="form-control" name="end-date">
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row">
-                                                <div class="col-md-12">
-                                                    <label for="start-date" class="">Event Description:</label>
-                                                    <div class="d-flex event-description">
-                                                        <textarea id="taskdescription" placeholder="Enter Description" rows="3" class="form-control" name="taskdescription"></textarea>
+                                                <div class="col-lg-12">
+                                                    <label for="write-e" class="">Título:</label>
+                                                    <div class="d-flex">
+                                                        <input id="write-e" type="text" placeholder="Título" class="form-control" name="task">
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row">
-                                                <div class="col-md-12">
-                                                    <div class="event-badge">
-                                                        <p class="">Badge:</p>
-
-                                                        <div class="d-sm-flex d-block">
-                                                            <div class="n-chk">
-                                                                <label class="new-control new-radio radio-primary">
-                                                                  <input type="radio" class="new-control-input" name="marker" value="bg-primary">
-                                                                  <span class="new-control-indicator"></span>Work
-                                                                </label>
-                                                            </div>
-
-                                                            <div class="n-chk">
-                                                                <label class="new-control new-radio radio-warning">
-                                                                  <input type="radio" class="new-control-input" name="marker" value="bg-warning">
-                                                                  <span class="new-control-indicator"></span>Travel
-                                                                </label>
-                                                            </div>
-
-                                                            <div class="n-chk">
-                                                                <label class="new-control new-radio radio-success">
-                                                                  <input type="radio" class="new-control-input" name="marker" value="bg-success">
-                                                                  <span class="new-control-indicator"></span>Personal
-                                                                </label>
-                                                            </div>
-
-                                                            <div class="n-chk">
-                                                                <label class="new-control new-radio radio-danger">
-                                                                  <input type="radio" class="new-control-input" name="marker" value="bg-danger">
-                                                                  <span class="new-control-indicator"></span>Important
-                                                                </label>
-                                                            </div>
-                                                        </div>
-
+                                                <div class="col-lg-12">
+                                                    <label for="taskdescription" class="">Descripción:</label>
+                                                    <div class="d-flex">
+                                                        <textarea id="taskdescription" placeholder="Descripción" rows="2" class="form-control" name="taskdescription"></textarea>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <label for="cod_base" class="">Base:</label>
+                                                    <div id="div_base" class="d-flex">
+                                                        <select class="form-control" name="cod_base" id="cod_base">
+                                                            <option value="0" >Seleccione</option>
+                                                            @foreach ($list_base as $list)
+                                                                <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6">
+                                                    <label for="cant_prendase" class="">Cantidad:</label>
+                                                    <div class="d-flex">
+                                                        <input id="cant_prendase" type="text" placeholder="Cantidad" class="form-control" name="cant_prendas">
                                                     </div>
                                                 </div>
                                             </div>
 
+                                            <div class="row">
+                                                <div class="form-group col-lg-12">
+                                                    <label>Tipo:</label>
+                                                </div>
+                                                @foreach ($list_tipo_calendario as $list)
+                                                    <div class="form-group col-lg-3">
+                                                        <label class="new-control new-radio 
+                                                        radio-<?= $list->id_tipo_calendario ?>">
+                                                            <input type="radio" 
+                                                            <?php if($list->id_tipo_calendario=="2" && 
+                                                            (session('usuario')->id_puesto=="75")){ echo "checked"; } ?> 
+                                                            class="new-control-input mr-2" 
+                                                            id="r_<?= $list->id_tipo_calendario ?>" 
+                                                            name="id_tipo_calendario" 
+                                                            value="<?= $list->id_tipo_calendario ?>">
+                                                            <span class="new-control-indicator"></span><?= $list->nom_tipo_calendario ?>
+                                                        </label>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+
+                                            <input type="hidden" class="form-control" id="id_calendario" name="id_calendario">
                                         </form>
                                     </div>
                                 </div>
@@ -134,9 +182,9 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button id="discard" class="btn" data-dismiss="modal">Discard</button>
-                                <button id="add-e" class="btn">Add Task</button>
-                                <button id="edit-event" class="btn">Save</button>
+                                <button id="add-e" class="btn">Guardar</button>
+                                <button id="edit-event" class="btn">Guardar</button>
+                                <button id="discard_modal" class="btn" data-dismiss="modal">Cerrar</button>
                             </div>
 
                         </div>
@@ -164,7 +212,7 @@
             // Get the Edit Event button
             var editEvent = document.getElementById("edit-event");
             // Get the Discard Modal button
-            var discardModal = document.querySelectorAll("[data-dismiss='modal']")[0];
+            var discardModal = document.getElementById("discard_modal");
 
             // Get the Add Event button
             var addEventTitle = document.getElementsByClassName("add-event-title")[0];
@@ -172,7 +220,7 @@
             var editEventTitle = document.getElementsByClassName("edit-event-title")[0];
 
             // Get the <span> element that closes the modal
-            var span = document.getElementsByClassName("close")[0];
+            var span = document.getElementById("close_modal");
 
             // Get the all <input> elements insdie the modal
             var input = document.querySelectorAll('input[type="text"]');
@@ -282,6 +330,7 @@
             -----------------------------------------------------------------*/
 
             var calendar = $('#calendar').fullCalendar({
+                defaultView: 'agendaWeek',
                 header: {
                     left: 'prev,next today',
                     center: 'title',
@@ -294,7 +343,7 @@
                             title: '{{ $list->titulo }}',
                             start: '{{ $list->fec_de }}',
                             end: '{{ $list->fec_hasta }}',
-                            className: "bg-primary",
+                            className: "bg-{{ $list->id_tipo_calendario }}",
                             description: '{{ preg_replace("/[\r\n|\n|\r]+/"," ",$list->descripcion) }}',
                             tipo: '{{ $list->id_tipo_calendario }}',
                             proveedor: 'Proveedor',
@@ -446,14 +495,14 @@
                 var myCalendar = $('#calendar');
                 myCalendar.fullCalendar();
                 var myEvent = {
-                timeZone: 'UTC',
-                allDay : false,
-                id: randomAlphaNumeric,
-                title:inputValue,
-                start: concatenateStartDateTime,
-                end: concatenateEndDateTime,
-                className: radioValue,
-                description: inputDescription
+                    timeZone: 'UTC',
+                    allDay : false,
+                    id: randomAlphaNumeric,
+                    title:inputValue,
+                    start: concatenateStartDateTime,
+                    end: concatenateEndDateTime,
+                    className: radioValue,
+                    description: inputDescription
                 };
                 myCalendar.fullCalendar( 'renderEvent', myEvent, true );
                 modal.style.display = "none";
@@ -493,37 +542,5 @@
                 })
             }
         });
-        
-        function Requerimiento_Reposicion(){
-            Cargando();
-
-            var url="{{ route('requerimiento_tienda_re') }}";
-
-            $.ajax({
-                url: url,
-                type: "GET",
-                success:function (resp) {
-                    $('#div_requerimiento_tienda').html(resp);  
-                    $("#a_rrep").addClass('active');
-                    $("#a_mnue").removeClass('active');
-                }
-            });
-        }
-
-        function Mercaderia_Nueva(){
-            Cargando();
-
-            var url="{{ route('requerimiento_tienda_mn') }}";
-
-            $.ajax({
-                url: url,
-                type: "GET",
-                success:function (resp) {
-                    $('#div_requerimiento_tienda').html(resp);  
-                    $("#a_rrep").removeClass('active');
-                    $("#a_mnue").addClass('active');
-                }
-            });
-        }
     </script>
 @endsection
