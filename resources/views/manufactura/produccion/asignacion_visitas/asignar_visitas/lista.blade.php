@@ -37,30 +37,39 @@
         @foreach ($list_asignacion as $asignacion)
         <tr class="text-center">
             <td>{{ \Carbon\Carbon::parse($asignacion->fecha)->locale('es')->translatedFormat('D d M y') }}</td>
-            <td>{{ $asignacion->nombre_completo }}</td> <!-- Si tienes que mostrar el nombre del inspector, podrías hacer una relación y extraerlo -->
-            <td>{{ $asignacion->proveedor_responsable_partida }}</td>
-            <td>{{ $asignacion->proveedor_responsable_llegada }}</td>
-            <td title="{{$asignacion->nom_modelo }}">
-                <a href="{{ $asignacion->img_ft_produccion }}" target="_blank" style="color: blue; text-decoration: underline;">
-                    {{ $asignacion->nom_modelo }}
-                </a>
-            </td>
+            <td>{{ $asignacion->usuario_nombres." ".$asignacion->usuario_apater." ".$asignacion->usuario_amater; }}</td> <!-- Si tienes que mostrar el nombre del inspector, podrías hacer una relación y extraerlo -->
+            <td>{{ $asignacion->desc_punto_partida }}</td>
+            <td>{{ $asignacion->desc_punto_llegada }}</td>
+            <td nowrap>
+                @php
+                    $imgs = explode(',', $asignacion->url_modelos);
+                @endphp
+            
+                @foreach ($imgs as $im)
+                    @php
+                        $cadena_img = explode('___', $im);
+                    @endphp
+            
+                    @if (count($cadena_img) == 2)
+                        <a href="javascript:void(0)" 
+                           data-toggle="modal" 
+                           data-target="#Modal_IMG_Link" 
+                           data-imagen="{{ $cadena_img[0] }}" 
+                           data-title="{{ $cadena_img[1] }}" 
+                           title="{{ $cadena_img[1] }}" 
+                           class="url_img">
+                            {{ $cadena_img[1] }}
+                        </a>
+                        <br>
+                    @endif
+                @endforeach
+            </td>            
             <td>{{ $asignacion->nom_proceso }}</td>
-            <td>{{ $asignacion->nom_tipo_transporte }}</td>
-            <td>S/{{ $asignacion->total_costo ?? '0' }}</td>
-            <td>{{ \Carbon\Carbon::parse($asignacion->fec_ini_visita)->locale('es')->translatedFormat('D d M y H:i') }}</td>
-            <td>{{ \Carbon\Carbon::parse($asignacion->fec_fin_visita)->locale('es')->translatedFormat('D d M y H:i') }}</td>
-            <td>
-                @if ($asignacion->estado_registro == 1)
-                Por Iniciar
-                @elseif ($asignacion->estado_registro == 2)
-                Iniciado
-                @elseif ($asignacion->estado_registro == 3)
-                Finalizado
-                @else
-                Desconocido
-                @endif
-            </td>
+            <td>{{ $asignacion->transporte }}</td>
+            <td>S/{{ $asignacion->total_transporte ?? '0' }}</td>
+            <td>{{ \Carbon\Carbon::parse($asignacion->fecha_inicio)->locale('es')->translatedFormat('D d M y H:i') }}</td>
+            <td>{{ \Carbon\Carbon::parse($asignacion->fecha_fin)->locale('es')->translatedFormat('D d M y H:i') }}</td>
+            <td>{{ $asignacion->desc_estado_registro }}</td>
             <td>
                 <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('produccion_av.edit', $asignacion->id_asignacion_visita) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">

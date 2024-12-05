@@ -423,7 +423,9 @@ class ProduccionController extends Controller
     {
         $idUsuario = session('usuario')->id_usuario;
 
-        $list_asignacion = AsignacionVisita::getListAsignacion($fecha, $fecha_fin, $idUsuario);
+        $dato['fini']= $fecha;
+        $dato['ffin']= $fecha_fin;
+        $list_asignacion = AsignacionVisita::get_list_asignacion_visita(0, $dato);
 
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.lista', compact('list_asignacion'));
     }
