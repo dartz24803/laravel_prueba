@@ -2,52 +2,52 @@
 
 @section('content')
     <style>
-        @foreach($list_tipo_calendario_todo as $list)
-            .radio-<?= $list['id_tipo_calendario']; ?> span.new-control-indicator {
-                border: 2px solid <?= $list['color']; ?>; 
+        <?php foreach($list_tipo_calendario_todo as $list){ ?>
+            .radio-{{ $list->id_tipo_calendario }} span.new-control-indicator {
+                border: 2px solid {{ $list['color']; }}; 
             }
-            .new-control.new-checkbox.new-checkbox-text.checkbox-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-chk-content, .new-control.new-checkbox.new-checkbox-text.checkbox-outline-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-chk-content {
-                color: <?= $list['color']; ?>; 
+            .new-control.new-checkbox.new-checkbox-text.checkbox-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-chk-content, .new-control.new-checkbox.new-checkbox-text.checkbox-outline-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-chk-content {
+                color: {{ $list['color']; }}; 
             }
-            .new-control.new-checkbox.checkbox-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator {
-                background: <?= $list['color']; ?>; 
+            .new-control.new-checkbox.checkbox-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator {
+                background: {{ $list['color']; }}; 
             }
-            .new-control.new-checkbox.checkbox-outline-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator {
-                border: 2px solid <?= $list['color']; ?>; 
+            .new-control.new-checkbox.checkbox-outline-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator {
+                border: 2px solid {{ $list['color']; }}; 
             }
-            .new-control.new-checkbox.checkbox-outline-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator:after {
-                border-color: <?= $list['color']; ?>; 
+            .new-control.new-checkbox.checkbox-outline-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator:after {
+                border-color: {{ $list['color']; }}; 
             }
-            .new-control.new-radio.radio-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator {
-                background: <?= $list['color']; ?>; 
+            .new-control.new-radio.radio-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator {
+                background: {{ $list['color']; }}; 
             }
-            .new-control.new-radio.radio-classic-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator {
-                border: 3px solid <?= $list['color']; ?>; 
+            .new-control.new-radio.radio-classic-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator {
+                border: 3px solid {{ $list['color']; }}; 
             }
-            .new-control.new-radio.radio-classic-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-control-indicator:after {
-                background-color: <?= $list['color']; ?>; 
+            .new-control.new-radio.radio-classic-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator:after {
+                background-color: {{ $list['color']; }}; 
             }
-            .new-control.new-radio.new-radio-text.radio-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-radio-content, .new-control.new-radio.new-radio-text.radio-classic-<?= $list['id_tipo_calendario']; ?> > input:checked ~ span.new-radio-content {
-                color: <?= $list['color']; ?>; 
+            .new-control.new-radio.new-radio-text.radio-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-radio-content, .new-control.new-radio.new-radio-text.radio-classic-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-radio-content {
+                color: {{ $list['color']; }}; 
             }
-            .label-<?= $list->id_tipo_calendario; ?>:before {
-                background: <?= $list->color." !important"; ?>
+            .label-{{ $list->id_tipo_calendario; }}:before {
+                background: {{ $list->color." !important"; }}
             }
-            .bg-<?= $list->id_tipo_calendario; ?> {
-                background-color: <?= $list->background; ?> !important;
-                border-color: <?= $list->color; ?> !important;
+            .bg-{{ $list->id_tipo_calendario; }} {
+                background-color: {{ $list->background; }} !important;
+                border-color: {{ $list->color; }} !important;
                 color: #fff;
                 -webkit-box-shadow: none !important;
                 box-shadow: none !important; 
             }
-            a.bg-<?= $list->id_tipo_calendario; ?>:hover {
+            a.bg-{{ $list->id_tipo_calendario; }}:hover {
                 background-color: inherit !important;
                 border-width: 2px !important; 
             }
-            .fc-day-grid-event.bg-<?= $list->id_tipo_calendario; ?> .fc-content:before {
-                background: <?= $list->color; ?>; 
+            .fc-day-grid-event.bg-{{ $list->id_tipo_calendario; }} .fc-content:before {
+                background: {{ $list->color; }}; 
             }
-        @endforeach
+        <?php } ?>
     </style>
 
     <div id="content" class="main-content">
