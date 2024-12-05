@@ -75,13 +75,6 @@
             </div>
         </a>
         <ul class="collapse submenu list-unstyled" id="rcomercial" data-parent="#accordionExample">
-            <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 5) { ?>
-                <li id="sprocedure">
-                    <a href="{{ url('ActualizacionProcedimientos/index') }}">
-                        <p class="romperpalabra" title="Actualizacion de Procedimientos"><span id="icono_active2"></span> Actualizacion de Procedimientos</p>
-                    </a>
-                </li>
-            <?php } ?>
             <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 40 || session('usuario')->id_puesto == 164 || session('usuario')->id_puesto == 153) { ?>
                 <li id="rvisitas">
                     <a href="{{ url('ContadorVisitas/index') }}">

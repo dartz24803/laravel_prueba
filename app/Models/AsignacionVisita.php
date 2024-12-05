@@ -212,6 +212,6 @@ class AsignacionVisita extends Model
         
         $result = DB::select($sql);
         // Convertir el resultado a un array
-        return json_decode(json_encode($result), true);
+        return $result;
     }
 }

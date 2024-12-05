@@ -28,7 +28,7 @@
     <tbody>
         @foreach ($list_ficha_tecnica as $fichatec)
         <tr class="text-center">
-            <td>{{ \Carbon\Carbon::parse($fichatec->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
+            <td data-order="{{ $fichatec->fec_reg }}">{{ \Carbon\Carbon::parse($fichatec->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $fichatec->nombre_completo }}</td> <!-- Si tienes que mostrar el nombre del inspector, podrías hacer una relación y extraerlo -->
             <td>{{ $fichatec->modelo }}</td>
             <td>
@@ -63,7 +63,7 @@
                 "targets": [1, 2]
             } // Aplica el ancho específico a las columnas 2 y 3
         ],
-        "order": [],
+        "order": [0, 'desc'],
         "autoWidth": false, // Desactiva el auto ajuste de ancho de DataTables
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
             "<'table-responsive'tr>" +

@@ -95,7 +95,8 @@ class MercaderiaSurtida extends Model
             }
             $sql = "SELECT id_padre AS id,estilo,tipo_usuario
                     FROM mercaderia_surtida
-                    WHERE tipo=3 AND base=? $parte
+                    WHERE tipo=3 AND base=? AND 
+                    TRY_CAST(fecha AS DATE) >= DATEADD(DAY, -2, GETDATE()) $parte
                     GROUP BY id_padre,estilo,tipo_usuario
                     ORDER BY id DESC";
             $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base'],$dato['tipo_usuario']]);
@@ -116,7 +117,8 @@ class MercaderiaSurtida extends Model
         if(isset($dato['estilo'])){
             $sql = "SELECT tipo_usuario
                     FROM mercaderia_surtida
-                    WHERE tipo=3 AND base=?
+                    WHERE tipo=3 AND base=? AND 
+                    TRY_CAST(fecha AS DATE) >= DATEADD(DAY, -2, GETDATE())
                     GROUP BY tipo_usuario";
             $query = DB::connection('sqlsrv')->select($sql, [$dato['cod_base']]);
         }else{
