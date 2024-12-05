@@ -39,7 +39,7 @@
         <tr>
             <td>{{ $list->fec_reg }}</td>
             <td>{{ $list->codigo }}</td>
-            <td>{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
+            <td data-order"{{ $list->fec_reg }}">{{ \Carbon\Carbon::parse($list->fec_reg)->locale('es')->translatedFormat('D d M y') }}</td>
             <td>{{ $list->base }}</td>
             <td>{{ $list->usuario_nombre_completo }}</td>
             <td>{{ $list->nombre_especialidad }}</td>

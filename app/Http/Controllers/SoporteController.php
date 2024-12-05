@@ -74,7 +74,6 @@ class SoporteController extends Controller
         $list_subgerencia = SubGerencia::list_subgerencia(9);
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-
         return view('soporte.soporte.index', compact('list_notificacion', 'list_subgerencia'));
     }
 
@@ -83,7 +82,6 @@ class SoporteController extends Controller
     {
         $list_tickets_soporte = Soporte::listTicketsSoporte();
         $id_usuario = session('usuario')->id_usuario;
-
         $acceso_pp = Soporte::userExistsInAreaWithPuesto(18, $id_usuario);
         // VALIDACIÓN DE ESTADOS EN PROCESO Y COMPLETADO PARA CADA MODULO
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) {;
@@ -100,14 +98,14 @@ class SoporteController extends Controller
                 $ticket->status_completado = true;
             } elseif ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5) {
                 $ticket->status_cancelado = true;
-            } elseif ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1) {
-                $ticket->status_poriniciar = true;
             } elseif ($ticket->estado_registro_sr == 4 || $ticket->estado_registro == 4) {
                 $ticket->status_standby = true;
             } elseif ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2) {
                 $ticket->status_enproceso = true;
             } elseif ($ticket->estado_registro == 6 || $ticket->estado_registro_sr == 6) {
                 $ticket->status_derivado = true;
+            } elseif ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1) {
+                $ticket->status_poriniciar = true;
             } else {
                 $ticket->status_enproceso = true;
             }
@@ -125,26 +123,12 @@ class SoporteController extends Controller
             ->where('id', '!=', 4)
             ->orderBy('nombre', 'asc')
             ->get();
-
-
         $especialidadConId4 = Especialidad::select('id', 'nombre')
             ->where('id', 4)
             ->first();
         if ($especialidadConId4) {
             $list_especialidad->push($especialidadConId4);
         }
-        $list_elemento = ElementoSoporte::select('idsoporte_elemento', 'nombre')->get();
-
-        $id_sede = SedeLaboral::obtenerIdSede();
-
-        $list_responsable = Puesto::select('puesto.id_puesto', 'puesto.nom_puesto', 'area.cod_area')
-            ->join('area', 'puesto.id_area', '=', 'area.id_area')
-            ->where('puesto.estado', 1)
-            ->orderBy('puesto.nom_puesto', 'ASC')
-            ->get()
-            ->unique('nom_puesto');
-
-        $list_base = Base::get_list_todas_bases_agrupadas_bi();
 
         $list_area = Area::select('id_area', 'nom_area')
             ->where('estado', 1)
@@ -153,10 +137,10 @@ class SoporteController extends Controller
             ->distinct('nom_area')
             ->get();
 
-        return view('soporte.soporte.modal_registrar', compact('list_responsable', 'list_area', 'list_base', 'list_especialidad', 'list_elemento'));
+        return view('soporte.soporte.modal_registrar', compact('list_area', 'list_especialidad'));
     }
 
-    public function getSoporteNivelPorSede(Request $request)
+    public function getSoporteNivelPorSede()
     {
         // Obtener id_sede desde la función estática de SedeLaboral
         $idSede = SedeLaboral::obtenerIdSede();
@@ -240,14 +224,12 @@ class SoporteController extends Controller
             'descripcion' => 'required',
             'descripcion' => 'max:150',
         ];
-
         $messages = [
             'especialidad.gt' => 'Debe seleccionar especialidad.',
             'idsoporte_nivel.gt' => 'Debe ingresar Ubicaciòn.',
             'vencimiento.required' => 'Debe ingresar vencimiento.',
             'descripcion.required' => 'Debe ingresar propósito.',
             'descripcion.max' => 'El propósito debe tener como máximo 150 carácteres.',
-
         ];
         if ($request->hasOptionsFieldEspecialidad == "0") {
             $rules = array_merge($rules, [
@@ -280,7 +262,6 @@ class SoporteController extends Controller
             ]);
         }
         // GENERACIÓN DE CÓDIGO
-
         $cod_area = Soporte::getCodAreaByAsunto($request->asunto); // Obtiene el área
         $request->validate($rules, $messages);
         $idsoporte_tipo = DB::table('soporte_asunto as sa')
@@ -293,7 +274,6 @@ class SoporteController extends Controller
             // Usa el valor de $cod_area en lugar de 'TI'
             $area_code = $cod_area ? $cod_area['cod_area'] : 'TI';
             $prefijo = $idsoporte_tipo->idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
-
             $contador = Soporte::leftJoin('soporte_asunto', 'soporte.id_asunto', '=', 'soporte_asunto.idsoporte_asunto')
                 ->leftJoin('soporte_tipo', 'soporte_asunto.idsoporte_tipo', '=', 'soporte_tipo.idsoporte_tipo')
                 ->where('soporte_tipo.idsoporte_tipo', $idsoporte_tipo->idsoporte_tipo)
@@ -482,7 +462,6 @@ class SoporteController extends Controller
 
     public function update_tick(Request $request, $id)
     {
-
         $rules = [
             // 'ejecutor_responsable' => 'in:-1,3,4',
             'descripcione' => 'required',
@@ -494,9 +473,7 @@ class SoporteController extends Controller
             'descripcione.max' => 'El propósito debe tener como máximo 150 carácteres.',
         ];
         $request->validate($rules, $messages);
-
         $idSede = SedeLaboral::obtenerIdSede();
-
         // Almacenar Imagenes
         $ftp_server = "lanumerounocloud.com";
         $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -509,15 +486,12 @@ class SoporteController extends Controller
             $imagenes = json_decode($request->input('imagenes'), true);
             // Inicializar un array para almacenar los resultados de la subida
             $resultados = [];
-
             // Verificar si $imagenes es un array válido y tiene al menos una imagen
             if ($imagenes && is_array($imagenes)) {
                 $resultados = $this->uploadImages($imagenes, $con_id);
-
                 if (!$resultados) {
                     return response()->json(['error' => 'No se pudo subir alguna imagen'], 500);
                 }
-
                 // Obtener los campos de imagen si se subieron imágenes exitosamente
                 $img1 = isset($resultados[0]) ? $resultados[0]['url_ftp'] : '';
                 $img2 = isset($resultados[1]) ? $resultados[1]['url_ftp'] : '';
@@ -525,7 +499,6 @@ class SoporteController extends Controller
                 $img4 = isset($resultados[3]) ? $resultados[3]['url_ftp'] : '';
                 $img5 = isset($resultados[4]) ? $resultados[4]['url_ftp'] : '';
             }
-
             // Construir los datos de actualización
             $idSede = SedeLaboral::obtenerIdSede();
             $data = [
@@ -542,7 +515,6 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
             ];
-
             // Agregar solo las imágenes si existen
             if (!empty($resultados)) {
                 $data['img1'] = $img1;
@@ -554,14 +526,11 @@ class SoporteController extends Controller
 
             // Actualizar la base de datos
             Soporte::findOrFail($id)->update($data);
-
             // Eliminar archivos temporales en SOPORTE/TEMPORAL si se subieron imágenes
             if (!empty($resultados)) {
                 $this->deleteTempFiles($con_id, "SOPORTE/TEMPORAL/");
             }
-            // Cerrar conexión FTP
             ftp_close($con_id);
-
             return response()->json([
                 'success' => 'Imágenes subidas correctamente al servidor FTP',
                 'resultados' => $resultados
@@ -666,61 +635,11 @@ class SoporteController extends Controller
             $ticket->status_derivado = false;
 
             // Obtener el responsable múltiple para el asunto del ticket
-            $responsable_multiple = Soporte::getResponsableMultipleByAsunto($ticket->id_asunto);
-            // Condicional para responsable múltiple
-            if ($responsable_multiple == 1) {
-                // Si la subgerencia es 9, validamos los estados relacionados con estado_registro_sr
-                if ($id_subgerencia == 9) {
-                    switch ($ticket->estado_registro) {
-                        case 6:
-                            $ticket->status_derivado = true;
-                            break;
-                        case 5:
-                            $ticket->status_cancelado = true;
-                            break;
-                        case 4:
-                            $ticket->status_stand_by = true;
-                            break;
-                        case 3:
-                            $ticket->status_completado = true;
-                            break;
-                        case 2:
-                            $ticket->status_enproceso = true;
-                            break;
-                        case 1:
-                        case null:
-                            // Validación de null para estado_registro_sr
-                            $ticket->status_poriniciar = true;
-                            break;
-                    }
-                } else {
-                    // Si no es subgerencia 9, validamos los estados relacionados con estado_registro
-                    switch ($ticket->estado_registro_sr) {
-                        case 6:
-                            $ticket->status_derivado = true;
-                            break;
-                        case 5:
-                            $ticket->status_cancelado = true;
-                            break;
-                        case 4:
-                            $ticket->status_stand_by = true;
-                            break;
-                        case 3:
-                            $ticket->status_completado = true;
-                            break;
-                        case 2:
-                            $ticket->status_enproceso = true;
-                            break;
-                        case 1:
-                            $ticket->status_poriniciar = true;
-                            break;
-                    }
-                }
-            } else {
-                // Si no es responsable múltiple, se validan ambos estado_registro y estado_registro_sr
-                $estado_validar = $ticket->estado_registro_sr ?? $ticket->estado_registro;
-
-                switch ($estado_validar) {
+            // $responsable_multiple = Soporte::getResponsableMultipleByAsunto($ticket->id_asunto);
+            // Si la subgerencia es 9, validamos los estados relacionados con estado_registro_sr
+            // dd($ticket);
+            if ($id_subgerencia == 9) {
+                switch ($ticket->estado_registro) {
                     case 6:
                         $ticket->status_derivado = true;
                         break;
@@ -738,11 +657,34 @@ class SoporteController extends Controller
                         break;
                     case 1:
                     case null:
-                        // Validación para estado_registro_sr === null
+                        // Validación de null para estado_registro_sr
+                        $ticket->status_poriniciar = true;
+                        break;
+                }
+            } else {
+                // Si no es subgerencia 9, validamos los estados relacionados con estado_registro
+                switch ($ticket->estado_registro_sr) {
+                    case 6:
+                        $ticket->status_derivado = true;
+                        break;
+                    case 5:
+                        $ticket->status_cancelado = true;
+                        break;
+                    case 4:
+                        $ticket->status_stand_by = true;
+                        break;
+                    case 3:
+                        $ticket->status_completado = true;
+                        break;
+                    case 2:
+                        $ticket->status_enproceso = true;
+                        break;
+                    case 1:
                         $ticket->status_poriniciar = true;
                         break;
                 }
             }
+
 
             return $ticket;
         });
@@ -932,9 +874,7 @@ class SoporteController extends Controller
                 'nom_proyecto' => 'required',
                 'proveedor' => 'required',
                 'nom_contratista' => 'required',
-
             ]);
-
             $messages = array_merge($messages, [
                 'nom_proyecto.required' => 'Debe ingresar Nombre del Proyecto',
                 'proveedor.required' => 'Debe ingresar Nombre Proveedor',
@@ -959,43 +899,41 @@ class SoporteController extends Controller
         } else {
             $codigo_generado = $get_id->codigo;
         }
-        // GENERECIÓN DE CÓDIGO
-        if ($request->responsable_indice == "0" && $cantAreasEjecut < 4) {
-            // UN SOLO RESPONSABLE 
-            Soporte::findOrFail($id)->update([
-                'id_responsable' => $request->id_responsablee,
-                'fec_cierre' => $request->fec_cierree,
-                'estado_registro' => $request->estado_registroe,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario,
-                'tipo_otros' => $tipo_otros,
-                'codigo' => $codigo_generado
-            ]);
-        } else if ($id_subgerencia == 9) {
+        // Campos comunes
+        $updateData = [
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario,
+            'tipo_otros' => $tipo_otros,
+            'codigo' => $codigo_generado
+        ];
 
-            // RESPONSABLE PRINCIPAL
-            Soporte::findOrFail($id)->update([
-                'id_responsable' => $request->id_responsablee_0,
-                'fec_cierre' => $request->fec_cierree_0,
-                'estado_registro' => $request->estado_registroe_0,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario,
-                'tipo_otros' => $tipo_otros,
-                'codigo' => $codigo_generado
-            ]);
+        if ($cantAreasEjecut < 4) {
+            // Si $id_subgerencia es 9, actualiza 'fec_cierre' y 'estado_registro' EN MÓDULO TI
+            $updateData['id_responsable'] = $request->id_responsablee;
+            $updateData['fec_cierre'] = $request->fec_cierree;
+            $updateData['estado_registro'] = $request->estado_registroe;
+
+            // Si no, actualiza 'fec_cierre_sr' y 'estado_registro_sr' EN MÓDULO INFRAESTRUCTURA
+            if ($id_subgerencia != 9) {
+                $updateData['fec_cierre_sr'] = $request->fec_cierree;
+                $updateData['estado_registro_sr'] = $request->estado_registroe;
+            }
         } else {
-            // SEGUNDO RESPONSABLE 
-            Soporte::findOrFail($id)->update([
-                'id_segundo_responsable' => $request->id_responsablee_1,
-                'fec_cierre_sr' => $request->fec_cierree_1,
-                'estado_registro_sr' => $request->estado_registroe_1,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario,
-                'tipo_otros' => $tipo_otros,
-                'codigo' => $codigo_generado
-
-            ]);
+            // Si $id_subgerencia es 9, actualiza para el responsable principal MÓDULO INFRAESTRUCTURA
+            if ($id_subgerencia == 9) {
+                $updateData['id_responsable'] = $request->id_responsablee_0;
+                $updateData['fec_cierre'] = $request->fec_cierree_0;
+                $updateData['estado_registro'] = $request->estado_registroe_0;
+            } else {
+                // Si $id_subgerencia NO es 9, actualiza para el segundo responsable MÓDULO TI
+                $updateData['id_segundo_responsable'] = $request->id_responsablee_1;
+                $updateData['fec_cierre_sr'] = $request->fec_cierree_1;
+                $updateData['estado_registro_sr'] = $request->estado_registroe_1;
+            }
         }
+
+        // Realiza la actualización
+        Soporte::findOrFail($id)->update($updateData);
 
 
         $soporteComentarios = SoporteComentarios::where('idsoporte_solucion', $get_id->idsoporte_solucion)->get();
