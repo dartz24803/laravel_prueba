@@ -85,7 +85,6 @@ class SoporteController extends Controller
         $id_usuario = session('usuario')->id_usuario;
 
         $acceso_pp = Soporte::userExistsInAreaWithPuesto(18, $id_usuario);
-        // dd($acceso_pp);
         // VALIDACIÓN DE ESTADOS EN PROCESO Y COMPLETADO PARA CADA MODULO
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) {;
             $ticket->status_poriniciar = false;
@@ -115,7 +114,6 @@ class SoporteController extends Controller
 
             return $ticket;
         });
-        // dd($list_tickets_soporte);
         return view('soporte.soporte.lista', compact('list_tickets_soporte', 'acceso_pp'));
     }
 
@@ -125,7 +123,9 @@ class SoporteController extends Controller
         $list_especialidad = Especialidad::select('id', 'nombre')
             ->where('especialidad.estado', 1)
             ->where('id', '!=', 4)
+            ->orderBy('nombre', 'asc')
             ->get();
+
 
         $especialidadConId4 = Especialidad::select('id', 'nombre')
             ->where('id', 4)
@@ -206,6 +206,7 @@ class SoporteController extends Controller
             $query->whereRaw("FIND_IN_SET(?, id_especialidad)", [$idEspecialidad]);
         })
             ->where('estado', 1)
+            ->orderBy('nombre', 'asc')
             ->get();
         return response()->json($elementos);
     }
@@ -222,6 +223,7 @@ class SoporteController extends Controller
             $query->whereRaw("FIND_IN_SET(?, idsoporte_elemento)", [$idElemento]);
         })
             ->where('estado', 1)
+            ->orderBy('nombre', 'asc')
             ->get(['idsoporte_asunto', 'nombre', 'evidencia_adicional']); // Incluir evidencia_adicional en la consulta
 
         return response()->json($asuntos);
@@ -247,7 +249,6 @@ class SoporteController extends Controller
             'descripcion.max' => 'El propósito debe tener como máximo 150 carácteres.',
 
         ];
-        // dd($request->all());
         if ($request->hasOptionsFieldEspecialidad == "0") {
             $rules = array_merge($rules, [
                 'asunto' => 'gt:0',
@@ -303,8 +304,6 @@ class SoporteController extends Controller
         } else {
             $codigo_generado = 'Código no disponible';
         }
-        // dd($codigo_generado);
-
         // GENERECIÓN DE CÓDIGO
 
         $soporte_solucion = SoporteSolucion::create([
@@ -406,6 +405,7 @@ class SoporteController extends Controller
                 'descripcion' => $request->descripcion,
                 'estado' => 1,
                 'estado_registro' => 1,
+                'estado_registro_sr' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
                 'fec_act' => now(),
@@ -467,7 +467,6 @@ class SoporteController extends Controller
     public function ver_tick($id_soporte)
     {
         $get_id = Soporte::getTicketById($id_soporte);
-        // dd($get_id);
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $comentarios = SoporteSolucion::getComentariosBySolucion($get_id->idsoporte_solucion);
 
@@ -543,8 +542,6 @@ class SoporteController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
             ];
-
-            // dd($data);
 
             // Agregar solo las imágenes si existen
             if (!empty($resultados)) {
@@ -815,9 +812,7 @@ class SoporteController extends Controller
     {
         $id_subgerencia = session('id_subgerenciam');
         $get_id = Soporte::getTicketById($id_soporte);
-        // dd($get_id);
         $comentarios_user = SoporteSolucion::getComentariosUserBySolucion($get_id->idsoporte_solucion);
-        // dd($comentarios_user);
         if ($get_id->id_asunto == 245) {
             // Si el id_asunto es 245, obtenemos id_area directamente de la tabla soporte
             $idArea = DB::table('soporte')
@@ -832,8 +827,6 @@ class SoporteController extends Controller
                 ->select('soporte_asunto.id_area')
                 ->first();
         }
-
-        // dd($idArea);
         if ($idArea && $idArea->id_area == 0) {
             $areaResponsable = $get_id->id_area;
         } else {
@@ -841,12 +834,10 @@ class SoporteController extends Controller
         }
         // Dividir el campo `id_area` en un array de IDs
         $areaIds = is_string($areaResponsable) ? explode(',', $areaResponsable) : [$areaResponsable];
-        // dd($areaIds);
         // Crear listas basadas en los IDs obtenidos
         $list_primer_responsable = Usuario::get_list_colaborador_xarea_static(trim($areaIds[0]));
         $list_segundo_responsable = isset($areaIds[1]) ? Usuario::get_list_colaborador_xarea_static(trim($areaIds[1])) : [];
         // Verificar que las listas tengan al menos un elemento antes de acceder al campo `id_sub_gerencia`
-        // dd($list_primer_responsable);
         $primer_id_subgerencia = !empty($list_primer_responsable) ? $list_primer_responsable[0]->id_sub_gerencia : null;
         $segundo_id_subgerencia = !empty($list_segundo_responsable) ? $list_segundo_responsable[0]->id_sub_gerencia : null;
         if ($id_subgerencia == $primer_id_subgerencia) {
@@ -854,19 +845,15 @@ class SoporteController extends Controller
         } else {
             $list_responsable = $list_segundo_responsable;
         }
-        // dd($list_responsable);
-        // dd($idArea->id_area);
+
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto, $idArea->id_area);
-        // dd($list_ejecutores_responsables);
         $cantAreasEjecut = count($list_ejecutores_responsables);
         if ($cantAreasEjecut > 3) {
             $ejecutoresMultiples = true;
         } else {
             $ejecutoresMultiples = false;
         }
-        // dd($ejecutoresMultiples);
         $list_areas_involucradas = Soporte::obtenerListadoAreasInvolucradas($get_id->id_soporte);
-        // dd($list_areas_involucradas);
         $list_ejecutores_responsables = collect($list_ejecutores_responsables);
 
         if ($list_ejecutores_responsables->count() > 3) {
@@ -883,7 +870,6 @@ class SoporteController extends Controller
             $filtered = $filtered->push($consolidated);
             $list_ejecutores_responsables = $filtered->values();
         }
-        // dd($get_id);
         return view('soporte.soporte_master.modal_editar', compact('get_id', 'list_responsable',  'list_ejecutores_responsables', 'ejecutoresMultiples', 'list_areas_involucradas', 'id_subgerencia', 'comentarios_user'));
     }
 
@@ -897,9 +883,7 @@ class SoporteController extends Controller
         } else {
             $tipo_otros = $request->nombre_tipo;
         }
-        // dd($tipo_otros);
         $get_id = Soporte::getTicketById($id);
-        // dd($get_id->comentario_existe);
         $rules = [
             'descripcione_solucion' => function ($attribute, $value, $fail) use ($get_id) {
                 if ($get_id->comentario_existe == 0 && empty($value)) {
@@ -917,7 +901,6 @@ class SoporteController extends Controller
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
         $cantAreasEjecut = count($list_ejecutores_responsables);
         $responsableMultiple = Soporte::getResponsableMultipleByAsunto($get_id->id_asunto);
-        // dd($responsableMultiple);
         if ($id_subgerencia == "9" && $responsableMultiple == 1) {
             $rules = array_merge($rules, [
                 'id_responsablee_0' => 'gt:0',
@@ -966,7 +949,6 @@ class SoporteController extends Controller
         $cod_area = Soporte::getCodAreaByIdArea($get_id->id_area); // Obtiene el área
         $request->validate($rules, $messages);
         $idsoporte_tipo = $request->nombre_tipo;
-        // dd($get_id->activo_tipo);
         if ($get_id->activo_tipo == 1) {
             $area_code = $cod_area ? $cod_area['cod_area'] : 'TI';
             $prefijo = $idsoporte_tipo == 1 ? 'RQ-' . $area_code . '-' : 'INC-' . $area_code . '-';
@@ -977,7 +959,6 @@ class SoporteController extends Controller
         } else {
             $codigo_generado = $get_id->codigo;
         }
-        // dd($id_subgerencia);
         // GENERECIÓN DE CÓDIGO
         if ($request->responsable_indice == "0" && $cantAreasEjecut < 4) {
             // UN SOLO RESPONSABLE 
@@ -1209,11 +1190,6 @@ class SoporteController extends Controller
                 echo "No se seleccionaron archivos.";
             }
 
-            // dd($data);
-
-
-            // dd($documento1);
-            // dd($resultados);
             if (!empty($resultados)) {
                 $data['archivo1'] = $archivo1;
                 $data['archivo2'] = $archivo2;
@@ -1221,7 +1197,6 @@ class SoporteController extends Controller
                 $data['archivo4'] = $archivo4;
                 $data['archivo5'] = $archivo5;
             }
-            // dd($data);
             // Actualizar la base de datos
             SoporteSolucion::findOrFail($get_id->idsoporte_solucion)->update($data);
             // Eliminar archivos temporales en SOPORTE/TEMPORAL si se subieron imágenes
@@ -1289,12 +1264,15 @@ class SoporteController extends Controller
     public function cancel_update_tick_master(Request $request, $id)
     {
         $get_id = Soporte::getTicketById($id);
-        // dd($request->id_responsable);
+
+        // MOTIVO : NO CORRESPONDE AL ÁREA CORRESPONDIENTE
         if ($request->motivo == 1) {
+            $nom_area = Area::obtenerNombreArea($request->id_areac);
             $soporteActualizado  = Soporte::findOrFail($id)->update([
                 'idsoporte_motivo_cancelacion' => $request->motivo,
                 'area_cancelacion' => $request->id_areac,
                 'estado_registro' => 6,
+                'estado_registro_sr' => 6,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
@@ -1328,74 +1306,117 @@ class SoporteController extends Controller
                 }
                 $dato['cod_pendiente'] = $codigofinal;
 
+                // Validar si ya existe un registro con los mismos campos
+                $existePendiente = Pendiente::where('id_usuario', $get_id->user_reg)
+                    ->where('cod_base', $get_id->base)
+                    ->where('cod_pendiente', $codigofinal)
+                    ->where('titulo', $get_id->nombre_especialidad . '-' . $get_id->nombre_elemento)
+                    ->where('id_tipo', $get_id->idsoporte_tipo)
+                    ->where('id_area', $request->id_areac)
+                    ->where('id_responsable', $request->id_responsable)
+                    ->exists();
+                if (!$existePendiente) {
+                    // Si no existe, se crea el registro
+                    Pendiente::create([
+                        'id_usuario' => $get_id->user_reg,
+                        'cod_base' => $get_id->base,
+                        'cod_pendiente' => $codigofinal,
+                        'titulo' => $get_id->nombre_especialidad . '-' . $get_id->nombre_elemento,
+                        'id_tipo' => $get_id->idsoporte_tipo,
+                        'id_area' => $request->id_areac,
+                        'id_item' => 0,
+                        'id_subitem' => 0,
+                        'id_subsubitem' => 0,
+                        'id_responsable' => $request->id_responsable,
+                        'id_prioridad' => 0,
+                        'descripcion' => $get_id->nombre_asunto . '-' . $get_id->descripcion,
+                        'envio_mail' => 0,
+                        'conforme' => 0,
+                        'calificacion' => 0,
+                        'flag_programado' => 0,
+                        'id_programacion' => 0,
+                        'equipo_i' => '',
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+                } else {
+                    return response()->json(['message' => 'El registro ya existe.'], 400);
+                }
 
-                Pendiente::create([
-                    'id_usuario' => $get_id->user_reg,
-                    'cod_base' => $get_id->base,
-                    'cod_pendiente' =>  $codigofinal,
-                    'titulo' => $get_id->nombre_especialidad . '-' . $get_id->nombre_elemento,
-                    'id_tipo' => $get_id->idsoporte_tipo,
-                    'id_area' => $request->id_areac,
-                    'id_item' => 0,
-                    'id_subitem' => 0,
-                    'id_subsubitem' => 0,
-                    'id_responsable' =>  $request->id_responsable,
-                    'id_prioridad' => 0,
-                    'descripcion' => $get_id->nombre_asunto . '-' . $get_id->descripcion,
-                    'envio_mail' => 0,
-                    'conforme' => 0,
-                    'calificacion' => 0,
-                    'flag_programado' => 0,
-                    'id_programacion' => 0,
-                    'equipo_i' => '',
-                    'estado' => 1,
-                    'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id_usuario,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
+
+                $subject = "Derivación de Solicitud de Soporte";
+                $nombre_completo = $get_id->usuario_nombre . ' ' . $get_id->usuario_apater;
+                $body = "<h1> Hola, " . $nombre_completo . "</h1>
+                                <p>Le informamos que su solicitud de soporte ha sido derivada al área correspondiente:. $nom_area .</p>
+                                <p>Podrá dar seguimiento a su solicitud haciendo clic en el siguiente enlace:</p>
+                                <a href='https://demo.grupolanumero1.com.pe/Tareas/index' style='text-decoration: none; color: blue; font-weight: bold;'>Ver el estado de mi solicitud</a>
+                                <p>Atentamente.<br>Grupo La Número 1</p>";
+                $this->enviarCorreoSoporte($subject, $get_id->emailp, $body);
             }
-        } else {
-            $mail = new PHPMailer(true);
-            try {
-                $mail->SMTPDebug = 0;
-                $mail->isSMTP();
-                $mail->Host       =  'mail.lanumero1.com.pe';
-                $mail->SMTPAuth   =  true;
-                $mail->Username   =  'intranet@lanumero1.com.pe';
-                $mail->Password   =  'lanumero1$1';
-                $mail->SMTPSecure =  'tls';
-                $mail->Port     =  587;
-                $mail->setFrom('intranet@lanumero1.com.pe', 'La Número 1');
-
-                $mail->addAddress($get_id->emailp);
-
-                $mail->isHTML(true);
-
-                $mail->Subject = "Prueba de Soporte";
-
-                $mail->Body =  "<h1> Hola, " . $get_id->usuario_nombre . "</h1>
-                                <p>Su solicitud no puede proceder debido a la siguiente razón:</p>
-                                <p>Necesitamos más detalle y/o brindenos una mejor sustentación, le invitamos a que lo corriga.
-                                </p>
-                                <p>Gracias.<br>Atte. Grupo La Número 1</p>";
-                $mail->CharSet = 'UTF-8';
-                $mail->send();
-
-
-                echo 'Nombre y Apellidos ' . $get_id->usuario_nombres .
-                    $get_id->usuario_amater . '<br>Correo: ' . $get_id->emailp;
-            } catch (Exception $e) {
-                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-            }
-            Soporte::findOrFail($id)->update([
+        }
+        // MOTIVO : INFORMACIÓN INSUFICIENTE O FALTA DE DETALLES
+        else {
+            $soporteActualizado  = Soporte::findOrFail($id)->update([
                 'idsoporte_motivo_cancelacion' => $request->motivo,
                 'estado_registro' => 5,
+                'estado_registro_sr' => 5,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
+            if ($soporteActualizado) {
+                $subject = "Cancelación de Solicitud de Soporte";
+                $nombre_completo = $get_id->usuario_nombre . ' ' . $get_id->usuario_apater;
+                $body = "<h1> Hola, " . $nombre_completo . "</h1>
+                                     <p>Lamentamos informarle que no podemos procesar su solicitud de soporte en este momento por la siguiente razón:</p>
+                                     <ul><li>Información insuficiente o falta de detalles necesarios.
+                                     </li></ul>
+                                    <p>Le pedimos que revise y complete la información requerida o proporcione una justificación más clara. Esto nos permitirá atender su solicitud de manera adecuada.</p>
+                                    <p>Puede actualizar su solicitud haciendo clic en el siguiente enlace:</p>
+                                    <a href='https://demo.grupolanumero1.com.pe/soporte' style='text-decoration: none; color: blue; font-weight: bold;'>Actualizar mi solicitud</a>
+                                    <p>Gracias.<br>Atte. Grupo La Número 1</p>";
+                $this->enviarCorreoSoporte($subject, $get_id->emailp, $body);
+            }
         }
     }
+
+    function enviarCorreoSoporte($subject, $emailp, $body)
+    {
+        $mail = new PHPMailer(true);
+
+        try {
+            // Configuración del servidor SMTP
+            $mail->SMTPDebug = 0; // Cambia a 2 para habilitar detalles de depuración
+            $mail->isSMTP();
+            $mail->Host = 'mail.lanumero1.com.pe';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'intranet@lanumero1.com.pe';
+            $mail->Password = 'lanumero1$1';
+            $mail->SMTPSecure = 'tls';
+            $mail->Port = 587;
+
+            // Configuración del correo
+            $mail->setFrom('intranet@lanumero1.com.pe', 'La Número 1');
+            $mail->addAddress($emailp); // Correo del destinatario
+            $mail->isHTML(true);
+            $mail->Subject = $subject;
+
+            // Cuerpo del correo
+            $mail->Body = $body;
+            $mail->CharSet = 'UTF-8';
+            // Enviar el correo
+            $mail->send();
+
+            // Retornar mensaje de éxito
+            return "Correo enviado correctamente a $emailp.";
+        } catch (Exception $e) {
+            // Manejar errores al enviar el correo
+            return "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+        }
+    }
+
 
     public function getResponsableByArea(Request $request)
     {
@@ -1438,7 +1459,6 @@ class SoporteController extends Controller
                 $archivo_local = Storage::url($path);
                 $archivo_ftp = "https://lanumerounocloud.com/intranet/SOPORTE/TEMPORAL/" . $nombre;
 
-                // dd($nombre_soli);
                 return response()->json([
                     'success' => 'Archivo subido correctamente a local y FTP',
                     'url_local' => $archivo_local,
@@ -1461,7 +1481,6 @@ class SoporteController extends Controller
             'comentario' => 'required|string|max:250',
         ]);
         $comentario = SoporteComentarios::find($id);
-        // dd($comentario);
         if (!$comentario) {
             return response()->json(['success' => false, 'message' => 'Comentario no encontrado']);
         }
@@ -1514,6 +1533,8 @@ class SoporteController extends Controller
             } elseif ($ticket->estado_registro_sr == 5 || $ticket->estado_registro == 5) {
                 $ticket->fecha_completado = now();
                 $ticket->status_ticket = "Cancelado";
+            } elseif ($ticket->estado_registro_sr == 6 || $ticket->estado_registro == 6) {
+                $ticket->status_ticket = "Derivado";
             } elseif ($ticket->estado_registro_sr == 1 || $ticket->estado_registro == 1) {
                 $ticket->fecha_completado = now();
                 $ticket->status_ticket = "Por Iniciar";
@@ -1543,9 +1564,9 @@ class SoporteController extends Controller
         $dato['ccompletado'] =  $request->input("ccompletado");
         $dato['cstandby'] =  $request->input("cstandby");
         $dato['ccancelado'] =  $request->input("ccancelado");
-        // dd($dato);
+        $dato['cderivado'] =  $request->input("cderivado");
+
         $list_tablageneral_soporte = Soporte::listTablaGeneralSoporteFiltro($dato);
-        // dd($list_tablageneral_soporte);
         $list_tablageneral_soporte = $this->adicionarParametro($list_tablageneral_soporte);
         return view('soporte.tabla_general.lista', compact('list_tablageneral_soporte'));
     }
@@ -1560,10 +1581,10 @@ class SoporteController extends Controller
         $dato['ccompletado'] =  $ccompletado;
         $dato['cstandby'] =  $cstandby;
         $dato['ccancelado'] =  $ccancelado;
-        // dd($dato);
+        $dato['cderivado'] =  $ccancelado;
+
         $list_tablageneral_soporte = Soporte::listTablaGeneralSoporteFiltro($dato);
         $list_tablageneral_soporte = $this->adicionarParametro($list_tablageneral_soporte);
-        // dd($list_tablageneral_soporte);
         // Creación del archivo Excel
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
