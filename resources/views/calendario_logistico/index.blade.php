@@ -349,7 +349,7 @@
                             proveedor: 'Proveedor',
                             base: '{{ $list->base }}',
                             invitacion: '{{ $list->invitacion }}',
-                            cant_prendas: '{{ $list->cant_prenda }}>'
+                            cant_prendas: '{{ $list->cant_prenda }}'
                         },
                     @endforeach
                 ],

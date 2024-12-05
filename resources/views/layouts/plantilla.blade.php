@@ -44,6 +44,9 @@
     {{--CSS CALENDARIO--}}
     <link href="{{ asset('template/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/plugins/fullcalendar/custom-fullcalendar.advance.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('template/plugins/flatpickr/flatpickr.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('template/plugins/flatpickr/custom-flatpickr.css') }}" rel="stylesheet" type="text/css">
+    <link href="{{ asset('template/assets/css/forms/theme-checkbox-radio.css') }}" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="alt-menu sidebar-noneoverflow">
@@ -715,6 +718,7 @@
     <script src="{{ asset('template/plugins/fullcalendar/moment.min.js') }}"></script>
     <script src="{{ asset('template/plugins/flatpickr/flatpickr.js') }}"></script>
     <script src="{{ asset('template/plugins/fullcalendar/fullcalendar.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/fullcalendar/custom-fullcalendar.advance.js') }}"></script>
     <script>
         $('[data-toggle="tooltip"]').tooltip();
     </script>
