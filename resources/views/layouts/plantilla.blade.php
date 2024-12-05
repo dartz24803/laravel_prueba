@@ -41,6 +41,9 @@
     <link href="{{ asset('template/assets/css/users/account-setting.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('template/plugins/noUiSlider/nouislider.min.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ asset('template/plugins/noUiSlider/custom-nouiSlider.css') }}" rel="stylesheet" type="text/css">
+    {{--CSS CALENDARIO--}}
+    <link href="{{ asset('template/plugins/fullcalendar/fullcalendar.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('template/plugins/fullcalendar/custom-fullcalendar.advance.css') }}" rel="stylesheet" type="text/css" />
 </head>
 
 <body class="alt-menu sidebar-noneoverflow">
@@ -542,12 +545,14 @@
                         </a>
                     </li>
                     <?php if (
-                        session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 75 || session('usuario')->id_puesto == 122
-                        || session('usuario')->id_puesto == 83 || session('usuario')->id_puesto == 86 ||
-                        /* session('usuario')->calendario_l == "SI" || $id_usuario == 857 ||*/ session('usuario')->id_puesto == 195
+                        session('usuario')->id_nivel == 1 || 
+                        session('usuario')->id_puesto == 75 || 
+                        session('usuario')->id_puesto == 83 || 
+                        session('usuario')->id_puesto == 122 || 
+                        session('usuario')->id_puesto == 195
                     ) { ?>
-                        <li class="menu" id="calendario_logistico">
-                            <a href="javascript:void(0);" id="hcalendario_logistico" class="dropdown-toggle">
+                        <li class="menu" id="calendarios_logisticos">
+                            <a href="{{ route('calendario_logistico') }}" id="hcalendarios_logisticos" class="dropdown-toggle">
                                 <div class="">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-calendar">
                                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
@@ -706,6 +711,10 @@
     <script src="{{ asset('template/assets/js/scrollspyNav.js') }}"></script>
     <script src="{{ asset('template/plugins/noUiSlider/nouislider.min.js') }}"></script>
     <script src="{{ asset('template/plugins/noUiSlider/custom-nouiSlider.js') }}"></script>
+    {{--JS CALENDARIO--}}
+    <script src="{{ asset('template/plugins/fullcalendar/moment.min.js') }}"></script>
+    <script src="{{ asset('template/plugins/flatpickr/flatpickr.js') }}"></script>
+    <script src="{{ asset('template/plugins/fullcalendar/fullcalendar.min.js') }}"></script>
     <script>
         $('[data-toggle="tooltip"]').tooltip();
     </script>
