@@ -1869,6 +1869,7 @@ Route::controller(TicketsController::class)->group(function () {
     //------------------------------CCV------------------------------------//
     Route::get('Tickets/index', 'Tickets_Vista');
     Route::get('Tickets/Busqueda_Tickets_Admin/{busqu}/{base}/{area}/{ini}/{pro}/{fin}/{std}', 'Busqueda_Tickets_Admin');
+    Route::get('Tickets/Busqueda_Tickets/{busqu}/{ini}/{pro}/{fin}/{std}', 'Busqueda_Tickets');
     Route::post('', '');
     Route::post('', '');
 });

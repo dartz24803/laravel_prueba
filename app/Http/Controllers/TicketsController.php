@@ -55,8 +55,20 @@ class TicketsController extends Controller
         $dato['cproceso']=$cproceso;
         $dato['cfinalizado']=$cfinalizado;
         $dato['cstandby']=$cstandby;
-        $dato['list_tickets_usu'] = $this->modelo->get_list_tickets_usuario($dato);
-        //amonestaciones solo ve leve; debe ver de el mismo Manuel Nieto
+        $dato['list_tickets_usu'] = $this->modelo->get_list_tickets($dato);
+
         return view('Tickets.lista_tickets',$dato);
+    }
+
+    
+    public function Busqueda_Tickets($busq_plataforma,$cpiniciar,$cproceso,$cfinalizado,$cstandby){
+            $dato['plataforma']=$busq_plataforma;
+            $dato['cpiniciar']=$cpiniciar;
+            $dato['cproceso']=$cproceso;
+            $dato['cfinalizado']=$cfinalizado;
+            $dato['cstandby']=$cstandby;
+            $dato['list_tickets_usu'] = $this->modelo->get_list_tickets_usuario($dato);
+
+            return view('Tickets.lista_tickets',$dato);
     }
 }

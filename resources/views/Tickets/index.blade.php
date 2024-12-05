@@ -266,7 +266,7 @@
 
         $.ajax({
             url: url, 
-            type: 'POST',
+            type: 'GET',
             success: function(data){
                 $('#lista_tickets').html(data);               
             }
