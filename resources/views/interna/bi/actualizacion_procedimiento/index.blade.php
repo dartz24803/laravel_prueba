@@ -1,7 +1,7 @@
 @extends('layouts.plantilla')
 
 @section('navbar')
-@include('comercial.navbar')
+    @include('interna.navbar')
 @endsection
 
 @section('content')
@@ -65,8 +65,8 @@
 
 <script>
     $(document).ready(function() {
-        $("#comercial").addClass('active');
-        $("#rcomercial").attr('aria-expanded','true');
+        $("#bi").addClass('active');
+        $("#rbi").attr('aria-expanded','true');
         $("#sprocedure").addClass('active');
     });
 
