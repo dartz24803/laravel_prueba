@@ -84,7 +84,7 @@
 <?php } ?>
 
 <?php if (
-    session('usuario')->id_nivel == "1" || session('usuario')->centro_labores == "OFC" || session('usuario')->id_puesto == "29" || session('usuario')->id_puesto == "161" ||
+    session('usuario')->id_nivel == "1" || session('usuario')->id_nivel == "5" || session('usuario')->centro_labores == "OFC" || session('usuario')->id_puesto == "29" || session('usuario')->id_puesto == "161" ||
     session('usuario')->id_puesto == "197" || session('usuario')->id_puesto == "128" || session('usuario')->id_puesto == "251" || session('usuario')->id_puesto == "41" ||
     session('usuario')->id_puesto == "66" || session('usuario')->id_puesto == "73" || session('usuario')->id_puesto == "158" || session('usuario')->id_puesto == "12" ||
     session('usuario')->id_puesto == "155" || session('usuario')->id_puesto == "9" || session('usuario')->id_puesto == "19" || session('usuario')->id_puesto == "21" ||
@@ -113,6 +113,14 @@
         </a>
 
         <ul class="collapse submenu list-unstyled" id="rbi" data-parent="#accordionExample">
+            @if (session('usuario')->id_nivel == 1 || 
+            session('usuario')->id_nivel == 5)
+                <li id="sprocedure">
+                    <a href="{{ url('ActualizacionProcedimientos/index') }}">
+                        <p class="romperpalabra" title="Actualizacion de Procedimientos"><span id="icono_active2"></span> Actualizacion de Procedimientos</p>
+                    </a>
+                </li>
+            @endif
             <li>
                 <a id="bireporte" href="{{ route('bireporte') }}">
                     <p class="romperpalabra"><span id="icono_active2"></span> Reportes</p>
