@@ -512,6 +512,7 @@ class SoporteController extends Controller
                 'descripcion' => $request->descripcione,
                 'id_area' => $request->areae,
                 'estado_registro' => 1,
+                'estado_registro_sr' => 1,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario,
             ];
