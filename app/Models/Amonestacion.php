@@ -72,12 +72,12 @@ class Amonestacion extends Model
                 case when i.estado_amonestacion=1 then 'Por Iniciar'
                 when i.estado_amonestacion=2 then 'Aprobado'
                 when i.estado_amonestacion=3 then 'Rechazado'
-                when i.estado_amonestacion=4 then 'Aceptado' 
+                when i.estado_amonestacion=4 then 'Aceptado'
                 when i.estado_amonestacion=5 then 'No Aceptado' end as desc_estado_amonestacion,
                 date_format(i.fecha, '%d/%m/%Y') as fecha_amonestacion,a.nom_tipo_amonestacion,
                 m.nom_motivo_amonestacion,pu.id_area,
                 CASE WHEN i.documento!='' THEN 'Si' ELSE 'No' END AS v_documento
-                FROM amonestacion i 
+                FROM amonestacion i
                 left join users u on i.id_colaborador=u.id_usuario
                 left join users s on i.id_solicitante=s.id_usuario
                 INNER JOIN puesto pu ON pu.id_puesto=s.id_puesto
@@ -85,8 +85,8 @@ class Amonestacion extends Model
                 left join tipo_amonestacion a on i.tipo=a.id_tipo_amonestacion
                 left join motivo_amonestacion m on i.motivo=m.id_motivo_amonestacion
                 left join gravedad_amonestacion g on i.id_gravedad_amonestacion=g.id_gravedad_amonestacion
-                where i.estado=1 and pu.id_area=$id_area and r.centro_labores='$base'";
-            }elseif($id_puesto==128){
+                where i.estado=1 and pu.id_area=$id_area and r.centro_labores='$base'" ;
+            }elseif($id_puesto==128||$id_puesto==131){
                 $sql = "SELECT i.*,concat(u.usuario_nombres,' ',u.usuario_apater,' ',u.usuario_amater) as colaborador,
                 concat(s.usuario_nombres,' ',s.usuario_apater,' ',s.usuario_amater) as solicitante,
                 concat(r.usuario_nombres,' ',r.usuario_apater,' ',r.usuario_amater) as revisor,
@@ -94,12 +94,12 @@ class Amonestacion extends Model
                 case when i.estado_amonestacion=1 then 'Por Iniciar'
                 when i.estado_amonestacion=2 then 'Aprobado'
                 when i.estado_amonestacion=3 then 'Rechazado'
-                when i.estado_amonestacion=4 then 'Aceptado' 
+                when i.estado_amonestacion=4 then 'Aceptado'
                 when i.estado_amonestacion=5 then 'No Aceptado' end as desc_estado_amonestacion,
                 date_format(i.fecha, '%d/%m/%Y') as fecha_amonestacion,a.nom_tipo_amonestacion,
                 m.nom_motivo_amonestacion,
                 CASE WHEN i.documento!='' THEN 'Si' ELSE 'No' END AS v_documento
-                FROM amonestacion i 
+                FROM amonestacion i
                 left join users u on i.id_colaborador=u.id_usuario
                 left join users s on i.id_solicitante=s.id_usuario
                 left join users r on i.id_revisor=r.id_usuario
@@ -107,7 +107,7 @@ class Amonestacion extends Model
                 left join motivo_amonestacion m on i.motivo=m.id_motivo_amonestacion
                 left join gravedad_amonestacion g on i.id_gravedad_amonestacion=g.id_gravedad_amonestacion
                 where i.estado=1 and s.id_usuario=$id_usuario";
-            }elseif($visualizar_amonestacion!="sin_acceso_amonestacion"){ 
+            }elseif($visualizar_amonestacion!="sin_acceso_amonestacion"){
                 $sql = "SELECT i.*,concat(u.usuario_nombres,' ',u.usuario_apater,' ',u.usuario_amater) as colaborador,
                         concat(s.usuario_nombres,' ',s.usuario_apater,' ',s.usuario_amater) as solicitante,
                         concat(r.usuario_nombres,' ',r.usuario_apater,' ',r.usuario_amater) as revisor,
@@ -115,12 +115,12 @@ class Amonestacion extends Model
                         case when i.estado_amonestacion=1 then 'Por Iniciar'
                         when i.estado_amonestacion=2 then 'Aprobado'
                         when i.estado_amonestacion=3 then 'Rechazado'
-                        when i.estado_amonestacion=4 then 'Aceptado' 
+                        when i.estado_amonestacion=4 then 'Aceptado'
                         when i.estado_amonestacion=5 then 'No Aceptado' end as desc_estado_amonestacion,
                         date_format(i.fecha, '%d/%m/%Y') as fecha_amonestacion,a.nom_tipo_amonestacion,
                         m.nom_motivo_amonestacion,
                         CASE WHEN i.documento!='' THEN 'Si' ELSE 'No' END AS v_documento
-                        FROM amonestacion i 
+                        FROM amonestacion i
                         left join users u on i.id_colaborador=u.id_usuario
                         left join users s on i.id_solicitante=s.id_usuario
                         left join users r on i.id_revisor=r.id_usuario
@@ -136,12 +136,12 @@ class Amonestacion extends Model
                         case when i.estado_amonestacion=1 then 'Por Iniciar'
                         when i.estado_amonestacion=2 then 'Aprobado'
                         when i.estado_amonestacion=3 then 'Rechazado'
-                        when i.estado_amonestacion=4 then 'Aceptado' 
+                        when i.estado_amonestacion=4 then 'Aceptado'
                         when i.estado_amonestacion=5 then 'No Aceptado' end as desc_estado_amonestacion,
                         date_format(i.fecha, '%d/%m/%Y') as fecha_amonestacion,a.nom_tipo_amonestacion,
                         m.nom_motivo_amonestacion,
                         CASE WHEN i.documento!='' THEN 'Si' ELSE 'No' END AS v_documento
-                        FROM amonestacion i 
+                        FROM amonestacion i
                         left join users u on i.id_colaborador=u.id_usuario
                         left join users s on i.id_solicitante=s.id_usuario
                         left join users r on i.id_revisor=r.id_usuario
@@ -151,6 +151,7 @@ class Amonestacion extends Model
                         where i.estado=1";
             }
         }
+        // print_r($sql);
         $query = DB::select($sql);
         return json_decode(json_encode($query), true);
     }

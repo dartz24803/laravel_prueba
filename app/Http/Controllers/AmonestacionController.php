@@ -59,6 +59,7 @@ class AmonestacionController extends Controller
         if (
             Session('usuario')->id_nivel == 1 || Session('usuario')->id_nivel == 2 ||
             Session('usuario')->id_puesto == 22 || Session('usuario')->id_puesto == 128 ||
+            session('usuario')->id_puesto == 131 ||
             Session('usuario')->id_puesto == 133 || Session('usuario')->id_puesto == 209 ||
             Session('usuario')->visualizar_amonestacion != "sin_acceso_amonestacion"
         ) {
@@ -205,7 +206,7 @@ class AmonestacionController extends Controller
         $get_user = $this->modelousuarios->get_list_colaborador($get_id[0]['id_solicitante']);
         $dato['id_area'] = $get_user[0]['id_area'];
 
-        if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 || session('usuario')->id_puesto == 133) {
+        if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 || session('usuario')->id_puesto == 131 || session('usuario')->id_puesto == 133) {
             $dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
             $list_responsables = $this->modelousuarios->list_usuarios_responsables($dato);
         } else {
