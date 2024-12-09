@@ -90,6 +90,8 @@ session('usuario')->id_puesto == "158" ||
 session('usuario')->id_puesto == "161" ||
 //GERENTE DE GESTIÓN COMERCIAL (251)
 session('usuario')->id_puesto == "251" ||
+///AUXILIAR DE COORDINADOR DE TIENDA (311)
+session('usuario')->id_puesto == "30" ||
 ///BASE (311)
 session('usuario')->id_puesto == "311" ||
 //COORDINADOR DE TIENDA (314)

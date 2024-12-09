@@ -111,7 +111,7 @@
             <td class="text-left">{{ $list->nom_area }}</td>
             <td class="text-left">{{ $list->nom_sub_gerencia }}</td>
             <td class="text-left">{{ $list->nom_gerencia }}</td>
-            <td class="text-left" data-order="{{ $list->fecha_ingreso }}">{{ $list->fecha_ingreso }}</td>
+            <td class="text-left" data-order="{{ $list->orden }}">{{ $list->fecha_ingreso }}</td>
             <td>{{ $list->cod_tipo_documento }}</td>
             <td>{{ $list->num_doc }}</td>
             <td>
