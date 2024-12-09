@@ -98,4 +98,23 @@ class CalendarioLogistico extends Model
         $query = DB::select($sql);
         return json_decode(json_encode($query), true);
     }
+
+    public static function get_list_calendario_corporativo($dato=null){
+        $parte = "";
+        if(session('usuario')->id_puesto=="83" || 
+        session('usuario')->id_puesto=="122" || 
+        session('usuario')->id_puesto=="195"){ 
+            $parte = "AND cl.id_tipo_calendario=3";
+        }elseif(session('usuario')->id_puesto=="75"){
+            $parte = "AND cl.id_tipo_calendario IN (1,2)";
+        }
+
+        $sql = "SELECT cl.*,tc.color,pg.nombre_proveedor 
+                FROM calendario_logistico cl
+                INNER JOIN tipo_calendario_logistico tc ON tc.id_tipo_calendario=cl.id_tipo_calendario
+                LEFT JOIN proveedor_general pg ON cl.id_proveedor=pg.id_proveedor
+                WHERE YEAR(cl.fec_de)=YEAR(CURDATE()) AND cl.invitacion=0 $parte AND cl.estado=1";
+        $query = DB::select($sql);
+        return $query;
+    }
 }

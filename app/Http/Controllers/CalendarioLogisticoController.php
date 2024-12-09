@@ -54,12 +54,7 @@ class CalendarioLogisticoController extends Controller
 
     public function list()
     {
-        $list_calendario = CalendarioLogistico::from('calendario_logistico AS cl')
-                        ->select('cl.*','tc.color','pr.nombre_proveedor')
-                        ->join('tipo_calendario_logistico AS tc','tc.id_tipo_calendario','=','cl.id_tipo_calendario')
-                        ->leftjoin('proveedor AS pr','cl.id_proveedor','=','pr.id_proveedor')
-                        ->where(DB::raw("YEAR(cl.fec_de)"),"=",DB::raw("YEAR(CURDATE())"))->where('cl.invitacion',0)
-                        ->where('cl.estado',1)->get();
+        $list_calendario = CalendarioLogistico::get_list_calendario_corporativo();
         $list_proveedor = DB::connection('sqlsrv')->table('tge_entidades')->where('clp_tipenti','PR')
                         ->where('clp_estado','!=','*')->get();
         //CONVERTIR EN ARRAY
