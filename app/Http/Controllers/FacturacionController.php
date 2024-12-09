@@ -139,16 +139,20 @@ class FacturacionController extends Controller
     {
         $filas = $request->input('filas'); // Recibimos las filas enviadas desde el frontend
 
-        // Iterar sobre las filas recibidas
+        $cerradosParciales = [];
+        $cerradosTotales = [];
+        $idsActualizar = [];
+
         foreach ($filas as $fila) {
             $id = $fila['id']; // ID de la fila
             $parcial = $fila['parcial']; // Estado parcial
+
             // Buscar el registro original en la tabla tb_contabilidad
             $registro = TbContabilidad::find($id);
             if ($registro) {
                 if ($parcial == 1) {
-                    // Caso parcial = 1, insertar en tb_contabilidad_cerrados_parcial
-                    TbContabilidadCerradosParcial::create([
+                    // Caso parcial = 1, preparar datos para tb_contabilidad_cerrados_parcial
+                    $cerradosParciales[] = [
                         'estilo' => $registro->estilo,
                         'color' => $registro->color,
                         'talla' => $registro->talla,
@@ -166,19 +170,19 @@ class FacturacionController extends Controller
                         'guia_remision' => $registro->guia_remision,
                         'base' => $registro->base,
                         'enviado' => $fila['enviado'],
-                        'pendiente' =>  $registro->enviado - $fila['enviado'],
+                        'pendiente' => $registro->enviado - $fila['enviado'],
                         'cia' => $registro->cia,
                         'estado' => $registro->estado,
                         'stock' => $registro->stock,
                         'cerrado' => 0,
-                        'fecha_cerrado_parcial' => now()
-                    ]);
-                    // Actualizar el campo 'enviado' en la tabla tb_contabilidad haciendo la resta
-                    $registro->enviado = $registro->enviado - $fila['enviado'];
-                    $registro->save();
+                        'fecha_cerrado_parcial' => now(),
+                    ];
+
+                    // Marcar este registro para actualizar el campo 'enviado'
+                    $idsActualizar[$id] = $registro->enviado - $fila['enviado'];
                 } else {
-                    // Caso parcial = 0, insertar en tb_contabilidad_cerrados
-                    TbContabilidadCerrados::create([
+                    // Caso parcial = 0, preparar datos para tb_contabilidad_cerrados
+                    $cerradosTotales[] = [
                         'estilo' => $registro->estilo,
                         'color' => $registro->color,
                         'talla' => $registro->talla,
@@ -200,10 +204,11 @@ class FacturacionController extends Controller
                         'estado' => $registro->estado,
                         'stock' => $registro->stock,
                         'cerrado' => 1,
-                        'fecha_cerrado_total' => now()
-                    ]);
-                    // Eliminar el registro de la tabla tb_contabilidad
-                    $registro->delete();  // Eliminar el registro
+                        'fecha_cerrado_total' => now(),
+                    ];
+
+                    // Marcar el registro para eliminación
+                    $registro->delete();
                 }
             } else {
                 // Manejo de error si el registro no existe
@@ -214,12 +219,27 @@ class FacturacionController extends Controller
             }
         }
 
-        // Si todo ha ido bien, devolver una respuesta positiva
+        // Inserción masiva en las tablas correspondientes
+        if (!empty($cerradosParciales)) {
+            TbContabilidadCerradosParcial::insert($cerradosParciales);
+        }
+
+        if (!empty($cerradosTotales)) {
+            TbContabilidadCerrados::insert($cerradosTotales);
+        }
+
+        // Actualizar los registros en tb_contabilidad de forma masiva
+        foreach ($idsActualizar as $id => $nuevoEnviado) {
+            TbContabilidad::where('id', $id)->update(['enviado' => $nuevoEnviado]);
+        }
+
+        // Respuesta exitosa
         return response()->json([
             'success' => true,
             'message' => "Las filas han sido procesadas correctamente."
         ]);
     }
+
 
 
     public function list_datatable(Request $request)

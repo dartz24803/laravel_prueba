@@ -6,8 +6,8 @@
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing" id="cancel-row">
             <div id="tabsSimple" class="col-lg-12 col-12 layout-spacing">
-                <div class="statbox widget box box-shadow row" style=" height: 100vh;">
-                    <div class="widget-content simple-tab col-md-10" style="background-color: #f0f3f3;  ">
+                <div class="statbox widget box box-shadow row">
+                    <div class="widget-content simple-tab col-md-10" style="background-color: #f0f3f3;">
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                                 <div class="container" id="container" style="background-image: url('{{ asset('inicio/NEW.Intranet-Icono-Fondo2.jpg') }}');">
@@ -171,11 +171,10 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-2" style="z-index: 1; height: 100%; position: relative; ">
-                        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel"
-                            style="width: 100%; height: 100%; position: absolute; top: 0; left: 0;">
+                    <div class="col-md-2" style="z-index: 1; padding:0px; padding:0px;">
+                        <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
                             <div class="carousel-inner">
-                                <div class="carousel-item active" style="width: 100%; height:100%;">
+                                <div class="carousel-item active">
                                     <div class="d-flex justify-content-center align-items-center">
                                         <div class="card-body">
                                             <div class="row">
@@ -256,8 +255,8 @@
                                         $image = asset('inicio/NEW.Intranet-Slide-01Procesos.png');
                                     }
                                 ?>
-                                    <div class="carousel-item <?= $active ?>" style="width: 100%; height: 100vh;">
-                                        <img id="imagen_fondo_slider" src="<?= $image ?>" style="width: 100%; height: 100%; object-fit: cover;" alt="Slider Image">
+                                    <div class="carousel-item <?= $active ?>">
+                                        <img id="imagen_fondo_slider" style="max-width: 101%" src="<?= $image ?>">
                                         <div id="carousel-caption" class="carousel-caption d-none d-block text-left">
                                             <p class="mensaje_nuevo_slider" style="color: <?= $color ?>; margin-bottom: 0%; margin-left: 0.2rem"><?= $row['descripcion'] ?></p>
                                             <span class="d-flex align-items-center titulo_slider" style="color: <?= $color ?>;"><?= $row['titulo'] ?></span>
@@ -419,7 +418,7 @@
     .carousel-control-next {
         background-color: gray;
         border-radius: 50%;
-        padding: 0.4rem;
+        padding: 10px;
         height: 3rem;
         margin-top: 17rem;
     }
