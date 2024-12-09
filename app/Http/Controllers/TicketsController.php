@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ArchivosTickets;
 use App\Models\Area;
 use App\Models\Base;
+use App\Models\Model_Perfil;
 use App\Models\Modulo;
 use App\Models\Notificacion;
 use App\Models\Tickets;
@@ -16,15 +18,17 @@ use PhpOffice\PhpSpreadsheet\Shared\Date;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use Exception;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class TicketsController extends Controller
 {
-    protected $request;
+    protected $input;
     protected $modelo;
     protected $modelomodulo;
     protected $modeloarea;
-    protected $modelobase;/*
-    protected $modelogravedada;
+    protected $modelobase;
+    protected $Model_Perfil;/*
     protected $modelomotivoa;
     protected $modelotipoa;*/
 
@@ -32,12 +36,12 @@ class TicketsController extends Controller
     {
         //constructor con variables
         $this->middleware('verificar.sesion.usuario');
-        $this->request = $request;
+        $this->input = $request;
         $this->modelo = new Tickets();
         $this->modelomodulo = new Modulo();
         $this->modeloarea = new Area();
-        $this->modelobase = new Base();/*
-        $this->modelogravedada = new Gravedad_Amonestacion();
+        $this->modelobase = new Base();
+        $this->Model_Perfil = new Model_Perfil();/*
         $this->modelomotivoa = new Motivo_Amonestacion();
         $this->modelotipoa = new Tipo_Amonestacion();*/
     }
@@ -334,7 +338,7 @@ class TicketsController extends Controller
                 $plataforma = "INF";
             }
             $anio=date('Y');
-            $totalRows_t = Ticket::whereYear('fec_reg', $dato['aniodereg'])
+            $totalRows_t = Tickets::whereYear('fec_reg', $dato['aniodereg'])
                     ->where('plataforma', $dato['plataforma'])
                     ->where('id_tipo_tickets', $dato['id_tipo_tickets'])
                     ->count();
@@ -357,7 +361,7 @@ class TicketsController extends Controller
             }
             $dato['cod_tickets']=$codigofinal;
 
-            $total = Ticket::where('cod_tickets', $dato['cod_tickets'])
+            $total = Tickets::where('cod_tickets', $dato['cod_tickets'])
                 ->where('titulo_tickets', $dato['titulo_tickets'])
                 ->where('estado', 1)
                 ->count();
@@ -367,13 +371,18 @@ class TicketsController extends Controller
             }else{
                 $id_usuario = session('usuario')->id_usuario; // Obtener usuario de la sesión
 
-                $ticket = Ticket::create([
-                    'id_usuario_solic' => $request->id_usuario,
-                    'cod_tickets' => $request->cod_tickets,
-                    'id_tipo_tickets' => $request->id_tipo_tickets,
-                    'plataforma' => $request->plataforma,
-                    'titulo_tickets' => $request->titulo_tickets,
-                    'descrip_ticket' => $request->descrip_ticket,
+                Tickets::create([
+                    'id_usuario_solic' => $dato['id_usuario'],
+                    'id_usuario_soporte' => 0,
+                    'link' => 0,
+                    'verif_email' => 0,
+                    'dificultad' => 0,
+                    'finalizado_por' => 0,
+                    'cod_tickets' => $dato['cod_tickets'],
+                    'id_tipo_tickets' => $dato['id_tipo_tickets'],
+                    'plataforma' => $dato['plataforma'],
+                    'titulo_tickets' => $dato['titulo_tickets'],
+                    'descrip_ticket' => $dato['descrip_ticket'],
                     'estado' => 1,
                     'fec_reg' => now(),
                     'user_reg' => $id_usuario,
@@ -381,7 +390,7 @@ class TicketsController extends Controller
                     'user_act' => $id_usuario,
                 ]);
 
-                if($_FILES["files_i"]["name"] != ""){
+                if($this->input->hasFile("files_i")){
                     $ftp_server = "lanumerounocloud.com";
                     $ftp_usuario = "intranet@lanumerounocloud.com";
                     $ftp_pass = "Intranet2022@";
@@ -407,11 +416,11 @@ class TicketsController extends Controller
                             ftp_pasv($con_id,true);
                             $subio = ftp_put($con_id,"TICKET/".$nombre,$source_file,FTP_BINARY);
                             if($subio){
-                                ArchivoTicket::create([
-                                    'id_usuario_solic' => $request->id_usuario,
-                                    'cod_tickets' => $request->cod_tickets,
-                                    'archivos' => $request->ruta,
-                                    'nom_archivos' => $request->ruta_nombre,
+                                ArchivosTickets::create([
+                                    'id_usuario_solic' => $dato['id_usuario'],
+                                    'cod_tickets' => $dato['cod_tickets'],
+                                    'archivos' => $dato['ruta'],
+                                    'nom_archivos' => $dato['ruta_nombre'],
                                     'estado' => 1,
                                     'fec_reg' => now(),
                                     'user_reg' => $id_usuario,
@@ -426,9 +435,20 @@ class TicketsController extends Controller
 
                 $mail = new PHPMailer(true);
 
-                $usuario_mail=$this->Model_Corporacion->get_id_usuario($dato['id_usuario']);
-                $plataforma_mail=$this->Model_Corporacion->get_list_modulo($dato['plataforma']);
-                $list_correos=$this->Model_Corporacion->correos_tickets($dato['plataforma']);
+                $usuario_mail=$this->Model_Perfil->get_id_usuario($dato['id_usuario']);
+                $plataforma_mail = Modulo::where('id_modulo', $dato['plataforma'])
+                            ->get();
+
+                $list_correos = Usuario::query();
+                if ($dato['plataforma'] == 1) {
+                    $list_correos->where('id_usuario', 2692);
+                } elseif ($dato['plataforma'] == 2) {
+                    $list_correos->where('id_usuario', 629);
+                } elseif ($dato['plataforma'] == 3) {
+                    $list_correos->where('id_usuario', 173);
+                }
+
+                $list_correos = $list_correos->get();
 
                 if($dato['id_tipo_tickets'] == 1){
                     $tipo_correo="requerimiento";
@@ -444,7 +464,7 @@ class TicketsController extends Controller
                     $mail->Username   =  'intranet@lanumero1.com.pe';
                     $mail->Password   =  'lanumero1$1';
                     $mail->SMTPSecure =  'tls';
-                    $mail->Puerto     =  587;
+                    $mail->Port     =  587;
                     $mail->setFrom('intranet@lanumero1.com.pe','TICKET POR INICIAR');
 
                     $mail->addAddress($usuario_mail[0]['emailp']);
@@ -470,9 +490,7 @@ class TicketsController extends Controller
                     echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
                 }
             }
-        }else{
-            redirect('');
-        }
+
     }
 
     public function Modal_Update_Tickets($id_tickets){

@@ -1,54 +1,57 @@
 @extends('layouts.plantilla')
 
 @section('content')
-    <style>
-        <?php foreach($list_tipo_calendario_todo as $list){ ?>
+    @foreach ($list_tipo_calendario_todo as $list)
+        <style>
+            .form-group label{
+                color: black !important;
+            }
             .radio-{{ $list->id_tipo_calendario }} span.new-control-indicator {
-                border: 2px solid {{ $list['color']; }}; 
+                border: 2px solid {{ $list->color }}; 
             }
-            .new-control.new-checkbox.new-checkbox-text.checkbox-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-chk-content, .new-control.new-checkbox.new-checkbox-text.checkbox-outline-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-chk-content {
-                color: {{ $list['color']; }}; 
+            .new-control.new-checkbox.new-checkbox-text.checkbox-{{ $list->id_tipo_calendario }} > input:checked ~ span.new-chk-content, .new-control.new-checkbox.new-checkbox-text.checkbox-outline-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-chk-content {
+                color: {{ $list->color }}; 
             }
-            .new-control.new-checkbox.checkbox-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator {
-                background: {{ $list['color']; }}; 
+            .new-control.new-checkbox.checkbox-{{ $list->id_tipo_calendario }} > input:checked ~ span.new-control-indicator {
+                background: {{ $list->color }}; 
             }
-            .new-control.new-checkbox.checkbox-outline-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator {
-                border: 2px solid {{ $list['color']; }}; 
+            .new-control.new-checkbox.checkbox-outline-{{ $list->id_tipo_calendario }} > input:checked ~ span.new-control-indicator {
+                border: 2px solid {{ $list->color }}; 
             }
-            .new-control.new-checkbox.checkbox-outline-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator:after {
-                border-color: {{ $list['color']; }}; 
+            .new-control.new-checkbox.checkbox-outline-{{ $list->id_tipo_calendario }} > input:checked ~ span.new-control-indicator:after {
+                border-color: {{ $list->color }}; 
             }
-            .new-control.new-radio.radio-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator {
-                background: {{ $list['color']; }}; 
+            .new-control.new-radio.radio-{{ $list->id_tipo_calendario }} > input:checked ~ span.new-control-indicator {
+                background: {{ $list->color }}; 
             }
-            .new-control.new-radio.radio-classic-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator {
-                border: 3px solid {{ $list['color']; }}; 
+            .new-control.new-radio.radio-classic-{{ $list->id_tipo_calendario }} > input:checked ~ span.new-control-indicator {
+                border: 3px solid {{ $list->color }}; 
             }
-            .new-control.new-radio.radio-classic-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-control-indicator:after {
-                background-color: {{ $list['color']; }}; 
+            .new-control.new-radio.radio-classic-{{ $list->id_tipo_calendario }} > input:checked ~ span.new-control-indicator:after {
+                background-color: {{ $list->color }}; 
             }
-            .new-control.new-radio.new-radio-text.radio-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-radio-content, .new-control.new-radio.new-radio-text.radio-classic-{{ $list['id_tipo_calendario']; }} > input:checked ~ span.new-radio-content {
-                color: {{ $list['color']; }}; 
+            .new-control.new-radio.new-radio-text.radio-{{ $list->id_tipo_calendario }} > input:checked ~ span.new-radio-content, .new-control.new-radio.new-radio-text.radio-classic-{{ $list->id_tipo_calendario }} > input:checked ~ span.new-radio-content {
+                color: {{ $list->color }}; 
             }
-            .label-{{ $list->id_tipo_calendario; }}:before {
-                background: {{ $list->color." !important"; }}
+            .label-{{ $list->id_tipo_calendario }}:before {
+                background: {{ $list->color." !important" }};
             }
-            .bg-{{ $list->id_tipo_calendario; }} {
-                background-color: {{ $list->background; }} !important;
-                border-color: {{ $list->color; }} !important;
+            .bg-{{ $list->id_tipo_calendario }} {
+                background-color: {{ $list->background." !important" }};
+                border-color: {{ $list->color." !important" }};
                 color: #fff;
                 -webkit-box-shadow: none !important;
                 box-shadow: none !important; 
             }
-            a.bg-{{ $list->id_tipo_calendario; }}:hover {
+            a.bg-{{ $list->id_tipo_calendario }}:hover {
                 background-color: inherit !important;
                 border-width: 2px !important; 
             }
-            .fc-day-grid-event.bg-{{ $list->id_tipo_calendario; }} .fc-content:before {
-                background: {{ $list->color; }}; 
+            .fc-day-grid-event.bg-{{ $list->id_tipo_calendario }} .fc-content:before {
+                background: {{ $list->color }}; 
             }
-        <?php } ?>
-    </style>
+        </style>
+    @endforeach
 
     <div id="content" class="main-content">
         <div class="layout-px-spacing">
@@ -72,13 +75,14 @@
                                     </div>
                                 </div>
                             </div>
-                            <div id="calendar"></div>
+                            <div id="lista_calendario">
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- The Modal -->
-                <div id="addEventsModal"data-backdrop="static"  class="modal animated fadeIn">
+                <div id="addEventsModal" data-backdrop="static"  class="modal animated fadeIn">
 
                     <div class="modal-dialog modal-lg modal-dialog-centered">
                         
@@ -94,13 +98,14 @@
                                         <h5 class="add-event-title modal-title">Registrar Nueva Cita</h5>
                                         <h5 class="edit-event-title modal-title">Editar Cita</h5>
 
-                                        <form id="formulario_cal" method="POST" enctype="multipart/form-data" class="needs-validation">
+                                        <form id="formulario" method="POST" enctype="multipart/form-data" class="needs-validation">
                                             <div class="row">
                                                 <div class="col-lg-6">
                                                     <div class="form-group">
                                                         <label for="start-date" class="">De:</label>
                                                         <div class="d-flex">
-                                                            <input id="start-date" placeholder="Fecha Inicial" class="form-control" type="text" name="start-date" value="<?= date('Y-m-d h:i') ?>">
+                                                            <input id="start-date" placeholder="Fecha Inicial" class="form-control" type="text" 
+                                                            name="start-date" value="{{ date('Y-m-d h:i') }}">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -109,7 +114,8 @@
                                                     <div class="form-group">
                                                         <label for="end-date" class="">Hasta:</label>
                                                         <div class="d-flex">
-                                                            <input id="end-date" placeholder="Fecha Final" type="text" class="form-control" name="end-date">
+                                                            <input id="end-date" placeholder="Fecha Final" type="text" class="form-control" 
+                                                            name="end-date">
                                                         </div>
                                                     </div>
                                                 </div>
@@ -117,38 +123,95 @@
 
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <label for="write-e" class="">Título:</label>
-                                                    <div class="d-flex">
-                                                        <input id="write-e" type="text" placeholder="Título" class="form-control" name="task">
+                                                    <div class="form-group">
+                                                        <label for="task" class="">Título:</label>
+                                                        <div class="d-flex">
+                                                            <input id="task" type="text" placeholder="Título" class="form-control" 
+                                                            name="task">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
 
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <label for="taskdescription" class="">Descripción:</label>
-                                                    <div class="d-flex">
-                                                        <textarea id="taskdescription" placeholder="Descripción" rows="2" class="form-control" name="taskdescription"></textarea>
+                                                    <div class="form-group">
+                                                        <label for="taskdescription" class="">Descripción:</label>
+                                                        <div class="d-flex">
+                                                            <textarea id="taskdescription" placeholder="Descripción" rows="2" 
+                                                            class="form-control" name="taskdescription"></textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row mt-3">
+                                                <div class="col-lg-12">
+                                                    <div class="form-group">
+                                                        <label for="id_proveedor" class="">Proveedor:</label>
+                                                        <div id="div_proveedor" class="d-flex">
+                                                            <select class="form-control basicp" name="id_proveedor" id="id_proveedor">
+                                                                <option value="0">Seleccione</option>
+                                                                @if (session('usuario')->id_puesto=="75")
+                                                                    @foreach ($list_proveedor as $list)
+                                                                        <option value="{{ $list->clp_codigo."-1" }}">{{ $list->clp_razsoc }}</option>
+                                                                    @endforeach
+                                                                    @foreach ($list_proveedor_taller as $list)
+                                                                        <option value="{{ $list->id_proveedor."-0" }}">{{ $list->nombre_proveedor }}</option>
+                                                                    @endforeach
+                                                                @endif
+                                                                @if (session('usuario')->id_puesto=="83" || 
+                                                                session('usuario')->id_puesto=="195")
+                                                                    @foreach ($list_proveedor_taller as $list)
+                                                                        <option value="{{ $list->id_proveedor."-0" }}">{{ $list->nombre_proveedor }}</option>
+                                                                    @endforeach
+                                                                @endif
+                                                                @if (session('usuario')->id_puesto=="122")
+                                                                    @foreach ($list_proveedor_tela as $list)
+                                                                        <option value="{{ $list->id_proveedor."-0" }}">{{ $list->nombre_proveedor }}</option>
+                                                                    @endforeach
+                                                                @endif
+                                                                @if (session('usuario')->id_nivel=="1")
+                                                                    @foreach ($list_proveedor as $list)
+                                                                        <option value="{{ $list->clp_codigo."-1" }}">{{ $list->clp_razsoc }}</option>
+                                                                    @endforeach
+                                                                    @foreach ($list_proveedor_taller as $list)
+                                                                        <option value="{{ $list->id_proveedor."-0" }}">{{ $list->nombre_proveedor }}</option>
+                                                                    @endforeach
+                                                                    @foreach ($list_proveedor_tela as $list)
+                                                                        <option value="{{ $list->id_proveedor."-0" }}">{{ $list->nombre_proveedor }}</option>
+                                                                    @endforeach
+                                                                @endif
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
                                             
-                                            <div class="row">
+                                            <div class="row mt-3">
                                                 <div class="col-lg-6">
-                                                    <label for="cod_base" class="">Base:</label>
-                                                    <div id="div_base" class="d-flex">
-                                                        <select class="form-control" name="cod_base" id="cod_base">
-                                                            <option value="0" >Seleccione</option>
-                                                            @foreach ($list_base as $list)
-                                                                <option value="{{ $list->cod_base }}">{{ $list->cod_base }}</option>
-                                                            @endforeach
-                                                        </select>
+                                                    <div class="form-group">
+                                                        <label for="cod_base" class="">Base:</label>
+                                                        <div id="div_base" class="d-flex">
+                                                            <select class="form-control" name="cod_base" id="cod_base">
+                                                                <option value="0" >Seleccione</option>
+                                                                @foreach ($list_base as $list)
+                                                                    <option value="{{ $list->cod_base }}"
+                                                                    @if ($list->cod_base==session('usuario')->centro_labores) selected @endif>
+                                                                        {{ $list->cod_base }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                        </div>
                                                     </div>
                                                 </div>
                                                 <div class="col-lg-6">
-                                                    <label for="cant_prendase" class="">Cantidad:</label>
-                                                    <div class="d-flex">
-                                                        <input id="cant_prendase" type="text" placeholder="Cantidad" class="form-control" name="cant_prendas">
+                                                    <div class="form-group">
+                                                        <label for="cant_prendas" class="">Cantidad:</label>
+                                                        <div class="d-flex">
+                                                            <input id="cant_prendas" type="text" placeholder="Cantidad" class="form-control" 
+                                                            name="cant_prendas" onkeypress="return solo_Numeros(event);">
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>
@@ -163,12 +226,18 @@
                                                         radio-<?= $list->id_tipo_calendario ?>">
                                                             <input type="radio" 
                                                             <?php if($list->id_tipo_calendario=="2" && 
-                                                            (session('usuario')->id_puesto=="75")){ echo "checked"; } ?> 
-                                                            class="new-control-input mr-2" 
-                                                            id="r_<?= $list->id_tipo_calendario ?>" 
+                                                            session('usuario')->id_puesto=="75"){ echo "checked"; 
+                                                            }elseif($list->id_tipo_calendario=="3" && 
+                                                            (session('usuario')->id_nivel=="1" || 
+                                                            session('usuario')->id_puesto=="83" ||
+                                                            session('usuario')->id_puesto=="122" ||
+                                                            session('usuario')->id_puesto=="195")){ echo "checked"; } ?> 
+                                                            class="new-control-input mr-2"
+                                                            id="r_{{ $list->id_tipo_calendario }}" 
                                                             name="id_tipo_calendario" 
-                                                            value="<?= $list->id_tipo_calendario ?>">
-                                                            <span class="new-control-indicator"></span><?= $list->nom_tipo_calendario ?>
+                                                            value="{{ $list->id_tipo_calendario }}">
+                                                            <span class="new-control-indicator"></span>
+                                                            {{ $list->nom_tipo_calendario }}
                                                         </label>
                                                     </div>
                                                 @endforeach
@@ -184,13 +253,11 @@
                             <div class="modal-footer">
                                 <button id="add-e" class="btn">Guardar</button>
                                 <button id="edit-event" class="btn">Guardar</button>
+                                <div id="div_eliminar"></div>
                                 <button id="discard_modal" class="btn" data-dismiss="modal">Cerrar</button>
                             </div>
-
                         </div>
-
                     </div>
-
                 </div>                
             </div>
         </div>
@@ -201,346 +268,156 @@
             $("#calendarios_logisticos").attr('aria-expanded','true');
             $("#calendarios_logisticos").addClass('active');
 
-            // Get the modal
-            var modal = document.getElementById("addEventsModal");
+            $(".basicp").select2({
+                dropdownParent: $('#addEventsModal')
+            });
 
-            // Get the button that opens the modal
-            var btn = document.getElementById("myBtn");
+            Lista_Calendario_Logistico();
+        });
 
-            // Get the Add Event button
-            var addEvent = document.getElementById("add-e");
-            // Get the Edit Event button
-            var editEvent = document.getElementById("edit-event");
-            // Get the Discard Modal button
-            var discardModal = document.getElementById("discard_modal");
+        function Lista_Calendario_Logistico(){
+            Cargando();
 
-            // Get the Add Event button
-            var addEventTitle = document.getElementsByClassName("add-event-title")[0];
-            // Get the Edit Event button
-            var editEventTitle = document.getElementsByClassName("edit-event-title")[0];
+            var url = "{{ route('calendario_logistico.list') }}";
 
-            // Get the <span> element that closes the modal
-            var span = document.getElementById("close_modal");
-
-            // Get the all <input> elements insdie the modal
-            var input = document.querySelectorAll('input[type="text"]');
-            var radioInput = document.querySelectorAll('input[type="radio"]');
-
-            // Get the all <textarea> elements insdie the modal
-            var textarea = document.getElementsByTagName('textarea');
-
-            // Create BackDrop ( Overlay ) Element
-            function createBackdropElement () {
-                var btn = document.createElement("div");
-                btn.setAttribute('class', 'modal-backdrop fade show')
-                document.body.appendChild(btn);
-            }
-
-            // Reset radio buttons
-
-            function clearRadioGroup(GroupName) {
-            var ele = document.getElementsByName(GroupName);
-                for(var i=0;i<ele.length;i++)
-                ele[i].checked = false;
-            }
-
-            // Reset Modal Data on when modal gets closed
-            function modalResetData() {
-                modal.style.display = "none";
-                for (i = 0; i < input.length; i++) {
-                    input[i].value = '';
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#lista_calendario').html(resp);  
                 }
-                for (j = 0; j < textarea.length; j++) {
-                    textarea[j].value = '';
-                i
-                }
-                clearRadioGroup("marker");
-                // Get Modal Backdrop
-                var getModalBackdrop = document.getElementsByClassName('modal-backdrop')[0];
-                document.body.removeChild(getModalBackdrop)
+            });
+        }
+
+        function solo_Numeros(e) {
+            var key = event.which || event.keyCode;
+            if (key >= 48 && key <= 57) {
+                return true;
+            } else {
+                return false;
             }
+        }
 
-            // When the user clicks on the button, open the modal
-            btn.onclick = function() {
-                modal.style.display = "block";
-                addEvent.style.display = 'block';
-                editEvent.style.display = 'none';
-                addEventTitle.style.display = 'block';
-                editEventTitle.style.display = 'none';
-                document.getElementsByTagName('body')[0].style.overflow = 'hidden';
-                createBackdropElement();
-                enableDatePicker();
-            }
+        function Insert_Calendario_Logistico(){
+            Cargando();
 
-            // Clear Data and close the modal when the user clicks on Discard button
-            discardModal.onclick = function() {
-                modalResetData();
-                document.getElementsByTagName('body')[0].removeAttribute('style');
-            }
+            var dataString = new FormData(document.getElementById('formulario'));
+            var url = "{{ route('calendario_logistico.store') }}";
 
-            // Clear Data and close the modal when the user clicks on <span> (x).
-            span.onclick = function() {
-                modalResetData();
-                document.getElementsByTagName('body')[0].removeAttribute('style');
-            }
-
-            // Clear Data and close the modal when the user clicks anywhere outside of the modal.
-            window.onclick = function(event) {
-                if (event.target == modal) {
-                    modalResetData();
-                    document.getElementsByTagName('body')[0].removeAttribute('style');
-                }
-            }
-
-            newDate = new Date()
-            monthArray = [ '1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12' ]
-
-            function getDynamicMonth( monthOrder ) {
-                var getNumericMonth = parseInt(monthArray[newDate.getMonth()]);
-                var getNumericMonthInc = parseInt(monthArray[newDate.getMonth()]) + 1;
-                var getNumericMonthDec = parseInt(monthArray[newDate.getMonth()]) - 1;
-
-                if (monthOrder === 'default') {
-
-                    if (getNumericMonth < 10 ) {
-                        return '0' + getNumericMonth;
-                    } else if (getNumericMonth >= 10) {
-                        return getNumericMonth;
-                    }
-
-                } else if (monthOrder === 'inc') {
-
-                    if (getNumericMonthInc < 10 ) {
-                        return '0' + getNumericMonthInc;
-                    } else if (getNumericMonthInc >= 10) {
-                        return getNumericMonthInc;
-                    }
-
-                } else if (monthOrder === 'dec') {
-
-                    if (getNumericMonthDec < 10 ) {
-                        return '0' + getNumericMonthDec;
-                    } else if (getNumericMonthDec >= 10) {
-                        return getNumericMonthDec;
-                    }
-                }
-            }
-
-            /* initialize the calendar
-            -----------------------------------------------------------------*/
-
-            var calendar = $('#calendar').fullCalendar({
-                defaultView: 'agendaWeek',
-                header: {
-                    left: 'prev,next today',
-                    center: 'title',
-                    right: 'month,agendaWeek,agendaDay'
+            $.ajax({
+                type:"POST",
+                url:url,
+                data:dataString,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                events: [
-                    @foreach($list_calendario as $list)
-                        {
-                            id: '{{ $list->id_calendario }}',
-                            title: '{{ $list->titulo }}',
-                            start: '{{ $list->fec_de }}',
-                            end: '{{ $list->fec_hasta }}',
-                            className: "bg-{{ $list->id_tipo_calendario }}",
-                            description: '{{ preg_replace("/[\r\n|\n|\r]+/"," ",$list->descripcion) }}',
-                            tipo: '{{ $list->id_tipo_calendario }}',
-                            proveedor: 'Proveedor',
-                            base: '{{ $list->base }}',
-                            invitacion: '{{ $list->invitacion }}',
-                            cant_prendas: '{{ $list->cant_prenda }}'
-                        },
-                    @endforeach
-                ],
-                editable: true,
-                eventLimit: true,
-                eventMouseover: function(event, jsEvent, view) {
-                    $(this).attr('id', event.id);
-
-                    $('#'+event.id).popover({
-                        template: '<div class="popover popover-primary" role="tooltip"><div class="arrow"></div><h3 class="popover-header"></h3><div class="popover-body"></div></div>',
-                        title: event.title,
-                        content: event.description,
-                        placement: 'top',
+                success:function (data) {
+                    swal.fire(
+                        '¡Registro Exitoso!',
+                        '¡Haga clic en el botón!',
+                        'success'
+                    ).then(function() {
+                        Lista_Calendario_Logistico();
+                        $("#addEventsModal .close").click();
                     });
-
-                    $('#'+event.id).popover('show');
                 },
-                eventMouseout: function(event, jsEvent, view) {
-                    $('#'+event.id).popover('hide');
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
+
+        function Update_Calendario_Logistico(id){
+            Cargando();
+
+            var dataString = new FormData(document.getElementById('formulario'));
+            var url = "{{ route('calendario_logistico.update', ':id') }}".replace(':id', id);
+
+            $.ajax({
+                type:"POST",
+                url:url,
+                data:dataString,
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
-                eventClick: function(info) {
-
-                    addEvent.style.display = 'none';
-                    editEvent.style.display = 'block';
-
-                    addEventTitle.style.display = 'none';
-                    editEventTitle.style.display = 'block';
-                    modal.style.display = "block";
-                    document.getElementsByTagName('body')[0].style.overflow = 'hidden';
-                    createBackdropElement();
-
-                    // Calendar Event Featch
-                    var eventTitle = info.title;
-                    var eventDescription = info.description;
-
-                    // Task Modal Input
-                    var taskTitle = $('#write-e');
-                    var taskTitleValue = taskTitle.val(eventTitle);
-
-                    var taskDescription = $('#taskdescription');
-                    var taskDescriptionValue = taskDescription.val(eventDescription);
-
-                    var taskInputStarttDate = $("#start-date");
-                    var taskInputStarttDateValue = taskInputStarttDate.val(info.start.format("YYYY-MM-DD HH:mm:ss"));
-
-                    var taskInputEndDate = $("#end-date");
-                    var taskInputEndtDateValue = taskInputEndDate.val(info.end.format("YYYY-MM-DD HH:mm:ss"));
-                
-                    var startDate = flatpickr(document.getElementById('start-date'), {
-                        enableTime: true,
-                        dateFormat: "Y-m-d H:i",
-                        defaultDate: info.start.format("YYYY-MM-DD HH:mm:ss"),
-                    });
-
-                    var abv = startDate.config.onChange.push(function(selectedDates, dateStr, instance) {
-                        var endtDate = flatpickr(document.getElementById('end-date'), {
-                            enableTime: true,
-                            dateFormat: "Y-m-d H:i",
-                            minDate: dateStr
+                success:function (data) {
+                    if(data=="error"){
+                        Swal({
+                            title: '¡Actualización Denegada!',
+                            html: "¡La cita no puede ser modificada por tener registros en <b>Reporte de Proveedores!</b>",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
                         });
-                    })
+                    }else{
+                        swal.fire(
+                            '¡Actualización Exitosa!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            Lista_Calendario_Logistico();
+                            $("#addEventsModal .close").click();
+                        });
+                    }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
+                }
+            });
+        }
 
-                    var endtDate = flatpickr(document.getElementById('end-date'), {
-                        enableTime: true,
-                        dateFormat: "Y-m-d H:i",
-                        defaultDate: info.end.format("YYYY-MM-DD HH:mm:ss"),
-                        minDate: info.start.format("YYYY-MM-DD HH:mm:ss")
-                    });
+        function Delete_Calendario_Logistico(id) {
+            Cargando();
 
-                    $('#edit-event').off('click').on('click', function(event) {
-                        event.preventDefault();
-                        /* Act on the event */
-                        var radioValue = $("input[name='marker']:checked").val();
+            var url = "{{ route('calendario_logistico.destroy', ':id') }}".replace(':id', id);
+            var csrfToken = $('input[name="_token"]').val();
 
-                        var taskStartTimeValue = document.getElementById("start-date").value;
-                        var taskEndTimeValue = document.getElementById("end-date").value;
-
-                        info.title = taskTitle.val();
-                        info.description = taskDescription.val();
-                        info.start = taskStartTimeValue;
-                        info.end = taskEndTimeValue;
-                        info.className = radioValue;
-
-                        $('#calendar').fullCalendar('updateEvent', info);
-                        modal.style.display = "none";
-                        modalResetData();
-                        document.getElementsByTagName('body')[0].removeAttribute('style');
+            Swal({
+                title: '¿Realmente desea eliminar el registro?',
+                text: "El registro será eliminado permanentemente",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Si',
+                cancelButtonText: 'No',
+                padding: '2em'
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: url,
+                        headers: {
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        success: function() {
+                            Swal(
+                                '¡Eliminado!',
+                                'El registro ha sido eliminado satisfactoriamente.',
+                                'success'
+                            ).then(function() {
+                                Lista_Calendario_Logistico();
+                                $("#addEventsModal .close").click();
+                            });    
+                        }
                     });
                 }
             })
-
-
-            function enableDatePicker() {
-                var startDate = flatpickr(document.getElementById('start-date'), {
-                    enableTime: true,
-                    dateFormat: "Y-m-d H:i",
-                    minDate: new Date()
-                });
-
-                var abv = startDate.config.onChange.push(function(selectedDates, dateStr, instance) {
-
-                    var endtDate = flatpickr(document.getElementById('end-date'), {
-                        enableTime: true,
-                        dateFormat: "Y-m-d H:i",
-                        minDate: dateStr
-                    });
-                })
-
-                var endtDate = flatpickr(document.getElementById('end-date'), {
-                    enableTime: true,
-                    dateFormat: "Y-m-d H:i",
-                    minDate: new Date()
-                });
-            }
-
-
-            function randomString(length, chars) {
-                var result = '';
-                for (var i = length; i > 0; --i) result += chars[Math.round(Math.random() * (chars.length - 1))];
-                return result;
-            }
-            $("#add-e").off('click').on('click', function(event) {
-                var radioValue = $("input[name='marker']:checked").val();
-                var randomAlphaNumeric = randomString(10, '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
-                var inputValue = $("#write-e").val();
-                var inputStarttDate = document.getElementById("start-date").value;
-                var inputEndDate = document.getElementById("end-date").value;
-
-                var arrayStartDate = inputStarttDate.split(' ');
-
-                var arrayEndDate = inputEndDate.split(' ');
-
-                var startDate = arrayStartDate[0];
-                var startTime = arrayStartDate[1];
-
-                var endDate = arrayEndDate[0];
-                var endTime = arrayEndDate[1];
-
-                var concatenateStartDateTime = startDate+'T'+startTime+':00';
-                var concatenateEndDateTime = endDate+'T'+endTime+':00';
-
-                var inputDescription = document.getElementById("taskdescription").value;
-                var myCalendar = $('#calendar');
-                myCalendar.fullCalendar();
-                var myEvent = {
-                    timeZone: 'UTC',
-                    allDay : false,
-                    id: randomAlphaNumeric,
-                    title:inputValue,
-                    start: concatenateStartDateTime,
-                    end: concatenateEndDateTime,
-                    className: radioValue,
-                    description: inputDescription
-                };
-                myCalendar.fullCalendar( 'renderEvent', myEvent, true );
-                modal.style.display = "none";
-                modalResetData();
-                document.getElementsByTagName('body')[0].removeAttribute('style');
-            });
-
-
-            // Setting dynamic style ( padding ) of the highlited ( current ) date
-
-            function setCurrentDateHighlightStyle() {
-                getCurrentDate = $('.fc-content-skeleton .fc-today').attr('data-date');
-                if (getCurrentDate === undefined) {
-                    return;
-                }
-                splitDate = getCurrentDate.split('-');
-                if (splitDate[2] < 10) {
-                    $('.fc-content-skeleton .fc-today .fc-day-number').css('padding', '3px 8px');
-                } else if (splitDate[2] >= 10) {
-                    $('.fc-content-skeleton .fc-today .fc-day-number').css('padding', '3px 4px');
-                }
-            }
-            setCurrentDateHighlightStyle();
-
-            const mailScroll = new PerfectScrollbar('.fc-scroller', {
-                suppressScrollX : true
-            });
-
-            var fcButtons = document.getElementsByClassName('fc-button');
-            for(var i = 0; i < fcButtons.length; i++) {
-                fcButtons[i].addEventListener('click', function() {
-                    const mailScroll = new PerfectScrollbar('.fc-scroller', {
-                        suppressScrollX : true
-                    });        
-                    $('.fc-scroller').animate({ scrollTop: 0 }, 100);
-                    setCurrentDateHighlightStyle();
-                })
-            }
-        });
+        }
     </script>
 @endsection

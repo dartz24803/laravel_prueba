@@ -21,20 +21,20 @@ class MercaderiaConfController extends Controller
         $this->Model_Perfil = new Model_Perfil();
         $this->input = $request;
     }
-    
+
     public function TablaMercaderia(){
             //REPORTE BI CON ID
             $dato['list_subgerencia'] = SubGerencia::list_subgerencia(7);
             //NOTIFICACIONES
             $dato['list_notificacion'] = Notificacion::get_list_notificacion();
-            return view('logistica.administracion.mercaderia.tablalogistica',$dato);   
+            return view('logistica.administracion.mercaderia.tablalogistica',$dato);
     }
 
     public function Percha(){
             $dato['list_percha'] = Percha::where('estado',1)
                             ->get();
-            return view('logistica.Administracion.mercaderia.Percha.index',$dato);   
-    }             
+            return view('logistica.administracion.mercaderia.Percha.index',$dato);
+    }
 
     public function Modal_Percha(){
             return view('logistica.administracion.mercaderia.Percha.modal_registrar');
@@ -65,7 +65,7 @@ class MercaderiaConfController extends Controller
     public function Modal_Update_Percha($id_percha){
             $dato['get_id'] = Percha::where('id_percha', $id_percha)
                         ->get();
-            return view('logistica.administracion.mercaderia.Percha.modal_editar',$dato);   
+            return view('logistica.administracion.mercaderia.Percha.modal_editar',$dato);
     }
 
     public function Update_Percha(){
@@ -94,15 +94,15 @@ class MercaderiaConfController extends Controller
 
     //----------------nicho
     public function Nicho(){
-            $dato['list_nicho'] = Nicho::select('nicho.*', 'percha.nom_percha', 
+            $dato['list_nicho'] = Nicho::select('nicho.*', 'percha.nom_percha',
                 DB::raw("CONCAT(percha.nom_percha, nicho.numero) as nicho"))
                 ->leftJoin('percha', 'nicho.id_percha', '=', 'percha.id_percha')
                 ->where('nicho.estado', 1)
                 ->orderBy('nicho.nom_nicho')
                 ->get();
-            return view('logistica.administracion.mercaderia.Nicho.index',$dato);   
+            return view('logistica.administracion.mercaderia.Nicho.index',$dato);
     }
-          
+
 
     public function Modal_Nicho(){
         $dato['list_percha'] = Percha::where('estado',1)
@@ -146,11 +146,11 @@ class MercaderiaConfController extends Controller
             ->leftJoin('percha', 'nicho.id_percha', '=', 'percha.id_percha')
             ->where('nicho.id_nicho', $id_nicho)
             ->get();
-            
+
         $dato['list_percha'] = Percha::where('estado',1)
                     ->get();
 
-        return view('logistica.administracion.mercaderia.Nicho.modal_editar',$dato);   
+        return view('logistica.administracion.mercaderia.Nicho.modal_editar',$dato);
     }
 
     public function Update_Nicho(){

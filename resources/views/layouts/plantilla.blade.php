@@ -29,11 +29,11 @@
     <link href="{{ asset('template/assets/css/components/custom-sweetalert.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" type="text/css" href="{{ asset('template/assets/css/forms/theme-checkbox-radio.css') }}">
     <!-- END THEME GLOBAL STYLES -->
-    <script src="{{ asset('js/momentjs/moment.js') }}"></script>
+    {{--<script src="{{ asset('js/momentjs/moment.js') }}"></script>
     <script src="{{ asset('js/momentjs/moment-with-locales.js') }}"></script>
     <script>
         moment.locale('es');
-    </script>
+    </script>--}}
     <link rel="stylesheet" href="{{ asset('css/modals.css') }}">
     <!-- CSS perfil -->
     <link rel="stylesheet" type="text/css" href="{{ asset('template/plugins/dropify/dropify.min.css') }}">
@@ -721,7 +721,7 @@
     <script src="{{ asset('template/assets/js/custom.js') }}"></script>
     <script src="{{ asset('template/assets/js/users/account-settings.js') }}"></script>
 
-    <script src="https://momentjs.com/downloads/moment.min.js"></script>
+    {{--<script src="https://momentjs.com/downloads/moment.min.js"></script>--}}
     <!-- END GLOBAL MANDATORY SCRIPTS -->
     <!-- BEGIN PAGE LEVEL CUSTOM SCRIPTS -->
     <script src="{{ asset('template/plugins/table/datatable/datatables.js') }}"></script>
@@ -734,7 +734,6 @@
     <script src="{{ asset('template/plugins/fullcalendar/moment.min.js') }}"></script>
     <script src="{{ asset('template/plugins/flatpickr/flatpickr.js') }}"></script>
     <script src="{{ asset('template/plugins/fullcalendar/fullcalendar.min.js') }}"></script>
-    <script src="{{ asset('template/plugins/fullcalendar/custom-fullcalendar.advance.js') }}"></script>
     <script>
         $('[data-toggle="tooltip"]').tooltip();
     </script>
