@@ -156,7 +156,7 @@
                                 </a>
                             </div>
                         </div>
-
+                        @csrf
                         <div id="lista_tickets" class="table-responsive mb-4 mt-4">
                         </div>
                     </div>

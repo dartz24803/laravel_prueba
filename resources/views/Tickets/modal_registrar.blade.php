@@ -107,6 +107,7 @@
     </div>
 
     <div class="modal-footer">
+        @csrf
         <button class="btn btn-primary mt-3" type="button" onclick="Insert_Tickets();">Guardar</button>
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
@@ -160,54 +161,19 @@
     });
 
     function Insert_Tickets() {
-        $(document)
-        .ajaxStart(function() {
-            $.blockUI({
-                message: '<svg> ... </svg>',
-                fadeIn: 800,
-                overlayCSS: {
-                    backgroundColor: '#1b2024',
-                    opacity: 0.8,
-                    zIndex: 1200,
-                    cursor: 'wait'
-                },
-                css: {
-                    border: 0,
-                    color: '#fff',
-                    zIndex: 1201,
-                    padding: 0,
-                    backgroundColor: 'transparent'
-                }
-            });
-        })
-        .ajaxStop(function() {
-            $.blockUI({
-                message: '<svg> ... </svg>',
-                fadeIn: 800,
-                timeout: 100,
-                overlayCSS: {
-                    backgroundColor: '#1b2024',
-                    opacity: 0.8,
-                    zIndex: 1200,
-                    cursor: 'wait'
-                },
-                css: {
-                    border: 0,
-                    color: '#fff',
-                    zIndex: 1201,
-                    padding: 0,
-                    backgroundColor: 'transparent'
-                }
-            });
-        });
+        Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_i'));
         var url = "{{ url('Tickets/Insert_Tickets') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         if (Valida_Insert_Tickets()) {
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 data: dataString,
                 processData: false,
                 contentType: false,

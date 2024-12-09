@@ -1874,9 +1874,9 @@ Route::controller(TicketsController::class)->group(function () {
     Route::get('Tickets/Excel_Tickets/{busqu}/{ini}/{pro}/{fin}/{std}', 'Excel_Tickets');
     Route::get('Tickets/Modal_Tickets','Modal_Tickets');
     Route::get('Tickets');
+    Route::post('Tickets/Insert_Tickets', 'Insert_Tickets');
     // Route::get('Tickets')
     // Route::get('Tickets')
-    // Route::post('', '');
     // Route::get('Tickets')
     // Route::post('', '');
 });

@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th>Orden</th>
-            <th width="8%">F.&nbsp;de&nbsp;registro</th> 
+            <th width="8%">F.&nbsp;de&nbsp;registro</th>
             <th width="5%">Tipo</th>
             <th width="8%">Plataforma</th>
             <th width="12%">Área</th>
@@ -16,10 +16,10 @@
         </tr>
     </thead>
     <tbody>
-        <?php foreach($list_tickets_usu as $list) {  ?>   
+        <?php foreach($list_tickets_usu as $list) {  ?>
             <tr>
                 <td><?php echo $list['orden']; ?></td>
-                <td><?php echo $list['fecha_tabla']; ?></td>
+                <td data-order="{{ $list['orden'] }}"><?php echo $list['fecha_tabla']; ?></td>
                 <td class="text-center"><?php echo $list['tipo']; ?></td>
                 <td class="text-center"><?php echo $list['nom_plataforma']; ?></td>
                 <td><?php echo ucfirst($list['nom_area_min']); ?></td>
@@ -28,15 +28,15 @@
                 <td><?php echo ucwords($list['soporte']); ?></td>
                 <td><?php echo $list['vence']; ?></td>
                 <td>
-                    <?php if ( $list['estado']==1) { ?> 
+                    <?php if ( $list['estado']==1) { ?>
                         <span class="badge" style="background:#FF786B;color: white;"><?php echo $list['nom_estado_tickets']; ?></span>
                     <?php }elseif($list['estado']==2){ ?>
                         <span class="badge" style="background:#FFE881;color:#726f73;"><?php echo $list['nom_estado_tickets']; ?></span>
                     <?php }elseif($list['estado']==3){ ?>
                         <span class="badge" style="background:#5FB17B;color: white;"><?php echo $list['nom_estado_tickets']; ?></span>
-                    <?php }elseif($list['estado']==4){ echo ""; ?>    
+                    <?php }elseif($list['estado']==4){ echo ""; ?>
                         <span class="badge" style="background:#E2A03F;color: white;"><?php echo $list['nom_estado_tickets']; ?></span>
-                    <?php }else{ echo ""; } ?>                           
+                    <?php }else{ echo ""; } ?>
                 </td>
                 <td><span class="badge badge-success"><?php echo $list['diferencia_dias']; ?></span></td>
                 <td class="text-center">
@@ -77,11 +77,11 @@
         "stripeClasses": [],
         "lengthMenu": [10, 20, 50],
         "pageLength": 50,
-        "aoColumnDefs" : [ 
+        "aoColumnDefs" : [
             {
                 'targets' : [ 0 ],
                 'visible' : false
-            } 
+            }
         ]
     });
 </script>
