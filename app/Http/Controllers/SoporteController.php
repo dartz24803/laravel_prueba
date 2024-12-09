@@ -834,6 +834,11 @@ class SoporteController extends Controller
             $tipo_otros = $request->nombre_tipo;
         }
         $get_id = Soporte::getTicketById($id);
+        // Asegurarte de que $get_id->tipo_otros sea 0 si es null
+        $get_id->tipo_otros = $get_id->tipo_otros ?? 0;
+        dd($get_id);
+
+        // Definir reglas
         $rules = [
             'descripcione_solucion' => function ($attribute, $value, $fail) use ($get_id) {
                 if ($get_id->comentario_existe == 0 && empty($value)) {
