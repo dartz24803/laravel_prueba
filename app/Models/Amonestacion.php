@@ -86,7 +86,7 @@ class Amonestacion extends Model
                 left join motivo_amonestacion m on i.motivo=m.id_motivo_amonestacion
                 left join gravedad_amonestacion g on i.id_gravedad_amonestacion=g.id_gravedad_amonestacion
                 where i.estado=1 and pu.id_area=$id_area and r.centro_labores='$base'" ;
-            }elseif($id_puesto==128||$id_puesto==131){
+            }elseif($id_puesto==30||$id_puesto==128||$id_puesto==131){
                 $sql = "SELECT i.*,concat(u.usuario_nombres,' ',u.usuario_apater,' ',u.usuario_amater) as colaborador,
                 concat(s.usuario_nombres,' ',s.usuario_apater,' ',s.usuario_amater) as solicitante,
                 concat(r.usuario_nombres,' ',r.usuario_apater,' ',r.usuario_amater) as revisor,

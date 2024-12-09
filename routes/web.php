@@ -1676,7 +1676,7 @@ Route::controller(TablaMaestraTesoreriaController::class)->group(function () {
     Route::get('tabla_maestra_tesoreria', 'index')->name('tabla_maestra_tesoreria');
     Route::get('tabla_maestra_tesoreria/list', 'list')->name('tabla_maestra_tesoreria.list');
 });
-//FACTURACIÓN 
+//FACTURACIÓN
 Route::controller(FacturacionController::class)->group(function () {
     Route::get('facturacion', 'index')->name('facturacion');
     Route::get('facturacion_ic', 'index_ic')->name('facturacion_ic');
@@ -1870,8 +1870,15 @@ Route::controller(TicketsController::class)->group(function () {
     Route::get('Tickets/index', 'Tickets_Vista');
     Route::get('Tickets/Busqueda_Tickets_Admin/{busqu}/{base}/{area}/{ini}/{pro}/{fin}/{std}', 'Busqueda_Tickets_Admin');
     Route::get('Tickets/Busqueda_Tickets/{busqu}/{ini}/{pro}/{fin}/{std}', 'Busqueda_Tickets');
-    Route::post('', '');
-    Route::post('', '');
+    Route::get('Tickets/Excel_Tickets_Admin/{busqu}/{base}/{area}/{ini}/{pro}/{fin}/{std}', 'Excel_Tickets_Admin');
+    Route::get('Tickets/Excel_Tickets/{busqu}/{ini}/{pro}/{fin}/{std}', 'Excel_Tickets');
+    Route::get('Tickets/Modal_Tickets','Modal_Tickets');
+    Route::get('Tickets');
+    // Route::get('Tickets')
+    // Route::get('Tickets')
+    // Route::post('', '');
+    // Route::get('Tickets')
+    // Route::post('', '');
 });
 
 
