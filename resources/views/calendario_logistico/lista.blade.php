@@ -174,6 +174,7 @@
                                     @endphp',
                         base: '{{ $list->base }}',
                         cant_prendas: '{{ $list->cant_prendas }}',
+                        id_proveedor: '{{ $list->id_proveedor }}',
                         infosap: '{{ $list->infosap }}'
                     },
                 @endforeach
@@ -214,7 +215,7 @@
                 var eventDescription = info.description;
                 var eventTipo = info.tipo;
                 var eventBase = info.base;
-                var eventProveedor = info.base+'-'+info.infosap;
+                var eventProveedor = info.id_proveedor+'-'+info.infosap;
 
                 // Task Modal Input
                 var taskTitle = $('#task');
@@ -231,6 +232,9 @@
 
                 $('#cod_base').val(eventBase);
                 $('#id_proveedor').val(eventProveedor);
+                $(".basicp").select2({
+                    dropdownParent: $('#addEventsModal')
+                });
 
                 var taskBoton = $('#div_eliminar');
                 var taskBotonValue = taskBoton.html('<button type="button" class="btn btn-danger" onclick="Delete_Calendario_Logistico('+eventId+');">Eliminar</button>');
