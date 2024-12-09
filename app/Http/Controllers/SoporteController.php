@@ -619,12 +619,22 @@ class SoporteController extends Controller
         return view('soporte.soporte_master.index', compact('list_notificacion', 'list_subgerencia', 'nominicio'));
     }
 
-    public function list_tick_master()
+    public function list_tick_master(Request $request)
     {
+        $dato['fecha_iniciob'] = $request->input("fecha_iniciob");
+        $dato['fecha_finb'] =  $request->input("fecha_finb");
+        // dd($dato);
+        $dato['cpiniciar'] =  $request->input("cpiniciar");
+        $dato['cproceso'] =  $request->input("cproceso");
+        $dato['ccompletado'] =  $request->input("ccompletado");
+        $dato['cstandby'] =  $request->input("cstandby");
+        $dato['ccancelado'] =  $request->input("ccancelado");
+        $dato['cderivado'] =  $request->input("cderivado");
         // Obtener el id_subgerencia de la sesión
         $id_subgerencia = session('id_subgerenciam');
+        // dd($dato);
         // Obtener la lista de tickets relacionados con el soporte
-        $list_tickets_soporte = Soporte::listTicketsSoporteMaster($id_subgerencia);
+        $list_tickets_soporte = Soporte::listTicketsSoporteMaster($id_subgerencia, $dato);
         // Procesar cada ticket para determinar su estado
         $list_tickets_soporte = $list_tickets_soporte->map(function ($ticket) use ($id_subgerencia) {
             // Inicializamos todos los estados como false
@@ -634,9 +644,6 @@ class SoporteController extends Controller
             $ticket->status_stand_by = false;
             $ticket->status_cancelado = false;
             $ticket->status_derivado = false;
-
-            // Obtener el responsable múltiple para el asunto del ticket
-            // $responsable_multiple = Soporte::getResponsableMultipleByAsunto($ticket->id_asunto);
             // Si la subgerencia es 9, validamos los estados relacionados con estado_registro_sr
             // dd($ticket);
             if ($id_subgerencia == 9) {
@@ -827,6 +834,11 @@ class SoporteController extends Controller
             $tipo_otros = $request->nombre_tipo;
         }
         $get_id = Soporte::getTicketById($id);
+        // Asegurarte de que $get_id->tipo_otros sea 0 si es null
+        $get_id->tipo_otros = $get_id->tipo_otros ?? 0;
+        dd($get_id);
+
+        // Definir reglas
         $rules = [
             'descripcione_solucion' => function ($attribute, $value, $fail) use ($get_id) {
                 if ($get_id->comentario_existe == 0 && empty($value)) {

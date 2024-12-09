@@ -48,14 +48,14 @@ class Soporte extends Model
             ->get();
     }
 
-    public static function listTicketsSoporteMaster($id_subgerencia)
+    public static function listTicketsSoporteMaster($id_subgerencia, $dato)
     {
         // Obtener los IDs de área según el id_subgerencia
         $areas = self::getAreasBySubgerencia($id_subgerencia);
         // Convertir el array de áreas a una cadena separada por comas
         $areasString = implode(',', $areas);
 
-        return self::select(
+        $query = self::select(
             'soporte.*',
             'soporte_elemento.nombre as nombre_elemento',
             'especialidad.nombre as nombre_especialidad',
@@ -112,18 +112,64 @@ class Soporte extends Model
                             });
                     });
             })
+
             // Mostrar siempre el soporte cuando responsable_multiple es igual a 1 en soporte_asunto (FILTRO PARA AMBAS AREAS)
             ->orWhereExists(function ($existsQuery) {
                 $existsQuery->select(DB::raw(1))
                     ->from('soporte_asunto as sa')
                     ->whereColumn('sa.idsoporte_asunto', 'soporte.id_asunto')
                     ->where('sa.responsable_multiple', 1);
-            })
-            ->orderBy('soporte.fec_reg', 'DESC')
-            ->get();
+            });
+
+
+        $results = $query->orderBy('soporte.fec_reg', 'DESC')->get();
+        return self::filterByDates($results, $dato);
+
+        // return $query->orderBy('soporte.fec_reg', 'DESC')->get();
     }
 
 
+    public static function filterByDates($results, $dato)
+    {
+        $fecha_inicio = $dato['fecha_iniciob'];
+        $fecha_fin = $dato['fecha_finb'];
+
+        // Si no se proporciona un rango de fechas, devolver los resultados tal cual
+        if (!$fecha_inicio && !$fecha_fin) {
+            return $results;
+        }
+
+        // Filtrar según las fechas proporcionadas
+        return $results->filter(function ($ticket) use ($fecha_inicio, $fecha_fin, $dato) {
+            $fec_reg = \Carbon\Carbon::parse($ticket->fec_reg);
+            if ($fecha_fin) {
+                $fecha_fin = \Carbon\Carbon::parse($fecha_fin)->endOfDay(); // Establecer a 23:59:59
+            }
+            // Validar estados adicionales si están definidos
+            $estado_valido = false;
+            if ($dato['cpiniciar'] == 1 && $ticket->estado_registro == 1) $estado_valido = true;
+            if ($dato['cproceso'] == 1 && $ticket->estado_registro == 2) $estado_valido = true;
+            if ($dato['ccompletado'] == 1 && $ticket->estado_registro == 3) $estado_valido = true;
+            if ($dato['cstandby'] == 1 && $ticket->estado_registro == 4) $estado_valido = true;
+            if ($dato['ccancelado'] == 1 && $ticket->estado_registro == 5) $estado_valido = true;
+            if ($dato['cderivado'] == 1 && $ticket->estado_registro == 6) $estado_valido = true;
+
+            // Verificar rango de fechas y estado válido
+            if (!$estado_valido) {
+                return false;
+            }
+
+            if ($fecha_inicio && $fecha_fin) {
+                return $fec_reg->between($fecha_inicio, $fecha_fin);
+            } elseif ($fecha_inicio) {
+                return $fec_reg->gte($fecha_inicio);
+            } elseif ($fecha_fin) {
+                return $fec_reg->lte($fecha_fin);
+            }
+
+            return true;
+        });
+    }
 
 
 
