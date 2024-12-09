@@ -427,7 +427,7 @@ Route::controller(SoporteController::class)->group(function () {
     // SOPORTE MASTER
     Route::get('soporte_master/{id_subgerencia}', 'index_master')->name('soporte_master');
 
-    Route::get('soporte_ticket_master/list', 'list_tick_master')->name('soporte_ticket_master.list');
+    Route::post('soporte_ticket_master/list', 'list_tick_master')->name('soporte_ticket_master.list');
     Route::get('soporte_ticket_master/ver/{id}', 'ver_tick_master')->name('soporte_ticket_master.ver');
     Route::get('soporte_ticket_master/edit/{id}', 'edit_tick_master')->name('soporte_ticket_master.edit');
     Route::get('soporte_ticket_master/cancelar/{id}', 'cancelar_tick_master')->name('soporte_ticket_master.cancelar');
@@ -1872,7 +1872,7 @@ Route::controller(TicketsController::class)->group(function () {
     Route::get('Tickets/Busqueda_Tickets/{busqu}/{ini}/{pro}/{fin}/{std}', 'Busqueda_Tickets');
     Route::get('Tickets/Excel_Tickets_Admin/{busqu}/{base}/{area}/{ini}/{pro}/{fin}/{std}', 'Excel_Tickets_Admin');
     Route::get('Tickets/Excel_Tickets/{busqu}/{ini}/{pro}/{fin}/{std}', 'Excel_Tickets');
-    Route::get('Tickets/Modal_Tickets','Modal_Tickets');
+    Route::get('Tickets/Modal_Tickets', 'Modal_Tickets');
     Route::get('Tickets');
     // Route::get('Tickets')
     // Route::get('Tickets')
