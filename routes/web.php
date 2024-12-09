@@ -1811,11 +1811,9 @@ Route::controller(RequerimientoTiendaController::class)->group(function () {
 //CALENDARIO LOGÍSTICO
 Route::controller(CalendarioLogisticoController::class)->group(function () {
     Route::get('calendario_logistico', 'index')->name('calendario_logistico');
-    Route::post('calendario_logistico/list', 'list')->name('calendario_logistico.list');
-    Route::get('calendario_logistico/create', 'create')->name('calendario_logistico.create');
+    Route::get('calendario_logistico/list', 'list')->name('calendario_logistico.list');
     Route::post('calendario_logistico', 'store')->name('calendario_logistico.store');
-    Route::get('calendario_logistico/{id}/edit', 'edit')->name('calendario_logistico.edit');
-    Route::put('calendario_logistico/{id}', 'update')->name('calendario_logistico.update');
+    Route::post('calendario_logistico/{id}', 'update')->name('calendario_logistico.update');
     Route::delete('calendario_logistico/{id}', 'destroy')->name('calendario_logistico.destroy');
 });
 //TIENDA - REQUERIMIENTO DE TIENDA
