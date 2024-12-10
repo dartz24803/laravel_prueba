@@ -1,13 +1,12 @@
-<link href="<?php echo base_url(); ?>template/inputfiles/css/fileinput.css" media="all" rel="stylesheet" type="text/css"/>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
-<link href="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.css" media="all" rel="stylesheet" type="text/css"/>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/piexif.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/plugins/sortable.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/fileinput.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/fr.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/js/locales/es.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/fas/theme.js" type="text/javascript"></script>
-<script src="<?php echo base_url(); ?>template/inputfiles/themes/explorer-fas/theme.js" type="text/javascript"></script>
+<link href="{{ asset('template/inputfiles/css/fileinput.css') }}" media="all" rel="stylesheet" type="text/css"/>
+<link href="{{ asset('template/inputfiles/themes/explorer-fas/theme.css') }}" media="all" rel="stylesheet" type="text/css"/>
+<script src="{{ asset('template/inputfiles/js/plugins/piexif.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/plugins/sortable.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/fileinput.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/js/locales/es.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/fas/theme.js') }}" type="text/javascript"></script>
+<script src="{{ asset('template/inputfiles/themes/explorer-fas/theme.js') }}" type="text/javascript"></script>
 
 <style>
      .kv-file-upload{
@@ -44,7 +43,7 @@
                 </select>
             </div>
 
-            <?php if($_SESSION['usuario'][0]['id_puesto']==27){ ?>
+            <?php if(session('usuario')->id_puesto==27){ ?>
                 <div class="form-group col-md-2">
                     <label class="control-label text-bold">Plataforma: </label>
                 </div>  
@@ -67,7 +66,7 @@
                 <div class="form-group col-md-4">
                     <select class="form-control" name="plataforma_u" id="plataforma_u">
                         <option value="0">Seleccionar</option>
-                        <?php foreach($list_platafroma as $list){ ?> 
+                        <?php foreach($list_plataforma as $list){ ?> 
                             <option value="<?php echo $list['id_plataforma']; ?>" <?php if($list['id_plataforma']==$get_id[0]['plataforma']){ echo "selected"; } ?>>
                                 <?php echo $list['nom_plataforma']; ?>
                             </option>
@@ -196,6 +195,7 @@
 
     <div class="modal-footer">
         <input type="hidden" id="id_tickets" name="id_tickets" value="<?php echo $get_id[0]['id_tickets']; ?>">
+        @csrf
         <button class="btn btn-primary mt-3" type="button" onclick="Update_Tickets();">Guardar</button>
         <button class="btn mt-3" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
@@ -220,15 +220,20 @@
 
     $(document).on('click', '#download_file', function () {
         image_id = $(this).data('image_id');
-        window.location.replace("<?php echo site_url(); ?>Corporacion/download_file/" + image_id);
+        window.location.replace("{{ url('Tickets/Descargar_Archivo_Ticket') }}/" + image_id);
     });
 
     $(document).on('click', '#delete_file', function () {
+        var csrfToken = $('input[name="_token"]').val();
         image_id = $(this).data('image_id');
         file_col = $('#i_' + image_id);
+
         $.ajax({
             type: 'POST',
-            url: '<?php echo site_url(); ?>Corporacion/delete_archivos_tickets',
+            url: "{{ url('Tickets/Delete_Archivo_Ticket') }} ",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data: {image_id: image_id},
             success: function (data) {
                 file_col.remove();            
@@ -237,54 +242,18 @@
     });
 
     function Update_Tickets() {
-        $(document)
-        .ajaxStart(function() {
-            $.blockUI({
-                message: '<svg> ... </svg>',
-                fadeIn: 800,
-                overlayCSS: {
-                    backgroundColor: '#1b2024',
-                    opacity: 0.8,
-                    zIndex: 1200,
-                    cursor: 'wait'
-                },
-                css: {
-                    border: 0,
-                    color: '#fff',
-                    zIndex: 1201,
-                    padding: 0,
-                    backgroundColor: 'transparent'
-                }
-            });
-        })
-        .ajaxStop(function() {
-            $.blockUI({
-                message: '<svg> ... </svg>',
-                fadeIn: 800,
-                timeout: 100,
-                overlayCSS: {
-                    backgroundColor: '#1b2024',
-                    opacity: 0.8,
-                    zIndex: 1200,
-                    cursor: 'wait'
-                },
-                css: {
-                    border: 0,
-                    color: '#fff',
-                    zIndex: 1201,
-                    padding: 0,
-                    backgroundColor: 'transparent'
-                }
-            });
-        });
+        Cargando();
 
         var dataString = new FormData(document.getElementById('formulario_u'));
-        var url = "<?php echo site_url(); ?>Corporacion/Update_Tickets";
+        var url = "{{ url('Tickets/Update_Tickets') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
-        if (Valida_Update_Tickets()) {
             $.ajax({
                 type: "POST",
                 url: url,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
                 data: dataString,
                 processData: false,
                 contentType: false,
@@ -299,16 +268,6 @@
                     });
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-        }
     }
 
     function Valida_Update_Tickets() {

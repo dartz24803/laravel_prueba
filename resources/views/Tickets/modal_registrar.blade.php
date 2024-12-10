@@ -1,4 +1,5 @@
 <link href="{{ asset('template/inputfiles/css/fileinput.css') }}" media="all" rel="stylesheet" type="text/css"/>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" crossorigin="anonymous">
 <link href="{{ asset('template/inputfiles/themes/explorer-fas/theme.css') }}" media="all" rel="stylesheet" type="text/css"/>
 <script src="{{ asset('template/inputfiles/js/plugins/piexif.js') }}" type="text/javascript"></script>
 <script src="{{ asset('template/inputfiles/js/plugins/sortable.js') }}" type="text/javascript"></script>
@@ -114,33 +115,6 @@
 </form>
 
 <script>
-    /*document.getElementById('paste_area').addEventListener('paste', function (e) {
-        if (e.clipboardData && e.clipboardData.items) {
-            var items = e.clipboardData.items;
-            for (var i = 0; i < items.length; i++) {
-                if (items[i].type.indexOf("image") !== -1) {
-                    var blob = items[i].getAsFile();
-                    var fileInput = document.getElementById('files_i');
-                    var dataTransfer = new DataTransfer();
-                    dataTransfer.items.add(blob);
-
-                    fileInput.files = dataTransfer.files;
-
-                    // Trigger file input change event to refresh fileinput library UI
-                    $('#files_i').fileinput('refresh', {
-                        initialPreview: [],
-                        initialPreviewConfig: []
-                    });
-
-                    // Clear the paste area after processing the image
-                    e.target.value = '';
-                    $('.file-drop-zone-title').hide();
-                    break;
-                }
-            }
-        }
-    });
-*/
     var ss = $(".basic_i").select2({
         tags: true
     });
@@ -167,7 +141,6 @@
         var url = "{{ url('Tickets/Insert_Tickets') }}";
         var csrfToken = $('input[name="_token"]').val();
 
-        if (Valida_Insert_Tickets()) {
             $.ajax({
                 type: "POST",
                 url: url,
@@ -204,18 +177,17 @@
                             }
                         });
                     }
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
-        } else {
-            bootbox.alert(msgDate)
-            var input = $(inputFocus).parent();
-            $(input).addClass("has-error");
-            $(input).on("change", function() {
-                if ($(input).hasClass("has-error")) {
-                    $(input).removeClass("has-error");
-                }
-            });
-        }
     }
 
     function Valida_Insert_Tickets() {

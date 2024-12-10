@@ -282,6 +282,7 @@
         Cargando();
 
         var url = "{{ url('Tickets/Delete_Tickets_Vista') }}";
+        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿Realmente desea eliminar el registro?',
@@ -297,6 +298,9 @@
                 $.ajax({
                     type: "POST",
                     url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
                     data: {'id_tickets': id},
                     success: function() {
                         Swal(

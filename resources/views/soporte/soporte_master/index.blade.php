@@ -4,6 +4,51 @@
 @endsection
 
 @section('content')
+<style>
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        height: 24px;
+        margin: 10px;
+    }
+
+    .toggle-switch .toggle-input {
+        display: none;
+    }
+
+    .toggle-switch .toggle-label {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 40px;
+        height: 24px;
+        background-color: gray;
+        border-radius: 34px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .toggle-switch .toggle-label::before {
+        content: "";
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        top: 2px;
+        left: 2px;
+        background-color: #fff;
+        box-shadow: 0px 2px 5px 0px rgba(0, 0, 0, 0.3);
+        transition: transform 0.3s;
+    }
+
+    .toggle-switch .toggle-input:checked+.toggle-label {
+        background-color: #4CAF50;
+    }
+
+    .toggle-switch .toggle-input:checked+.toggle-label::before {
+        transform: translateX(16px);
+    }
+</style>
 <div id="content" class="main-content">
     <div class="layout-px-spacing">
         <div class="page-header">
@@ -71,6 +116,31 @@
                                 </svg>
                             </a>
                         </div>
+                    </div>
+                    <div class="toggle-switch">
+                        <input class="toggle-input" id="toggle-fr" type="checkbox" checked>
+                        <label class="toggle-label" for="toggle-fr"></label>
+                        <span class="ml-5">Fecha Registro</span>
+                    </div>
+                    <div class="toggle-switch">
+                        <input class="toggle-input" id="toggle-tipo" type="checkbox" checked>
+                        <label class="toggle-label" for="toggle-tipo"></label>
+                        <span class="ml-5">Tipo</span>
+                    </div>
+                    <div class="toggle-switch">
+                        <input class="toggle-input" id="toggle-esp" type="checkbox" checked>
+                        <label class="toggle-label" for="toggle-esp"></label>
+                        <span class="ml-5">Especialidad</span>
+                    </div>
+                    <div class="toggle-switch">
+                        <input class="toggle-input" id="toggle-ele" type="checkbox" checked>
+                        <label class="toggle-label" for="toggle-ele"></label>
+                        <span class="ml-5">Elemento</span>
+                    </div>
+                    <div class="toggle-switch">
+                        <input class="toggle-input" id="toggle-res" type="checkbox" checked>
+                        <label class="toggle-label" for="toggle-res"></label>
+                        <span class="ml-5">Responsable</span>
                     </div>
                     @csrf
                     <div class="table-responsive mb-4 mt-4" id="lista_reproceso">

@@ -10,6 +10,7 @@ use App\Models\Modulo;
 use App\Models\Notificacion;
 use App\Models\Tickets;
 use App\Models\Usuario;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -318,6 +319,24 @@ class TicketsController extends Controller
     }
 
     public function Insert_Tickets(){
+        $rules = [
+            'id_colaborador_i' => 'not_in:0',
+            'id_tipo_tickets_i' => 'required|not_in:0',
+            'plataforma_i'      => 'required|not_in:0',
+            'titulo_tickets_i'  => 'required|string',
+            'descrip_ticket_i'  => 'required|string',
+        ];
+
+        $messages = [
+            'id_colaborador_i' => 'Debe seleccionar un colaborador.',
+            'id_tipo_tickets_i.not_in' => 'Debe seleccionar un tipo.',
+            'plataforma_i.not_in'      => 'Debe seleccionar una plataforma.',
+            'titulo_tickets_i.required' => 'Debe ingresar un título.',
+            'descrip_ticket_i.required' => 'Debe ingresar una descripción.',
+        ];
+
+        // Validar los datos
+        $this->input->validate($rules, $messages);
             $dato['id_usuario']= $this->input->post("id_colaborador_i");
             $dato['id_tipo_tickets']= $this->input->post("id_tipo_tickets_i");
             $dato['plataforma']= $this->input->post("plataforma_i");
@@ -441,7 +460,7 @@ class TicketsController extends Controller
 
                 $list_correos = Usuario::query();
                 if ($dato['plataforma'] == 1) {
-                    $list_correos->where('id_usuario', 2692);
+                    $list_correos->where('id_usuario', 2655);
                 } elseif ($dato['plataforma'] == 2) {
                     $list_correos->where('id_usuario', 629);
                 } elseif ($dato['plataforma'] == 3) {
@@ -494,32 +513,47 @@ class TicketsController extends Controller
     }
 
     public function Modal_Update_Tickets($id_tickets){
-        if ($this->session->userdata('usuario')) {
-            $dato['get_id'] = $this->Model_Corporacion->get_id_ticket($id_tickets);
-            $dato['list_tipo_tickets'] = $this->Model_Corporacion->get_list_tipo_tickets();
-            $dato['list_platafroma'] = $this->Model_Corporacion->get_list_combo_modulo();
-            $dato['get_id_files_tickets'] = $this->Model_Corporacion->get_archivos_ticket_solic($dato['get_id'][0]['id_usuario_solic'],$dato['get_id'][0]['cod_tickets']);
-            $this->load->view('Admin/Configuracion/Tickets/modal_editar',$dato);
-        }else{
-            redirect('');
-        }
+        $dato['get_id'] = $this->modelo->get_id_ticket($id_tickets);
+        $dato['list_tipo_tickets'] = DB::table('tipo_tickets')
+                            ->where('estado', 1)
+                            ->orderBy('nom_tipo_tickets', 'ASC')
+                            ->get();
+
+        $dato['list_tipo_tickets'] = json_decode(json_encode($dato['list_tipo_tickets']), true);
+        $dato['list_plataforma'] = $this->modelomodulo::select('id_modulo AS id_plataforma', 'nom_modulo AS nom_plataforma')
+                            ->where('estado', 1)
+                            ->get();
+
+        $dato['list_plataforma']= json_decode(json_encode($dato['list_plataforma']), true);
+        $dato['get_id_files_tickets'] = ArchivosTickets::where('estado', 1)
+                                ->where('cod_tickets', $dato['get_id'][0]['cod_tickets'])
+                                ->where('id_usuario_solic', $dato['get_id'][0]['id_usuario_solic'])
+                                ->get();
+        // print_r($dato['get_id_files_tickets']);
+        return view('Tickets.modal_editar',$dato);
     }
 
     public function Update_Tickets(){
-        if ($this->session->userdata('usuario')) {
             $dato['id_tickets']= $this->input->post("id_tickets");
             $dato['id_tipo_tickets']= $this->input->post("id_tipo_tickets_u");
             $dato['plataforma']= $this->input->post("plataforma_u");
             $dato['titulo_tickets']= $this->input->post("titulo_tickets_u");
             $dato['descrip_ticket']= $this->input->post("descrip_ticket_u");
+            Tickets::where('id_tickets', $dato['id_tickets'])
+            ->update([
+                'id_tipo_tickets' => $dato['id_tipo_tickets'],
+                'plataforma' => $dato['plataforma'],
+                'titulo_tickets' => addslashes($dato['titulo_tickets']),
+                'descrip_ticket' => addslashes($dato['descrip_ticket']),
+                'fec_act' => Carbon::now(),
+                'user_act' => session('usuario')->id_usuario,
+            ]);
 
-            $this->Model_Corporacion->update_tickets($dato);
-
-            $get_id = $this->Model_Corporacion->get_id_ticket($dato['id_tickets']);
+            $get_id = $this->modelo->get_id_ticket($dato['id_tickets']);
             $dato['cod_tickets'] = $get_id[0]['cod_tickets'];
             $dato['id_usuario'] = $get_id[0]['id_usuario_solic'];
 
-            if($_FILES["files_u"]["name"] != ""){
+            if($this->input->hasFile("files_u")){
                 $ftp_server = "lanumerounocloud.com";
                 $ftp_usuario = "intranet@lanumerounocloud.com";
                 $ftp_pass = "Intranet2022@";
@@ -545,7 +579,16 @@ class TicketsController extends Controller
                         ftp_pasv($con_id,true);
                         $subio = ftp_put($con_id,"TICKET/".$nombre,$source_file,FTP_BINARY);
                         if($subio){
-                            $this->Model_Corporacion->insert_archivos_tickets_solic_admin($dato);
+                            // Crear un nuevo registro en la tabla `archivos_tickets`
+                            ArchivosTickets::create([
+                                'id_usuario_solic' => $dato['id_usuario'],
+                                'cod_tickets' => $dato['cod_tickets'],
+                                'archivos' => $dato['ruta'],
+                                'nom_archivos' => $dato['ruta_nombre'],
+                                'estado' => 1,
+                                'fec_reg' => Carbon::now(),
+                                'user_reg' => session('usuario')->id_usuario,
+                            ]);
                             echo "Archivo subido correctamente";
                         }else{
                             echo "Archivo no subido correctamente";
@@ -553,24 +596,80 @@ class TicketsController extends Controller
                     }
                 }
             }
-        }else{
-            redirect('');
+    }
+
+    public function Descargar_Archivo_Ticket($id_archivo){
+        // Obtiene el archivo y la URL de la configuración
+        $getFile = ArchivosTickets::where('id_archivos_tickets', $id_archivo)->first();
+
+        // Verifica que los datos existan
+        if (!$getFile) {
+            return response()->json(['error' => 'Archivo o configuración no encontrados'], 404);
+        }
+
+        // Construye la URL completa del archivo
+        $fileUrl = $getFile->archivos;
+        $fileName = basename($fileUrl);
+
+        // Usa una función para descargar el archivo desde el FTP
+        try {
+            $fileContent = file_get_contents($fileUrl); // Descarga el archivo desde el FTP
+            if ($fileContent === false) {
+                throw new \Exception("No se pudo acceder al archivo en la URL: $fileUrl");
+            }
+
+            // Devuelve el archivo como una descarga
+            return response($fileContent)
+                ->header('Content-Type', 'application/octet-stream')
+                ->header('Content-Disposition', "attachment; filename=\"$fileName\"");
+        } catch (\Exception $e) {
+            // Error al descargar el archivo
+            return response()->json(['error' => 'No se pudo descargar el archivo: ' . $e->getMessage()], 500);
+        }
+    }
+    
+    public function Delete_Archivo_Ticket(){
+        $id_archivo = $this->input->post('image_id');
+        $dato['get_file'] = ArchivosTickets::where('id_archivos_tickets', $id_archivo)->get();
+        ArchivosTickets::where('id_archivos_tickets', $id_archivo)->delete();
+        
+        if (file_exists($dato['get_file'][0]->archivo)) {
+            unlink($dato['get_file'][0]->archivo);
         }
     }
 
     public function Modal_Ver_Tickets($id_tickets){
-        if ($this->session->userdata('usuario')) {
-            $dato['get_id'] = $this->Model_Corporacion->get_id_ticket($id_tickets);
-            $dato['list_tipo_tickets'] = $this->Model_Corporacion->get_list_tipo_tickets();
-            $dato['list_platafroma'] = $this->Model_Corporacion->get_list_combo_modulo();
-            $dato['get_id_files_tickets'] = $this->Model_Corporacion->get_archivos_ticket_solic($dato['get_id'][0]['id_usuario_solic'],$dato['get_id'][0]['cod_tickets']);
-            $this->load->view('Admin/Configuracion/Tickets/modal_ver',$dato);
-        }else{
-            redirect('');
-        }
+        $dato['get_id'] = $this->modelo->get_id_ticket($id_tickets);
+        $dato['list_tipo_tickets'] = DB::table('tipo_tickets')
+                            ->where('estado', 1)
+                            ->orderBy('nom_tipo_tickets', 'ASC')
+                            ->get();
+
+        $dato['list_tipo_tickets'] = json_decode(json_encode($dato['list_tipo_tickets']), true);
+        $dato['list_plataforma'] = $this->modelomodulo::select('id_modulo AS id_plataforma', 'nom_modulo AS nom_plataforma')
+                            ->where('estado', 1)
+                            ->get();
+
+        $dato['list_plataforma']= json_decode(json_encode($dato['list_plataforma']), true);
+        $dato['get_id_files_tickets'] = ArchivosTickets::where('estado', 1)
+                                ->where('cod_tickets', $dato['get_id'][0]['cod_tickets'])
+                                ->where('id_usuario_solic', $dato['get_id'][0]['id_usuario_solic'])
+                                ->get();
+        return view('Tickets.modal_ver',$dato);
     }
 
-    public function Modal_Update_Tickets_Vista($id_tickets){
+    public function Delete_Tickets_Vista(){
+        $dato['id_tickets']= $this->input->post("id_tickets");
+        // Actualizar el estado del ticket
+        Tickets::where('id_tickets', $dato['id_tickets'])
+            ->update([
+                'estado' => 5,
+                'fec_eli' => Carbon::now(),
+                'user_eli' => session('usuario')->id_usuario,
+            ]);
+    }
+
+    public function Modal_Update_Tickets_Admin($id_tickets){
         if ($this->session->userdata('usuario')) {
             $dato['get_id'] = $this->Model_Corporacion->get_id_ticket($id_tickets);
             $dato['list_encargado'] = $this->Model_Corporacion->get_list_encargados_tickets();
@@ -716,35 +815,6 @@ class TicketsController extends Controller
         }
     }
 
-    public function Delete_Tickets_Vista(){
-        if ($this->session->userdata('usuario')) {
-            $dato['id_tickets']= $this->input->post("id_tickets");
-            /*$total=count($this->Model_Corporacion->valida_genero($dato));
-            if ($total>0)
-            {
-                echo "error";
-            }
-            else{*/
-            $this->Model_Corporacion->delete_tickets_vista($dato);
-            //}
-
-        }
-        else{
-            redirect('');
-        }
-    }
-
-    public function download_file($id_archivos_tickets) {
-        if ($this->session->userdata('usuario')) {
-            $dato['get_file'] = $this->Model_Corporacion->get_id_archivos_tickets($id_archivos_tickets);
-            $image = $dato['get_file'][0]['archivos'];
-            $name     = basename($image);
-            $ext      = pathinfo($image, PATHINFO_EXTENSION);
-            force_download($name , file_get_contents($dato['get_file'][0]['archivos']));
-        }else{
-            redirect('');
-        }
-    }
 
     public function download_filesupport($id_archivos_tickets_soporte) {
         if ($this->session->userdata('usuario')) {
