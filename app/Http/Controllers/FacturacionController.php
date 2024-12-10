@@ -126,13 +126,33 @@ class FacturacionController extends Controller
 
     public function facturados_ver(Request $request)
     {
+        // Validar que 'ids' se reciba correctamente
         $idsSeleccionados = $request->input('ids');
-        $list_previsualizacion_por_facturar = TbContabilidad::filtrarCerrados($idsSeleccionados);
-        // Devolver los registros actualizados en el JSON de respuesta
+
+        if (is_array($idsSeleccionados) && !empty($idsSeleccionados)) {
+            try {
+                // Obtener los registros filtrados
+                $list_previsualizacion_por_facturar = TbContabilidad::filtrarCerrados($idsSeleccionados);
+
+                // Devolver los registros actualizados en el JSON de respuesta
+                return response()->json([
+                    'updated_records' => $list_previsualizacion_por_facturar
+                ], 200);
+            } catch (\Exception $e) {
+                // Manejo de errores en el servidor
+                return response()->json([
+                    'error' => 'Ocurrió un error al procesar los datos.',
+                    'details' => $e->getMessage()
+                ], 500);
+            }
+        }
+
+        // Respuesta si los datos no son válidos
         return response()->json([
-            'updated_records' => $list_previsualizacion_por_facturar
-        ]);
+            'error' => 'No se enviaron IDs válidos o la lista está vacía.'
+        ], 400);
     }
+
 
 
     public function facturar_cerrar(Request $request)

@@ -713,12 +713,11 @@
 
                 $.ajax({
                     url: "{{ route('tabla_facturacion.facturar_ver') }}", // Ruta donde se procesarán los IDs
-                    type: "GET",
+                    type: "POST", // Cambiar a POST
                     data: {
                         ids: selectedIds,
-                        _token: $('meta[name="csrf-token"]').attr('content')
+                        _token: $('meta[name="csrf-token"]').attr('content') // Incluye el token CSRF
                     },
-
                     success: function(response) {
                         // Verificar si la respuesta contiene los registros actualizados
                         if (response.updated_records && response.updated_records.length > 0) {
