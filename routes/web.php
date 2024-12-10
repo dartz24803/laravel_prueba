@@ -1689,7 +1689,7 @@ Route::controller(FacturacionController::class)->group(function () {
 
     Route::post('tabla_facturacion/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
     Route::get('tabla_facturacion/facturar_cerrar', 'facturar_cerrar')->name('tabla_facturacion.facturar_cerrar');
-    Route::get('tabla_facturacion/facturar_ver', 'facturados_ver')->name('tabla_facturacion.facturar_ver');
+    Route::post('tabla_facturacion/facturar_ver', 'facturados_ver')->name('tabla_facturacion.facturar_ver');
     Route::get('tabla_facturacion/obtenersku', 'obtenerSkus')->name('tabla_facturacion.obtenersku');
     Route::post('tabla_facturacion/por_facturar', 'list_por_facturar')->name('tabla_facturacion.por_facturar');
     Route::get('tabla_facturacion/modal_por_facturar', 'modal_por_facturar')->name('tabla_facturacion.modal_por_facturar');
