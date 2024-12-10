@@ -87,6 +87,7 @@ use App\Http\Controllers\StockInfosapController;
 use App\Http\Controllers\TablaMaestraTesoreriaController;
 use App\Http\Controllers\TicketsController;
 use App\Http\Controllers\Tienda\RequerimientoTiendaController as TiendaRequerimientoTiendaController;
+use App\Http\Controllers\TicketsConfController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
@@ -1688,8 +1689,8 @@ Route::controller(FacturacionController::class)->group(function () {
     Route::get('tabla_facturacion/updateEnviados', 'actualizarEnviadosTabla')->name('tabla_facturacion.updateEnviados');
 
     Route::post('tabla_facturacion/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
-    Route::get('tabla_facturacion/facturar_cerrar', 'facturar_cerrar')->name('tabla_facturacion.facturar_cerrar');
-    Route::get('tabla_facturacion/facturar_ver', 'facturados_ver')->name('tabla_facturacion.facturar_ver');
+    Route::post('tabla_facturacion/facturar_cerrar', 'facturar_cerrar')->name('tabla_facturacion.facturar_cerrar');
+    Route::post('tabla_facturacion/facturar_ver', 'facturados_ver')->name('tabla_facturacion.facturar_ver');
     Route::get('tabla_facturacion/obtenersku', 'obtenerSkus')->name('tabla_facturacion.obtenersku');
     Route::post('tabla_facturacion/por_facturar', 'list_por_facturar')->name('tabla_facturacion.por_facturar');
     Route::get('tabla_facturacion/modal_por_facturar', 'modal_por_facturar')->name('tabla_facturacion.modal_por_facturar');
@@ -1823,6 +1824,24 @@ Route::controller(TiendaRequerimientoTiendaController::class)->group(function ()
     Route::post('trequerimiento_tienda_mn/list', 'list_mn')->name('trequerimiento_tienda_mn.list');
     Route::put('trequerimiento_tienda_mn/{id}', 'update_mn')->name('trequerimiento_tienda_mn.update');
     Route::get('trequerimiento_tienda_mn/{anio}/{semana}/{estado}/excel', 'excel_mn')->name('trequerimiento_tienda_mn.excel');
+});
+//INTERNA (SISTEMAS) - TICKETS CONFIGURABLE
+Route::controller(TicketsConfController::class)->group(function () {
+    Route::get('ticket_conf', 'index')->name('ticket_conf');
+    Route::get('ticket_conf_mo', 'index_mo')->name('ticket_conf_mo');
+    Route::get('ticket_conf_mo/list', 'list_mo')->name('ticket_conf_mo.list');
+    Route::get('ticket_conf_mo/create', 'create_mo')->name('ticket_conf_mo.create');
+    Route::post('ticket_conf_mo', 'store_mo')->name('ticket_conf_mo.store');
+    Route::get('ticket_conf_mo/{id}/edit', 'edit_mo')->name('ticket_conf_mo.edit');
+    Route::put('ticket_conf_mo/{id}', 'update_mo')->name('ticket_conf_mo.update');
+    Route::delete('ticket_conf_mo/{id}', 'destroy_mo')->name('ticket_conf_mo.destroy');
+    Route::get('ticket_conf_co', 'index_co')->name('ticket_conf_co');
+    Route::get('ticket_conf_co/list', 'list_co')->name('ticket_conf_co.list');
+    Route::get('ticket_conf_co/create', 'create_co')->name('ticket_conf_co.create');
+    Route::post('ticket_conf_co', 'store_co')->name('ticket_conf_co.store');
+    Route::get('ticket_conf_co/{id}/edit', 'edit_co')->name('ticket_conf_co.edit');
+    Route::put('ticket_conf_co/{id}', 'update_co')->name('ticket_conf_co.update');
+    Route::delete('ticket_conf_co/{id}', 'destroy_co')->name('ticket_conf_co.destroy');
 });
 
 
