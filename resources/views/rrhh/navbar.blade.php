@@ -45,11 +45,6 @@
     </a>
 
     <ul class="collapse submenu list-unstyled" id="revaluaciones" data-parent="#accordionExample">
-        <li id="reporteasistenciap">
-            <a id="hlasistenciap" href="{{ url('Reporte_Control_Asistencia') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Asistencia</p>
-            </a>
-        </li>
         <?php if (
             session('usuario')->nivel_jerarquico == 2 ||
             session('usuario')->nivel_jerarquico == 3 ||
@@ -68,6 +63,23 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Amonestaciones</p>
             </a>
         </li>
+        <li id="reporteasistenciap">
+            <a id="hlasistenciap" href="{{ url('Reporte_Control_Asistencia') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Asistencia</p>
+            </a>
+        </li>
+        @if (session('usuario')->id_nivel == 1 ||
+        session('usuario')->id_puesto == 19 ||
+        session('usuario')->id_puesto == 21 ||
+        session('usuario')->id_puesto == 22 ||
+        session('usuario')->id_puesto == 157 ||
+        session('usuario')->id_puesto == 209)
+            <li id="asist_colaborador">
+                <a href="{{url('AsistenciaColaboradores/ListaAsistenciaColaboradores') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Asistencia <br>• Inconsistencias <br>• Ausencias <br>• Dotación <br>• Tardanza">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Asistencia Colaboradores</p>
+                </a>
+            </li>
+        @endif
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 21 ||
         session('usuario')->id_puesto == 22 ||
@@ -122,6 +134,33 @@
                 </a>
             </li>
         <?php } ?>
+        <?php if ( //MI EQUIPO
+            session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 16 || session('usuario')->id_puesto == 20 || session('usuario')->id_puesto == 26 ||
+            session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 98 || session('usuario')->id_puesto == 128 ||
+            session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 30 ||
+            session('usuario')->puestos_asignados > 0 || session('usuario')->id_puesto == 76 || session('usuario')->id_puesto == 22 ||
+            session('usuario')->id_puesto == 161 || session('usuario')->id_puesto == 24 ||
+            session('usuario')->id_puesto == 209  ||
+            session('usuario')->visualizar_mi_equipo != "sin_acceso_mi_equipo" ||
+            //MI EQUIPO GERENCIAL
+            session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 1 || session('usuario')->id_puesto == 39 || session('usuario')->id_puesto == 80 ||
+            session('usuario')->id_puesto == 92 || session('usuario')->id_puesto == 314 || session('usuario')->id_puesto == 148 || session('usuario')->id_puesto == 251
+            ||
+            session('usuario')->id_sede_laboral == 6
+        ) { ?>
+            <?php if (
+                session('usuario')->id_nivel == 1 ||
+                session('usuario')->id_puesto == 1 ||
+                session('usuario')->id_puesto == 39 ||
+                session('usuario')->id_puesto == 80 ||
+                session('usuario')->id_puesto == 92
+            )  ?>
+            <li id="equipoo">
+                <a href="{{ url('MiEquipo/ListaMiequipo') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Mi Equipo</p>
+                </a>
+            </li>
+        <?php } ?>        
         <?php
         if (session('usuario')->estadopps==1 ||
             session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 19 || session('usuario')->id_puesto == 21 || session('usuario')->id_puesto == 278 ||
@@ -170,40 +209,6 @@
                 </a>
             </li>
         @endif
-
-        <?php if ( //MI EQUIPO
-            session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 16 || session('usuario')->id_puesto == 20 || session('usuario')->id_puesto == 26 ||
-            session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 98 || session('usuario')->id_puesto == 128 ||
-            session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 30 ||
-            session('usuario')->puestos_asignados > 0 || session('usuario')->id_puesto == 76 || session('usuario')->id_puesto == 22 ||
-            session('usuario')->id_puesto == 161 || session('usuario')->id_puesto == 24 ||
-            session('usuario')->id_puesto == 209  ||
-            session('usuario')->visualizar_mi_equipo != "sin_acceso_mi_equipo" ||
-            //MI EQUIPO GERENCIAL
-            session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 1 || session('usuario')->id_puesto == 39 || session('usuario')->id_puesto == 80 ||
-            session('usuario')->id_puesto == 92 || session('usuario')->id_puesto == 314 || session('usuario')->id_puesto == 148 || session('usuario')->id_puesto == 251
-            ||
-            session('usuario')->id_sede_laboral == 6
-        ) { ?>
-            <?php if (
-                session('usuario')->id_nivel == 1 ||
-                session('usuario')->id_puesto == 1 ||
-                session('usuario')->id_puesto == 39 ||
-                session('usuario')->id_puesto == 80 ||
-                session('usuario')->id_puesto == 92
-            )  ?>
-            <li id="equipoo">
-                <a href="{{ url('MiEquipo/ListaMiequipo') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Mi Equipo</p>
-                </a>
-            </li>
-
-            <li id="asist_colaborador">
-                <a href="{{url('AsistenciaColaboradores/ListaAsistenciaColaboradores') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Asistencia <br>• Inconsistencias <br>• Ausencias <br>• Dotación <br>• Tardanza">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Asistencia Colaboradores</p>
-                </a>
-            </li>
-        <?php } ?>
         <?php if (session('usuario')->visualizar_responsable_area == 1 ||
         session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 21 ||
