@@ -74,13 +74,13 @@ class AmonestacionController extends Controller
 
     public function Amonestaciones_Recibidas()
     {
-        return view('rrhh.Amonestacion.Recibidas.index');
+        return view('Amonestaciones.Recibidas.index');
     }
 
     public function Lista_Amonestaciones_Recibidas()
     {
         $list_recibidas = $this->modelo->get_list_amonestaciones_recibidas();
-        return view('rrhh.Amonestacion.Recibidas.lista', compact('list_recibidas'));
+        return view('Amonestaciones.Recibidas.lista', compact('list_recibidas'));
     }
 
     public function Modal_Amonestacion()
