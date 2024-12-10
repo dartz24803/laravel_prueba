@@ -130,7 +130,16 @@
             processData: false,
             contentType: false,
             success: function(data) {
-                if(data=="error_usuario"){
+                if(data=="error_organigrama"){
+                    Swal({
+                        title: '¡Registro Denegado!',
+                        text: "¡No hay puesto disponible en el organigrama!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                }else if(data=="error_usuario"){
                     Swal({
                         title: '¡Registro Denegado!',
                         text: "¡Existe un colaborador con ese número de documento!",

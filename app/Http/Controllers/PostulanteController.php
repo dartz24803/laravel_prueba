@@ -188,47 +188,54 @@ class PostulanteController extends Controller
             $id_evaluador = session('usuario')->id_usuario;
         }
 
-        $valida = Usuario::where('id_tipo_documento', $request->id_tipo_documento)
-                ->where('num_doc', $request->num_doc)->whereIn('estado', [1,3,4])->exists();
-        if($valida){
-            echo "error_usuario";
-        }else{
-            $valida = Postulante::where('id_tipo_documento', $request->id_tipo_documento)
-                    ->where('num_doc', $request->num_doc)->where('estado', 1)->exists();
+        $valida = Organigrama::where('id_puesto',$request->id_puesto)
+                ->where('id_centro_labor',$id_centro_labor)->where('id_usuario',0)->count();
 
+        if($valida>0){
+            $valida = Usuario::where('id_tipo_documento', $request->id_tipo_documento)
+                    ->where('num_doc', $request->num_doc)->whereIn('estado', [1,3,4])->exists();
             if($valida){
-                echo "error_postulante";
+                echo "error_usuario";
             }else{
-                $postulante_password = password_hash($request->num_doce, PASSWORD_DEFAULT);
+                $valida = Postulante::where('id_tipo_documento', $request->id_tipo_documento)
+                        ->where('num_doc', $request->num_doc)->where('estado', 1)->exists();
 
-                $postulante = Postulante::create([
-                    'id_centro_labor' => $id_centro_labor,
-                    'postulante_codigo' => $request->num_doc,
-                    'postulante_password' => $postulante_password,
-                    'password_desencriptado' => $request->num_doc,
-                    'id_tipo_documento' => $request->id_tipo_documento,
-                    'num_doc' => $request->num_doc,
-                    'id_puesto' => $request->id_puesto,
-                    'id_puesto_evaluador' => $id_puesto_evaluador,
-                    'id_evaluador' => $id_evaluador,
-                    'estado_postulacion' => 1,
-                    'estado' => 1,
-                    'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id_usuario,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
+                if($valida){
+                    echo "error_postulante";
+                }else{
+                    $postulante_password = password_hash($request->num_doce, PASSWORD_DEFAULT);
 
-                HistoricoPostulante::create([
-                    'id_postulante' => $postulante->id_postulante,
-                    'observacion' => 'CREACIÓN DE POSTULANTE',
-                    'estado' => 1,
-                    'fec_reg' => now(),
-                    'user_reg' => session('usuario')->id_usuario,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
+                    $postulante = Postulante::create([
+                        'id_centro_labor' => $id_centro_labor,
+                        'postulante_codigo' => $request->num_doc,
+                        'postulante_password' => $postulante_password,
+                        'password_desencriptado' => $request->num_doc,
+                        'id_tipo_documento' => $request->id_tipo_documento,
+                        'num_doc' => $request->num_doc,
+                        'id_puesto' => $request->id_puesto,
+                        'id_puesto_evaluador' => $id_puesto_evaluador,
+                        'id_evaluador' => $id_evaluador,
+                        'estado_postulacion' => 1,
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+
+                    HistoricoPostulante::create([
+                        'id_postulante' => $postulante->id_postulante,
+                        'observacion' => 'CREACIÓN DE POSTULANTE',
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+                }
             }
+        }else{
+            echo "error_organigrama";
         }
     }
 
