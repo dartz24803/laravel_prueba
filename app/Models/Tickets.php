@@ -192,4 +192,25 @@ class Tickets extends Model
         return json_decode(json_encode($query), true);
     }
 
+    static function get_id_ticket($id_tickets){
+        $sql = "SELECT t.*,s.nom_estado_tickets as nombre_estadot,
+                tt.nom_tipo_tickets as nombre_tipot,
+                plat.nom_plataforma as nombre_plataforma,DATE_FORMAT(t.fec_reg, '%d-%m-%Y') AS fecha_correo,
+                us.usuario_nombres,us.usuario_email,us.emailp,
+                CONCAT(en.usuario_nombres,' ',en.usuario_apater,' ',en.usuario_amater) AS encargado,
+                us.num_celp,
+                LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',us.usuario_apater)) 
+                AS solicitante,tt.nom_tipo_tickets,ar.nom_area
+                FROM tickets t
+                left join estado_tickets s on t.estado=s.id_estado_tickets 
+                left join tipo_tickets tt on t.id_tipo_tickets=tt.id_tipo_tickets 
+                left join plataforma plat on t.plataforma=plat.id_plataforma    
+                LEFT JOIN users us ON us.id_usuario=t.id_usuario_solic   
+                LEFT JOIN users en ON en.id_usuario=t.finalizado_por
+                INNER JOIN puesto pu ON pu.id_puesto=us.id_puesto
+                INNER JOIN area ar ON ar.id_area=pu.id_area
+                WHERE t.id_tickets=$id_tickets";
+        $query = DB::select($sql);
+        return json_decode(json_encode($query), true);
+    }
 }
