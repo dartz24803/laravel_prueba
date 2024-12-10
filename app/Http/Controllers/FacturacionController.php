@@ -271,6 +271,8 @@ class FacturacionController extends Controller
         $order = $request->input('order');
         $columns = $request->input('columns');
         $almacenSeleccionadoInput = $request->input('almacenSeleccionadoInput');
+        $customSearch = $request->input('customSearch');
+
         $almacenes = [
             '1' => 'alm_dsc',
             '2' => 'alm_discotela',
@@ -288,6 +290,23 @@ class FacturacionController extends Controller
             'search' => $search,
             'almacen' => $almacenActivo,
         ]);
+        if (!empty($customSearch)) { // Verificar si $customSearch no es null ni vacío
+            $query->where(function ($query) use ($customSearch) {
+                $query->where('estilo', 'like', '%' . $customSearch . '%')
+                    ->orWhere('color', 'like', '%' . $customSearch . '%')
+                    ->orWhere('sku', 'like', '%' . $customSearch . '%')
+                    ->orWhere('descripcion', 'like', '%' . $customSearch . '%')
+                    ->orWhere('costo_precio', 'like', '%' . $customSearch . '%')
+                    ->orWhere('alm_dsc', 'like', '%' . $customSearch . '%')
+                    ->orWhere('alm_discotela', 'like', '%' . $customSearch . '%')
+                    ->orWhere('alm_pb', 'like', '%' . $customSearch . '%')
+                    ->orWhere('alm_mad', 'like', '%' . $customSearch . '%')
+                    ->orWhere('alm_fam', 'like', '%' . $customSearch . '%')
+                    ->orWhere('guia_remision', 'like', '%' . $customSearch . '%')
+                    ->orWhere('empresa', 'like', '%' . $customSearch . '%');
+            });
+        }
+
         if ($order) {
             $columnIndex = $order[0]['column'];
             $columnName = $columns[$columnIndex]['data'];
@@ -305,6 +324,90 @@ class FacturacionController extends Controller
             'data' => $data,
         ]);
     }
+
+    // public function list_datatable(Request $request)
+    // {
+    //     $draw = intval($request->input('draw'));
+    //     $start = intval($request->input('start'));
+    //     $length = intval($request->input('length'));
+    //     $search = $request->input('search')['value'] ?? ''; // Este es el valor de búsqueda global
+    //     $order = $request->input('order'); // Parámetros de ordenamiento
+    //     $columns = $request->input('columns'); // Información de las columnas
+    //     $almacenSeleccionadoInput = $request->input('almacenSeleccionadoInput');
+    //     $customSearch = $request->input('customSearch');
+    //     // dd($customSearch);
+    //     // Mapeo de almacenes
+    //     $almacenes = [
+    //         '1' => 'alm_dsc',
+    //         '2' => 'alm_discotela',
+    //         '3' => 'alm_pb',
+    //         '4' => 'alm_mad',
+    //         '5' => 'alm_fam',
+    //     ];
+    //     $almacenActivo = $almacenes[$almacenSeleccionadoInput] ?? null;
+
+    //     // Aplicar filtros
+    //     $query = TbContabilidadCerradosParcial::filtros([
+    //         'fecha_inicio' => $request->input('fecha_inicio'),
+    //         'fecha_fin' => $request->input('fecha_fin'),
+    //         'estado' => $request->input('estado'),
+    //         'sku' => $request->input('filtroSku'),
+    //         'empresa' => $request->input('filtroEmpresa'),
+    //         'search' => $search, // Valor de búsqueda global (la búsqueda por cualquier término)
+    //         'almacen' => $almacenActivo,
+    //     ]);
+
+    //     // Si se proporciona un término de búsqueda personalizado (customSearch), aplicarlo en la consulta
+    //     if (!empty($customSearch)) { // Verificar si $customSearch no es null ni vacío
+    //         $query->where(function ($query) use ($customSearch) {
+    //             $query->where('estilo', 'like', '%' . $customSearch . '%')
+    //                 ->orWhere('color', 'like', '%' . $customSearch . '%')
+    //                 ->orWhere('sku', 'like', '%' . $customSearch . '%')
+    //                 ->orWhere('descripcion', 'like', '%' . $customSearch . '%')
+    //                 ->orWhere('costo_precio', 'like', '%' . $customSearch . '%')
+    //                 ->orWhere('alm_dsc', 'like', '%' . $customSearch . '%')
+    //                 ->orWhere('alm_discotela', 'like', '%' . $customSearch . '%')
+    //                 ->orWhere('alm_pb', 'like', '%' . $customSearch . '%')
+    //                 ->orWhere('alm_mad', 'like', '%' . $customSearch . '%')
+    //                 ->orWhere('alm_fam', 'like', '%' . $customSearch . '%')
+    //                 ->orWhere('guia_remision', 'like', '%' . $customSearch . '%')
+    //                 ->orWhere('empresa', 'like', '%' . $customSearch . '%');
+    //         });
+    //     }
+
+
+    //     // Manejo de ordenamiento
+    //     if ($order) {
+    //         $columnIndex = $order[0]['column']; // Índice de la columna
+    //         $columnName = $columns[$columnIndex]['data']; // Nombre de la columna
+    //         $columnSortOrder = $order[0]['dir']; // Dirección (asc o desc)
+
+    //         if ($columnName) {
+    //             $query->orderBy($columnName, $columnSortOrder);
+    //         }
+    //     }
+
+    //     // Obtener el número total de registros
+    //     $totalRecords = $query->count();
+
+    //     // Obtener los datos de la página actual según el rango solicitado
+    //     $data = $query->skip($start)->take($length)->get();
+
+    //     // Obtener el total de facturados parcial y pendiente
+    //     $facturadosParcial = $query->sum('enviado');
+    //     $facturadosPendiente = $query->sum('pendiente');
+
+    //     // Respuesta de la tabla con los datos
+    //     return response()->json([
+    //         'draw' => $draw,
+    //         'recordsTotal' => $totalRecords,
+    //         'recordsFiltered' => $totalRecords, // Esto es necesario si no hay filtros adicionales
+    //         'data' => $data,
+    //         'facturadosParcial' => $facturadosParcial,
+    //         'facturadosPendiente' => $facturadosPendiente
+    //     ]);
+    // }
+
 
 
 

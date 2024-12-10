@@ -306,6 +306,9 @@
     </div>
 </div>
 
+<div class="form-group col-lg-4 offset-lg-8">
+    <input type="text" id="customSearch" class="form-control" placeholder="Buscar en la tabla...">
+</div>
 
 <table id="tabla_js" class="table" style="width:100%">
     <thead>
@@ -376,7 +379,8 @@
         var table = $('#tabla_js').DataTable({
             "processing": true,
             "serverSide": true,
-            "stateSave": true, // Guarda el estado de la tabla (incluido el filtro, paginación, etc.)
+            "stateSave": true,
+            "searching": false,
             "ajax": {
                 "url": "{{ route('tabla_facturacion.datatable') }}", // La URL de la ruta
                 "type": "POST", // Cambiar a POST
@@ -394,14 +398,14 @@
                     d.filtroSku = filtroSku;
                     d.filtroEmpresa = filtroEmpresa;
                     d.almacenSeleccionadoInput = almacenSeleccionadoInput;
+                    d.customSearch = $('#customSearch').val();
 
                 },
                 "headers": {
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
                 }
             },
-            // "pageLength": 50, 
-            "lengthMenu": [100, 200, 500, 1000, 5000],
+            "lengthMenu": [250],
             "order": [
                 [0, "asc"]
             ],
@@ -496,9 +500,17 @@
                 "sSearchPlaceholder": "Buscar...",
                 "sLengthMenu": "Resultados :  _MENU_",
             },
+
             "scrollCollapse": true,
             "scrollX": true,
             "scrollY": 400,
+        });
+        $('#customSearch').on('keypress', function(e) {
+            if (e.which === 13) { // Detectar tecla Enter
+                var searchTerm = $(this).val(); // Obtener valor del input
+                console.log(searchTerm)
+                table.search(searchTerm).draw();
+            }
         });
         const checkboxes = document.querySelectorAll('input[type="checkbox"][name="almacen"]');
 
@@ -638,7 +650,17 @@
             });
         });
 
-
+        function limpiarSeleccionados() {
+            selectedIds = []; // Vaciar el array
+            $('#cantidadSeleccionados').text(0); // Actualizar la interfaz
+            $('#mostrarSeleccionados').prop('checked', false); // Desmarcar el checkbox
+            // Mostrar todas las filas nuevamente
+            table.rows().every(function() {
+                this.nodes().to$().show();
+            });
+            table.ajax.reload();
+            console.log('Cantidad de seleccionados restablecida.');
+        }
 
         $('#btnFacturar').on('click', function() {
             let filas = []; // Arreglo para almacenar los datos de todas las filas
@@ -648,7 +670,6 @@
                 let enviadoOriginal = $(this).attr('data-original'); // Valor original
                 // Determinar si hay cambios en la fila
                 let parcial = enviadoActual != enviadoOriginal ? 1 : 0;
-
                 // Capturar los datos de la fila
                 let fila = $(this).closest('tr'); // Obtiene la fila actual
                 let datosFila = {
@@ -662,10 +683,9 @@
             });
 
             // Mostrar el arreglo en consola
-            console.log("Filas procesadas:", filas);
             $.ajax({
                 url: "{{ route('tabla_facturacion.facturar_cerrar') }}",
-                type: "GET", // Método GET
+                type: "POST",
                 data: {
                     filas: filas,
                     _token: $('meta[name="csrf-token"]').attr('content')
@@ -679,13 +699,15 @@
                             confirmButtonColor: '#3085d6',
                             confirmButtonText: 'OK'
                         });
+
                     } else {
                         Swal.fire(
                             '¡Actualización Exitosa!',
                             '¡Los registros han sido actualizados correctamente!',
                             'success'
                         ).then(function() {
-                            table.ajax.reload();
+                            limpiarSeleccionados();
+
                         });
                     }
                 },
@@ -771,6 +793,7 @@
                                     "destroy": true,
                                     "scrollX": true,
                                     "scrollY": 300,
+                                    "searching": false,
                                     // "responsive": true,
                                     "columnDefs": [{
                                             "width": "80px",
@@ -814,6 +837,7 @@
                                     },
                                 });
                             });
+
                             $('#modalFacturados').modal('show');
                         } else {
                             alert('No se encontraron registros para mostrar.');
@@ -841,8 +865,9 @@
         // Filtro para mostrar solo las filas seleccionadas
         $('#mostrarSeleccionados').on('change', function() {
             if (this.checked) {
-                var cantidadSeleccionados = selectedIds.length + 1;
+                var cantidadSeleccionados = selectedIds.length;
                 $('#cantidadSeleccionados').text(cantidadSeleccionados);
+                console.log(cantidadSeleccionados)
                 table.rows().every(function() {
                     var rowData = this.data();
                     var rowId = rowData.id;
@@ -850,9 +875,9 @@
                         this.nodes().to$().hide();
                     }
                 });
-                var cantidadSeleccionados = selectedIds.length;
-                $('#cantidadSeleccionados').text(cantidadSeleccionados);
-                console.log(cantidadSeleccionados)
+                // var cantidadSeleccionados = selectedIds.length;
+                // $('#cantidadSeleccionados').text(cantidadSeleccionados);
+                // console.log(cantidadSeleccionados)
 
             } else {
                 var cantidadSeleccionados = 0;
