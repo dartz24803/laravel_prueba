@@ -1942,6 +1942,7 @@ Route::controller(AmonestacionController::class)->group(function () {
     Route::get('Pdf_Amonestacion/{id}', 'Pdf_Amonestacion');
     Route::post('/Update_Documento_Amonestacion', 'Update_Documento_Amonestacion');
     Route::post('Aprobacion_Amonestacion', 'Aprobacion_Amonestacion');
+    Route::get('Amonestaciones/Amonestaciones_Recibidas_Index', 'Amonestaciones_Recibidas_Index');
 });
 Route::controller(ComunicadoController::class)->group(function () {
     Route::get('Comunicado', 'Index')->name('Comunicado');

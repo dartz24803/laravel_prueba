@@ -1,7 +1,6 @@
 @extends('layouts.plantilla')
 
 @section('navbar')
-    @include('rrhh.navbar')
 @endsection
 
 @section('content')
@@ -51,16 +50,13 @@
                 <div class="statbox widget box box-shadow">
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs  mb-3 mt-3" id="simpletab" role="tablist">
-                        <?php 
-                        if($id_nivel==1 || $id_nivel==2 || $id_puesto==22 || $id_puesto==133 || $id_puesto==30 ||
-                        session('usuario')->nivel_jerarquico==1 ||
-                        session('usuario')->nivel_jerarquico==2 || 
-                        session('usuario')->nivel_jerarquico==3 ||  
-                        session('usuario')->nivel_jerarquico==4 || $id_puesto==195 ||
-                        session('usuario')->visualizar_amonestacion!="sin_acceso_amonestacion" || $id_puesto==209){?>
+                            <?php if($nivel_jerarquico==2 || $nivel_jerarquico==3 || 
+                            $nivel_jerarquico==4 || $nivel_jerarquico==5 || $nivel_jerarquico==6 || 
+                            $nivel_jerarquico==7 || $id_puesto==195){?> 
                             <li class="nav-item">
-                                <a id="bae" class="nav-link active" id="registro-tab" data-toggle="tab" href="#registro" role="tab" aria-controls="home" aria-selected="true" onclick="Amonestaciones_Emitidas()">Emitidas</a>
-                            </li><?php }?>
+                                <a id="bar" class="nav-link" data-toggle="tab" href="#aprobacion" role="tab" aria-controls="home" aria-selected="true" onclick="Amonestaciones_Recibidas()">Recibidas</a>
+                            </li>     
+                            <?php }?>
                         </ul>
                         <div class="row" id="cancel-row">
                             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
@@ -77,28 +73,13 @@
 
 <script>
     $(document).ready(function() { 
-        $("#rhumanos").addClass('active');
-        $("#hrhumanos").attr('aria-expanded','true');
+        $("#mamonestacion").addClass('active');
+        $("#hamonestacion").attr('aria-expanded','true');
         $("#amonestaciones").addClass('active');
 
-        Amonestaciones_Emitidas();
+        Amonestaciones_Recibidas();
     });
-    
-    function Amonestaciones_Emitidas(){
-        Cargando();
 
-        var url="{{ url('Amonestaciones_Emitidas')}}";
-
-        $.ajax({
-            url: url,
-            type:"GET",
-            success:function (resp) {
-                $('#div_conf_amonestacion').html(resp);
-                $("#bae").addClass('active');
-                $("#bar").removeClass('active');
-            }
-        });
-    }
     
     function Amonestaciones_Recibidas(){
         Cargando();
