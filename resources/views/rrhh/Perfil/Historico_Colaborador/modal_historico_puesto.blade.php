@@ -219,14 +219,25 @@
                 processData: false,
                 contentType: false,
                 success: function(data) {
-                    swal.fire(
-                        'Actualización Exitosa!',
-                        'Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        List_Datos_Laborales({{ $id_usuario }});
-                        $("#ModalUpdate .close").click();
-                    });
+                    if(data=="error_organigrama"){
+                        Swal({
+                            title: '¡Actualización Denegada!',
+                            text: "¡No hay puesto disponible en el organigrama!",
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else{
+                        swal.fire(
+                            '¡Actualización Exitosa!',
+                            'Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                            List_Datos_Laborales({{ $id_usuario }});
+                            $("#ModalUpdate .close").click();
+                        });
+                    }
                 },
                 error:function(xhr) {
                     var errors = xhr.responseJSON.errors;
