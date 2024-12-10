@@ -12,6 +12,7 @@ use App\Models\HorarioDia;
 use App\Models\Model_Perfil;
 use App\Models\Puesto;
 use App\Models\Notificacion;
+use App\Models\Organigrama;
 use App\Models\SolicitudPuesto;
 use App\Models\SubGerencia;
 use App\Models\Ubicacion;
@@ -448,31 +449,61 @@ class MiEquipoController extends Controller
         ]);
     }
 
-    public function Solicitud_Puesto()
+    public function Solicitud_Puesto(Request $request)
     {
-        $dato['id_usuario'] = $this->input->post("id_usuario");
-        $valida = Usuario::where('id_usuario', $dato['id_usuario'])
-            ->where('ini_funciones', '<', now()->subMonth())
-            ->get()
-            ->toArray();
-
-        if (empty($valida)) {
-            echo "permanencia";
-        } else {
-            $valida = SolicitudPuesto::where('id_usuario', $dato['id_usuario'])
-                ->where('estado_s', 1)
-                ->where('estado', 1)
-                ->get();
-
-            if (count($valida) > 0) {
-                echo "evaluacion";
+        //VALIDACIÓN DE CAPACIDAD DE ORGANIGRAMA
+        $get_id = Usuario::findOrFail($request->id_usuario);
+        if($request->tipo=="1"){
+            //VENDEDOR
+            $id_puesto = 33;
+        }else if($request->tipo=="2"){
+            //ALMACENERO
+            $id_puesto = 35;
+        }else if($request->tipo=="3"){
+            //VENDEDOR CAJERO
+            $id_puesto = 167;
+        }else if($request->tipo=="4"){
+            //AUXILIAR DE CAJA
+            $id_puesto = 32;
+        }else if($request->tipo=="5"){
+            //CAJERO PRINCIPAL
+            $id_puesto = 31;
+        }else if($request->tipo=="6"){
+            //AUXILIAR DE COORDINADOR DE TIENDA
+            $id_puesto = 30;
+        }else if($request->tipo=="7"){
+            //COORDINADOR DE TIENDA
+            $id_puesto = 314;
+        }
+        $valida = Organigrama::where('id_puesto',$id_puesto)
+                ->where('id_centro_labor',$get_id->id_centro_labor)->where('id_usuario',0)->count();
+        if($valida>0){
+            $dato['id_usuario'] = $this->input->post("id_usuario");
+            $valida = Usuario::where('id_usuario', $dato['id_usuario'])
+                ->where('ini_funciones', '<', now()->subMonth())
+                ->get()
+                ->toArray();
+    
+            if (empty($valida)) {
+                echo "permanencia";
             } else {
-                $valida = ExamenEntrenamiento::valida_entrenamiento_pendiente($dato['id_usuario']);
-
+                $valida = SolicitudPuesto::where('id_usuario', $dato['id_usuario'])
+                    ->where('estado_s', 1)
+                    ->where('estado', 1)
+                    ->get();
+    
                 if (count($valida) > 0) {
                     echo "evaluacion";
+                } else {
+                    $valida = ExamenEntrenamiento::valida_entrenamiento_pendiente($dato['id_usuario']);
+    
+                    if (count($valida) > 0) {
+                        echo "evaluacion";
+                    }
                 }
             }
+        }else{
+            echo "error_organigrama";
         }
     }
 

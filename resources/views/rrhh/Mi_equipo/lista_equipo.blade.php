@@ -149,12 +149,21 @@
         $.ajax({
             url: url,
             type:"POST",
+            data: {'id_usuario':id_usuario,'tipo':tipo},
             headers: {
                 'X-CSRF-TOKEN': csrfToken
             },
-            data: {'id_usuario':id_usuario},
             success:function (data) {
-                if(data=="permanencia"){
+                if(data=="error_organigrama"){
+                    Swal({
+                        title: '¡Solicitud Denegada!',
+                        text: "¡No hay puesto disponible en el organigrama!",
+                        type: 'error',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK',
+                    });
+                }else if(data=="permanencia"){
                     Swal({
                         title: 'Solicitud Denegada',
                         text: 'Para postular como '+puesto+', como mínimo tiene que cumplir 1 mes de permanencia',
