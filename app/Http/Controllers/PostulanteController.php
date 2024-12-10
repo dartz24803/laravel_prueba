@@ -187,10 +187,9 @@ class PostulanteController extends Controller
             $id_puesto_evaluador = session('usuario')->id_puesto;
             $id_evaluador = session('usuario')->id_usuario;
         }
-
+        //VALIDACIÓN DE CAPACIDAD DE ORGANIGRAMA
         $valida = Organigrama::where('id_puesto',$request->id_puesto)
                 ->where('id_centro_labor',$id_centro_labor)->where('id_usuario',0)->count();
-
         if($valida>0){
             $valida = Usuario::where('id_tipo_documento', $request->id_tipo_documento)
                     ->where('num_doc', $request->num_doc)->whereIn('estado', [1,3,4])->exists();
