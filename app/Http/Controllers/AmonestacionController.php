@@ -389,4 +389,10 @@ class AmonestacionController extends Controller
         // Salida del archivo PDF al navegador
         $mpdf->Output();
     }
+
+    public function Amonestaciones_Recibidas_Index(){
+        //NOTIFICACIÓN-NO BORRAR
+        $dato['list_notificacion'] = Notificacion::get_list_notificacion();
+        return view('Amonestaciones.index', $dato);
+    }
 }
