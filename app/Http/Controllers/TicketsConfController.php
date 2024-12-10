@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Complejidad;
 use App\Models\Modulo;
 use App\Models\Notificacion;
 use App\Models\SubGerencia;
@@ -115,42 +116,43 @@ class TicketsConfController extends Controller
 
     public function list_co()
     {
-        $list_modelo = Modelo::from('modelo AS mo')
-                    ->select('mo.id_modelo','ma.nom_marca','mo.nom_modelo')
-                    ->join('marca AS ma','ma.id_marca','=','mo.id_marca')
-                    ->where('mo.id_modelo_mae',2)
-                    ->where('mo.estado', 1)
-                    ->orderBy('ma.nom_marca','ASC')->orderBy('mo.nom_modelo','ASC')->get();
-        return view('interna.administracion.sistemas.complejidad.lista', compact('list_modelo'));
+        $list_complejidad = Complejidad::from('complejidad AS co')
+                            ->select('co.id_complejidad','mo.nom_modulo','co.descripcion',
+                            'co.dificultad')
+                            ->join('modulo AS mo','mo.id_modulo','=','co.id_modulo')
+                            ->where('co.estado', 1)->get();
+        return view('interna.administracion.sistemas.complejidad.lista', compact('list_complejidad'));
     }
 
     public function create_co()
     {
-        $list_marca = Marca::select('id_marca','nom_marca')->where('id_marca_mae',2)
-                    ->where('estado', 1)
-                    ->orderBy('nom_marca','ASC')->get();
-        return view('interna.administracion.sistemas.complejidad.modal_registrar',compact('list_marca'));
+        $list_modulo = Modulo::select('id_modulo','nom_modulo')->where('estado', 1)->get();
+        return view('interna.administracion.sistemas.complejidad.modal_registrar',compact(
+            'list_modulo'
+        ));
     }
 
     public function store_co(Request $request)
     {
         $request->validate([
-            'id_marca' => 'gt:0',
-            'nom_modelo' => 'required'
+            'id_modulo' => 'gt:0',
+            'dificultad' => 'gt:0',
+            'descripcion' => 'required'
         ],[
-            'id_marca.gt' => 'Debe seleccionar marca.',
-            'nom_modelo.required' => 'Debe ingresar nombre.'
+            'id_modulo.gt' => 'Debe seleccionar módulo.',
+            'dificultad.gt' => 'Debe seleccionar dificultad.',
+            'descripcion.required' => 'Debe ingresar descripción.'
         ]);
 
-        $valida = Modelo::where('id_modelo_mae',2)->where('id_marca', $request->id_marca)
-                ->where('nom_modelo', $request->nom_modelo)->where('estado', 1)->exists();
+        $valida = Complejidad::where('id_modulo', $request->id_modulo)
+                ->where('descripcion', $request->descripcion)->where('estado', 1)->exists();
         if($valida){
             echo "error";
         }else{
-            Modelo::create([
-                'id_modelo_mae' => 2,
-                'id_marca' => $request->id_marca,
-                'nom_modelo' => $request->nom_modelo,
+            Complejidad::create([
+                'id_modulo' => $request->id_modulo,
+                'dificultad' => $request->dificultad,
+                'descripcion' => $request->descripcion,
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
@@ -162,32 +164,36 @@ class TicketsConfController extends Controller
 
     public function edit_co($id)
     {
-        $get_id = Modelo::findOrFail($id);
-        $list_marca = Marca::select('id_marca','nom_marca')->where('id_marca_mae',2)
-                    ->where('estado', 1)
-                    ->orderBy('nom_marca','ASC')->get();
-        return view('interna.administracion.sistemas.complejidad.modal_editar', compact('get_id','list_marca'));
+        $get_id = Complejidad::findOrFail($id);
+        $list_modulo = Modulo::select('id_modulo','nom_modulo')->where('estado', 1)->get();
+        return view('interna.administracion.sistemas.complejidad.modal_editar', compact(
+            'get_id',
+            'list_modulo'
+        ));
     }
 
     public function update_co(Request $request, $id)
     {
         $request->validate([
-            'id_marcae' => 'gt:0',
-            'nom_modeloe' => 'required'
+            'id_moduloe' => 'gt:0',
+            'dificultade' => 'gt:0',
+            'descripcione' => 'required'
         ],[
-            'id_marcae.gt' => 'Debe seleccionar marca.',
-            'nom_modeloe.required' => 'Debe ingresar nombre.'
+            'id_moduloe.gt' => 'Debe seleccionar módulo.',
+            'dificultade.gt' => 'Debe seleccionar dificultad.',
+            'descripcione.required' => 'Debe ingresar descripción.'
         ]);
 
-        $valida = Modelo::where('id_modelo_mae',2)->where('id_marca', $request->id_marcae)
-                ->where('nom_modelo', $request->nom_modeloe)->where('estado', 1)
-                ->where('id_modelo', '!=', $id)->exists();
+        $valida = Complejidad::where('id_modulo', $request->id_moduloe)
+                ->where('descripcion', $request->descripcione)->where('estado', 1)
+                ->where('id_complejidad', '!=', $id)->exists();
         if($valida){
             echo "error";
         }else{
-            Modelo::findOrFail($id)->update([
-                'id_marca' => $request->id_marcae,
-                'nom_modelo' => $request->nom_modeloe,
+            Complejidad::findOrFail($id)->update([
+                'id_modulo' => $request->id_moduloe,
+                'dificultad' => $request->dificultade,
+                'descripcion' => $request->descripcione,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
@@ -196,7 +202,7 @@ class TicketsConfController extends Controller
 
     public function destroy_co($id)
     {
-        Modelo::findOrFail($id)->update([
+        Complejidad::findOrFail($id)->update([
             'estado' => 2,
             'fec_eli' => now(),
             'user_eli' => session('usuario')->id_usuario
