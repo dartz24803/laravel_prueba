@@ -1113,21 +1113,122 @@ class ColaboradorController extends Controller
             'fec_inicio_hp.required' => 'Debe ingresar fecha de inicio.',
             'fec_fin_hp.required_if' => 'Debe ingresar fecha fin.'
         ]);
+        //VALIDACIÓN DE CAPACIDAD DE ORGANIGRAMA
+        $get_id = Usuario::findOrFail($id_usuario);
+        $valida = Organigrama::where('id_puesto',$request->id_puesto_hp)
+                ->where('id_centro_labor',$get_id->id_centro_labor)->where('id_usuario',0)->count();
+        if($valida>0){
+            $get_id = UsersHistoricoPuesto::from('users_historico_puesto AS up')
+                    ->select('up.id_historico_puesto','pu.id_puesto','ar.id_area','sg.id_sub_gerencia',
+                    'sg.id_gerencia','up.fec_inicio','up.id_tipo_cambio',
+                    'up.con_fec_fin','up.fec_fin','up.id_centro_labor')
+                    ->join('puesto AS pu','pu.id_puesto','=','up.id_puesto')
+                    ->join('area AS ar','ar.id_area','=','pu.id_area')
+                    ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
+                    ->where('up.id_usuario', $id_usuario)
+                    ->where('up.estado', 1)
+                    ->orderBy('up.fec_reg', 'DESC')
+                    ->first();
 
-        $get_id = UsersHistoricoPuesto::from('users_historico_puesto AS up')
-                ->select('up.id_historico_puesto','pu.id_puesto','ar.id_area','sg.id_sub_gerencia',
-                'sg.id_gerencia','up.fec_inicio','up.id_tipo_cambio',
-                'up.con_fec_fin','up.fec_fin','up.id_centro_labor')
-                ->join('puesto AS pu','pu.id_puesto','=','up.id_puesto')
-                ->join('area AS ar','ar.id_area','=','pu.id_area')
-                ->join('sub_gerencia AS sg','sg.id_sub_gerencia','=','ar.id_departamento')
-                ->where('up.id_usuario', $id_usuario)
-                ->where('up.estado', 1)
-                ->orderBy('up.fec_reg', 'DESC')
-                ->first();
+            if($get_id){
+                if($request->id_puesto_hp!=$get_id->id_puesto || $request->id_centro_labor_hp!=$get_id->id_centro_labor){
+                    UsersHistoricoPuesto::create([
+                        'id_usuario' => $id_usuario,
+                        'id_puesto' => $request->id_puesto_hp,
+                        'id_centro_labor' => $request->id_centro_labor_hp,
+                        'fec_inicio' => $request->fec_inicio_hp,
+                        'id_tipo_cambio' => $request->id_tipo_cambio_hp,
+                        'con_fec_fin' => $request->con_fec_fin_hp,
+                        'fec_fin' => $request->fec_fin_hp,
+                        'estado' => 1,
+                        'fec_reg' => now(),
+                        'user_reg' => session('usuario')->id_usuario,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+                    Usuario::findOrFail($id_usuario)->update([
+                        'id_puesto' => $request->id_puesto_hp,
+                        'id_centro_labor' => $request->id_centro_labor_hp,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
 
-        if($get_id){
-            if($request->id_puesto_hp!=$get_id->id_puesto || $request->id_centro_labor_hp!=$get_id->id_centro_labor){
+                    $get_org = Organigrama::where('id_usuario', $id_usuario)
+                            ->first();
+                    if($get_org){
+                        Organigrama::findOrFail($get_org->id)->update([
+                            'id_usuario' => 0,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario,
+                        ]);
+                    }
+                    $get_usuario = Usuario::findOrFail($id_usuario);
+                    $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
+                            ->where('id_centro_labor',$get_usuario->id_centro_labor)
+                            ->where('id_usuario',0)
+                            ->first();
+                    if(isset($valida->id)){
+                        Organigrama::findOrFail($valida->id)->update([
+                            'id_usuario' => $id_usuario,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario
+                        ]);
+                    }else{
+                        Organigrama::create([
+                            'id_puesto' => $request->id_puesto_hp,
+                            'id_centro_labor' => $get_usuario->id_centro_labor,
+                            'id_usuario' => $id_usuario,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario
+                        ]);
+                    }
+                }else{
+                    UsersHistoricoPuesto::findOrfail($get_id->id_historico_puesto)->update([
+                        'id_centro_labor' => $request->id_centro_labor_hp,
+                        'fec_inicio' => $request->fec_inicio_hp,
+                        'id_tipo_cambio' => $request->id_tipo_cambio_hp,
+                        'con_fec_fin' => $request->con_fec_fin_hp,
+                        'fec_fin' => $request->fec_fin_hp,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+                    Usuario::findOrFail($id_usuario)->update([
+                        'id_puesto' => $request->id_puesto_hp,
+                        'id_centro_labor' => $request->id_centro_labor_hp,
+                        'fec_act' => now(),
+                        'user_act' => session('usuario')->id_usuario
+                    ]);
+                    $get_org = Organigrama::where('id_usuario', $id_usuario)
+                            ->first();
+                    if($get_org){
+                        Organigrama::findOrFail($get_org->id)->update([
+                            'id_usuario' => 0,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario,
+                        ]);
+                    }
+                    $get_usuario = Usuario::findOrFail($id_usuario);
+                    $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
+                            ->where('id_centro_labor',$get_usuario->id_centro_labor)
+                            ->where('id_usuario',0)
+                            ->first();
+                    if(isset($valida->id)){
+                        Organigrama::findOrFail($valida->id)->update([
+                            'id_usuario' => $id_usuario,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario
+                        ]);
+                    }else{
+                        Organigrama::create([
+                            'id_puesto' => $request->id_puesto_hp,
+                            'id_centro_labor' => $get_usuario->id_centro_labor,
+                            'id_usuario' => $id_usuario,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario
+                        ]);
+                    }
+                }
+            }else{
                 UsersHistoricoPuesto::create([
                     'id_usuario' => $id_usuario,
                     'id_puesto' => $request->id_puesto_hp,
@@ -1178,103 +1279,9 @@ class ColaboradorController extends Controller
                         'usuario' => session('usuario')->id_usuario
                     ]);
                 }
-            }else{
-                UsersHistoricoPuesto::findOrfail($get_id->id_historico_puesto)->update([
-                    'id_centro_labor' => $request->id_centro_labor_hp,
-                    'fec_inicio' => $request->fec_inicio_hp,
-                    'id_tipo_cambio' => $request->id_tipo_cambio_hp,
-                    'con_fec_fin' => $request->con_fec_fin_hp,
-                    'fec_fin' => $request->fec_fin_hp,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
-                Usuario::findOrFail($id_usuario)->update([
-                    'id_puesto' => $request->id_puesto_hp,
-                    'id_centro_labor' => $request->id_centro_labor_hp,
-                    'fec_act' => now(),
-                    'user_act' => session('usuario')->id_usuario
-                ]);
-                $get_org = Organigrama::where('id_usuario', $id_usuario)
-                        ->first();
-                if($get_org){
-                    Organigrama::findOrFail($get_org->id)->update([
-                        'id_usuario' => 0,
-                        'fecha' => now(),
-                        'usuario' => session('usuario')->id_usuario,
-                    ]);
-                }
-                $get_usuario = Usuario::findOrFail($id_usuario);
-                $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
-                        ->where('id_centro_labor',$get_usuario->id_centro_labor)
-                        ->where('id_usuario',0)
-                        ->first();
-                if(isset($valida->id)){
-                    Organigrama::findOrFail($valida->id)->update([
-                        'id_usuario' => $id_usuario,
-                        'fecha' => now(),
-                        'usuario' => session('usuario')->id_usuario
-                    ]);
-                }else{
-                    Organigrama::create([
-                        'id_puesto' => $request->id_puesto_hp,
-                        'id_centro_labor' => $get_usuario->id_centro_labor,
-                        'id_usuario' => $id_usuario,
-                        'fecha' => now(),
-                        'usuario' => session('usuario')->id_usuario
-                    ]);
-                }
             }
         }else{
-            UsersHistoricoPuesto::create([
-                'id_usuario' => $id_usuario,
-                'id_puesto' => $request->id_puesto_hp,
-                'id_centro_labor' => $request->id_centro_labor_hp,
-                'fec_inicio' => $request->fec_inicio_hp,
-                'id_tipo_cambio' => $request->id_tipo_cambio_hp,
-                'con_fec_fin' => $request->con_fec_fin_hp,
-                'fec_fin' => $request->fec_fin_hp,
-                'estado' => 1,
-                'fec_reg' => now(),
-                'user_reg' => session('usuario')->id_usuario,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-            Usuario::findOrFail($id_usuario)->update([
-                'id_puesto' => $request->id_puesto_hp,
-                'id_centro_labor' => $request->id_centro_labor_hp,
-                'fec_act' => now(),
-                'user_act' => session('usuario')->id_usuario
-            ]);
-
-            $get_org = Organigrama::where('id_usuario', $id_usuario)
-                    ->first();
-            if($get_org){
-                Organigrama::findOrFail($get_org->id)->update([
-                    'id_usuario' => 0,
-                    'fecha' => now(),
-                    'usuario' => session('usuario')->id_usuario,
-                ]);
-            }
-            $get_usuario = Usuario::findOrFail($id_usuario);
-            $valida = Organigrama::where('id_puesto', $request->id_puesto_hp)
-                    ->where('id_centro_labor',$get_usuario->id_centro_labor)
-                    ->where('id_usuario',0)
-                    ->first();
-            if(isset($valida->id)){
-                Organigrama::findOrFail($valida->id)->update([
-                    'id_usuario' => $id_usuario,
-                    'fecha' => now(),
-                    'usuario' => session('usuario')->id_usuario
-                ]);
-            }else{
-                Organigrama::create([
-                    'id_puesto' => $request->id_puesto_hp,
-                    'id_centro_labor' => $get_usuario->id_centro_labor,
-                    'id_usuario' => $id_usuario,
-                    'fecha' => now(),
-                    'usuario' => session('usuario')->id_usuario
-                ]);
-            }
+            echo "error_organigrama";
         }
     }
 
