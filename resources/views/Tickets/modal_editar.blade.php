@@ -183,7 +183,7 @@
                 <?php }elseif (substr($list['archivos'],-3) === "txt"){ ?> 
                     <div id="i_<?php echo  $list['id_archivos_tickets']?>" class="form-group col-sm-2"> 
                         <?php 
-                        echo'<div id="lista_escogida"><embed loading="lazy"  src="' . base_url() . $list['archivos'] . '" width="100%" height="150px" /></div>';
+                        echo'<div id="lista_escogida"><embed loading="lazy"  src="' . $list['archivos'] . '" width="100%" height="150px" /></div>';
                         ?>
                         <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivos_tickets']?>"><i class="fas fa-cloud-download-alt"></i></button>
                         <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivos_tickets']?>"><i class="fas fa-trash"></i></button>
@@ -248,49 +248,35 @@
         var url = "{{ url('Tickets/Update_Tickets') }}";
         var csrfToken = $('input[name="_token"]').val();
 
-            $.ajax({
-                type: "POST",
-                url: url,
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
-                data: dataString,
-                processData: false,
-                contentType: false,
-                success: function(data) {
-                    swal.fire(
-                        'Actualización Exitosa!',
-                        'Haga clic en el botón!',
-                        'success'
-                    ).then(function() {
-                        $("#ModalUpdate .close").click()
-                        Cambiar_Tickets();
-                    });
-                }
-            });
+        $.ajax({
+            type: "POST",
+            url: url,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
+            data: dataString,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                swal.fire(
+                    'Actualización Exitosa!',
+                    'Haga clic en el botón!',
+                    'success'
+                ).then(function() {
+                    $("#ModalUpdate .close").click()
+                    Cambiar_Tickets();
+                });
+            },
+            error:function(xhr) {
+                var errors = xhr.responseJSON.errors;
+                var firstError = Object.values(errors)[0][0];
+                Swal.fire(
+                    '¡Ups!',
+                    firstError,
+                    'warning'
+                );
+            }
+        });
     }
 
-    function Valida_Update_Tickets() {
-        if ($('#id_tipo_tickets_u').val() == '0') {
-            msgDate = 'Debe seleccionar tipo.';
-            inputFocus = '#id_tipo_tickets_u';
-            return false;
-        }
-        if ($('#plataforma_u').val() == '0') {
-            msgDate = 'Debe seleccionar plataforma.';
-            inputFocus = '#plataforma_u';
-            return false;
-        }
-        if ($('#titulo_tickets_u').val().trim() === '') {
-            msgDate = 'Debe ingresar título.';
-            inputFocus = '#titulo_tickets_u';
-            return false;
-        }
-        if ($('#descrip_ticket_u').val().trim() === '') {
-            msgDate = 'Debe ingresar una descripción ';
-            inputFocus = '#descrip_ticket_u';
-            return false;
-        }
-        return true;
-    }
 </script>
