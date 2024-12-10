@@ -14,7 +14,6 @@
                 <h3>Modulo de Tickets</h3>
             </div>
         </div>
-
         <div class="row" id="cancel-row">
             <?php if($id_nivel==1 || $id_puesto==27 || $id_puesto==148){ ?>
                 <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">

@@ -189,38 +189,4 @@
                 }
             });
     }
-
-    function Valida_Insert_Tickets() {
-        var nivel = "<?php echo session('usuario')->id_nivel; ?>";
-        var puesto = "<?php echo session('usuario')->id_puesto; ?>";
-
-        if(nivel==1 || puesto==27 || puesto==148){
-            if ($('#id_colaborador_i').val() == '0') {
-                msgDate = 'Debe seleccionar colaborador.';
-                inputFocus = '#id_colaborador_i';
-                return false;
-            }
-        }
-        if ($('#id_tipo_tickets_i').val() == '0') {
-            msgDate = 'Debe seleccionar tipo.';
-            inputFocus = '#id_tipo_tickets_i';
-            return false;
-        }
-        if ($('#plataforma_i').val() == '0') {
-            msgDate = 'Debe seleccionar plataforma.';
-            inputFocus = '#plataforma_i';
-            return false;
-        }
-        if ($('#titulo_tickets_i').val().trim() === '') {
-            msgDate = 'Debe ingresar título.';
-            inputFocus = '#titulo_tickets_i';
-            return false;
-        }
-        if ($('#descrip_ticket_i').val().trim() === '') {
-            msgDate = 'Debe ingresar una descripción ';
-            inputFocus = '#descrip_ticket_i';
-            return false;
-        }
-        return true;
-    }
 </script>

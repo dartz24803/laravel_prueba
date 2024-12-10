@@ -48,6 +48,7 @@
                             <?php if($list['estado']==1){ ?>
                                 <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Tickets/Modal_Ver_Tickets/' .$list['id_tickets']) }}" style="cursor:pointer;">Ver</a>
                                 <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Tickets/Modal_Update_Tickets/' .$list['id_tickets']) }}" style="cursor:pointer;">Editar</a>
+                                @csrf
                                 <a class="dropdown-item" onclick="Delete_Tickets('<?php echo $list['id_tickets']; ?>')" style="cursor:pointer;">Eliminar</a>
                             <?php }else{ ?>
                                 <a class="dropdown-item" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ url('Tickets/Modal_Ver_Tickets_Admin/' .$list['id_tickets']) }}" style="cursor:pointer;">Ver</a>

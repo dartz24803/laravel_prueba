@@ -13,6 +13,7 @@ class ArchivosTickets extends Model
     protected $fillable = [
         'id_usuario_solic',
         'cod_tickets',
+        'id_ticket',
         'archivos',
         'nom_archivos',
         'estado',

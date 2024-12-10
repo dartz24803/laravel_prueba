@@ -390,7 +390,7 @@ class TicketsController extends Controller
             }else{
                 $id_usuario = session('usuario')->id_usuario; // Obtener usuario de la sesión
 
-                Tickets::create([
+                $ticket = Tickets::create([
                     'id_usuario_solic' => $dato['id_usuario'],
                     'id_usuario_soporte' => 0,
                     'link' => 0,
@@ -408,6 +408,7 @@ class TicketsController extends Controller
                     'fec_act' => now(),
                     'user_act' => $id_usuario,
                 ]);
+                $lastId = $ticket->id_tickets;
 
                 if($this->input->hasFile("files_i")){
                     $ftp_server = "lanumerounocloud.com";
@@ -437,7 +438,8 @@ class TicketsController extends Controller
                             if($subio){
                                 ArchivosTickets::create([
                                     'id_usuario_solic' => $dato['id_usuario'],
-                                    'cod_tickets' => $dato['cod_tickets'],
+                                    'cod_tickets' => $dato['cod_tickets'],//borrar al dar de baja intranet antiguo
+                                    'id_ticket' => $lastId,
                                     'archivos' => $dato['ruta'],
                                     'nom_archivos' => $dato['ruta_nombre'],
                                     'estado' => 1,
@@ -460,7 +462,7 @@ class TicketsController extends Controller
 
                 $list_correos = Usuario::query();
                 if ($dato['plataforma'] == 1) {
-                    $list_correos->where('id_usuario', 2655);
+                    $list_correos->where('id_usuario', 2692);
                 } elseif ($dato['plataforma'] == 2) {
                     $list_correos->where('id_usuario', 629);
                 } elseif ($dato['plataforma'] == 3) {
@@ -526,7 +528,7 @@ class TicketsController extends Controller
 
         $dato['list_plataforma']= json_decode(json_encode($dato['list_plataforma']), true);
         $dato['get_id_files_tickets'] = ArchivosTickets::where('estado', 1)
-                                ->where('cod_tickets', $dato['get_id'][0]['cod_tickets'])
+                                ->where('id_ticket', $dato['get_id'][0]['id_tickets'])
                                 ->where('id_usuario_solic', $dato['get_id'][0]['id_usuario_solic'])
                                 ->get();
         // print_r($dato['get_id_files_tickets']);
@@ -534,6 +536,18 @@ class TicketsController extends Controller
     }
 
     public function Update_Tickets(){
+        $this->input->validate([
+            'id_tipo_tickets_u' => 'required|not_in:0',
+            'plataforma_u' => 'required|not_in:0',
+            'titulo_tickets_u' => 'required|string|max:255',
+            'descrip_ticket_u' => 'required|string',
+        ], [
+            // Mensajes de validación personalizados
+            'id_tipo_tickets_u.not_in' => 'Debe seleccionar tipo.',
+            'plataforma_u.not_in' => 'Debe seleccionar plataforma.',
+            'titulo_tickets_u.required' => 'Debe ingresar título.',
+            'descrip_ticket_u.required' => 'Debe ingresar una descripción.',
+        ]);
             $dato['id_tickets']= $this->input->post("id_tickets");
             $dato['id_tipo_tickets']= $this->input->post("id_tipo_tickets_u");
             $dato['plataforma']= $this->input->post("plataforma_u");
@@ -583,6 +597,7 @@ class TicketsController extends Controller
                             ArchivosTickets::create([
                                 'id_usuario_solic' => $dato['id_usuario'],
                                 'cod_tickets' => $dato['cod_tickets'],
+                                'id_ticket' => $dato['id_tickets'],
                                 'archivos' => $dato['ruta'],
                                 'nom_archivos' => $dato['ruta_nombre'],
                                 'estado' => 1,
@@ -667,6 +682,90 @@ class TicketsController extends Controller
                 'fec_eli' => Carbon::now(),
                 'user_eli' => session('usuario')->id_usuario,
             ]);
+    }
+
+    public function Modal_Ver_Tickets_Admin($id_tickets){
+        if ($this->session->userdata('usuario')) {
+            $dato['get_id'] = $this->Model_Corporacion->get_id_ticket($id_tickets);
+            $dato['list_encargado'] = $this->Model_Corporacion->get_list_encargados_tickets();
+            $dato['list_estado'] = $this->Model_Corporacion->get_list_estado_tickets();
+            $dato['list_complejidad'] = $this->Model_Corporacion->get_list_complejidad();
+            $dato['get_id_files_tickets'] = $this->Model_Corporacion->get_archivos_ticket_solic($dato['get_id'][0]['id_usuario_solic'],$dato['get_id'][0]['cod_tickets']);
+            $dato['get_id_files_tickets_soporte'] = $this->Model_Corporacion->get_archivos_ticket_soporte($dato['get_id'][0]['cod_tickets']);
+            $this->load->view('Admin/Configuracion/Tickets/modal_ver_admin',$dato);
+        }else{
+            redirect('');
+        }
+    }
+
+    public function download_filesupport($id_archivos_tickets_soporte) {
+        if ($this->session->userdata('usuario')) {
+            $dato['get_file'] = $this->Model_Corporacion->get_id_archivos_tickets_soporte($id_archivos_tickets_soporte);
+            $image = $dato['get_file'][0]['archivos'];
+            $name     = basename($image);
+            $ext      = pathinfo($image, PATHINFO_EXTENSION);
+            force_download($name , file_get_contents($dato['get_file'][0]['archivos']));
+        }else{
+            redirect('');
+        }
+    }
+
+    public function delete_archivos_tickets() {
+        $id_archivos_tickets = $this->input->post('image_id');
+        $get_file = $this->Model_Corporacion->get_id_archivos_tickets($id_archivos_tickets);
+
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+        if((!$con_id) || (!$lr)){
+            echo "No se conecto";
+        }else{
+            echo "Se conecto";
+
+            // Eliminar el archivo en el servidor FTP
+            $file_to_delete = "TICKET/".$get_file[0]['nom_archivos']; // Ruta del archivo que deseas eliminar
+
+            if (ftp_delete($con_id, $file_to_delete)) {
+                // El archivo se eliminó exitosamente
+                echo "Archivo eliminado correctamente.";
+
+                $this->Model_Corporacion->delete_archivos_tickets($id_archivos_tickets);
+            } else {
+                // No se pudo eliminar el archivo
+                echo "Error al eliminar el archivo.";
+            }
+        }
+    }
+
+    public function delete_archivos_tickets_soporte() {
+        $id_archivos_tickets_soporte = $this->input->post('image_id');
+        $get_file = $this->Model_Corporacion->get_id_archivos_tickets_soporte($id_archivos_tickets_soporte);
+
+        $ftp_server = "lanumerounocloud.com";
+        $ftp_usuario = "intranet@lanumerounocloud.com";
+        $ftp_pass = "Intranet2022@";
+        $con_id = ftp_connect($ftp_server);
+        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+        if((!$con_id) || (!$lr)){
+            echo "No se conecto";
+        }else{
+            echo "Se conecto";
+
+            // Eliminar el archivo en el servidor FTP
+            $file_to_delete = "TICKET/".$get_file[0]['nom_archivos']; // Ruta del archivo que deseas eliminar
+
+            if (ftp_delete($con_id, $file_to_delete)) {
+                // El archivo se eliminó exitosamente
+                echo "Archivo eliminado correctamente.";
+
+                $this->Model_Corporacion->delete_archivos_tickets_soporte($id_archivos_tickets_soporte);
+            } else {
+                // No se pudo eliminar el archivo
+                echo "Error al eliminar el archivo.";
+            }
+        }
     }
 
     public function Modal_Update_Tickets_Admin($id_tickets){
@@ -798,91 +897,6 @@ class TicketsController extends Controller
             }
         }else{
             redirect('');
-        }
-    }
-
-    public function Modal_Ver_Tickets_Admin($id_tickets){
-        if ($this->session->userdata('usuario')) {
-            $dato['get_id'] = $this->Model_Corporacion->get_id_ticket($id_tickets);
-            $dato['list_encargado'] = $this->Model_Corporacion->get_list_encargados_tickets();
-            $dato['list_estado'] = $this->Model_Corporacion->get_list_estado_tickets();
-            $dato['list_complejidad'] = $this->Model_Corporacion->get_list_complejidad();
-            $dato['get_id_files_tickets'] = $this->Model_Corporacion->get_archivos_ticket_solic($dato['get_id'][0]['id_usuario_solic'],$dato['get_id'][0]['cod_tickets']);
-            $dato['get_id_files_tickets_soporte'] = $this->Model_Corporacion->get_archivos_ticket_soporte($dato['get_id'][0]['cod_tickets']);
-            $this->load->view('Admin/Configuracion/Tickets/modal_ver_admin',$dato);
-        }else{
-            redirect('');
-        }
-    }
-
-
-    public function download_filesupport($id_archivos_tickets_soporte) {
-        if ($this->session->userdata('usuario')) {
-            $dato['get_file'] = $this->Model_Corporacion->get_id_archivos_tickets_soporte($id_archivos_tickets_soporte);
-            $image = $dato['get_file'][0]['archivos'];
-            $name     = basename($image);
-            $ext      = pathinfo($image, PATHINFO_EXTENSION);
-            force_download($name , file_get_contents($dato['get_file'][0]['archivos']));
-        }else{
-            redirect('');
-        }
-    }
-
-    public function delete_archivos_tickets() {
-        $id_archivos_tickets = $this->input->post('image_id');
-        $get_file = $this->Model_Corporacion->get_id_archivos_tickets($id_archivos_tickets);
-
-        $ftp_server = "lanumerounocloud.com";
-        $ftp_usuario = "intranet@lanumerounocloud.com";
-        $ftp_pass = "Intranet2022@";
-        $con_id = ftp_connect($ftp_server);
-        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-        if((!$con_id) || (!$lr)){
-            echo "No se conecto";
-        }else{
-            echo "Se conecto";
-
-            // Eliminar el archivo en el servidor FTP
-            $file_to_delete = "TICKET/".$get_file[0]['nom_archivos']; // Ruta del archivo que deseas eliminar
-
-            if (ftp_delete($con_id, $file_to_delete)) {
-                // El archivo se eliminó exitosamente
-                echo "Archivo eliminado correctamente.";
-
-                $this->Model_Corporacion->delete_archivos_tickets($id_archivos_tickets);
-            } else {
-                // No se pudo eliminar el archivo
-                echo "Error al eliminar el archivo.";
-            }
-        }
-    }
-
-    public function delete_archivos_tickets_soporte() {
-        $id_archivos_tickets_soporte = $this->input->post('image_id');
-        $get_file = $this->Model_Corporacion->get_id_archivos_tickets_soporte($id_archivos_tickets_soporte);
-
-        $ftp_server = "lanumerounocloud.com";
-        $ftp_usuario = "intranet@lanumerounocloud.com";
-        $ftp_pass = "Intranet2022@";
-        $con_id = ftp_connect($ftp_server);
-        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-        if((!$con_id) || (!$lr)){
-            echo "No se conecto";
-        }else{
-            echo "Se conecto";
-
-            // Eliminar el archivo en el servidor FTP
-            $file_to_delete = "TICKET/".$get_file[0]['nom_archivos']; // Ruta del archivo que deseas eliminar
-
-            if (ftp_delete($con_id, $file_to_delete)) {
-                // El archivo se eliminó exitosamente
-                echo "Archivo eliminado correctamente.";
-
-                $this->Model_Corporacion->delete_archivos_tickets_soporte($id_archivos_tickets_soporte);
-            } else {
-                // No se pudo eliminar el archivo
-                echo "Error al eliminar el archivo.";
-            }
         }
     }
 }
