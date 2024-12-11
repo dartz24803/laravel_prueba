@@ -15,6 +15,7 @@ use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AmonestacionController;
 use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
+use App\Http\Controllers\AsignacionVisitaConfController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
 use App\Http\Controllers\BiReporteDepartamentoController;
@@ -1843,6 +1844,17 @@ Route::controller(TicketsConfController::class)->group(function () {
     Route::get('ticket_conf_co/{id}/edit', 'edit_co')->name('ticket_conf_co.edit');
     Route::put('ticket_conf_co/{id}', 'update_co')->name('ticket_conf_co.update');
     Route::delete('ticket_conf_co/{id}', 'destroy_co')->name('ticket_conf_co.destroy');
+});
+//MANUFACTURA (PRODUCCIÓN) - ASIGNACION DE VISITA CONFIGURABLE
+Route::controller(AsignacionVisitaConfController::class)->group(function () {
+    Route::get('avisita_conf', 'index')->name('avisita_conf');
+    Route::get('avisita_conf_tt', 'index_tt')->name('avisita_conf_tt');
+    Route::get('avisita_conf_tt/list', 'list_tt')->name('avisita_conf_tt.list');
+    Route::get('avisita_conf_tt/create', 'create_tt')->name('avisita_conf_tt.create');
+    Route::post('avisita_conf_tt', 'store_tt')->name('avisita_conf_tt.store');
+    Route::get('avisita_conf_tt/{id}/edit', 'edit_tt')->name('avisita_conf_tt.edit');
+    Route::put('avisita_conf_tt/{id}', 'update_tt')->name('avisita_conf_tt.update');
+    Route::delete('avisita_conf_tt/{id}', 'destroy_tt')->name('avisita_conf_tt.destroy');
 });
 
 

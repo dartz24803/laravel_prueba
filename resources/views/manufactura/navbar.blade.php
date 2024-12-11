@@ -145,10 +145,10 @@
         </div>
     </a>
     <ul class="collapse submenu list-unstyled" id="rconf_manufactura" data-parent="#accordionExample">
-        <!-- <li id="conf_cajas_chicas">
-            <a href="{{ route('caja_chica_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                <p class="romperpalabra"><span id="icono_active2"></span> Test</p>
+        <li id="conf_asignaciones_visitas">
+            <a href="{{ route('avisita_conf') }}" data-toggle="tooltip" data-placement="right" data-html="true">
+                <p class="romperpalabra"><span id="icono_active2"></span> Asignación de Visitas</p>
             </a>
-        </li> -->
+        </li>
     </ul>
 </li>
