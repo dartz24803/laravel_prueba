@@ -808,6 +808,25 @@ class TicketsController extends Controller
     }
 
     public function Update_Tickets_Admin(){
+        // print_r($this->input->post('estado'));
+        $rules = [
+            'finalizado_por' => 'required|not_in:0',
+            'f_fin' => 'required',
+            'estado' => 'required|not_in:0',
+            'dificultad' => 'required|not_in:0',
+        ]; 
+        $messages = [
+            // Mensajes de validación personalizados
+            'finalizado_por.not_in' => 'Debe seleccionar soporte.',
+            'f_fin.required' => 'Debe ingresar fecha.',
+            'estado.required' => 'Debe escoger estado.',
+            'dificultad.not_in' => 'Debe escoger dificultad.',
+        ];
+        if ($this->input->post('estado')==3) {
+            $rules = ['f_fin_real' => 'required||date'];
+            $messages = ['f_fin_real.required' => 'Debe ingresar fecha de termino'];
+        }
+        $this->input->validate($rules, $messages);
             $dato['id_tickets']= $this->input->post("id_tickets");
             $dato['finalizado_por']= $this->input->post("finalizado_por");
             $dato['f_fin']= $this->input->post("f_fin");

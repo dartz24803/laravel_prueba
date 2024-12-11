@@ -463,33 +463,16 @@
                         $("#ModalUpdate .close").click()
                         Cambiar_Tickets_Admin();
                     });
+                },
+                error:function(xhr) {
+                    var errors = xhr.responseJSON.errors;
+                    var firstError = Object.values(errors)[0][0];
+                    Swal.fire(
+                        '¡Ups!',
+                        firstError,
+                        'warning'
+                    );
                 }
             });
-        // } else {
-        //     bootbox.alert(msgDate)
-        //     var input = $(inputFocus).parent();
-        //     $(input).addClass("has-error");
-        //     $(input).on("change", function() {
-        //         if ($(input).hasClass("has-error")) {
-        //             $(input).removeClass("has-error");
-        //         }
-        //     });
-        // }
     }
-
-    // function Valida_Update_Tickets_Admin() {
-    //     if ($('#estado').val() == '0') {
-    //         msgDate = 'Debe seleccionar Estado.';
-    //         inputFocus = '#estado';
-    //         return false;
-    //     }
-    //     if($('#estado').val() == '3'){
-    //         if ($('#f_fin_real').val() == '') {
-    //             msgDate = 'Debe ingresar Fecha de termino.';
-    //             inputFocus = '#f_fin_real';
-    //             return false;
-    //         }
-    //     }
-    //     return true;
-    // }
 </script>
