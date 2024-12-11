@@ -919,7 +919,7 @@ class TicketsController extends Controller
                 
                 $list_correos = Usuario::query();
                 if ($get_id[0]['plataforma'] == 1) {
-                    $list_correos->where('id_usuario', 2692);
+                    $list_correos->where('id_usuario', 2655);
                 } elseif ($get_id[0]['plataforma'] == 2) {
                     $list_correos->where('id_usuario', 629);
                 } elseif ($get_id[0]['plataforma'] == 3) {
