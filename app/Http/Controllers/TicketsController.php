@@ -895,7 +895,7 @@ class TicketsController extends Controller
 
                             ArchivosTicketsSoporte::create([
                                 'id_usuario_soporte' => $id_usuario,
-                                'cod_tickets' => $dato['cod_tickets'],
+                                'id_ticket' => $dato['id_tickets'],
                                 'archivos' => $dato['ruta'],
                                 'nom_archivos' => $dato['ruta_nombre'],
                                 'estado' => 1,
