@@ -409,10 +409,10 @@ class ComunicadoController extends Controller
     }
 
     public function Delete_Anuncio_Intranet(Request $request){
-            $id_bolsa_trabajo = $request->input("id_bolsa_trabajo");
-            $get_file = BolsaTrabajo::where('id_bolsa_trabajo', $id_bolsa_trabajo)
-            ->get();
+        $id_bolsa_trabajo = $request->input("id_bolsa_trabajo");
+        $get_file = BolsaTrabajo::findOrFail($id_bolsa_trabajo);
 
+        if($get_file->imagen!=""){
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
@@ -420,18 +420,14 @@ class ComunicadoController extends Controller
             $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
             if($con_id && $lr){
                 $file_to_delete = "Bolsa_Trabajo/".basename($get_file[0]['imagen']);
-
-                if (ftp_delete($con_id, $file_to_delete)) {
-                    BolsaTrabajo::findOrFail($id_bolsa_trabajo)->update([
-                        'estado' => 2,
-                        'fec_eli' => now(),
-                        'user_eli' => session('usuario')->id_usuario
-                    ]);
-                }else{
-                    echo "Error al eliminar el archivo.";
-                }
-            }else{
-                echo "No se conecto";
+                ftp_delete($con_id, $file_to_delete);
             }
+        }
+
+        BolsaTrabajo::findOrFail($id_bolsa_trabajo)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
     }
 }
