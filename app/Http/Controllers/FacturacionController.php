@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\DB;
+use GuzzleHttp\Client;
 
 use App\Models\CajaChicaPago;
 use App\Models\Empresas;
+use GuzzleHttp\Exception\ClientException;
+
 use App\Models\Notificacion;
 use App\Models\SubGerencia;
 use App\Models\TbContabilidad;
@@ -445,7 +448,6 @@ class FacturacionController extends Controller
         }
     }
 
-
     public function actualizarEnviadosTabla()
     {
         try {
@@ -877,5 +879,48 @@ class FacturacionController extends Controller
             'data' => $data,
             'facturadosTotal' => $facturadosTotal
         ]);
+    }
+
+
+
+
+
+
+    public function actualizarEnviadosTablaEndpoint(Request $request)
+    {
+        $baseUrl = config('app.base_api_url', 'http://127.0.0.1:8001/api/v1');
+
+        $initialDate = $request->input('initialDate');
+        $endDate = $request->input('endDate');
+        $client = new Client();
+        // Endpoint y datos a enviar
+        // $url = 'http://127.0.0.1:8001/api/v1/update/informeContabilidad';
+        $url = $baseUrl . '/update/informeContabilidad';
+
+        $body = [
+            'initialDate' => $initialDate,
+            'endDate' => $endDate,
+        ];
+        try {
+            $response = $client->post($url, [
+                'json' => $body,
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
+            ]);
+            // Decodificar la respuesta
+            $responseBody = json_decode($response->getBody(), true);
+            // dd($responseBody);
+            return $responseBody;
+        } catch (ClientException $e) {
+            // Acceder al cuerpo de la respuesta del error
+            $errorResponse = $e->getResponse();
+            $errorBody = json_decode($errorResponse->getBody()->getContents(), true);
+            // dd($errorBody['message']);
+            return response()->json([
+                'error' => true,
+                'message' => $errorBody['message'] ?? 'Error desconocido',
+            ]);
+        }
     }
 }
