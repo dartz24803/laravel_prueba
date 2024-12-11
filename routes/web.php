@@ -1891,7 +1891,7 @@ Route::controller(TicketsController::class)->group(function () {
     Route::get('Tickets/Excel_Tickets_Admin/{busqu}/{base}/{area}/{ini}/{pro}/{fin}/{std}', 'Excel_Tickets_Admin');
     Route::get('Tickets/Excel_Tickets/{busqu}/{ini}/{pro}/{fin}/{std}', 'Excel_Tickets');
     Route::get('Tickets/Modal_Tickets', 'Modal_Tickets');
-    Route::get('Tickets');
+    Route::get('Tickets/Modal_Ver_Tickets_Admin/{id}', 'Modal_Ver_Tickets_Admin');
     Route::post('Tickets/Insert_Tickets', 'Insert_Tickets');
     Route::get('Tickets/Modal_Update_Tickets/{id}', 'Modal_Update_Tickets');
     Route::post('Tickets/Update_Tickets', 'Update_Tickets');
@@ -1899,8 +1899,8 @@ Route::controller(TicketsController::class)->group(function () {
     Route::post('Tickets/Delete_Archivo_Ticket', 'Delete_Archivo_Ticket');
     Route::get('Tickets/Modal_Ver_Tickets/{id}', 'Modal_Ver_Tickets');
     Route::post('Tickets/Delete_Tickets_Vista', 'Delete_Tickets_Vista');
-    // Route::get('Tickets/Modal_Update_Tickets/{id}', 'Modal_Update_Tickets');
-    // Route::post('Tickets/Update_Tickets', 'Update_Tickets');
+    Route::get('Tickets/Modal_Update_Tickets_Admin/{id}', 'Modal_Update_Tickets_Admin');
+    Route::post('Tickets/Update_Tickets_Admin', 'Update_Tickets_Admin');
     // Route::get('Tickets/Descargar_Archivo_Ticket/{id}', 'Descargar_Archivo_Ticket');
     // Route::post('Tickets/Delete_Archivo_Ticket', 'Delete_Archivo_Ticket');
     // Route::get('Tickets/Modal_Ver_Tickets/{id}', 'Modal_Ver_Tickets');

@@ -15,7 +15,7 @@ class Asistencia extends Model
         if($tipo==1){
             $fecha=" AND DATE_FORMAT(it.punch_time,'%m') = '".$cod_mes."' AND DATE_FORMAT(it.punch_time,'%Y') = '".$cod_anio."'";
         }else{
-            $fecha=" AND DATE_FORMAT(it.punch_time,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'";
+            $fecha=" AND DATE_FORMAT(it.punch_time,'%Y-%m-%d') BETWEEN '".$finicio."' and '".$ffin."'"; //mandar fechas con solo este caso
         }
 
         $doc_iclock="";
@@ -65,7 +65,7 @@ class Asistencia extends Model
 
             // Convertir el resultado a un array y añadirlo al array de resultados
             $resultados[$dni] = json_decode(json_encode($result), true);
-        }
+
         return $resultados;
 
     }

@@ -135,7 +135,7 @@
                 <?php }elseif (substr($list['archivos'],-4) === "xlsx"){ ?>
                     <div id="i_<?php echo  $list['id_archivos_tickets']?>" class="form-group col-sm-2">
                         <?php 
-                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-28) .'" src="' . base_url() ."/assets/especiales/excel_example.png". '"></div>'; 
+                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-28) .'" src="' . asset('template/assets/especiales/excel_example.png') . '"></div>'; 
                         ?>
                         <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivos_tickets']?>"><i class="fas fa-cloud-download-alt"></i></button>
                         <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivos_tickets']?>"><i class="fas fa-trash"></i></button>
@@ -143,7 +143,7 @@
                 <?php }elseif (substr($list['archivos'],-3) === "xls"){ ?>
                     <div id="i_<?php echo  $list['id_archivos_tickets']?>" class="form-group col-sm-2">
                         <?php 
-                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-27) .'" src="' . base_url() ."/assets/especiales/excel_example.png". '"></div>'; 
+                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-27) .'" src="' . asset('template/assets/especiales/excel_example.png') . '"></div>'; 
                         ?>
                         <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivos_tickets']?>"><i class="fas fa-cloud-download-alt"></i></button>
                         <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivos_tickets']?>"><i class="fas fa-trash"></i></button>
@@ -151,7 +151,7 @@
                 <?php }elseif (substr($list['archivos'],-4) === "pptx"){ ?> 
                     <div id="i_<?php echo  $list['id_archivos_tickets']?>" class="form-group col-sm-2">
                         <?php 
-                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-28) .'" src="' . base_url() ."/assets/especiales/ppt_example.png". '"></div>'; 
+                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-28) .'" src="' . asset('template/assets/especiales/ppt_example.png') . '"></div>'; 
                         ?>
                         <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivos_tickets']?>"><i class="fas fa-cloud-download-alt"></i></button>
                         <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivos_tickets']?>"><i class="fas fa-trash"></i></button>
@@ -159,7 +159,7 @@
                 <?php }elseif (substr($list['archivos'],-3) === "ppt"){ ?> 
                     <div id="i_<?php echo  $list['id_archivos_tickets']?>" class="form-group col-sm-2">
                         <?php 
-                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-27) .'" src="' . base_url() ."/assets/especiales/ppt_example.png". '"></div>'; 
+                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-27) .'" src="' . asset('template/assets/especiales/ppt_example.png') . '"></div>'; 
                         ?>
                         <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivos_tickets']?>"><i class="fas fa-cloud-download-alt"></i></button>
                         <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivos_tickets']?>"><i class="fas fa-trash"></i></button>
@@ -167,7 +167,7 @@
                 <?php }elseif (substr($list['archivos'],-4) === "docx"){ ?>
                     <div id="i_<?php echo  $list['id_archivos_tickets']?>" class="form-group col-sm-2"> 
                         <?php 
-                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-28) .'" src="' . base_url() ."/assets/especiales/word_example.png". '"></div>'; 
+                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-28) .'" src="' . asset('template/assets/especiales/word_example.png') . '"></div>'; 
                         ?>
                         <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivos_tickets']?>"><i class="fas fa-cloud-download-alt"></i></button>
                         <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivos_tickets']?>"><i class="fas fa-trash"></i></button>
@@ -175,7 +175,7 @@
                 <?php }elseif (substr($list['archivos'],-3) === "doc"){ ?>
                     <div id="i_<?php echo  $list['id_archivos_tickets']?>" class="form-group col-sm-2"> 
                         <?php 
-                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-27) .'" src="' . base_url() ."/assets/especiales/word_example.png". '"></div>'; 
+                        echo'<div id="lista_escogida"><img loading="lazy" class="img_post img-thumbnail img-presentation-small-actualizar_support" alt="'.substr($list['archivos'],-27) .'" src="' . asset('template/assets/especiales/word_example.png') . '"></div>'; 
                         ?>
                         <button class="download" type="button" id="download_file" data-image_id="<?php echo $list['id_archivos_tickets']?>"><i class="fas fa-cloud-download-alt"></i></button>
                         <button class="delete" type="button" id="delete_file" data-image_id="<?php echo  $list['id_archivos_tickets']?>"><i class="fas fa-trash"></i></button>

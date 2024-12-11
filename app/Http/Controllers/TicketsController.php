@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\ArchivosTickets;
+use App\Models\ArchivosTicketsSoporte;
 use App\Models\Area;
 use App\Models\Base;
+use App\Models\Complejidad;
 use App\Models\Model_Perfil;
 use App\Models\Modulo;
 use App\Models\Notificacion;
@@ -68,9 +70,9 @@ class TicketsController extends Controller
         $dato['cproceso']=$cproceso;
         $dato['cfinalizado']=$cfinalizado;
         $dato['cstandby']=$cstandby;
-        $dato['list_tickets_usu'] = $this->modelo->get_list_tickets($dato);
+        $dato['list_tickets'] = $this->modelo->get_list_tickets($dato);
 
-        return view('Tickets.lista_tickets',$dato);
+        return view('Tickets.lista_tickets_admin',$dato);
     }
 
     public function Busqueda_Tickets($busq_plataforma,$cpiniciar,$cproceso,$cfinalizado,$cstandby){
@@ -685,29 +687,34 @@ class TicketsController extends Controller
     }
 
     public function Modal_Ver_Tickets_Admin($id_tickets){
-        if ($this->session->userdata('usuario')) {
-            $dato['get_id'] = $this->Model_Corporacion->get_id_ticket($id_tickets);
-            $dato['list_encargado'] = $this->Model_Corporacion->get_list_encargados_tickets();
-            $dato['list_estado'] = $this->Model_Corporacion->get_list_estado_tickets();
-            $dato['list_complejidad'] = $this->Model_Corporacion->get_list_complejidad();
-            $dato['get_id_files_tickets'] = $this->Model_Corporacion->get_archivos_ticket_solic($dato['get_id'][0]['id_usuario_solic'],$dato['get_id'][0]['cod_tickets']);
-            $dato['get_id_files_tickets_soporte'] = $this->Model_Corporacion->get_archivos_ticket_soporte($dato['get_id'][0]['cod_tickets']);
-            $this->load->view('Admin/Configuracion/Tickets/modal_ver_admin',$dato);
-        }else{
-            redirect('');
-        }
-    }
+        $dato['get_id'] = $this->modelo->get_id_ticket($id_tickets);
+        $dato['get_id_files_tickets'] = ArchivosTickets::where('estado', 1)
+                                ->where('cod_tickets', $dato['get_id'][0]['cod_tickets'])
+                                ->where('id_usuario_solic', $dato['get_id'][0]['id_usuario_solic'])
+                                ->get();
+        $dato['get_id'] = $this->modelo->get_id_ticket($id_tickets);
+        $dato['list_encargado'] = $this->modelo->get_list_encargados_tickets();
+        $dato['list_estado'] = DB::table('estado_tickets')
+                        ->where('estado', 1)
+                        ->orderBy('id_estado_tickets', 'ASC')
+                        ->get();
+        $dato['list_estado']= json_decode(json_encode($dato['list_estado']), true);
 
-    public function download_filesupport($id_archivos_tickets_soporte) {
-        if ($this->session->userdata('usuario')) {
-            $dato['get_file'] = $this->Model_Corporacion->get_id_archivos_tickets_soporte($id_archivos_tickets_soporte);
-            $image = $dato['get_file'][0]['archivos'];
-            $name     = basename($image);
-            $ext      = pathinfo($image, PATHINFO_EXTENSION);
-            force_download($name , file_get_contents($dato['get_file'][0]['archivos']));
-        }else{
-            redirect('');
-        }
+        $dato['list_complejidad'] = Complejidad::select('complejidad.*', 'modulo.nom_modulo')
+                        ->leftJoin('modulo', 'complejidad.id_modulo', '=', 'modulo.id_modulo')
+                        ->where('complejidad.estado', 1)
+                        ->get();
+        $dato['list_complejidad']= json_decode(json_encode($dato['list_complejidad']), true);
+
+        $dato['get_id_files_tickets'] = ArchivosTickets::where('estado',1)
+                            ->where('id_ticket', $dato['get_id'][0]['id_tickets'])
+                            ->where('id_usuario_solic', $dato['get_id'][0]['id_usuario_solic'])
+                            ->get();
+
+        $dato['get_id_files_tickets_soporte'] = ArchivosTicketsSoporte::where('id_ticket', $dato['get_id'][0]['id_tickets'])
+                            ->orderBy('id_archivos_tickets_soporte', 'ASC')
+                            ->get();
+        return view('Tickets.modal_ver_admin',$dato);
     }
 
     public function delete_archivos_tickets() {
@@ -769,21 +776,38 @@ class TicketsController extends Controller
     }
 
     public function Modal_Update_Tickets_Admin($id_tickets){
-        if ($this->session->userdata('usuario')) {
-            $dato['get_id'] = $this->Model_Corporacion->get_id_ticket($id_tickets);
-            $dato['list_encargado'] = $this->Model_Corporacion->get_list_encargados_tickets();
-            $dato['list_estado'] = $this->Model_Corporacion->get_list_estado_tickets();
-            $dato['list_complejidad'] = $this->Model_Corporacion->get_list_complejidad();
-            $dato['get_id_files_tickets'] = $this->Model_Corporacion->get_archivos_ticket_solic($dato['get_id'][0]['id_usuario_solic'],$dato['get_id'][0]['cod_tickets']);
-            $dato['get_id_files_tickets_soporte'] = $this->Model_Corporacion->get_archivos_ticket_soporte($dato['get_id'][0]['cod_tickets']);
-            $this->load->view('Admin/Configuracion/Tickets/modal_editar_admin',$dato);
-        }else{
-            redirect('');
-        }
+        $dato['get_id'] = $this->modelo->get_id_ticket($id_tickets);
+        $dato['get_id_files_tickets'] = ArchivosTickets::where('estado', 1)
+                                ->where('cod_tickets', $dato['get_id'][0]['cod_tickets'])
+                                ->where('id_usuario_solic', $dato['get_id'][0]['id_usuario_solic'])
+                                ->get();
+        $dato['get_id'] = $this->modelo->get_id_ticket($id_tickets);
+        $dato['list_encargado'] = $this->modelo->get_list_encargados_tickets();
+        $dato['list_estado'] = DB::table('estado_tickets')
+                        ->where('estado', 1)
+                        ->orderBy('id_estado_tickets', 'ASC')
+                        ->get();
+        $dato['list_estado']= json_decode(json_encode($dato['list_estado']), true);
+
+        $dato['list_complejidad'] = Complejidad::select('complejidad.*', 'modulo.nom_modulo')
+                        ->leftJoin('modulo', 'complejidad.id_modulo', '=', 'modulo.id_modulo')
+                        ->where('complejidad.estado', 1)
+                        ->orderBy('descripcion', 'ASC')
+                        ->get();
+        $dato['list_complejidad']= json_decode(json_encode($dato['list_complejidad']), true);
+
+        $dato['get_id_files_tickets'] = ArchivosTickets::where('estado',1)
+                            ->where('id_ticket', $dato['get_id'][0]['id_tickets'])
+                            ->where('id_usuario_solic', $dato['get_id'][0]['id_usuario_solic'])
+                            ->get();
+
+        $dato['get_id_files_tickets_soporte'] = ArchivosTicketsSoporte::where('id_ticket', $dato['get_id'][0]['id_tickets'])
+                            ->orderBy('id_archivos_tickets_soporte', 'ASC')
+                            ->get();
+        return view('Tickets.modal_editar_admin', $dato);
     }
 
     public function Update_Tickets_Admin(){
-        if ($this->session->userdata('usuario')) {
             $dato['id_tickets']= $this->input->post("id_tickets");
             $dato['finalizado_por']= $this->input->post("finalizado_por");
             $dato['f_fin']= $this->input->post("f_fin");
@@ -792,7 +816,7 @@ class TicketsController extends Controller
             $dato['dificultad']= $this->input->post("dificultad");
             $dato['coment_ticket']= $this->input->post("coment_ticket");
 
-            $dato['get_bd'] = $this->Model_Corporacion->get_id_ticket($dato['id_tickets']);
+            $dato['get_bd'] = $this->modelo->get_id_ticket($dato['id_tickets']);
             $dato['cod_tickets'] = $dato['get_bd'][0]['cod_tickets'];
 
             if($dato['get_bd'][0]['fecha_vencimiento']==NULL ||
@@ -803,9 +827,26 @@ class TicketsController extends Controller
                 $dato['fecha_vencimiento'] = "";
             }
 
-            $this->Model_Corporacion->update_tickets_admin($dato);
+            // Construye los datos para actualizar
+            $updateData = [
+                'finalizado_por' => $dato['finalizado_por'],
+                'f_fin' => $dato['f_fin'],
+                'f_fin_real' => $dato['f_fin_real'],
+                'dificultad' => $dato['dificultad'],
+                'coment_ticket' => $dato['coment_ticket'],
+                'estado' => $dato['estado'],
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario,
+            ];
 
-            if($_FILES["filesoporte"]["name"] != ""){
+            // Agrega 'fecha_vencimiento' solo si no está vacío
+            if (!empty($dato['fecha_vencimiento'])) {
+                $updateData['fecha_vencimiento'] = $dato['fecha_vencimiento'];
+            }
+            // Realiza la actualización en la tabla 'tickets'
+            Tickets::where('id_tickets', $dato['id_tickets'])->update($updateData);
+
+            if($this->input->hasFile("filesoporte")){
                 $ftp_server = "lanumerounocloud.com";
                 $ftp_usuario = "intranet@lanumerounocloud.com";
                 $ftp_pass = "Intranet2022@";
@@ -831,7 +872,18 @@ class TicketsController extends Controller
                         ftp_pasv($con_id,true);
                         $subio = ftp_put($con_id,"TICKET/".$nombre,$source_file,FTP_BINARY);
                         if($subio){
-                            $this->Model_Corporacion->insert_archivos_tickets_soporte($dato);
+                            $id_usuario = session('usuario')->id_usuario;
+
+                            ArchivosTicketsSoporte::create([
+                                'id_usuario_soporte' => $id_usuario,
+                                'cod_tickets' => $dato['cod_tickets'],
+                                'archivos' => $dato['ruta'],
+                                'nom_archivos' => $dato['ruta_nombre'],
+                                'estado' => 1,
+                                'fec_reg' => now(),
+                                'user_reg' => $id_usuario,
+                            ]);
+
                             echo "Archivo subido correctamente";
                         }else{
                             echo "Archivo no subido correctamente";
@@ -839,7 +891,7 @@ class TicketsController extends Controller
                     }
                 }
             }
-
+            /*
             if(($dato['estado']==2 || $dato['estado']==3) && $dato['get_bd'][0]['estado']!=$dato['estado']){
                 $mail = new PHPMailer(true);
 
@@ -894,9 +946,6 @@ class TicketsController extends Controller
                 }catch(Exception $e) {
                     echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
                 }
-            }
-        }else{
-            redirect('');
-        }
+            }*/
     }
 }

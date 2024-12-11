@@ -213,4 +213,15 @@ class Tickets extends Model
         $query = DB::select($sql);
         return json_decode(json_encode($query), true);
     }
+    
+    static function get_list_encargados_tickets(){
+        $sql = "SELECT us.id_usuario,
+                CONCAT(us.usuario_nombres,' ',us.usuario_apater,' ',us.usuario_amater) AS encargado 
+                FROM users us
+                INNER JOIN puesto pu ON pu.id_puesto=us.id_puesto
+                WHERE pu.id_area IN (13,25) AND us.estado=1
+                ORDER BY us.usuario_nombres ASC,us.usuario_apater ASC,us.usuario_amater ASC";
+        $query = DB::select($sql);
+        return json_decode(json_encode($query), true);
+    }
 }
