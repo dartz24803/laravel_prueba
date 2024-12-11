@@ -1689,6 +1689,7 @@ Route::controller(FacturacionController::class)->group(function () {
     Route::post('tabla_facturacion/list', 'list')->name('tabla_facturacion.list');
     Route::get('tabla_facturacion/update', 'actualizarTabla')->name('tabla_facturacion.update');
     Route::get('tabla_facturacion/updateEnviados', 'actualizarEnviadosTabla')->name('tabla_facturacion.updateEnviados');
+    Route::post('tabla_facturacion/updateEnviadosEndpoint', 'actualizarEnviadosTablaEndpoint')->name('tabla_facturacion.updateEnviadosEndpoint');
 
     Route::post('tabla_facturacion/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
     Route::post('tabla_facturacion/facturar_cerrar', 'facturar_cerrar')->name('tabla_facturacion.facturar_cerrar');
