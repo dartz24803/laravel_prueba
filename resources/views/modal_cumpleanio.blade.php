@@ -6,22 +6,39 @@
     </button>
 </div> 
 
-<div class="modal-body" style="max-height:450px; overflow:auto;background-color: #add8e6ed;">
+<div class="modal-body" style="max-height:450px; overflow:auto; background-color: #add8e6ed;">
     <div class="col-md-12 row">
-        <div class="form-group col-md-12" style="text-align: -webkit-center;" >
-            <img style='max-width:100%;' src="https://lanumerounocloud.com/intranet/PERFIL/Saludo_Temporal/{{ $get_id->archivo }}">
+        <div class="form-group col-md-12 text-center contenedor_gif">
+            <img class="fondo-imagen" style="max-width:100%;" src="https://lanumerounocloud.com/intranet/PERFIL/Saludo_Temporal/{{ $get_id->archivo }}">
+            <div class="gif-overlay col-md-12"></div>
         </div>
-        <div class="col-md-6">
-            <div style="text-align: center;"><a style= "@media screen and (max-width: 980px) display: none; left: 50px; height: 200px; width: 70px; position: fixed; top: 0px;"><img src="{{ asset('template/assets/especiales/fuego1.gif') }}" _fcksavedurl="" alt="" /></a></div>
-        </div>
-        <div class="col-md-6">
-        <div style="text-align: left;"><a style= "margin-left: 802px; @media screen and (max-width: 980px) display: none; left: 50px; height: 200px; width: 70px; position: fixed; top: 0px;"><img src="{{ asset('template/assets/especiales/fuego1.gif') }}" _fcksavedurl="" alt="" /></a></div>
-        </div>
-    </div>   	                	        
+    </div>                                
 </div>
 
-<div style="text-align: center;"><a style= "@media screen and (max-width: 480px) display: none; right: 350px; height: 200px; width: 500px; position: fixed; top: 500px;"><img src="{{ asset('template/assets/especiales/fuego2.gif') }}" _fcksavedurl="" alt="" /></a></div>
+<style>
+    .modal-body{
+        max-height: 565px !important;
+    }
+    .contenedor_gif {
+        position: relative; /* Crea un contexto de posición */
+    }
 
-<div class="modal-footer" style="background-color: #add8e6ed;">
-    <button class="btn mt-3 btn-primary" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cerrar</button>
-</div>
+    .fondo-imagen {
+        position: relative;
+        z-index: 1; /* Coloca la imagen en un nivel más bajo */
+    }
+
+    .gif-overlay {
+        position: absolute;
+        top: 2%;
+        left: 2%;
+        width: 88%;
+        height: 88%;
+        background-image: url('{{ asset('template/assets/especiales/fuego1.gif') }}');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        z-index: 2; /* Coloca el GIF encima de la imagen */
+        pointer-events: none; /* Permite interacción con elementos debajo del GIF */
+    }
+</style>
