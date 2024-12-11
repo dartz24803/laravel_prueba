@@ -290,7 +290,7 @@
                 <?php }elseif (substr($list['archivos'],-3) === "txt"){ ?> 
                     <div id="i_<?php echo  $list['id_archivos_tickets_soporte']?>" class="form-group col-sm-2"> 
                         <?php 
-                        echo'<div id="lista_escogida"><embed loading="lazy"  src="' . base_url() . $list['archivos'] . '" width="100%" height="150px" /></div>';
+                        echo'<div id="lista_escogida"><embed loading="lazy"  src="' . $list['archivos'] . '" width="100%" height="150px" /></div>';
                         ?>
                         <button class="download" type="button" id="download_filesupport" data-image_id="<?php echo $list['id_archivos_tickets_soporte']?>"><i class="fas fa-cloud-download-alt"></i></button>
                     </div>
