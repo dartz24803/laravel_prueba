@@ -717,64 +717,6 @@ class TicketsController extends Controller
         return view('Tickets.modal_ver_admin',$dato);
     }
 
-    public function delete_archivos_tickets() {
-        $id_archivos_tickets = $this->input->post('image_id');
-        $get_file = $this->Model_Corporacion->get_id_archivos_tickets($id_archivos_tickets);
-
-        $ftp_server = "lanumerounocloud.com";
-        $ftp_usuario = "intranet@lanumerounocloud.com";
-        $ftp_pass = "Intranet2022@";
-        $con_id = ftp_connect($ftp_server);
-        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-        if((!$con_id) || (!$lr)){
-            echo "No se conecto";
-        }else{
-            echo "Se conecto";
-
-            // Eliminar el archivo en el servidor FTP
-            $file_to_delete = "TICKET/".$get_file[0]['nom_archivos']; // Ruta del archivo que deseas eliminar
-
-            if (ftp_delete($con_id, $file_to_delete)) {
-                // El archivo se eliminó exitosamente
-                echo "Archivo eliminado correctamente.";
-
-                $this->Model_Corporacion->delete_archivos_tickets($id_archivos_tickets);
-            } else {
-                // No se pudo eliminar el archivo
-                echo "Error al eliminar el archivo.";
-            }
-        }
-    }
-
-    public function delete_archivos_tickets_soporte() {
-        $id_archivos_tickets_soporte = $this->input->post('image_id');
-        $get_file = $this->Model_Corporacion->get_id_archivos_tickets_soporte($id_archivos_tickets_soporte);
-
-        $ftp_server = "lanumerounocloud.com";
-        $ftp_usuario = "intranet@lanumerounocloud.com";
-        $ftp_pass = "Intranet2022@";
-        $con_id = ftp_connect($ftp_server);
-        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-        if((!$con_id) || (!$lr)){
-            echo "No se conecto";
-        }else{
-            echo "Se conecto";
-
-            // Eliminar el archivo en el servidor FTP
-            $file_to_delete = "TICKET/".$get_file[0]['nom_archivos']; // Ruta del archivo que deseas eliminar
-
-            if (ftp_delete($con_id, $file_to_delete)) {
-                // El archivo se eliminó exitosamente
-                echo "Archivo eliminado correctamente.";
-
-                $this->Model_Corporacion->delete_archivos_tickets_soporte($id_archivos_tickets_soporte);
-            } else {
-                // No se pudo eliminar el archivo
-                echo "Error al eliminar el archivo.";
-            }
-        }
-    }
-
     public function Modal_Update_Tickets_Admin($id_tickets){
         $dato['get_id'] = $this->modelo->get_id_ticket($id_tickets);
         $dato['get_id_files_tickets'] = ArchivosTickets::where('estado', 1)
