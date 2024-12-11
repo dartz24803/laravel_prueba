@@ -3,7 +3,9 @@
         <tr class="text-center">
             <th>Puesto</th>
             <th>Centro de labor</th>
+            <th>Asignado</th>
             <th>Colaborador</th>
+            <th>Temporal</th>
             <th class="no-content"></th>
         </tr>
     </thead>
@@ -12,7 +14,9 @@
             <tr class="text-center">
                 <td class="text-left">{{ $list->nom_puesto }}</td>
                 <td>{{ $list->cod_ubi }}</td>
+                <td>{{ $list->asignado }}</td>
                 <td class="text-left">{{ $list->nom_usuario }}</td>
+                <td>{{ $list->temporal }}</td>
                 <td>
                     @if ($list->id_usuario>0)
                         <a href="javascript:void(0);" title="Editar" data-toggle="modal" 

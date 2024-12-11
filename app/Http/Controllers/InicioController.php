@@ -7,7 +7,9 @@ use App\Models\Usuario;
 use App\Models\Config;
 use App\Models\FrasesInicio;
 use App\Models\Notificacion;
+use App\Models\SaludoTemporal;
 use App\Models\SliderInicio;
+use Illuminate\Support\Facades\DB;
 
 class InicioController extends Controller
 {
@@ -25,21 +27,27 @@ class InicioController extends Controller
     {
         //NOTIFICACIONES
         $list_notificacion = Notificacion::get_list_notificacion();
-        // dd($subgerenciaId);
         $list_slider_inicio = SliderInicio::get();
         $list_frases = FrasesInicio::where('estado', 1)->get();
         $list_cumple = Usuario::get_list_proximos_cumpleanios();
-
-
         // Accesos a módulos en base a idsedeLaboral
         $idSedeLaboral = session('usuario')->id_sede_laboral;
         $acceso_tienda = ($idSedeLaboral == 6);
-
-
         $get_foto = Config::where('descrip_config', 'Foto_Colaborador')
-            ->where('estado', 1)
-            ->get();
-        return view('inicio', compact('list_notificacion', 'list_cumple', 'get_foto', 'list_frases', 'list_slider_inicio', 'acceso_tienda'));
+                    ->where('estado', 1)
+                    ->get();
+        $get_id = Usuario::select(DB::raw("CASE WHEN DATE_FORMAT(fec_nac,'%m-%d')=DATE_FORMAT(NOW(),'%m-%d') 
+                THEN 1 ELSE 0 END AS cumple_anio"))->where('id_usuario',session('usuario')->id_usuario)
+                ->first();                    
+        return view('inicio', compact(
+            'list_notificacion', 
+            'list_slider_inicio', 
+            'list_frases', 
+            'list_cumple', 
+            'acceso_tienda',
+            'get_foto',
+            'get_id'
+        ));
     }
     
     public function Modal_Ver_Todo_Cumpleanios(){
@@ -48,5 +56,10 @@ class InicioController extends Controller
                         ->where('estado', 1)
                         ->get();
             return view('rrhh.Cumpleanio.modal_todos',$dato);
+    }
+
+    public function modal_cumpleanio(){
+        $get_id = SaludoTemporal::where('id_usuario',session('usuario')->id_usuario)->first();
+        return view('modal_cumpleanio',compact('get_id'));
     }
 }

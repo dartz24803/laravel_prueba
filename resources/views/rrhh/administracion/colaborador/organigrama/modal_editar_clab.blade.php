@@ -22,7 +22,13 @@
                     @endforeach
                 </select>
             </div>
-        </div>	 	           	                	        
+
+            <div class="form-group col-lg-6">
+                <label for="temporalc">Temporal:</label>
+                <input type="checkbox" name="temporalc" id="temporalc" value="1" 
+                @if ($get_id->temporal=="1") checked @endif>
+            </div>
+        </div>
     </div>
 
     <div class="modal-footer">

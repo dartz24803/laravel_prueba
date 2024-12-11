@@ -91,6 +91,7 @@ use App\Http\Controllers\TicketsConfController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
+    Route::get('modal_cumpleanio', [InicioController::class, 'modal_cumpleanio'])->name('modal_cumpleanio');
 });
 
 Route::post('/ReporteFotograficoAdmListar', [ReporteFotograficoAdmController::class, 'listar']);

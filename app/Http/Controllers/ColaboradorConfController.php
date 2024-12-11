@@ -1724,30 +1724,33 @@ class ColaboradorConfController extends Controller
 
         Organigrama::findOrFail($id)->update([
             'id_centro_labor' => $request->id_centro_laborc,
+            'temporal' => $request->temporalc,
             'fecha' => now(),
             'usuario' => session('usuario')->id_usuario
         ]);
 
         //ACTUALIZAR EL CENTRO DE LABOR DEL COLABORADOR
         $get_id = Organigrama::findOrFail($id);
-        Usuario::findOrFail($get_id->id_usuario)->update([
-            'id_centro_labor' => $request->id_centro_laborc,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
-        //CREAR HISTÓRICO DE PUESTO, SE CONSIDERA DE TIPO TRASLADO (2)
-        UsersHistoricoPuesto::create([
-            'id_usuario' => $get_id->id_usuario,
-            'id_puesto' => $get_id->id_puesto,
-            'id_centro_labor' => $request->id_centro_laborc,
-            'fec_inicio' => now(),
-            'id_tipo_cambio' => 2,
-            'estado' => 1,
-            'fec_reg' => now(),
-            'user_reg' => session('usuario')->id_usuario,
-            'fec_act' => now(),
-            'user_act' => session('usuario')->id_usuario
-        ]);
+        if($request->id_centro_laborc!=$get_id->id_centro_labor){
+            Usuario::findOrFail($get_id->id_usuario)->update([
+                'id_centro_labor' => $request->id_centro_laborc,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+            //CREAR HISTÓRICO DE PUESTO, SE CONSIDERA DE TIPO TRASLADO (2)
+            UsersHistoricoPuesto::create([
+                'id_usuario' => $get_id->id_usuario,
+                'id_puesto' => $get_id->id_puesto,
+                'id_centro_labor' => $request->id_centro_laborc,
+                'fec_inicio' => now(),
+                'id_tipo_cambio' => 2,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
     }
 
     public function destroy_or($id)

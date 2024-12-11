@@ -3,6 +3,9 @@
 @section('content')
 <div id="content" class="main-content">
     <!--<button class="btn btn-primary" type="button" onclick="validar_reporte_fotografico_dia_job_2();">Guardar</button>-->
+    {{--ABRIR MODAL DE CUMPLEAÑOS--}}
+    <a href="javascript:void(0)" id="modal_cumple" data-toggle="modal" data-target="#ModalUpdateSlide" 
+    app_upd_slide="{{ route('modal_cumpleanio') }}"></a>
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing" id="cancel-row">
             <div id="tabsSimple" class="col-lg-12 col-12 layout-spacing">
@@ -629,6 +632,10 @@
         $("#inicio").addClass('active');
         $("#hinicio").attr('aria-expanded', 'true');
         cambiarClaseSegunResolucion();
+        //ABRIR MODAL DE CUMPLEAÑOS
+        @if ($get_id->cumple_anio=="1")
+            $('#modal_cumple').click();
+        @endif
     });
 
     document.getElementById('interna').onclick = function() {

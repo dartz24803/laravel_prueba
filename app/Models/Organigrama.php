@@ -18,6 +18,7 @@ class Organigrama extends Model
         'id_puesto',
         'id_centro_labor',
         'id_usuario',
+        'temporal',
         'fecha',
         'usuario'
     ];
@@ -32,10 +33,10 @@ class Organigrama extends Model
         if ($dato['id_centro_labor'] != "0") {
             $parte_centro_labor = "AND og.id_centro_labor=".$dato['id_centro_labor'];
         }
-        $sql = "SELECT og.id,pu.nom_puesto,ub.cod_ubi,
-                CONCAT(IFNULL(us.usuario_nombres,''),' ',
+        $sql = "SELECT og.id,pu.nom_puesto,ub.cod_ubi,CASE WHEN og.id_usuario>0 THEN 'Si' 
+                ELSE 'No' END AS asignado,CONCAT(IFNULL(us.usuario_nombres,''),' ',
                 IFNULL(us.usuario_apater,''),' ',IFNULL(us.usuario_amater,'')) AS nom_usuario,
-                og.id_usuario
+                og.id_usuario,CASE WHEN og.temporal=1 THEN 'Si' ELSE 'No' END AS temporal
                 FROM organigrama og
                 INNER JOIN puesto pu ON pu.id_puesto=og.id_puesto
                 INNER JOIN ubicacion ub ON ub.id_ubicacion=og.id_centro_labor
