@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notificacion;
+use App\Models\ProveedorGeneral;
 use App\Models\SubGerencia;
 use App\Models\TipoTransporteProduccion;
 use Illuminate\Http\Request;
@@ -23,6 +24,36 @@ class AsignacionVisitaConfController extends Controller
         return view('manufactura.produccion.administracion.asignacion_visita.index', compact(
             'list_notificacion', 
             'list_subgerencia'
+        ));
+    }
+
+    public function index_pta()
+    {
+        return view('manufactura.produccion.administracion.asignacion_visita.proveedor_taller.index');
+    }
+
+    public function list_pta()
+    {
+        $list_proveedor = ProveedorGeneral::select('id_proveedor','ruc_proveedor','nombre_proveedor',
+                        'responsable','celular_proveedor','email_proveedor','direccion_proveedor')
+                        ->where('id_proveedor_mae',2)->where('estado',1)->get();
+        return view('manufactura.produccion.administracion.asignacion_visita.proveedor_taller.lista', compact(
+            'list_proveedor'
+        ));
+    }
+
+    public function index_pte()
+    {
+        return view('manufactura.produccion.administracion.asignacion_visita.proveedor_tela.index');
+    }
+
+    public function list_pte()
+    {
+        $list_proveedor = ProveedorGeneral::select('id_proveedor','ruc_proveedor','nombre_proveedor',
+                        'responsable','celular_proveedor','email_proveedor','direccion_proveedor')
+                        ->where('id_proveedor_mae',1)->where('estado',1)->get();
+        return view('manufactura.produccion.administracion.asignacion_visita.proveedor_tela.lista', compact(
+            'list_proveedor'
         ));
     }
 

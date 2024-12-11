@@ -1848,6 +1848,20 @@ Route::controller(TicketsConfController::class)->group(function () {
 //MANUFACTURA (PRODUCCIÓN) - ASIGNACION DE VISITA CONFIGURABLE
 Route::controller(AsignacionVisitaConfController::class)->group(function () {
     Route::get('avisita_conf', 'index')->name('avisita_conf');
+    Route::get('avisita_conf_pta', 'index_pta')->name('avisita_conf_pta');
+    Route::get('avisita_conf_pta/list', 'list_pta')->name('avisita_conf_pta.list');
+    Route::get('avisita_conf_pta/create', 'create_pta')->name('avisita_conf_pta.create');
+    Route::post('avisita_conf_pta', 'store_pta')->name('avisita_conf_pta.store');
+    Route::get('avisita_conf_pta/{id}/edit', 'edit_pta')->name('avisita_conf_pta.edit');
+    Route::put('avisita_conf_pta/{id}', 'update_pta')->name('avisita_conf_pta.update');
+    Route::delete('avisita_conf_pta/{id}', 'destroy_pta')->name('avisita_conf_pta.destroy');
+    Route::get('avisita_conf_pte', 'index_pte')->name('avisita_conf_pte');
+    Route::get('avisita_conf_pte/list', 'list_pte')->name('avisita_conf_pte.list');
+    Route::get('avisita_conf_pte/create', 'create_pte')->name('avisita_conf_pte.create');
+    Route::post('avisita_conf_pte', 'store_pte')->name('avisita_conf_pte.store');
+    Route::get('avisita_conf_pte/{id}/edit', 'edit_pte')->name('avisita_conf_pte.edit');
+    Route::put('avisita_conf_pte/{id}', 'update_pte')->name('avisita_conf_pte.update');
+    Route::delete('avisita_conf_pte/{id}', 'destroy_pte')->name('avisita_conf_pte.destroy');
     Route::get('avisita_conf_tt', 'index_tt')->name('avisita_conf_tt');
     Route::get('avisita_conf_tt/list', 'list_tt')->name('avisita_conf_tt.list');
     Route::get('avisita_conf_tt/create', 'create_tt')->name('avisita_conf_tt.create');
