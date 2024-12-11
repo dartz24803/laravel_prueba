@@ -27,32 +27,21 @@ class AsignacionVisitaConfController extends Controller
         ));
     }
 
-    public function index_pta()
+    public function index_pr(Request $request)
     {
-        return view('manufactura.produccion.administracion.asignacion_visita.proveedor_taller.index');
-    }
-
-    public function list_pta()
-    {
-        $list_proveedor = ProveedorGeneral::select('id_proveedor','ruc_proveedor','nombre_proveedor',
-                        'responsable','celular_proveedor','email_proveedor','direccion_proveedor',
-                        'coordsltd','coordslgt')->where('id_proveedor_mae',2)->where('estado',1)->get();
-        return view('manufactura.produccion.administracion.asignacion_visita.proveedor_taller.lista', compact(
-            'list_proveedor'
+        $tipo = $request->tipo;
+        return view('manufactura.produccion.administracion.asignacion_visita.proveedor.index', compact(
+            'tipo'
         ));
     }
 
-    public function index_pte()
-    {
-        return view('manufactura.produccion.administracion.asignacion_visita.proveedor_tela.index');
-    }
-
-    public function list_pte()
+    public function list_pr(Request $request)
     {
         $list_proveedor = ProveedorGeneral::select('id_proveedor','ruc_proveedor','nombre_proveedor',
                         'responsable','celular_proveedor','email_proveedor','direccion_proveedor',
-                        'coordsltd','coordslgt')->where('id_proveedor_mae',1)->where('estado',1)->get();
-        return view('manufactura.produccion.administracion.asignacion_visita.proveedor_tela.lista', compact(
+                        'coordsltd','coordslgt')->where('id_proveedor_mae',$request->tipo)
+                        ->where('estado',1)->get();
+        return view('manufactura.produccion.administracion.asignacion_visita.proveedor.lista', compact(
             'list_proveedor'
         ));
     }

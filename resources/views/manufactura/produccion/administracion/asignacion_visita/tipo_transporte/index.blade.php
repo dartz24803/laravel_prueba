@@ -7,7 +7,6 @@
     </div>
 </div>
 
-@csrf
 <div class="table-responsive mb-4 mt-4" id="lista_tipo_transporte">
 </div>
 
@@ -32,7 +31,6 @@
         Cargando();
 
         var url = "{{ route('avisita_conf_tt.destroy', ':id') }}".replace(':id', id);
-        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿Realmente desea eliminar el registro?',
@@ -48,7 +46,7 @@
                     type: "DELETE",
                     url: url,
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function() {
                         Swal(

@@ -48,7 +48,7 @@
         function Proveedor_Taller(){
             Cargando();
 
-            var url="{{ route('avisita_conf_pta') }}";
+            var url="{{ route('avisita_conf_pr',2) }}";
 
             $.ajax({
                 url: url,
@@ -65,11 +65,11 @@
         function Proveedor_Tela(){
             Cargando();
 
-            var url="{{ route('avisita_conf_pte') }}";
+            var url="{{ route('avisita_conf_pr',1) }}";
 
             $.ajax({
                 url: url,
-                type: "GET",
+                type: "GET",             
                 success:function (resp) {
                     $('#div_avisita_conf').html(resp);  
                     $("#a_ptal").removeClass('active');
