@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BolsaTrabajo;
 use Illuminate\Http\Request;
 use App\Models\Usuario;
 use App\Models\Config;
@@ -38,7 +39,11 @@ class InicioController extends Controller
                     ->get();
         $get_id = Usuario::select(DB::raw("CASE WHEN DATE_FORMAT(fec_nac,'%m-%d')=DATE_FORMAT(NOW(),'%m-%d') 
                 THEN 1 ELSE 0 END AS cumple_anio"))->where('id_usuario',session('usuario')->id_usuario)
-                ->first();                    
+                ->first();
+        $list_bolsa_trabajo = BolsaTrabajo::where('estado',1)->where('publicado',1)
+                            ->where('cod_base',session('usuario')->centro_labores)
+                            ->orderBy('orden','ASC')->get();
+        $url_bt = Config::where('descrip_config','Slide_Bolsa_Trabajo')->first();
         return view('inicio', compact(
             'list_notificacion', 
             'list_slider_inicio', 
@@ -46,7 +51,9 @@ class InicioController extends Controller
             'list_cumple', 
             'acceso_tienda',
             'get_foto',
-            'get_id'
+            'get_id',
+            'list_bolsa_trabajo',
+            'url_bt'
         ));
     }
     

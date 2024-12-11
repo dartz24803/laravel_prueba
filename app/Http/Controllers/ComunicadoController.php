@@ -268,13 +268,11 @@ class ComunicadoController extends Controller
         $request->validate([
             'cod_base' => 'not_in:0',
             'orden' => 'required',
-            'url' => 'required',
-            'imagen' => 'required',
+            'imagen' => 'required'
         ],[
             'cod_base.not_in' => 'Debe seleccionar tipo.',
             'orden.required' => 'Debe ingresar orden.',
-            'url.required' => 'Debe ingresar url.',
-            'imagen.required' => 'Debe ingresar imagen.',
+            'imagen.required' => 'Debe ingresar imagen.'
         ]);
 
         $valida = BolsaTrabajo::select('id_bolsa_trabajo')
@@ -349,25 +347,24 @@ class ComunicadoController extends Controller
 
         $request->validate([
             'cod_basee' => 'not_in:0',
-            'ordene' => 'required',
-            'urle' => 'required',
-            'imagene' => 'required',
+            'ordene' => 'required'
         ],[
             'cod_basee.not_in' => 'Debe seleccionar tipo.',
-            'ordene.required' => 'Debe ingresar orden.',
-            'urle.required' => 'Debe ingresar url.',
-            'imagene.required' => 'Debe ingresar imagen.',
+            'ordene.required' => 'Debe ingresar orden.'
         ]);
 
         $valida = BolsaTrabajo::select('id_bolsa_trabajo')
                     ->where('estado', 1)
                     ->where('orden',$request->ordene)
                     ->where('cod_base',$request->cod_basee)
+                    ->where('id_bolsa_trabajo','!=',$id_bolsa_trabajo)
                     ->exists();
 
         if($valida){
             echo "error";
         }else{
+            $get_id = BolsaTrabajo::findOrFail($id_bolsa_trabajo);
+            $imagen = $get_id->imagen;
             if($_FILES['imagene']['name']!=""){
                 $ftp_server = "lanumerounocloud.com";
                 $ftp_usuario = "intranet@lanumerounocloud.com";
