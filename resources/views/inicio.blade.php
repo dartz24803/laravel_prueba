@@ -273,14 +273,65 @@
                                     </div>
                                 <?php endforeach ?>
                             </div>
-                            <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                            <a class="carousel-control-prev carousel_slider" href="#carouselExampleControls" role="button" data-slide="prev">
                                 <span class="carousel-control-prev-icon" aria-hidden="true"></span>
                             </a>
-                            <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                            <a class="carousel-control-next carousel_slider" href="#carouselExampleControls" role="button" data-slide="next">
                                 <span class="carousel-control-next-icon" aria-hidden="true"></span>
                             </a>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal_bolsa_trabajo" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+                    <ol class="carousel-indicators">
+                        @php $i = 0; @endphp
+                        @foreach ($list_bolsa_trabajo as $list)
+                            <li data-target="#carouselExampleIndicators" data-slide-to="<?= $i; ?>" 
+                            class="@php if($i==0){ echo "active"; } @endphp"></li>  
+                        @endforeach
+                    </ol>
+                    <div class="carousel-inner">
+                        @php $i = 0; @endphp
+                        @foreach ($list_bolsa_trabajo as $list)
+                            <div class="carousel-item @php if($i==0){ echo "active"; } @endphp">
+                                @if ($list->url!="")
+                                    <a href="{{ $list->url }}" target="_blank">
+                                        @if (substr($url_bt->url_config.$list->imagen,-3)=="mp4")
+                                            <video width="640" height="360" controls>
+                                                <source src="<?= $url_bt->url_config.$list->imagen; ?>" type="video/mp4">
+                                            </video>
+                                        @else
+                                            <img class="d-block w-100" src="{{ $list->imagen }}">
+                                        @endif
+                                    </a>
+                                @else
+                                    @if (substr($url_bt->url_config.$list->imagen,-3)=="mp4")
+                                        <video width="1140" height="720" controls autoplay>
+                                            <source src="<?= $url_bt->url_config.$list->imagen; ?>" type="video/mp4">
+                                        </video>
+                                    @else
+                                        <img class="d-block w-100" src="{{ $list->imagen }}">
+                                    @endif
+                                @endif
+                            </div>
+                        @php $i++; @endphp
+                        @endforeach
+                    </div>
+                    <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
                 </div>
             </div>
         </div>
@@ -417,8 +468,7 @@
         color: #00b1f4;
     }
 
-    .carousel-control-prev,
-    .carousel-control-next {
+    .carousel_slider {
         background-color: gray;
         border-radius: 50%;
         padding: 10px;
@@ -635,6 +685,9 @@
         //ABRIR MODAL DE CUMPLEAÑOS
         @if ($get_id->cumple_anio=="1")
             $('#modal_cumple').click();
+        @endif
+        @if (count($list_bolsa_trabajo)>0)
+            $('#modal_bolsa_trabajo').modal("show");
         @endif
     });
 
