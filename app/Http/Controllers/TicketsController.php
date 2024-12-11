@@ -464,7 +464,7 @@ class TicketsController extends Controller
 
                 $list_correos = Usuario::query();
                 if ($dato['plataforma'] == 1) {
-                    $list_correos->where('id_usuario', 2692);
+                    $list_correos->where('id_usuario', 2655);
                 } elseif ($dato['plataforma'] == 2) {
                     $list_correos->where('id_usuario', 629);
                 } elseif ($dato['plataforma'] == 3) {
@@ -717,64 +717,6 @@ class TicketsController extends Controller
         return view('Tickets.modal_ver_admin',$dato);
     }
 
-    public function delete_archivos_tickets() {
-        $id_archivos_tickets = $this->input->post('image_id');
-        $get_file = $this->Model_Corporacion->get_id_archivos_tickets($id_archivos_tickets);
-
-        $ftp_server = "lanumerounocloud.com";
-        $ftp_usuario = "intranet@lanumerounocloud.com";
-        $ftp_pass = "Intranet2022@";
-        $con_id = ftp_connect($ftp_server);
-        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-        if((!$con_id) || (!$lr)){
-            echo "No se conecto";
-        }else{
-            echo "Se conecto";
-
-            // Eliminar el archivo en el servidor FTP
-            $file_to_delete = "TICKET/".$get_file[0]['nom_archivos']; // Ruta del archivo que deseas eliminar
-
-            if (ftp_delete($con_id, $file_to_delete)) {
-                // El archivo se eliminó exitosamente
-                echo "Archivo eliminado correctamente.";
-
-                $this->Model_Corporacion->delete_archivos_tickets($id_archivos_tickets);
-            } else {
-                // No se pudo eliminar el archivo
-                echo "Error al eliminar el archivo.";
-            }
-        }
-    }
-
-    public function delete_archivos_tickets_soporte() {
-        $id_archivos_tickets_soporte = $this->input->post('image_id');
-        $get_file = $this->Model_Corporacion->get_id_archivos_tickets_soporte($id_archivos_tickets_soporte);
-
-        $ftp_server = "lanumerounocloud.com";
-        $ftp_usuario = "intranet@lanumerounocloud.com";
-        $ftp_pass = "Intranet2022@";
-        $con_id = ftp_connect($ftp_server);
-        $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
-        if((!$con_id) || (!$lr)){
-            echo "No se conecto";
-        }else{
-            echo "Se conecto";
-
-            // Eliminar el archivo en el servidor FTP
-            $file_to_delete = "TICKET/".$get_file[0]['nom_archivos']; // Ruta del archivo que deseas eliminar
-
-            if (ftp_delete($con_id, $file_to_delete)) {
-                // El archivo se eliminó exitosamente
-                echo "Archivo eliminado correctamente.";
-
-                $this->Model_Corporacion->delete_archivos_tickets_soporte($id_archivos_tickets_soporte);
-            } else {
-                // No se pudo eliminar el archivo
-                echo "Error al eliminar el archivo.";
-            }
-        }
-    }
-
     public function Modal_Update_Tickets_Admin($id_tickets){
         $dato['get_id'] = $this->modelo->get_id_ticket($id_tickets);
         $dato['get_id_files_tickets'] = ArchivosTickets::where('estado', 1)
@@ -895,6 +837,7 @@ class TicketsController extends Controller
 
                             ArchivosTicketsSoporte::create([
                                 'id_usuario_soporte' => $id_usuario,
+                                'cod_tickets' => $dato['cod_tickets'],
                                 'id_ticket' => $dato['id_tickets'],
                                 'archivos' => $dato['ruta'],
                                 'nom_archivos' => $dato['ruta_nombre'],
@@ -910,12 +853,23 @@ class TicketsController extends Controller
                     }
                 }
             }
-            /*
+            
             if(($dato['estado']==2 || $dato['estado']==3) && $dato['get_bd'][0]['estado']!=$dato['estado']){
                 $mail = new PHPMailer(true);
 
-                $get_id = $this->Model_Corporacion->get_id_ticket($dato['id_tickets']);
-                $list_correos=$this->Model_Corporacion->correos_tickets($get_id[0]['plataforma']);
+                $get_id = $this->modelo->get_id_ticket($dato['id_tickets']);
+                
+                $list_correos = Usuario::query();
+                if ($get_id[0]['plataforma'] == 1) {
+                    $list_correos->where('id_usuario', 2655);
+                } elseif ($get_id[0]['plataforma'] == 2) {
+                    $list_correos->where('id_usuario', 629);
+                } elseif ($get_id[0]['plataforma'] == 3) {
+                    $list_correos->where('id_usuario', 173);
+                }
+
+                $list_correos = $list_correos->get();
+
                 if($get_id[0]['id_tipo_tickets']==1){
                     $tipo_correo="requerimiento";
                 }else{
@@ -930,7 +884,7 @@ class TicketsController extends Controller
                     $mail->Username   =  'intranet@lanumero1.com.pe';
                     $mail->Password   =  'lanumero1$1';
                     $mail->SMTPSecure =  'tls';
-                    $mail->Puerto     =  587;
+                    $mail->Port     =  587;
                     if($dato['estado']==2){
                         $mail->setFrom('intranet@lanumero1.com.pe','TICKET EN PROCESO');
                     }else{
@@ -965,6 +919,6 @@ class TicketsController extends Controller
                 }catch(Exception $e) {
                     echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
                 }
-            }*/
+            }
     }
 }
