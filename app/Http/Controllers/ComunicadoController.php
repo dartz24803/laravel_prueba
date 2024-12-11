@@ -372,7 +372,9 @@ class ComunicadoController extends Controller
                 $con_id = ftp_connect($ftp_server);
                 $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
                 if($con_id && $lr){
-                    ftp_delete($con_id, 'Bolsa_Trabajo/'.basename($dato['imagen']));
+                    if($get_id->imagen!=""){
+                        ftp_delete($con_id, 'Bolsa_Trabajo/'.basename($dato['imagen']));
+                    }
 
                     $path = $_FILES['imagene']['name'];
                     $temp = explode(".",$_FILES['imagene']['name']);
