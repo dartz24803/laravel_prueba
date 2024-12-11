@@ -1689,6 +1689,7 @@ Route::controller(FacturacionController::class)->group(function () {
     Route::post('tabla_facturacion/list', 'list')->name('tabla_facturacion.list');
     Route::get('tabla_facturacion/update', 'actualizarTabla')->name('tabla_facturacion.update');
     Route::get('tabla_facturacion/updateEnviados', 'actualizarEnviadosTabla')->name('tabla_facturacion.updateEnviados');
+    Route::post('tabla_facturacion/updateEnviadosEndpoint', 'actualizarEnviadosTablaEndpoint')->name('tabla_facturacion.updateEnviadosEndpoint');
 
     Route::post('tabla_facturacion/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
     Route::post('tabla_facturacion/facturar_cerrar', 'facturar_cerrar')->name('tabla_facturacion.facturar_cerrar');
@@ -1848,6 +1849,13 @@ Route::controller(TicketsConfController::class)->group(function () {
 //MANUFACTURA (PRODUCCIÓN) - ASIGNACION DE VISITA CONFIGURABLE
 Route::controller(AsignacionVisitaConfController::class)->group(function () {
     Route::get('avisita_conf', 'index')->name('avisita_conf');
+    Route::get('avisita_conf_pr/{tipo}', 'index_pr')->name('avisita_conf_pr');
+    Route::post('avisita_conf_pr/list', 'list_pr')->name('avisita_conf_pr.list');
+    Route::get('avisita_conf_pr/{tipo}/create', 'create_pr')->name('avisita_conf_pr.create');
+    Route::post('avisita_conf_pr', 'store_pr')->name('avisita_conf_pr.store');
+    Route::get('avisita_conf_pr/{id}/edit', 'edit_pr')->name('avisita_conf_pr.edit');
+    Route::put('avisita_conf_pr/{id}', 'update_pr')->name('avisita_conf_pr.update');
+    Route::delete('avisita_conf_pr/{id}', 'destroy_pr')->name('avisita_conf_pr.destroy');
     Route::get('avisita_conf_tt', 'index_tt')->name('avisita_conf_tt');
     Route::get('avisita_conf_tt/list', 'list_tt')->name('avisita_conf_tt.list');
     Route::get('avisita_conf_tt/create', 'create_tt')->name('avisita_conf_tt.create');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Notificacion;
+use App\Models\ProveedorGeneral;
 use App\Models\SubGerencia;
 use App\Models\TipoTransporteProduccion;
 use Illuminate\Http\Request;
@@ -23,6 +24,25 @@ class AsignacionVisitaConfController extends Controller
         return view('manufactura.produccion.administracion.asignacion_visita.index', compact(
             'list_notificacion', 
             'list_subgerencia'
+        ));
+    }
+
+    public function index_pr(Request $request)
+    {
+        $tipo = $request->tipo;
+        return view('manufactura.produccion.administracion.asignacion_visita.proveedor.index', compact(
+            'tipo'
+        ));
+    }
+
+    public function list_pr(Request $request)
+    {
+        $list_proveedor = ProveedorGeneral::select('id_proveedor','ruc_proveedor','nombre_proveedor',
+                        'responsable','celular_proveedor','email_proveedor','direccion_proveedor',
+                        'coordsltd','coordslgt')->where('id_proveedor_mae',$request->tipo)
+                        ->where('estado',1)->get();
+        return view('manufactura.produccion.administracion.asignacion_visita.proveedor.lista', compact(
+            'list_proveedor'
         ));
     }
 

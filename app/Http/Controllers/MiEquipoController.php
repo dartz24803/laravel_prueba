@@ -606,6 +606,18 @@ class MiEquipoController extends Controller
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);
+
+            Notificacion::create([
+                'id_usuario' => 172,
+                'solicitante' => $dato['id_usuario'],
+                'id_tipo' => 44,
+                'leido' => 0,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
         } catch (Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }

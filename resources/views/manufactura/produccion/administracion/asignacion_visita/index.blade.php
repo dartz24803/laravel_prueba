@@ -42,13 +42,13 @@
             $("#hconf_manufactura").attr('aria-expanded', 'true');
             $("#conf_asignaciones_visitas").addClass('active');
 
-            Tipo_Transporte();
+            Proveedor_Taller();
         });
         
         function Proveedor_Taller(){
             Cargando();
 
-            var url="{{ route('observacion_conf_terr') }}";
+            var url="{{ route('avisita_conf_pr',2) }}";
 
             $.ajax({
                 url: url,
@@ -65,11 +65,11 @@
         function Proveedor_Tela(){
             Cargando();
 
-            var url="{{ route('observacion_conf_err') }}";
+            var url="{{ route('avisita_conf_pr',1) }}";
 
             $.ajax({
                 url: url,
-                type: "GET",
+                type: "GET",             
                 success:function (resp) {
                     $('#div_avisita_conf').html(resp);  
                     $("#a_ptal").removeClass('active');

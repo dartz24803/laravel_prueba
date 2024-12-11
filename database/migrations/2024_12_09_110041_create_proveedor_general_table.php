@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('distrito',100)->nullable();
             $table->string('ubigeo',6)->nullable();
             $table->integer('telefono_proveedor')->nullable();
-            $table->integer('celular_proveedor')->nullable();
+            $table->string('celular_proveedor',20)->nullable();
             $table->string('email_proveedor',30)->nullable();
             $table->string('web_proveedor',250)->nullable();
             $table->string('contacto_proveedor',250)->nullable();

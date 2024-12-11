@@ -55,7 +55,7 @@
                     ? '#FFE881'
                     : ($list->status_completado == true
                         ? '#5FB17B'
-                       : ($list->status_standby == true
+                       : ($list->status_stand_by == true
                             ? '#E2A03F'
                             : ($list->status_derivado == true
                                 ? '#01b1f3'

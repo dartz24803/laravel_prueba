@@ -9,7 +9,7 @@
             </svg> Actualizar
         </button>
     </div>
-    <div class="col-lg-4">
+    <div class="col-lg-3">
         <span id="ultimaActualizacion">{{ $fecha_actualizacion }}</span><br>
         Registros Totales: <span id="totalRegistros">{{ $cantidad_registros }}</span>
     </div>
@@ -22,10 +22,21 @@
             </svg>
             Almacenes
         </button>
-    </div>
-    <div class="col-lg-4">
         <span id="ultimaActualizacionEnviados">{{ $fecha_actualizacion_enviados }}</span><br>
+
     </div>
+    <label>Del</label>
+    <div class="col-lg-2">
+        <input type="date" class="form-control" name="fecha_iniciob" id="fecha_iniciob" value="{{ date('Y-m-d') }}">
+
+    </div>
+    <label>Al</label>
+    <div class="col-lg-2">
+        <input type="date" class="form-control" name="fecha_finb" id="fecha_finb" value="{{ date('Y-m-d') }}">
+    </div>
+    <!-- <div class="col-lg-4">
+        <span id="ultimaActualizacionEnviados">{{ $fecha_actualizacion_enviados }}</span><br>
+    </div> -->
 </div>
 
 <div class="row" id="cancel-row">
@@ -123,23 +134,21 @@
         });
     });
 
-
-
+    function formatDate(date) {
+        const [year, month, day] = date.split('-');
+        return `${day}/${month}/${year}`;
+    }
     $('#btnActualizarEnviados').on('click', function() {
-        const fechaInicio = `Julio 01 del ${new Date().getFullYear()}`;
-        const fechaActual = new Date();
-        const meses = [
-            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        ];
-        const dia = fechaActual.getDate().toString().padStart(2, "0");
-        const mes = meses[fechaActual.getMonth()];
-        const anio = fechaActual.getFullYear();
-        const fechaActualM = `${mes} ${dia} del ${anio}`;
+
+        const fecha_iniciob = document.getElementById('fecha_iniciob').value;
+        const fecha_finb = document.getElementById('fecha_finb').value;
+
+        const fechaInicioFormateada = formatDate(fecha_iniciob);
+        const fechaFinFormateada = formatDate(fecha_finb);
 
         Swal({
             title: '¿Estás seguro?',
-            text: `Se procederá a actualizar la cantidad de "stock", en todos los almacenes desde ${fechaInicio} hasta  ${fechaActualM}.`,
+            text: `Se procederá a actualizar la cantidad de "stock", en todos los almacenes desde ${fechaInicioFormateada} hasta ${fechaFinFormateada}.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sí, Actualizar',
@@ -148,43 +157,110 @@
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    url: "{{ route('tabla_facturacion.updateEnviados') }}",
-                    type: "GET",
+                    url: "{{ route('tabla_facturacion.updateEnviadosEndpoint') }}",
+                    type: "POST",
+                    data: {
+                        initialDate: fechaInicioFormateada,
+                        endDate: fechaFinFormateada,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
                     success: function(data) {
-                        console.log("Respuesta del servidor:", data);
-                        if (data.success) {
-                            // Actualizar los valores en el DOM
-                            $('#ultimaActualizacionEnviados').text(data.fecha_actualizacion_enviados);
-
+                        if (data.status) {
                             Swal.fire(
                                 '¡Actualización Exitosa!',
-                                '¡' + data.cantidad_insertados_enviados + ' registros han sido actualizados correctamente!',
+                                data.data,
                                 'success'
                             ).then(function() {
-                                table.ajax.reload();
+                                limpiarSeleccionados();
                             });
                         } else {
-                            Swal.fire(
-                                'Sin cambios',
-                                'No hay datos nuevos para actualizar',
-                                'info'
-                            ).then(function() {
-                                table.ajax.reload();
+                            Swal.fire({
+                                title: '¡Error al Actualizar!',
+                                text: data.message || "Ocurrió un error inesperado.",
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
                             });
                         }
                     },
                     error: function(xhr, status, error) {
                         Swal.fire({
-                            title: '¡Error al Actualizar!',
-                            text: 'Ha ocurrido un error: ' + error,
+                            title: '¡Error!',
+                            text: "Ocurrió un error al procesar la actualización.",
                             icon: 'error',
                             confirmButtonColor: '#3085d6',
                             confirmButtonText: 'OK'
                         });
                     }
+
                 });
+
             }
         });
-
     });
+
+
+
+    // $('#btnActualizarEnviados').on('click', function() {
+    //     const fechaInicio = `Julio 01 del ${new Date().getFullYear()}`;
+    //     const fechaActual = new Date();
+    //     const meses = [
+    //         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
+    //         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
+    //     ];
+    //     const dia = fechaActual.getDate().toString().padStart(2, "0");
+    //     const mes = meses[fechaActual.getMonth()];
+    //     const anio = fechaActual.getFullYear();
+    //     const fechaActualM = `${mes} ${dia} del ${anio}`;
+
+    //     Swal({
+    //         title: '¿Estás seguro?',
+    //         text: `Se procederá a actualizar la cantidad de "stock", en todos los almacenes desde ${fechaInicio} hasta  ${fechaActualM}.`,
+    //         icon: 'warning',
+    //         showCancelButton: true,
+    //         confirmButtonText: 'Sí, Actualizar',
+    //         cancelButtonText: 'Cancelar',
+    //         padding: '2em'
+    //     }).then((result) => {
+    //         if (result.value) {
+    //             $.ajax({
+    //                 url: "{{ route('tabla_facturacion.updateEnviados') }}",
+    //                 type: "GET",
+    //                 success: function(data) {
+    //                     console.log("Respuesta del servidor:", data);
+    //                     if (data.success) {
+    //                         // Actualizar los valores en el DOM
+    //                         $('#ultimaActualizacionEnviados').text(data.fecha_actualizacion_enviados);
+
+    //                         Swal.fire(
+    //                             '¡Actualización Exitosa!',
+    //                             '¡' + data.cantidad_insertados_enviados + ' registros han sido actualizados correctamente!',
+    //                             'success'
+    //                         ).then(function() {
+    //                             table.ajax.reload();
+    //                         });
+    //                     } else {
+    //                         Swal.fire(
+    //                             'Sin cambios',
+    //                             'No hay datos nuevos para actualizar',
+    //                             'info'
+    //                         ).then(function() {
+    //                             table.ajax.reload();
+    //                         });
+    //                     }
+    //                 },
+    //                 error: function(xhr, status, error) {
+    //                     Swal.fire({
+    //                         title: '¡Error al Actualizar!',
+    //                         text: 'Ha ocurrido un error: ' + error,
+    //                         icon: 'error',
+    //                         confirmButtonColor: '#3085d6',
+    //                         confirmButtonText: 'OK'
+    //                     });
+    //                 }
+    //             });
+    //         }
+    //     });
+
+    // });
 </script>
