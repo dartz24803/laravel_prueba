@@ -268,13 +268,11 @@ class ComunicadoController extends Controller
         $request->validate([
             'cod_base' => 'not_in:0',
             'orden' => 'required',
-            'url' => 'required',
-            'imagen' => 'required',
+            'imagen' => 'required'
         ],[
             'cod_base.not_in' => 'Debe seleccionar tipo.',
             'orden.required' => 'Debe ingresar orden.',
-            'url.required' => 'Debe ingresar url.',
-            'imagen.required' => 'Debe ingresar imagen.',
+            'imagen.required' => 'Debe ingresar imagen.'
         ]);
 
         $valida = BolsaTrabajo::select('id_bolsa_trabajo')
@@ -349,25 +347,24 @@ class ComunicadoController extends Controller
 
         $request->validate([
             'cod_basee' => 'not_in:0',
-            'ordene' => 'required',
-            'urle' => 'required',
-            'imagene' => 'required',
+            'ordene' => 'required'
         ],[
             'cod_basee.not_in' => 'Debe seleccionar tipo.',
-            'ordene.required' => 'Debe ingresar orden.',
-            'urle.required' => 'Debe ingresar url.',
-            'imagene.required' => 'Debe ingresar imagen.',
+            'ordene.required' => 'Debe ingresar orden.'
         ]);
 
         $valida = BolsaTrabajo::select('id_bolsa_trabajo')
                     ->where('estado', 1)
                     ->where('orden',$request->ordene)
                     ->where('cod_base',$request->cod_basee)
+                    ->where('id_bolsa_trabajo','!=',$id_bolsa_trabajo)
                     ->exists();
 
         if($valida){
             echo "error";
         }else{
+            $get_id = BolsaTrabajo::findOrFail($id_bolsa_trabajo);
+            $imagen = $get_id->imagen;
             if($_FILES['imagene']['name']!=""){
                 $ftp_server = "lanumerounocloud.com";
                 $ftp_usuario = "intranet@lanumerounocloud.com";
@@ -375,7 +372,9 @@ class ComunicadoController extends Controller
                 $con_id = ftp_connect($ftp_server);
                 $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
                 if($con_id && $lr){
-                    ftp_delete($con_id, 'Bolsa_Trabajo/'.basename($dato['imagen']));
+                    if($get_id->imagen!=""){
+                        ftp_delete($con_id, 'Bolsa_Trabajo/'.basename($dato['imagen']));
+                    }
 
                     $path = $_FILES['imagene']['name'];
                     $temp = explode(".",$_FILES['imagene']['name']);
@@ -410,10 +409,10 @@ class ComunicadoController extends Controller
     }
 
     public function Delete_Anuncio_Intranet(Request $request){
-            $id_bolsa_trabajo = $request->input("id_bolsa_trabajo");
-            $get_file = BolsaTrabajo::where('id_bolsa_trabajo', $id_bolsa_trabajo)
-            ->get();
+        $id_bolsa_trabajo = $request->input("id_bolsa_trabajo");
+        $get_file = BolsaTrabajo::findOrFail($id_bolsa_trabajo);
 
+        if($get_file->imagen!=""){
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
@@ -421,18 +420,14 @@ class ComunicadoController extends Controller
             $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
             if($con_id && $lr){
                 $file_to_delete = "Bolsa_Trabajo/".basename($get_file[0]['imagen']);
-
-                if (ftp_delete($con_id, $file_to_delete)) {
-                    BolsaTrabajo::findOrFail($id_bolsa_trabajo)->update([
-                        'estado' => 2,
-                        'fec_eli' => now(),
-                        'user_eli' => session('usuario')->id_usuario
-                    ]);
-                }else{
-                    echo "Error al eliminar el archivo.";
-                }
-            }else{
-                echo "No se conecto";
+                ftp_delete($con_id, $file_to_delete);
             }
+        }
+
+        BolsaTrabajo::findOrFail($id_bolsa_trabajo)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
     }
 }

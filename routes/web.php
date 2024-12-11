@@ -15,6 +15,7 @@ use App\Http\Controllers\AsistenciaController;
 use App\Http\Controllers\AmonestacionController;
 use App\Http\Controllers\AperturaCierreTiendaConfController;
 use App\Http\Controllers\AperturaCierreTiendaController;
+use App\Http\Controllers\AsignacionVisitaConfController;
 use App\Http\Controllers\AsistenciaSegController;
 use App\Http\Controllers\BiReporteController;
 use App\Http\Controllers\BiReporteDepartamentoController;
@@ -91,6 +92,7 @@ use App\Http\Controllers\TicketsConfController;
 
 Route::middleware([NoCache::class])->group(function () {
     Route::get('Home', [InicioController::class, 'index'])->name('inicio');
+    Route::get('modal_cumpleanio', [InicioController::class, 'modal_cumpleanio'])->name('modal_cumpleanio');
 });
 
 Route::post('/ReporteFotograficoAdmListar', [ReporteFotograficoAdmController::class, 'listar']);
@@ -1844,6 +1846,31 @@ Route::controller(TicketsConfController::class)->group(function () {
     Route::put('ticket_conf_co/{id}', 'update_co')->name('ticket_conf_co.update');
     Route::delete('ticket_conf_co/{id}', 'destroy_co')->name('ticket_conf_co.destroy');
 });
+//MANUFACTURA (PRODUCCIÓN) - ASIGNACION DE VISITA CONFIGURABLE
+Route::controller(AsignacionVisitaConfController::class)->group(function () {
+    Route::get('avisita_conf', 'index')->name('avisita_conf');
+    Route::get('avisita_conf_pta', 'index_pta')->name('avisita_conf_pta');
+    Route::get('avisita_conf_pta/list', 'list_pta')->name('avisita_conf_pta.list');
+    Route::get('avisita_conf_pta/create', 'create_pta')->name('avisita_conf_pta.create');
+    Route::post('avisita_conf_pta', 'store_pta')->name('avisita_conf_pta.store');
+    Route::get('avisita_conf_pta/{id}/edit', 'edit_pta')->name('avisita_conf_pta.edit');
+    Route::put('avisita_conf_pta/{id}', 'update_pta')->name('avisita_conf_pta.update');
+    Route::delete('avisita_conf_pta/{id}', 'destroy_pta')->name('avisita_conf_pta.destroy');
+    Route::get('avisita_conf_pte', 'index_pte')->name('avisita_conf_pte');
+    Route::get('avisita_conf_pte/list', 'list_pte')->name('avisita_conf_pte.list');
+    Route::get('avisita_conf_pte/create', 'create_pte')->name('avisita_conf_pte.create');
+    Route::post('avisita_conf_pte', 'store_pte')->name('avisita_conf_pte.store');
+    Route::get('avisita_conf_pte/{id}/edit', 'edit_pte')->name('avisita_conf_pte.edit');
+    Route::put('avisita_conf_pte/{id}', 'update_pte')->name('avisita_conf_pte.update');
+    Route::delete('avisita_conf_pte/{id}', 'destroy_pte')->name('avisita_conf_pte.destroy');
+    Route::get('avisita_conf_tt', 'index_tt')->name('avisita_conf_tt');
+    Route::get('avisita_conf_tt/list', 'list_tt')->name('avisita_conf_tt.list');
+    Route::get('avisita_conf_tt/create', 'create_tt')->name('avisita_conf_tt.create');
+    Route::post('avisita_conf_tt', 'store_tt')->name('avisita_conf_tt.store');
+    Route::get('avisita_conf_tt/{id}/edit', 'edit_tt')->name('avisita_conf_tt.edit');
+    Route::put('avisita_conf_tt/{id}', 'update_tt')->name('avisita_conf_tt.update');
+    Route::delete('avisita_conf_tt/{id}', 'destroy_tt')->name('avisita_conf_tt.destroy');
+});
 
 
 
@@ -1891,7 +1918,7 @@ Route::controller(TicketsController::class)->group(function () {
     Route::get('Tickets/Excel_Tickets_Admin/{busqu}/{base}/{area}/{ini}/{pro}/{fin}/{std}', 'Excel_Tickets_Admin');
     Route::get('Tickets/Excel_Tickets/{busqu}/{ini}/{pro}/{fin}/{std}', 'Excel_Tickets');
     Route::get('Tickets/Modal_Tickets', 'Modal_Tickets');
-    Route::get('Tickets');
+    Route::get('Tickets/Modal_Ver_Tickets_Admin/{id}', 'Modal_Ver_Tickets_Admin');
     Route::post('Tickets/Insert_Tickets', 'Insert_Tickets');
     Route::get('Tickets/Modal_Update_Tickets/{id}', 'Modal_Update_Tickets');
     Route::post('Tickets/Update_Tickets', 'Update_Tickets');
@@ -1899,8 +1926,8 @@ Route::controller(TicketsController::class)->group(function () {
     Route::post('Tickets/Delete_Archivo_Ticket', 'Delete_Archivo_Ticket');
     Route::get('Tickets/Modal_Ver_Tickets/{id}', 'Modal_Ver_Tickets');
     Route::post('Tickets/Delete_Tickets_Vista', 'Delete_Tickets_Vista');
-    // Route::get('Tickets/Modal_Update_Tickets/{id}', 'Modal_Update_Tickets');
-    // Route::post('Tickets/Update_Tickets', 'Update_Tickets');
+    Route::get('Tickets/Modal_Update_Tickets_Admin/{id}', 'Modal_Update_Tickets_Admin');
+    Route::post('Tickets/Update_Tickets_Admin', 'Update_Tickets_Admin');
     // Route::get('Tickets/Descargar_Archivo_Ticket/{id}', 'Descargar_Archivo_Ticket');
     // Route::post('Tickets/Delete_Archivo_Ticket', 'Delete_Archivo_Ticket');
     // Route::get('Tickets/Modal_Ver_Tickets/{id}', 'Modal_Ver_Tickets');
