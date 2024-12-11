@@ -427,9 +427,14 @@
     $(document).on('click', '#delete_filesupport', function () {
         image_id = $(this).data('image_id');
         file_col = $('#i_' + image_id);
+        var csrfToken = $('input[name="_token"]').val();
+
         $.ajax({
             type: 'POST',
-            url: "{{ url('Ticket/delete_archivos_tickets_soporte') }}",
+            url: "{{ url('Tickets/Delete_Archivo_Ticket') }}",
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
+            },
             data: {image_id: image_id},
             success: function (data) {
                 file_col.remove();            
