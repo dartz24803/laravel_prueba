@@ -69,7 +69,7 @@
                     <line x1="3" y1="18" x2="21" y2="18"></line>
                 </svg></a>
 
-            <a id="div_imagen_header" class="col-xl-5 offset-4">
+            <a id="div_imagen_header" href="{{ route('inicio') }}" class="col-xl-5 offset-4">
                 <img src="{{ asset('inicio/Grupo-LN1.png') }}" class="navbar-logo ajuste1" alt="logo">
             </a>
             <ul class="navbar-item flex-row ml-auto">
@@ -508,7 +508,7 @@
                         </a>
                     </li>
                     <li class="nav-item theme-text" style="margin-top: 8px; margin-bottom: 8px">
-                        <a class="nav-link">
+                        <a class="nav-link" href="{{ route('inicio') }}">
                             <img src="{{ asset('inicio/Grupo-LN1.png') }}" class="navbar-logo ajuste1" alt="logo">
                             <!-- <img src="{{ asset('login_files/img/1.png') }}" class="navbar-logo ajuste2" alt="logo"> -->
                         </a>
