@@ -35,8 +35,8 @@ class AsignacionVisitaConfController extends Controller
     public function list_pta()
     {
         $list_proveedor = ProveedorGeneral::select('id_proveedor','ruc_proveedor','nombre_proveedor',
-                        'responsable','celular_proveedor','email_proveedor','direccion_proveedor')
-                        ->where('id_proveedor_mae',2)->where('estado',1)->get();
+                        'responsable','celular_proveedor','email_proveedor','direccion_proveedor',
+                        'coordsltd','coordslgt')->where('id_proveedor_mae',2)->where('estado',1)->get();
         return view('manufactura.produccion.administracion.asignacion_visita.proveedor_taller.lista', compact(
             'list_proveedor'
         ));
@@ -50,8 +50,8 @@ class AsignacionVisitaConfController extends Controller
     public function list_pte()
     {
         $list_proveedor = ProveedorGeneral::select('id_proveedor','ruc_proveedor','nombre_proveedor',
-                        'responsable','celular_proveedor','email_proveedor','direccion_proveedor')
-                        ->where('id_proveedor_mae',1)->where('estado',1)->get();
+                        'responsable','celular_proveedor','email_proveedor','direccion_proveedor',
+                        'coordsltd','coordslgt')->where('id_proveedor_mae',1)->where('estado',1)->get();
         return view('manufactura.produccion.administracion.asignacion_visita.proveedor_tela.lista', compact(
             'list_proveedor'
         ));
