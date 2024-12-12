@@ -24,6 +24,9 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use GuzzleHttp\Client;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Support\Facades\Http;
 
 class AsistenciaController extends Controller
 {
@@ -92,81 +95,129 @@ class AsistenciaController extends Controller
         print_r($list_asistencia);*/
     }
 
+    // public function Buscar_Reporte_Control_Asistencia(Request $request){
+    //     set_time_limit(600);
+    //     ini_set('max_execution_time', 600);
+
+    //     $id_puesto = Session('usuario')->id_puesto;
+    //     $cod_mes = $request->input("cod_mes");
+    //     $cod_anio = $request->input("cod_anio");
+    //     $cod_base = $request->input("cod_base");
+    //     $num_doc = $request->input("num_doc");
+    //     $area = $request->input("area");
+    //     $estado = $request->input("estado");
+    //     $tipo = $request->input("tipo");
+    //     $finicio = $request->input("finicio");
+    //     $ffin = $request->input("ffin");
+
+    //     $usuarios = Usuario::select('usuario_codigo', 'id_usuario');
+
+    //     if ($estado == 1 || $estado == 3) {
+    //         $usuarios->where('users.estado', $estado);
+    //     }
+    //     if ($num_doc != 0) {
+    //         $usuarios->where('users.usuario_codigo', $num_doc);
+    //     }
+    //     if ($cod_base != 0) {
+    //         if($cod_base === "t" ){
+    //             $usuarios->leftJoin('ubicacion', 'users.id_centro_labor', 'ubicacion.id_ubicacion');
+    //             $usuarios->where('ubicacion.estado', 1);
+    //             $usuarios->where('ubicacion.id_sede', 6);
+    //         }else{
+    //             $usuarios->where('users.id_centro_labor', $cod_base);
+    //         }
+    //     }
+    //     if ($area != 0) {
+    //         $usuarios->leftJoin('puesto', 'users.id_puesto', 'puesto.id_puesto');
+    //         $usuarios->where('puesto.id_area', $area);
+    //     }
+
+    //     // $query = $usuarios->toSql(); // Obtener la consulta SQL generada
+    //     // $bindings = $usuarios->getBindings(); // Obtener los bindings (valores)
+
+    //     // echo "Consulta: $query\n";
+    //     // print_r($estado); // Imprimir los valores que se utilizan en la consulta
+
+    //     $usuarios = $usuarios->get();
+    //     // print_r($cod_base);
+
+    //     $year = date('Y');
+    //     if ($tipo == 1) {
+    //         $year = $cod_anio;
+    //         $fecha_inicio = strtotime("01-$cod_mes-$year");
+    //         $L = new DateTime("$year-$cod_mes-01");
+    //         $fecha_fin = $L->format('Y-m-t');
+    //         $timestamp = strtotime($fecha_fin);
+    //         $fecha_fin = strtotime(date("d-m-Y", $timestamp));
+    //     } else {
+    //         $fecha_inicio = strtotime(date("d-m-Y", strtotime($request->input("finicio"))));
+    //         $fecha_fin = strtotime(date("d-m-Y", strtotime($request->input("ffin"))));
+    //     }
+
+    //     $list_asistencia = $this->modelo->buscar_reporte_control_asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios);
+    //     // print_r($list_asistencia);
+    //     if ($num_doc != 0) {
+    //         $list_colaborador = $this->modelo->get_list_usuario_xnum_doc($num_doc);
+    //     } else {
+    //         $list_colaborador = $this->modelo->get_list_usuarios_x_baset($cod_base, $area, $estado);
+    //     }
+    //     $n_documento = $num_doc;
+
+    //     if ($id_puesto == 29 || $id_puesto == 161 || $id_puesto == 197 || $id_puesto === 311) {
+    //         return view('rrhh.Asistencia.reporte.listarct', compact('fecha_inicio', 'fecha_fin', 'list_asistencia', 'list_colaborador', 'n_documento'));
+    //     } else {
+    //         return view('rrhh.Asistencia.reporte.listar', compact('fecha_inicio', 'fecha_fin', 'list_asistencia', 'list_colaborador', 'n_documento'));
+    //     }
+    // }
+
     public function Buscar_Reporte_Control_Asistencia(Request $request){
         set_time_limit(600);
         ini_set('max_execution_time', 600);
 
-        $id_puesto = Session('usuario')->id_puesto;
-        $cod_mes = $request->input("cod_mes");
-        $cod_anio = $request->input("cod_anio");
-        $cod_base = $request->input("cod_base");
-        $num_doc = $request->input("num_doc");
-        $area = $request->input("area");
-        $estado = $request->input("estado");
-        $tipo = $request->input("tipo");
-        $finicio = $request->input("finicio");
-        $ffin = $request->input("ffin");
+        $codBase = $request->input('cod_base', 0);
+        $numDoc = $request->input('num_doc', 0);
+        $area = $request->input('area', 0);
+        $estado = $request->input('estado', null);
+        $tipo = $request->input('tipo');
+        $fInicio = $request->input('finicio');
+        $fFin = $request->input('ffin');
 
-        $usuarios = Usuario::select('usuario_codigo', 'id_usuario');
+        // Transformar las fechas al formato dd/mm/yyyy
+        $initialDate = date('d/m/Y', strtotime($fInicio)); // Convierte la fecha de inicio
+        $endDate = date('d/m/Y', strtotime($fFin)); // Convierte la fecha de fin
 
-        if ($estado == 1 || $estado == 3) {
-            $usuarios->where('users.estado', $estado);
-        }
-        if ($num_doc != 0) {
-            $usuarios->where('users.usuario_codigo', $num_doc);
-        }
-        if ($cod_base != 0) {
-            if($cod_base === "t" ){
-                $usuarios->leftJoin('ubicacion', 'users.id_centro_labor', 'ubicacion.id_ubicacion');
-                $usuarios->where('ubicacion.estado', 1);
-                $usuarios->where('ubicacion.id_sede', 6);
-            }else{
-                $usuarios->where('users.id_centro_labor', $cod_base);
+        // Construir los datos para la consulta a la API
+        $queryParams = [
+            'initialDate' => $initialDate,
+            'endDate' => $endDate,
+            'clabores' => $codBase, // Aquí mapeamos 'cod_base' como 'clabores'
+            'area' => $area,
+            'estado' => $estado,
+            'colaborador' => $numDoc, // 'num_doc' es el identificador del colaborador
+        ];
+
+        $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
+
+        // Verificar si la respuesta fue exitosa
+        if ($response->successful()) {
+            // Obtener los datos de la respuesta JSON
+            $list_asistencia = $response->json()['data']; // Aquí asumimos que 'data' es la clave que contiene los resultados
+            // print_r($list_asistencia);
+
+            // Obtener la lista de colaboradores
+            if ($numDoc != 0) {
+                $list_colaborador = $this->modelo->get_list_usuario_xnum_doc($numDoc);
+            } else {
+                $list_colaborador = $this->modelo->get_list_usuarios_x_baset($codBase, $area, $estado);
             }
-        }
-        if ($area != 0) {
-            $usuarios->leftJoin('puesto', 'users.id_puesto', 'puesto.id_puesto');
-            $usuarios->where('puesto.id_area', $area);
-        }
 
-        // $query = $usuarios->toSql(); // Obtener la consulta SQL generada
-        // $bindings = $usuarios->getBindings(); // Obtener los bindings (valores)
-
-        // echo "Consulta: $query\n";
-        // print_r($estado); // Imprimir los valores que se utilizan en la consulta
-
-        $usuarios = $usuarios->get();
-        // print_r($cod_base);
-
-        $year = date('Y');
-        if ($tipo == 1) {
-            $year = $cod_anio;
-            $fecha_inicio = strtotime("01-$cod_mes-$year");
-            $L = new DateTime("$year-$cod_mes-01");
-            $fecha_fin = $L->format('Y-m-t');
-            $timestamp = strtotime($fecha_fin);
-            $fecha_fin = strtotime(date("d-m-Y", $timestamp));
+            // Pasar las variables a la vista
+            return view('rrhh.Asistencia.reporte.listar', compact('initialDate', 'endDate', 'list_asistencia', 'list_colaborador', 'numDoc'));
         } else {
-            $fecha_inicio = strtotime(date("d-m-Y", strtotime($request->input("finicio"))));
-            $fecha_fin = strtotime(date("d-m-Y", strtotime($request->input("ffin"))));
-        }
-
-        $list_asistencia = $this->modelo->buscar_reporte_control_asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $tipo, $finicio, $ffin, $usuarios);
-        // print_r($list_asistencia);
-        if ($num_doc != 0) {
-            $list_colaborador = $this->modelo->get_list_usuario_xnum_doc($num_doc);
-        } else {
-            $list_colaborador = $this->modelo->get_list_usuarios_x_baset($cod_base, $area, $estado);
-        }
-        $n_documento = $num_doc;
-
-        if ($id_puesto == 29 || $id_puesto == 161 || $id_puesto == 197 || $id_puesto === 311) {
-            return view('rrhh.Asistencia.reporte.listarct', compact('fecha_inicio', 'fecha_fin', 'list_asistencia', 'list_colaborador', 'n_documento'));
-        } else {
-            return view('rrhh.Asistencia.reporte.listar', compact('fecha_inicio', 'fecha_fin', 'list_asistencia', 'list_colaborador', 'n_documento'));
+            // Si la API falla, puedes manejar el error
+            return redirect()->back()->with('error', 'Hubo un problema al obtener los datos de la API.');
         }
     }
-
     public function Traer_Colaborador_Asistencia(Request $request){
             $dato['cod_base'] = $request->input('cod_base');
             $dato['id_area'] = $request->input('id_area');
@@ -532,4 +583,5 @@ class AsistenciaController extends Controller
         //print_r($dato['get_id']);
         return view('rrhh.Asistencia.reporte.modal_editar',$dato);
     }
+
 }
