@@ -29,6 +29,7 @@
                             Nueva Tarea
                         </button>
                     </div>
+
                     @csrf
                     <div class="table-responsive mb-4 mt-4" id="lista_reproceso">
                     </div>

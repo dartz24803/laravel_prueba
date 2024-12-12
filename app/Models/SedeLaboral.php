@@ -49,25 +49,24 @@ class SedeLaboral extends Model
         // Obtener el id_usuario de la sesión
         $idUsuario = session('usuario')->id_usuario;
 
-        // Realizar el JOIN con la tabla puesto para obtener el id_area
-        $resultado = DB::table('users')
-            ->join('puesto', 'users.id_puesto', '=', 'puesto.id_puesto') // JOIN con la tabla puesto
-            ->where('users.id_usuario', $idUsuario)
-            ->value('puesto.id_area'); // Obtener el valor de id_area desde la tabla puesto
+        // Validar si id_nivel es igual a 1
+        $idNivel = DB::table('users')
+            ->where('id_usuario', $idUsuario)
+            ->value('id_nivel');
 
-        // Verificar si id_area contiene los valores esperados
-        $valoresPermitidos = [10, 18, 25];
-        return in_array($resultado, $valoresPermitidos);
+        return $idNivel === 1;
     }
 
-    public static function getAllSedesLaborales()
+    public static function getAllUbicaciones()
     {
-        // Obtener todas las sedes laborales con columnas específicas
-        $sedesLaborales = DB::table('sede_laboral')
-            ->select('id', 'descripcion', 'estado') // Aquí defines las columnas que necesitas
+        // Obtener todas las ubicaciones con columnas específicas, omitir estado = 1 y ciertos id_ubicacion
+        $ubicaciones = DB::table('ubicacion')
+            ->select('id_ubicacion', 'cod_ubi', 'id_sede', 'estado') // Columnas requeridas
+            ->where('estado', '=', 1) // Excluir registros donde estado = 1
+            ->whereNotIn('id_ubicacion', [20, 25, 26, 28, 29, 30]) // Excluir ciertos id_ubicacion
             ->get();
 
         // Retornar el resultado
-        return $sedesLaborales;
+        return $ubicaciones;
     }
 }

@@ -79,34 +79,36 @@
 
                     <div class="d-flex align-items-center">
                         <!-- Link Ver -->
-                        <a href="#" class="btn btn-outline-primary me-2" data-toggle="modal" data-target="#ModalUpdate"
+                        <a href="#" class="m-1" data-toggle="modal" data-target="#ModalUpdate"
                             app_elim="{{ url('soporte_ticket_master/ver/' . $list['id_soporte']) }}" data-bs-toggle="tooltip" title="Ver">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-eye"
-                                viewBox="0 0 16 16">
-                                <path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8a13.133 13.133 0 0 1-1.66 2.043C11.879 11.332 10.12 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.133 13.133 0 0 1 1.172 8z" />
-                                <path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z" />
+                            <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
+                                <rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399" />
+                                <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8" />
+                                <path style="fill:#415A6B;" d="M299.733,300.061c-68.267,68.267-180.267,68.267-248.533,0s-68.267-180.267,0-248.533s180.267-68.267,248.533,0S368,231.794,299.733,300.061z M77.867,78.194c-53.333,53.333-53.333,141.867,0,195.2s141.867,53.333,195.2,0s53.333-141.867,0-195.2S131.2,23.794,77.867,78.194z" />
+                                <path style="fill:#F05540;" d="M372.267,286.194c-7.467-7.467-19.2-7.467-26.667,0l-59.733,59.733c-7.467,7.467-7.467,19.2,0,26.667s19.2,7.467,26.667,0l59.733-59.733C379.733,305.394,379.733,293.661,372.267,286.194z" />
+                                <path style="fill:#F3705A;" d="M410.667,496.328C344.533,436.594,313.6,372.594,313.6,372.594l59.733-59.733c0,0,65.067,32,123.733,97.067c21.333,24.533,21.333,60.8-2.133,84.267l0,0C471.467,517.661,434.133,518.728,410.667,496.328z" />
+
                             </svg>
                         </a>
 
                         @if ($list->status_cancelado === false && $list->status_completado === false && $list->status_derivado === false)
                         <!-- Link Editar -->
-                        <a href="#" class="btn btn-outline-warning me-2" data-toggle="modal" data-target="#ModalUpdate"
+                        <a href="#" class="m-1" data-toggle="modal" data-target="#ModalUpdate"
                             app_elim="{{ url('soporte_ticket_master/edit/' . $list['id_soporte']) }}" data-bs-toggle="tooltip" title="Editar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil"
-                                viewBox="0 0 16 16">
-                                <path d="M12.146.854a.5.5 0 0 1 .708 0l2.292 2.292a.5.5 0 0 1 0 .708L6.207 13.793a.5.5 0 0 1-.168.11l-4 1.5a.5.5 0 0 1-.65-.65l1.5-4a.5.5 0 0 1 .11-.168l9.646-9.646zM11.207 3L13 4.793 14.793 3 13 1.207 11.207 3zm1.586 1L10.5 5.293l.5.5L14.293 3 12.793 2z" />
-                                <path fill-rule="evenodd"
-                                    d="M1 13.5V16h2.5a.5.5 0 0 0 .5-.5v-.055a.5.5 0 0 0-.146-.354l-2-2a.5.5 0 0 0-.354-.146H1.5a.5.5 0 0 0-.5.5z" />
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">
+                                <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path>
                             </svg>
                         </a>
 
                         <!-- Link Cancelar -->
-                        <a href="#" class="btn btn-outline-danger" data-toggle="modal" data-target="#ModalUpdate"
+                        <a href="#" class="m-1" data-toggle="modal" data-target="#ModalUpdate"
                             app_elim="{{ url('soporte_ticket_master/cancelar/' . $list['id_soporte']) }}" data-bs-toggle="tooltip"
                             title="Cancelar">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-x-circle"
-                                viewBox="0 0 16 16">
-                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0zM4.646 4.646a.5.5 0 0 1 .708 0L8 7.293l2.646-2.647a.5.5 0 0 1 .708.708L8.707 8l2.647 2.646a.5.5 0 0 1-.708.708L8 8.707l-2.646 2.647a.5.5 0 0 1-.708-.708L7.293 8 4.646 5.354a.5.5 0 0 1 0-.708z" />
+
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-x-circle">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="15" y1="9" x2="9" y2="15"></line>
+                                <line x1="9" y1="9" x2="15" y2="15"></line>
                             </svg>
                         </a>
                         @endif

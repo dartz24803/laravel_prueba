@@ -882,6 +882,8 @@ class FacturacionController extends Controller
     }
 
 
+
+
     public function actualizarEnviadosTablaEndpoint(Request $request)
     {
         $baseUrl = config('app.base_api_url', 'http://127.0.0.1:8001/api/v1');

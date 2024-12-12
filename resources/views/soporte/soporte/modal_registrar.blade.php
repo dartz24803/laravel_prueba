@@ -298,7 +298,7 @@
             success: function(response) {
                 // Mostrar los datos recibidos
                 console.log('Status:', response.status); // Booleano de la validación
-                console.log('Sedes Laborales:', response.sedesLaborales); // Array de sedes laborales
+                console.log('Sedes Laborales:', response.ubicaciones); // Array de sedes laborales
                 if (response.status == false) {
                     obtenerSoporteNivelPorSede();
                     $('#sedelaboral_container').hide();
@@ -306,9 +306,9 @@
                 } else {
                     $('#sedelaboral_container').show();
                     $('#sede_subcont').css('visibility', 'visible');
-                    $.each(response.sedesLaborales, function(index, sede) {
+                    $.each(response.ubicaciones, function(index, ubicacion) {
                         $('#idsede_laboral').append(
-                            `<option value="${sede.id}">${sede.descripcion}</option>`
+                            `<option value="${ubicacion.id_sede}">${ubicacion.cod_ubi}</option>`
                         );
                     });
                 }
@@ -470,7 +470,7 @@
                 if (response.length > 0) {
                     $.each(response, function(index, elementos) {
                         $('#idsoporte_nivel').append(
-                            `<option value="${elementos.id}">${elementos.nombre}</option>`
+                            `<option value="${elementos.idsoporte_nivel}">${elementos.nombre}</option>`
                         );
 
 
