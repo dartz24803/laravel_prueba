@@ -159,6 +159,23 @@ class SoporteController extends Controller
     }
 
 
+    public function validateSedeLaboral()
+    {
+        // Obtener el resultado booleano desde la función estática validateListSedeLaboral
+        $status = SedeLaboral::validateListSedeLaboral();
+
+        // Obtener todas las sedes laborales desde la función estática getAllSedesLaborales
+        $sedesLaborales = SedeLaboral::getAllSedesLaborales();
+
+        // Retornar un objeto con el resultado booleano y el array de sedes laborales
+        return (object) [
+            'status' => $status,
+            'sedesLaborales' => $sedesLaborales
+        ];
+    }
+
+
+
 
 
     public function getAreaEspeficaPorNivel(Request $request)
@@ -175,6 +192,22 @@ class SoporteController extends Controller
             ->where('estado', 1)
             ->get();
         return response()->json($ubicaciones);
+    }
+
+
+
+    public function getNivelPorSede(Request $request)
+    {
+        $idSede = $request->input('sede');
+        // Si no se selecciona ninguna sede, devolver un arreglo vacío
+        if (empty($idSede)) {
+            return response()->json([]);
+        }
+        $niveles = SoporteNivel::where('id_sede_laboral', $idSede)
+            ->orderBy('descripcion', 'asc')
+            ->get();
+        // dd($niveles);
+        return response()->json($niveles);
     }
 
 
@@ -222,14 +255,12 @@ class SoporteController extends Controller
             'idsoporte_nivel' => 'gt:0',
             'vencimiento' => 'required',
             'descripcion' => 'required',
-            'descripcion' => 'max:150',
         ];
         $messages = [
             'especialidad.gt' => 'Debe seleccionar especialidad.',
             'idsoporte_nivel.gt' => 'Debe ingresar Ubicaciòn.',
             'vencimiento.required' => 'Debe ingresar vencimiento.',
             'descripcion.required' => 'Debe ingresar propósito.',
-            'descripcion.max' => 'El propósito debe tener como máximo 150 carácteres.',
         ];
         if ($request->hasOptionsFieldEspecialidad == "0") {
             $rules = array_merge($rules, [
@@ -846,11 +877,13 @@ class SoporteController extends Controller
                 }
             },
             'nombre_tipo' => $get_id->activo_tipo == 1 && $get_id->tipo_otros == 0 ? 'required|gt:0' : 'nullable',
+
         ];
 
         $messages = [
             'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 150 caracteres.',
             'nombre_tipo.gt' => 'Debe seleccionar tipo.',
+
         ];
 
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);

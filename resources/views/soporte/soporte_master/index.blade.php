@@ -128,12 +128,12 @@
                         <span class="ml-5">Tipo</span>
                     </div>
                     <div class="toggle-switch">
-                        <input class="toggle-input" id="toggle-esp" type="checkbox" checked>
+                        <input class="toggle-input" id="toggle-esp" type="checkbox" !checked>
                         <label class="toggle-label" for="toggle-esp"></label>
                         <span class="ml-5">Especialidad</span>
                     </div>
                     <div class="toggle-switch">
-                        <input class="toggle-input" id="toggle-ele" type="checkbox" checked>
+                        <input class="toggle-input" id="toggle-ele" type="checkbox" !checked>
                         <label class="toggle-label" for="toggle-ele"></label>
                         <span class="ml-5">Elemento</span>
                     </div>

@@ -882,21 +882,14 @@ class FacturacionController extends Controller
     }
 
 
-
-
-
-
     public function actualizarEnviadosTablaEndpoint(Request $request)
     {
         $baseUrl = config('app.base_api_url', 'http://127.0.0.1:8001/api/v1');
-
         $initialDate = $request->input('initialDate');
         $endDate = $request->input('endDate');
         $client = new Client();
         // Endpoint y datos a enviar
-        // $url = 'http://127.0.0.1:8001/api/v1/update/informeContabilidad';
         $url = $baseUrl . '/update/informeContabilidad';
-
         $body = [
             'initialDate' => $initialDate,
             'endDate' => $endDate,
