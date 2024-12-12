@@ -65,7 +65,7 @@ class Asistencia extends Model
 
             // Convertir el resultado a un array y añadirlo al array de resultados
             $resultados[$dni] = json_decode(json_encode($result), true);
-
+        }
         return $resultados;
 
     }

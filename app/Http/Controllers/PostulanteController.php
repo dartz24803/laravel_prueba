@@ -54,15 +54,17 @@ class PostulanteController extends Controller
 
     public function traer_provincia(Request $request)
     {
+        $id_departamento = str_pad($request->id_departamento,2,"0",STR_PAD_LEFT);
         $list_provincia = Provincia::select('id_provincia', 'nombre_provincia')
-                        ->where('id_departamento', $request->id_departamento)->where('estado', 1)->get();
+                        ->where('id_departamento', $id_departamento)->where('estado', 1)->get();
         return view('rrhh.postulante.provincia', compact('list_provincia'));
     }
 
     public function traer_distrito(Request $request)
     {
+        $id_provincia = str_pad($request->id_provincia,4,"0",STR_PAD_LEFT);
         $list_distrito = Distrito::select('id_distrito', 'nombre_distrito')
-                        ->where('id_provincia', $request->id_provincia)->where('estado', 1)->get();
+                        ->where('id_provincia', $id_provincia)->where('estado', 1)->get();
         return view('rrhh.postulante.distrito', compact('list_distrito'));
     }
 
