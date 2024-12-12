@@ -1302,26 +1302,94 @@ class TareasController extends Controller
     }
 
     public function Modal_Ver_Solucion_Pendiente($id_pendiente){
-            $dato['get_id'] = $this->modelo->get_list_pendiente($id_pendiente);
-            $dato['list_responsable']=$this->Model_Corporacion->get_list_responsable_area($dato['get_id'][0]['id_area']);
-            $dato['list_estado'] = $this->Model_Corporacion->get_list_estado_tickets();
-            $dato['list_archivo'] = $this->Model_Corporacion->get_list_archivo_pendiente($id_pendiente);
-            $dato['list_gestion_archivo'] = $this->Model_Corporacion->get_list_archivo_gestion_pendiente($id_pendiente);
-            $dato['historial_comentarios'] = $this->Model_Corporacion->get_list_historial_comentario_pendiente($id_pendiente);
-            $dato['list_responsable'] = Usuario::get_list_responsable_area($dato['get_id'][0]['id_area']);
-            $dato['list_estado'] = DB::table('estado_tickets')
-                ->where('estado', 1)
-                ->orderBy('id_estado_tickets', 'ASC')
-                ->get();
-            $dato['list_archivo'] = ArchivoPendiente::where('id_pendiente', $id_pendiente)
-                ->get();
-            $dato['list_gestion_archivo'] = ArchivoGestionPendiente::where('id_pendiente', $id_pendiente)
-                ->get();
-            $dato['historial_comentarios'] = PendienteHistorialC::get_list_historial_comentario_pendiente($id_pendiente);
-            $dato['url'] = Config::where('descrip_config', 'Pendientes_Doc')
-                ->where('estado', 1)
-                ->get();
-            $get_id = $this->Model_Perfil->get_id_usuario($dato['get_id'][0]['id_usuario']);
-            $this->load->view('Pendiente/modal_ver_solucion',$dato);
+        $dato['get_id'] = $this->modelo->get_list_pendiente($id_pendiente);
+        $dato['list_responsable'] = Usuario::get_list_responsable_area($dato['get_id'][0]['id_area']);
+        $dato['list_estado'] = DB::table('estado_tickets')
+            ->where('estado', 1)
+            ->orderBy('id_estado_tickets', 'ASC')
+            ->get();
+        $dato['list_archivo'] = ArchivoPendiente::where('id_pendiente', $id_pendiente)
+            ->get();
+        $dato['list_gestion_archivo'] = ArchivoGestionPendiente::where('id_pendiente', $id_pendiente)
+            ->get();
+        $dato['historial_comentarios'] = PendienteHistorialC::get_list_historial_comentario_pendiente($id_pendiente);
+        $dato['url'] = Config::where('descrip_config', 'Pendientes_Doc')
+            ->where('estado', 1)
+            ->get();
+        $get_id = $this->Model_Perfil->get_id_usuario($dato['get_id'][0]['id_usuario']);
+        return view('Pendiente.modal_ver_solucion',$dato,$get_id);
+    }
+
+    public function Modal_Solucion_Pendiente($id_pendiente){
+        $dato['get_id'] = $this->modelo->get_list_pendiente($id_pendiente);
+        $dato['list_responsable'] = Usuario::get_list_responsable_area($dato['get_id'][0]['id_area']);
+        $dato['list_estado'] = DB::table('estado_tickets')
+            ->where('estado', 1)
+            ->orderBy('id_estado_tickets', 'ASC')
+            ->get();
+        $dato['list_archivo'] = ArchivoPendiente::where('id_pendiente', $id_pendiente)
+            ->get();
+        $dato['list_gestion_archivo'] = ArchivoGestionPendiente::where('id_pendiente', $id_pendiente)
+            ->get();
+        $dato['historial_comentarios'] = PendienteHistorialC::get_list_historial_comentario_pendiente($id_pendiente);
+        $dato['url'] = Config::where('descrip_config', 'Pendientes_Doc')
+            ->where('estado', 1)
+            ->get();
+
+        $get_id = $this->Model_Perfil->get_id_usuario($dato['get_id'][0]['id_usuario']);
+        return view('Pendiente.modal_editar_solucion',$dato,$get_id);
+    }
+
+    public function Update_Pendiente_Solucion(){
+        $dato['id_pendiente']= $this->input->post("id_pendiente");
+        $dato['comentario']= $this->input->post("comentario");
+
+        if($dato['comentario']!=""){
+            $id_usuario = session('usuario')->id_usuario;
+
+            PendienteHistorialC::create([
+                'id_pendiente' => $dato['id_pendiente'],
+                'comentario' => $dato['comentario'],
+                'id_usuario' => $id_usuario, // Obtenido previamente
+                'estado' => 1,
+                'user_reg' => $id_usuario,
+                'fec_reg' => now(), // Inserta la fecha y hora actual
+            ]);
+            $dato['get_ticket'] = $this->modelo->get_list_pendiente($dato['id_pendiente']);
+            $dato['list_comentario'] = PendienteHistorialC::get_list_historial_comentario_pendiente($dato['id_pendiente']);
+
+            $id_usuario2 = $dato['get_ticket'][0]['id_responsable'];
+            $resp = $this->Model_Perfil->get_id_usuario($id_usuario2);
+
+            $mail = new PHPMailer(true);
+/*
+            try {
+                $mail->SMTPDebug = 0;
+                $mail->isSMTP();
+                $mail->Host       =  'mail.lanumero1.com.pe';
+                $mail->SMTPAuth   =  true;
+                $mail->Username   =  'intranet@lanumero1.com.pe';
+                $mail->Password   =  'lanumero1$1';
+                $mail->SMTPSecure =  'tls';
+                $mail->Port     =  587;
+                $mail->setFrom('intranet@lanumero1.com.pe','PENDIENTE');
+
+                $mail->addAddress($resp[0]['emailp']);
+
+                $mail->isHTML(true);
+
+                $mail->Subject = "Nuevo Comentario";
+
+                $mailContent = view('Pendiente/mail_comentario', $dato, TRUE);
+                $mail->Body= $mailContent;
+
+                $mail->CharSet = 'UTF-8';
+                $mail->send();
+
+            }catch(Exception $e) {
+                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+            }
+            */
+        }
     }
 }
