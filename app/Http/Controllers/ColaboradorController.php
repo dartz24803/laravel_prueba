@@ -1723,14 +1723,13 @@ class ColaboradorController extends Controller
                 $mail->Port     =  587;
                 $mail->setFrom('somosuno@lanumero1.com.pe','Somos Uno');
 
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                /*$mail->addAdress('oficina@lanumero1.com.pe');
+                $mail->addAdress('oficina@lanumero1.com.pe');
                 $mail->addAdress('tiendas@lanumero1.com.pe');
                 $mail->addAdress('cd@lanumero1.com.pe');
                 $mail->addAdress('amauta@lanumero1.com.pe');
                 $mail->addAdress('seguridadgeneral@lanumero1.com.pe');
                 $mail->addAdress('oficina@lanumero1.com.pe');
-                $mail->addAdress('seguridad.central@lanumero1.com.pe');*/
+                $mail->addAdress('seguridad.central@lanumero1.com.pe');
 
                 $mail->isHTML(true);
 
