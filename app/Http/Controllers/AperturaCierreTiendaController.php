@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Models\AperturaCierreTienda;
 use App\Models\ArchivosAperturaCierreTienda;
+use App\Models\ArchivoTemporal;
 use App\Models\Base;
 use App\Models\CObservacionAperturaCierreTienda;
 use App\Models\Notificacion;
@@ -20,6 +21,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use Illuminate\Support\Facades\DB;
 use App\Models\SubGerencia;
+use App\Models\TiendaMarcacion;
 
 class AperturaCierreTiendaController extends Controller
 {
@@ -63,43 +65,109 @@ class AperturaCierreTiendaController extends Controller
 
     public function create_reg()
     {
-        $get_hora = TiendaMarcacionDia::select('tienda_marcacion_dia.hora_ingreso')
-            ->join('tienda_marcacion', 'tienda_marcacion.id_tienda_marcacion', '=', 'tienda_marcacion_dia.id_tienda_marcacion')
-            ->where('tienda_marcacion.cod_base', session('usuario')->centro_labores)
-            ->where('tienda_marcacion.estado', 1)
-            ->where('tienda_marcacion_dia.dia', date('N'))
-            ->first();
-        $list_observacion = CObservacionAperturaCierreTienda::select('id', 'descripcion')->get();
-        return view('seguridad.apertura_cierre.registro.modal_registrar', compact('get_hora', 'list_observacion'));
-    }
-
-    public function previsualizacion_captura_reg()
-    {
-        if ($_FILES["photo"]["name"] != "") {
+        //LIMPIAR LOS ARCHIVOS TEMPORALES
+        $list_archivo = ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                        ->where('tabla','APERTURA_CIERRE_TIENDA')->get();
+        if(count($list_archivo)>0){
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
             $con_id = ftp_connect($ftp_server);
-            $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-            if ($con_id && $lr) {
-                if (file_exists('https://lanumerounocloud.com/intranet/APERTURA_CIERRE_TIENDA/temporal_' . session('usuario')->id_usuario . '.jpg')) {
-                    ftp_delete($con_id, 'APERTURA_CIERRE_TIENDA/temporal_' . session('usuario')->id_usuario . '.jpg');
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                foreach($list_archivo as $list){
+                    $file_to_delete = "APERTURA_CIERRE_TIENDA/".basename($list->archivo);
+                    if (ftp_delete($con_id, $file_to_delete)) {
+                        ArchivoTemporal::where('id', $list->id)->delete();
+                    }
                 }
+            }
+        }
+        $get_hora = TiendaMarcacionDia::select('tienda_marcacion_dia.hora_ingreso')
+                    ->join('tienda_marcacion', 'tienda_marcacion.id_tienda_marcacion', '=', 'tienda_marcacion_dia.id_tienda_marcacion')
+                    ->where('tienda_marcacion.cod_base', session('usuario')->centro_labores)
+                    ->where('tienda_marcacion.estado', 1)
+                    ->where('tienda_marcacion_dia.dia', date('N'))
+                    ->first();
+        $list_observacion = CObservacionAperturaCierreTienda::select('id', 'descripcion')->get();
+        return view('seguridad.apertura_cierre.registro.modal_registrar', compact('get_hora', 'list_observacion'));
+    }
 
-                $path = $_FILES["photo"]["name"];
-                $source_file = $_FILES['photo']['tmp_name'];
+    public function list_archivo_reg()
+    {
+        $list_archivo = ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                        ->where('tabla','APERTURA_CIERRE_TIENDA')->get();
+        return view('seguridad.apertura_cierre.registro.lista_archivo', compact('list_archivo'));
+    }
 
-                $ext = pathinfo($path, PATHINFO_EXTENSION);
-                $nombre_soli = "temporal_" . session('usuario')->id_usuario;
-                $nombre = $nombre_soli . "." . strtolower($ext);
+    public function habilitar_boton_reg()
+    {
+        $cantidad = ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                    ->where('tabla','APERTURA_CIERRE_TIENDA')->count();
+        $get_id = TiendaMarcacion::where('cod_base',session('usuario')->centro_labores)->first();                    
+        if($cantidad==$get_id->cantidad_foto){
+            echo "Si";
+        }else{
+            echo "No";
+        }
+    }
 
-                ftp_pasv($con_id, true);
-                $subio = ftp_put($con_id, "APERTURA_CIERRE_TIENDA/" . $nombre, $source_file, FTP_BINARY);
-                if (!$subio) {
-                    echo "Archivo no subido correctamente";
+    public function previsualizacion_captura_reg()
+    {
+        $valida = ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                ->where('tabla','APERTURA_CIERRE_TIENDA')->get();
+        $get_id = TiendaMarcacion::where('cod_base',session('usuario')->centro_labores)->first();
+        if(count($valida)==$get_id->cantidad_foto){
+            echo "¡No se puede tomar más de ".$get_id->cantidad_foto." captura(s)!";
+        }else{
+            if ($_FILES["photo"]["name"] != "") {
+                $ftp_server = "lanumerounocloud.com";
+                $ftp_usuario = "intranet@lanumerounocloud.com";
+                $ftp_pass = "Intranet2022@";
+                $con_id = ftp_connect($ftp_server);
+                $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
+                if ($con_id && $lr) {
+                    $path = $_FILES["photo"]["name"];
+                    $source_file = $_FILES['photo']['tmp_name'];
+    
+                    $ext = pathinfo($path, PATHINFO_EXTENSION);
+                    $nombre_soli = "temporal_" . session('usuario')->id_usuario."_".date('YmdHis');
+                    $nombre = $nombre_soli . "." . strtolower($ext);
+
+                    $archivo = "https://lanumerounocloud.com/intranet/APERTURA_CIERRE_TIENDA/".$nombre;
+    
+                    ftp_pasv($con_id, true);
+                    $subio = ftp_put($con_id, "APERTURA_CIERRE_TIENDA/" . $nombre, $source_file, FTP_BINARY);
+                    if ($subio) {
+                        ArchivoTemporal::create([
+                            'id_usuario' => session('usuario')->id_usuario,
+                            'tabla' => 'APERTURA_CIERRE_TIENDA',
+                            'archivo' => $archivo
+                        ]);
+                    }else{
+                        echo "Archivo no subido correctamente";
+                    }
+                } else {
+                    echo "No se conecto";
                 }
-            } else {
-                echo "No se conecto";
+            }
+        }
+    }
+
+    public function delete_archivo_temporal_reg($id)
+    {
+        $get_id = ArchivoTemporal::findOrFail($id);
+        if($get_id->archivo!=""){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $file_to_delete = "APERTURA_CIERRE_TIENDA/".basename($get_id->archivo);
+                if (ftp_delete($con_id, $file_to_delete)) {
+                    ArchivoTemporal::destroy($id);
+                }
             }
         }
     }
@@ -107,18 +175,18 @@ class AperturaCierreTiendaController extends Controller
     public function store_reg(Request $request)
     {
         $valida = AperturaCierreTienda::where('fecha', date('Y-m-d'))
-            ->where('cod_base', session('usuario')->centro_labores)
-            ->where('estado', 1)->exists();
+                ->where('cod_base', session('usuario')->centro_labores)
+                ->where('estado', 1)->exists();
 
         if ($valida) {
             echo "error";
         } else {
             $get_hora = TiendaMarcacionDia::select('tienda_marcacion_dia.hora_ingreso')
-                ->join('tienda_marcacion', 'tienda_marcacion.id_tienda_marcacion', '=', 'tienda_marcacion_dia.id_tienda_marcacion')
-                ->where('tienda_marcacion.cod_base', session('usuario')->centro_labores)
-                ->where('tienda_marcacion.estado', 1)
-                ->where('tienda_marcacion_dia.dia', date('N'))
-                ->first();
+                        ->join('tienda_marcacion', 'tienda_marcacion.id_tienda_marcacion', '=', 'tienda_marcacion_dia.id_tienda_marcacion')
+                        ->where('tienda_marcacion.cod_base', session('usuario')->centro_labores)
+                        ->where('tienda_marcacion.estado', 1)
+                        ->where('tienda_marcacion_dia.dia', date('N'))
+                        ->first();
 
             $apertura = AperturaCierreTienda::create([
                 'fecha' => date('Y-m-d'),
@@ -143,28 +211,36 @@ class AperturaCierreTiendaController extends Controller
                 }
             }
 
-            if ($request->captura == "1") {
+            $list_archivo = ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                            ->where('tabla','APERTURA_CIERRE_TIENDA')->get();
+
+            if(count($list_archivo)>0){
                 $ftp_server = "lanumerounocloud.com";
                 $ftp_usuario = "intranet@lanumerounocloud.com";
                 $ftp_pass = "Intranet2022@";
                 $con_id = ftp_connect($ftp_server);
-                $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-                if ($con_id && $lr) {
-                    $nombre_actual = "APERTURA_CIERRE_TIENDA/temporal_" . session('usuario')->id_usuario . ".jpg";
-                    $nuevo_nombre = "APERTURA_CIERRE_TIENDA/Evidencia_" . $apertura->id_apertura_cierre . "_" . date('YmdHis') . ".jpg";
-                    ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
-                    $archivo = "https://lanumerounocloud.com/intranet/" . $nuevo_nombre;
-
-                    ArchivosAperturaCierreTienda::create([
-                        'id_apertura_cierre' => $apertura->id_apertura_cierre,
-                        'tipo_apertura' => 1,
-                        'archivo' => $archivo,
-                        'fecha' => now(),
-                        'usuario' => session('usuario')->id_usuario
-                    ]);
-                } else {
-                    echo "No se conecto";
+                $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+                if($con_id && $lr){
+                    $i = 1;
+                    foreach($list_archivo as $list){
+                        $nombre_actual = "APERTURA_CIERRE_TIENDA/".basename($list->archivo);
+                        $nuevo_nombre = "APERTURA_CIERRE_TIENDA/Evidencia_".$apertura->id_apertura_cierre."_".date('YmdHis')."_".$i.".jpg";
+                        ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
+                        $archivo = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
+    
+                        ArchivosAperturaCierreTienda::create([
+                            'id_apertura_cierre' => $apertura->id_apertura_cierre,
+                            'tipo_apertura' => 1,
+                            'archivo' => $archivo,
+                            'fecha' => now(),
+                            'usuario' => session('usuario')->id_usuario
+                        ]);
+    
+                        $i++;
+                    }
                 }
+                ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                ->where('tabla','APERTURA_CIERRE_TIENDA')->delete();
             }
         }
     }

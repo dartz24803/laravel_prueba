@@ -45,11 +45,13 @@
             <video id="video" autoplay style="max-width: 95%;"></video>
         </div>
         <div class="row d-flex justify-content-center text-center" id="div_canvas" style="display:none !important;">
-            <p class="mt-2">Recuerda que puedes tomar otra foto presionando nuevamente <mark style="background-color:#2196F3;color:white;">Tomar foto</mark> o guardar el registro presionando <mark style=background-color:#1B55E2;color:white;>Guardar</mark></p>
             <canvas id="canvas" style="max-width:95%;"></canvas>
         </div>
 
-        <div class="row mt-2">
+        <div id="lista_archivo">
+        </div>
+
+        <div class="row mt-3">
             <div class="form-group col-lg-2">
                 <label>Observaciones:</label>
             </div>
@@ -76,7 +78,6 @@
 
     <div class="modal-footer">
         @csrf
-        <input type="hidden" id="captura" name="captura">
         <button id="boton_disabled" class="btn btn-primary" type="button" onclick="Insert_Apertura_Cierre();" disabled>Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
@@ -86,6 +87,39 @@
     $('.multivalue').select2({
         dropdownParent: $('#ModalRegistro')
     });
+
+    Lista_Archivo();
+
+    function Habilitar_Boton(){
+        var url = "{{ route('apertura_cierre_reg.habilitar_boton') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                if(resp.trim()=="Si"){
+                    $('#boton_disabled').prop('disabled', false);
+                }else{
+                    $('#boton_disabled').prop('disabled', true);
+                }
+            }
+        });          
+    }
+
+    function Lista_Archivo() {
+        Cargando();
+
+        var url = "{{ route('apertura_cierre_reg.list_archivo') }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success: function(resp) {
+                $('#lista_archivo').html(resp);
+                Habilitar_Boton();
+            }
+        });
+    }
 
     var video = document.getElementById('video');
     var boton = document.getElementById('boton_camara');
@@ -194,9 +228,18 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    div_canvas.style.cssText = "display: block;";
-                    $('#boton_disabled').prop('disabled', false);
-                    $('#captura').val('1');
+                    if(response.trim()!=""){
+                        Swal({
+                            title: '¡Carga Denegada!',
+                            text: response.trim(),
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else{
+                        Lista_Archivo();
+                    }
                 }
             });
         }, 'image/jpeg');

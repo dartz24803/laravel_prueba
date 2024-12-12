@@ -1,18 +1,23 @@
 <div class="toolbar d-flex">
     <div class="col-lg-2">
-        <label>Estado</label>
-        <div>
-            <input type="checkbox" id="cpiniciar" checked name="cpiniciar" value="1" onchange="Lista_Mis_Tareas();">
-            <span style="font-weight:normal"><?php echo "Por&nbsp;Iniciar"; ?></span><br>
-
-            <input type="checkbox" id="cproceso" checked name="cproceso" value="1" onchange="Lista_Mis_Tareas();">
-            <span style="font-weight:normal"><?php echo "En&nbsp;Proceso"; ?></span><br>
-
-            <input type="checkbox" id="cfinalizado" name="cfinalizado" value="1" onchange="Lista_Mis_Tareas();">
-            <span style="font-weight:normal"><?php echo "Completado"; ?></span><br>
-
-            <input type="checkbox" id="cstandby" name="cstandby" value="1" onchange="Lista_Mis_Tareas();">
-            <span style="font-weight:normal"><?php echo "Stand&nbsp;by"; ?></span>
+        <div class="col-md-12">
+            <label>Estado</label>
+        </div>
+        <div class="col-md-12">
+            <input type="checkbox" id="cpiniciar" checked name="cpiniciar" value="1" onchange="Lista_Mis_Tareas()">
+            <label for="cpiniciar" style="font-weight:normal">Por Iniciar</label>
+        </div>
+        <div class="col-md-12">
+            <input type="checkbox" id="cproceso" checked name="cproceso" value="2" onchange="Lista_Mis_Tareas()">
+            <label for="cproceso" style="font-weight:normal">En Proceso</label>
+        </div>
+        <div class="col-md-12">
+            <input type="checkbox" id="cfinalizado" name="cfinalizado" value="3" onchange="Lista_Mis_Tareas()">
+            <label for="cfinalizado" style="font-weight:normal">Completado</label>
+        </div>
+        <div class="col-md-12">
+            <input type="checkbox" id="cstandby" name="cstandby" value="4" onchange="Lista_Mis_Tareas()">
+            <label for="cstandby" style="font-weight:normal">Stand by</label>
         </div>
     </div>
 
