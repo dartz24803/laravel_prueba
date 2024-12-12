@@ -83,7 +83,7 @@
                                                 <label class="control-label text-bold">C.&nbsp;Labores:</label>
                                                 <select id="cod_base" name="cod_base" class="form-control basic" onchange="Limpiar_Campos()">
                                                     <option value="0" >TODOS</option>
-                                                    <option value="t" >TIENDAS</option>
+                                                    <option value="-1" >TIENDAS</option>
                                                     <?php foreach($list_base as $list){?>
                                                         <option <?php if(($id_nivel==1 || $id_nivel==2) && $list['id_ubicacion']==23){echo "selected"; }?> value="<?php echo $list['id_ubicacion']; ?>"> <?php echo $list['cod_ubi'];?> </option>
                                                     <?php } ?>
@@ -315,7 +315,6 @@
         $("#rhumanos").addClass('active');
         $("#hrhumanos").attr('aria-expanded','true');
         $("#reporteasistenciap").addClass('active');
-        ReporteControlAsistencia();
     });
 
     function Limpiar_Campos(){
@@ -733,7 +732,7 @@
         var cod_base = $('#cod_base').val();
         var id_area = $('#id_area').val();
         var id_puesto = $('#id_puesto').val();
-        
+
         if(id_puesto == 29){
             var estado = 1;
         }else{
@@ -757,7 +756,7 @@
             },
         });
     }
-    
+
     function Buscar_No_Marcados() {
         Cargando();
         var cod_mes = $('#cod_mes_nm').val();
@@ -865,7 +864,7 @@
                 });
             }
     }
-    
+
     function Traer_Colaborador_nm(){
         Cargando();
 

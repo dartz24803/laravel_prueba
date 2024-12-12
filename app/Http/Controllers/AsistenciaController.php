@@ -173,6 +173,9 @@ class AsistenciaController extends Controller
     public function Buscar_Reporte_Control_Asistencia(Request $request){
         set_time_limit(600);
         ini_set('max_execution_time', 600);
+        $tipo = $request->input("tipo");
+        $codMes = $request->input('cod_mes');
+        $codAnio = $request->input('cod_anio');
 
         $codBase = $request->input('cod_base', 0);
         $numDoc = $request->input('num_doc', 0);
@@ -182,9 +185,18 @@ class AsistenciaController extends Controller
         $fInicio = $request->input('finicio');
         $fFin = $request->input('ffin');
 
-        // Transformar las fechas al formato dd/mm/yyyy
-        $initialDate = date('d/m/Y', strtotime($fInicio)); // Convierte la fecha de inicio
-        $endDate = date('d/m/Y', strtotime($fFin)); // Convierte la fecha de fin
+        if ($tipo == 1) {
+            // Convertir el mes y el año a un rango de fechas (initialDate, endDate)
+            try {
+                // Primer día del mes
+                $initialDate = \Carbon\Carbon::createFromDate($codAnio, $codMes, 1)->format('d/m/Y'); // Primer día del mes
+                // Último día del mes
+                $endDate = \Carbon\Carbon::createFromDate($codAnio, $codMes, 1)->endOfMonth()->format('d/m/Y'); // Último día del mes
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Error al procesar las fechas: ' . $e->getMessage()], 400);
+            }
+        }
+
 
         // Construir los datos para la consulta a la API
         $queryParams = [
@@ -195,8 +207,9 @@ class AsistenciaController extends Controller
             'estado' => $estado,
             'colaborador' => $numDoc, // 'num_doc' es el identificador del colaborador
         ];
-
+        // print_r($queryParams);
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
+        // print_r($response->json()['data']);
 
         // Verificar si la respuesta fue exitosa
         if ($response->successful()) {
