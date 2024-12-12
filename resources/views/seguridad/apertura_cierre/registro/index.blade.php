@@ -82,14 +82,6 @@
         <input type="date" class="form-control" name="fecha_finb" id="fecha_finb" value="{{ date('Y-m-d') }}">
     </div>
 
-    <!--<div class="col-lg-6 mt-2 mt-lg-0 d-flex align-items-center justify-content-start">
-        <div class="toggle-switch">
-            <input class="toggle-input" id="toggle" type="checkbox" checked>
-            <label class="toggle-label" for="toggle"></label>
-            <span class="ml-5">Observación</span>
-        </div>
-    </div>-->
-
     <div class="col-lg-4 col-xl-6">
         <div class="toggle-switch">
             <input class="toggle-input" id="toggle" type="checkbox" checked>
@@ -124,7 +116,6 @@
     </div>
 </div>
 
-@csrf
 <div class="table-responsive mt-4" id="lista_apertura_cierre">
 </div>
 
@@ -138,7 +129,6 @@
         var fec_ini = $('#fecha_iniciob').val();
         var fec_fin = $('#fecha_finb').val();
         var url = "{{ route('apertura_cierre_reg.list') }}";
-        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             type: "POST",
@@ -149,7 +139,7 @@
                 'fec_fin': fec_fin
             },
             headers: {
-                'X-CSRF-TOKEN': csrfToken
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success: function(data) {
                 $("#lista_apertura_cierre").html(data);
@@ -161,13 +151,12 @@
         Cargando();
 
         var url = "{{ route('apertura_cierre_reg.valida_modal') }}";
-        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             type: "GET",
             url: url,
             headers: {
-                'X-CSRF-TOKEN': csrfToken
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success: function(data) {
                 if (data == "error") {

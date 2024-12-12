@@ -885,7 +885,10 @@ Route::controller(AperturaCierreTiendaController::class)->group(function () {
     Route::post('apertura_cierre_reg/list', 'list_reg')->name('apertura_cierre_reg.list');
     Route::get('apertura_cierre_reg/valida_modal', 'valida_modal_reg')->name('apertura_cierre_reg.valida_modal');
     Route::get('apertura_cierre_reg/create', 'create_reg')->name('apertura_cierre_reg.create');
+    Route::get('apertura_cierre_reg/list_archivo', 'list_archivo_reg')->name('apertura_cierre_reg.list_archivo');
+    Route::get('apertura_cierre_reg/habilitar_boton', 'habilitar_boton_reg')->name('apertura_cierre_reg.habilitar_boton');
     Route::post('apertura_cierre_reg/previsualizacion_captura', 'previsualizacion_captura_reg')->name('apertura_cierre_reg.previsualizacion_captura');
+    Route::delete('apertura_cierre_reg/{id}/delete_archivo_temporal', 'delete_archivo_temporal_reg')->name('apertura_cierre_reg.delete_archivo_temporal');
     Route::post('apertura_cierre_reg', 'store_reg')->name('apertura_cierre_reg.store');
     Route::get('apertura_cierre_reg/{id}/edit', 'edit_reg')->name('apertura_cierre_reg.edit');
     Route::put('apertura_cierre_reg/previsualizacion_captura', 'previsualizacion_captura_reg')->name('apertura_cierre_reg.previsualizacion_captura_put');
