@@ -1859,6 +1859,9 @@ Route::controller(AsignacionVisitaConfController::class)->group(function () {
     Route::get('avisita_conf_pr/{tipo}', 'index_pr')->name('avisita_conf_pr');
     Route::post('avisita_conf_pr/list', 'list_pr')->name('avisita_conf_pr.list');
     Route::get('avisita_conf_pr/{tipo}/create', 'create_pr')->name('avisita_conf_pr.create');
+    Route::post('avisita_conf_pr/consultar_ruc_pr', 'consultar_ruc_pr')->name('avisita_conf_pr.consultar_ruc_pr');
+    Route::post('avisita_conf_pr/traer_provincia', 'traer_provincia_pr')->name('avisita_conf_pr.traer_provincia');
+    Route::post('avisita_conf_pr/traer_distrito', 'traer_distrito_pr')->name('avisita_conf_pr.traer_distrito');
     Route::post('avisita_conf_pr', 'store_pr')->name('avisita_conf_pr.store');
     Route::get('avisita_conf_pr/{id}/edit', 'edit_pr')->name('avisita_conf_pr.edit');
     Route::put('avisita_conf_pr/{id}', 'update_pr')->name('avisita_conf_pr.update');
