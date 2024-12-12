@@ -94,13 +94,13 @@ $id_nivel=session('usuario')->id_nivel;
                                     <a class="nav-link active" id="registro-tab" data-toggle="tab" href="#registro" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Papeleta_Registro()">Registro</a>
                                 </li>-->
                             <?php if($permiso_pps==1 || $id_nivel==1 || $id_puesto==19 || $id_puesto==21 || $id_puesto==23 || $id_puesto==40 ||
-                                    $id_puesto==10 || $id_puesto==93 || $id_puesto==314 || $id_puesto==315){?>
+                                    $id_puesto==10 || $id_puesto==93 || $id_puesto==314 || $id_puesto==315 || $id_puesto==209){?>
                                 <li class="nav-item">
                                     <a class="nav-link active" id="aprobacion-tab" data-toggle="tab" href="#aprobacion" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Papeleta_Aprobacion()">Aprobación</a>
                                 </li>
                             <?php }?>
                             <?php if($id_nivel==1 || $id_puesto==23 || $id_puesto==36 || $id_puesto==24 || $id_puesto==26 || $id_puesto==128 ||
-                            $id_puesto==21 || $id_puesto==19 || $id_puesto==279 || $id_puesto==209 || $id_puesto==307 || $id_puesto==315){?>
+                            $id_puesto==21 || $id_puesto==19 || $id_puesto==279 || $id_puesto==209 || $id_puesto==307 || $id_puesto==315 || $id_puesto==209){?>
                                 <li class="nav-item">
                                     <a class="nav-link" id="control-tab" data-toggle="tab" href="#control" role="tab" aria-controls="home" aria-selected="true" onclick="Buscar_Papeleta_Control()">Control</a>
                                 </li>
