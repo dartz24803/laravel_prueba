@@ -142,7 +142,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" id="solucion-tab" data-toggle="tab" href="#solucion" role="tab"
-                    aria-controls="solucion" aria-selected="false">Solución</a>
+                    aria-controls="solucion" aria-selected="false">Resolución</a>
             </li>
         </ul>
 

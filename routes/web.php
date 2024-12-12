@@ -421,8 +421,11 @@ Route::controller(SoporteController::class)->group(function () {
     Route::post('soporte_ticket/{id}', 'update_tick')->name('soporte_ticket.update');
 
     Route::get('soporte_nivel_por_sede', 'getSoporteNivelPorSede')->name('soporte_nivel_por_sede');
+    Route::get('validar_mostrar_sedelaboral', 'validateSedeLaboral')->name('validar_mostrar_sedelaboral');
     Route::get('soporte_areaespecifica_por_nivel', 'getAreaEspeficaPorNivel')->name('soporte_areaespecifica_por_nivel');
+    Route::get('nivel_por_sede', 'getNivelPorSede')->name('nivel_por_sede');
     Route::get('elemento_por_especialidad', 'getElementoPorEspecialidad')->name('elemento_por_especialidad');
+
     Route::get('asunto_por_elemento', 'getAsuntoPorElemento')->name('asunto_por_elemento');
     Route::get('responsable_por_area', 'getResponsableByArea')->name('responsable_por_area');
 
