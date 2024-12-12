@@ -8,6 +8,7 @@ use App\Models\AsistenciaColaboradorMarcaciones;
 use App\Models\BiotimeTemp;
 use App\Models\Feriado;
 use App\Models\HorarioDia;
+use App\Models\PuestoSinAsistencia;
 use App\Models\ToleranciaHorario;
 use App\Models\Turno;
 use App\Models\Usuario;
@@ -74,6 +75,7 @@ class CronController extends Controller
                         ->leftjoin('horario AS ho','us.id_horario','=','ho.id_horario')
                         ->where('us.ini_funciones','<=',DB::raw('CURDATE()'))
                         ->whereNotIn('us.id_nivel',[8,12])->where('us.estado',1)
+                        ->whereNotIn('us.id_puesto',PuestoSinAsistencia::select('id_puesto'))
                         ->get();
         /*HACEMOS UN BUCLE PARA TRAER LA ASISTENCIA DE CADA COLABORADOR*/
         foreach($list_usuario as $list){

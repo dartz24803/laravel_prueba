@@ -1515,7 +1515,7 @@ class ColaboradorController extends Controller
             if($request->fec_fin==""){
                 $errors['fec_fin'] = ['Debe ingresar fecha fin.'];
             }
-            if($request->fec_fin<=$get_id->fec_inicio){
+            if($request->fec_fin<$get_id->fec_inicio){
                 $errors['fec_fin_menor'] = ['Fecha fin no debe ser menor que la fecha de inicio.'];
             }
         }
@@ -1723,14 +1723,13 @@ class ColaboradorController extends Controller
                 $mail->Port     =  587;
                 $mail->setFrom('somosuno@lanumero1.com.pe','Somos Uno');
 
-                $mail->addAddress('dpalomino@lanumero1.com.pe');
-                /*$mail->addAdress('oficina@lanumero1.com.pe');
-                $mail->addAdress('tiendas@lanumero1.com.pe');
-                $mail->addAdress('cd@lanumero1.com.pe');
-                $mail->addAdress('amauta@lanumero1.com.pe');
-                $mail->addAdress('seguridadgeneral@lanumero1.com.pe');
-                $mail->addAdress('oficina@lanumero1.com.pe');
-                $mail->addAdress('seguridad.central@lanumero1.com.pe');*/
+                $mail->addAddress('oficina@lanumero1.com.pe');
+                $mail->addAddress('tiendas@lanumero1.com.pe');
+                $mail->addAddress('cd@lanumero1.com.pe');
+                $mail->addAddress('amauta@lanumero1.com.pe');
+                $mail->addAddress('seguridadgeneral@lanumero1.com.pe');
+                $mail->addAddress('oficina@lanumero1.com.pe');
+                $mail->addAddress('seguridad.central@lanumero1.com.pe');
 
                 $mail->isHTML(true);
 

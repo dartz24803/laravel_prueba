@@ -253,6 +253,83 @@ class AsignacionVisitaConfController extends Controller
             ]);
         }
     }
+
+    public function edit_pr(Request $request, $id)
+    {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(4);
+        $get_id = ProveedorGeneral::findOrFail($id);
+        if($get_id->id_proveedor_mae=="1"){
+            $nom_tipo = "tela";
+        }else{
+            $nom_tipo = "taller";
+        }
+        $id_departamento = str_pad($get_id->id_departamento,2,"0",STR_PAD_LEFT);
+        $id_provincia = str_pad($get_id->id_provincia,4,"0",STR_PAD_LEFT);
+        $list_departamento = Departamento::select('id_departamento','nombre_departamento')
+                            ->where('estado',1)->get();
+        $list_provincia = Provincia::select('id_provincia', 'nombre_provincia')
+                        ->where('id_departamento', $id_departamento)->where('estado', 1)->get(); 
+        $list_distrito = Distrito::select('id_distrito', 'nombre_distrito')
+                        ->where('id_provincia', $id_provincia)->where('estado', 1)->get();                                                       
+        $list_tipo_servicio = TipoServicio::select('id_tipo_servicio','nom_tipo_servicio')
+                            ->where('estado',1)->get();
+        $list_banco = Banco::select('id_banco','nom_banco')->where('estado',1)->get();                            
+        return view('manufactura.produccion.administracion.asignacion_visita.proveedor.editar', compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'get_id',
+            'nom_tipo',
+            'list_departamento',
+            'list_provincia',
+            'list_distrito',
+            'list_tipo_servicio',
+            'list_banco'
+        ));
+    }
+
+    public function update_pr(Request $request, $id)
+    {
+        $request->validate([
+            'ruc_proveedor' => 'required|size:11',
+            'nombre_proveedor' => 'required',
+            'id_departamento' => 'not_in:0',
+            'id_provincia' => 'not_in:0',
+            'id_distrito' => 'not_in:0',
+            'responsable' => 'required'
+        ], [
+            'ruc_proveedor.required' => 'Debe ingresar RUC.',
+            'ruc_proveedor.size' => 'Debe ingresar RUC válido (11 dígitos).',
+            'nombre_proveedor.required' => 'Debe ingresar razón social.',
+            'id_departamento.not_in' => 'Debe seleccionar departamento',
+            'id_provincia.not_in' => 'Debe seleccionar provincia',
+            'id_distrito.not_in' => 'Debe seleccionar distrito',
+            'responsable.required' => 'Debe ingresar responsable.'
+        ]);
+
+        ProveedorGeneral::findOrFail($id)->update([
+            'direccion_proveedor' => $request->direccion_proveedor,
+            'referencia_proveedor' => $request->referencia_proveedor,
+            'id_departamento' => $request->id_departamento,
+            'id_provincia' => $request->id_provincia,
+            'id_distrito' => $request->id_distrito,
+            'id_tipo_servicio' => $request->id_tipo_servicio,
+            'responsable' => $request->responsable,
+            'telefono_proveedor' => $request->telefono_proveedor,
+            'celular_proveedor' => $request->celular_proveedor,
+            'email_proveedor' => $request->email_proveedor,
+            'web_proveedor' => $request->web_proveedor,
+            'id_banco' => $request->id_banco,
+            'num_cuenta' => $request->num_cuenta,
+            'coordsltd' => $request->coordsltd,
+            'coordslgt' => $request->coordslgt,
+            'ubigeo' => $request->id_distrito,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
     
     public function destroy_pr($id)
     {

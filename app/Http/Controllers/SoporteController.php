@@ -140,6 +140,8 @@ class SoporteController extends Controller
         return view('soporte.soporte.modal_registrar', compact('list_area', 'list_especialidad'));
     }
 
+
+
     public function getSoporteNivelPorSede()
     {
         // Obtener id_sede desde la función estática de SedeLaboral
@@ -159,6 +161,23 @@ class SoporteController extends Controller
     }
 
 
+    public function validateSedeLaboral()
+    {
+        // Obtener el resultado booleano desde la función estática validateListSedeLaboral
+        $status = SedeLaboral::validateListSedeLaboral();
+
+        // Obtener todas las sedes laborales desde la función estática getAllSedesLaborales
+        $ubicaciones = SedeLaboral::getAllUbicaciones();
+
+        // Retornar un objeto con el resultado booleano y el array de sedes laborales
+        return (object) [
+            'status' => $status,
+            'ubicaciones' => $ubicaciones
+        ];
+    }
+
+
+
 
 
     public function getAreaEspeficaPorNivel(Request $request)
@@ -175,6 +194,22 @@ class SoporteController extends Controller
             ->where('estado', 1)
             ->get();
         return response()->json($ubicaciones);
+    }
+
+
+
+    public function getNivelPorSede(Request $request)
+    {
+        $idSede = $request->input('sede');
+        // Si no se selecciona ninguna sede, devolver un arreglo vacío
+        if (empty($idSede)) {
+            return response()->json([]);
+        }
+        $niveles = SoporteNivel::where('id_sede_laboral', $idSede)
+            ->orderBy('descripcion', 'asc')
+            ->get();
+        // dd($niveles);
+        return response()->json($niveles);
     }
 
 
@@ -222,14 +257,12 @@ class SoporteController extends Controller
             'idsoporte_nivel' => 'gt:0',
             'vencimiento' => 'required',
             'descripcion' => 'required',
-            'descripcion' => 'max:150',
         ];
         $messages = [
             'especialidad.gt' => 'Debe seleccionar especialidad.',
             'idsoporte_nivel.gt' => 'Debe ingresar Ubicaciòn.',
             'vencimiento.required' => 'Debe ingresar vencimiento.',
             'descripcion.required' => 'Debe ingresar propósito.',
-            'descripcion.max' => 'El propósito debe tener como máximo 150 carácteres.',
         ];
         if ($request->hasOptionsFieldEspecialidad == "0") {
             $rules = array_merge($rules, [
@@ -846,11 +879,13 @@ class SoporteController extends Controller
                 }
             },
             'nombre_tipo' => $get_id->activo_tipo == 1 && $get_id->tipo_otros == 0 ? 'required|gt:0' : 'nullable',
+
         ];
 
         $messages = [
             'descripcione_solucion.max' => 'Comentario de Solución debe tener como máximo 150 caracteres.',
             'nombre_tipo.gt' => 'Debe seleccionar tipo.',
+
         ];
 
         $list_ejecutores_responsables = EjecutorResponsable::obtenerListadoConEspecialidad($get_id->id_asunto);
@@ -1301,7 +1336,7 @@ class SoporteController extends Controller
                 $subject = "Derivación de Solicitud de Soporte";
                 $nombre_completo = $get_id->usuario_nombre . ' ' . $get_id->usuario_apater;
                 $body = "<h1> Hola, " . $nombre_completo . "</h1>
-                                <p>Le informamos que su solicitud de soporte ha sido derivada al área correspondiente:. $nom_area .</p>
+                                <p>Le informamos que su solicitud de soporte ha sido derivada al módulo de TAREAS , al área correspondiente:. $nom_area .</p>
                                 <p>Podrá dar seguimiento a su solicitud haciendo clic en el siguiente enlace:</p>
                                 <a href='https://demo.grupolanumero1.com.pe/Tareas/index' style='text-decoration: none; color: blue; font-weight: bold;'>Ver el estado de mi solicitud</a>
                                 <p>Atentamente.<br>Grupo La Número 1</p>";
@@ -1327,7 +1362,7 @@ class SoporteController extends Controller
                                     <p>Le pedimos que revise y complete la información requerida o proporcione una justificación más clara. Esto nos permitirá atender su solicitud de manera adecuada.</p>
                                     <p>Puede actualizar su solicitud haciendo clic en el siguiente enlace:</p>
                                     <a href='https://demo.grupolanumero1.com.pe/soporte' style='text-decoration: none; color: blue; font-weight: bold;'>Actualizar mi solicitud</a>
-                                    <p>Gracias.<br>Atte. Grupo La Número 1</p>";
+                                    <p>Atentamente,<br>Grupo La Número 1</p>";
                 $this->enviarCorreoSoporte($subject, $get_id->emailp, $body);
             }
         }

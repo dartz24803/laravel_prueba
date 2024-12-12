@@ -122,6 +122,18 @@
     <div class="modal-body" style="max-height:450px; overflow:auto;">
 
         <div class="row">
+            <div class="col-lg-12" id="sedelaboral_container" style="display: none;">
+                <div class="row">
+                    <div class="form-group col-lg-2">
+                        <label class="control-label text-bold">Sede Laboral:</label>
+                    </div>
+                    <div class="form-group col-lg-10" id="sede_subcont" style="visibility: hidden;">
+                        <select class="form-control" id="idsede_laboral" name="idsede_laboral">
+                            <option value="0">Seleccione Sede.</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
             <div class="col-lg-12">
                 <div class="row">
                     <div class="form-group col-lg-2">
@@ -136,7 +148,6 @@
                 </div>
             </div>
 
-            <!-- Segunda fila: Thirdlist-container (Sub-ubicación) -->
             <div class="col-lg-12" id="sububicacion-container" style="display: none;">
                 <div class="row">
                     <div class="form-group col-lg-2">
@@ -273,9 +284,42 @@
 
 <script>
     $(document).ready(function() {
-        obtenerSoporteNivelPorSede();
+        // obtenerSoporteNivelPorSede();
         initializeEspecialidadAndSede();
+        validarMostrarSedeLaboral();
     });
+
+
+    function validarMostrarSedeLaboral() {
+        var url = "{{ route('validar_mostrar_sedelaboral') }}";
+        $.ajax({
+            url: url,
+            method: 'GET',
+            success: function(response) {
+                // Mostrar los datos recibidos
+                console.log('Status:', response.status); // Booleano de la validación
+                console.log('Sedes Laborales:', response.ubicaciones); // Array de sedes laborales
+                if (response.status == false) {
+                    obtenerSoporteNivelPorSede();
+                    $('#sedelaboral_container').hide();
+                    $('#sede_subcont').css('visibility', 'hidden');
+                } else {
+                    $('#sedelaboral_container').show();
+                    $('#sede_subcont').css('visibility', 'visible');
+                    $.each(response.ubicaciones, function(index, ubicacion) {
+                        $('#idsede_laboral').append(
+                            `<option value="${ubicacion.id_sede}">${ubicacion.cod_ubi}</option>`
+                        );
+                    });
+                }
+
+            },
+            error: function(xhr) {
+                console.error('Error al obtener ubicaciones:', xhr);
+            }
+        });
+    }
+
 
     function obtenerSoporteNivelPorSede() {
         var url = "{{ route('soporte_nivel_por_sede') }}";
@@ -412,6 +456,32 @@
         });
     });
 
+    $('#idsede_laboral').on('change', function() {
+        const selectedSede = $(this).val();
+        var url = "{{ route('nivel_por_sede') }}";
+        $.ajax({
+            url: url,
+            method: 'GET',
+            data: {
+                sede: selectedSede
+            },
+            success: function(response) {
+                $('#idsoporte_nivel').empty().append('<option value="0">Seleccione</option>');
+                if (response.length > 0) {
+                    $.each(response, function(index, elementos) {
+                        $('#idsoporte_nivel').append(
+                            `<option value="${elementos.idsoporte_nivel}">${elementos.nombre}</option>`
+                        );
+
+
+                    });
+                }
+            },
+            error: function(xhr) {
+                console.error('Error al obtener elementos:', xhr);
+            }
+        });
+    });
 
     $('#especialidad').on('change', function() {
         const selectedEspecialidad = $(this).val();

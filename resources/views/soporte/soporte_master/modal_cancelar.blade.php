@@ -65,6 +65,16 @@
     </div>
 </form>
 <script>
+    $(document).ready(function() {
+        toggleMotivo();
+
+        $('#motivo').on('change', function() {
+            toggleMotivo();
+        });
+
+
+    });
+
     function Cancelar_Soporte() {
         Cargando();
 
@@ -141,15 +151,9 @@
     });
 
 
-
-    $(document).ready(function() {
-        toggleMotivo();
-
-        $('#motivo').on('change', function() {
-            toggleMotivo();
-        });
-
-
+    $("#id_areac").select2({
+        tags: true,
+        dropdownParent: $('#ModalUpdate')
     });
 
     function toggleMotivo() {
@@ -159,20 +163,24 @@
         var responsableLabel = document.getElementById('id_responsable-label');
         var responsableField = document.getElementById('id_responsable');
         var estadoContainer = document.getElementById('estado-container');
+
         if (idmotivo == 1) {
             // Mostrar los campos de Cierre
             cierreLabel.style.display = 'block';
+            $(cierreField).select2({
+                tags: true,
+                dropdownParent: $('#ModalUpdate')
+            }); // Rehabilitar Select2
             cierreField.style.display = 'block';
             responsableLabel.style.display = 'block';
             responsableField.style.display = 'block';
-
         } else {
             // Ocultar los campos de Cierre
             cierreLabel.style.display = 'none';
+            $(cierreField).select2('destroy'); // Destruir Select2
             cierreField.style.display = 'none';
             responsableLabel.style.display = 'none';
             responsableField.style.display = 'none';
-
         }
     }
 </script>
