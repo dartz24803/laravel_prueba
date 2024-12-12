@@ -1472,7 +1472,10 @@ class ColaboradorController extends Controller
     }
 
     public function edit_pl($id){
-        $dato['get_id'] = HistoricoColaborador::findOrFail($id);
+        $dato['get_id'] = HistoricoColaborador::from('historico_colaborador AS hc')
+                        ->select('hc.*','us.id_motivo_baja','us.observaciones_baja')
+                        ->join('users AS us','us.id_usuario','=','hc.id_usuario')
+                        ->where('id_historico_colaborador',$id)->first();
         $dato['list_situacion_laboral'] = SituacionLaboral::where('ficha',1)->where('estado',1)->get();
         $dato['list_tipo_contrato'] = TipoContrato::where('estado',1)->get();
         $dato['list_empresa'] = Empresas::where('estado', 1)->where('activo',1)->get();

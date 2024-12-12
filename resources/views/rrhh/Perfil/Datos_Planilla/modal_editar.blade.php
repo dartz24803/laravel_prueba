@@ -237,7 +237,10 @@
                 <select class="form-control basic" name="id_motivo_cesec" id="id_motivo_cesec">
                     <option value="0">Seleccione</option>
                     @foreach ($list_motivo_cese as $list)
-                        <option value="{{ $list->id_motivo }}">{{ $list->nom_motivo }}</option>
+                        <option value="{{ $list->id_motivo }}"
+                        @if ($list->id_motivo==$get_id->id_motivo_baja) selected @endif>
+                            {{ $list->nom_motivo }}
+                        </option>
                     @endforeach
                 </select>
             </div>
@@ -258,7 +261,8 @@
                 <label class="control-label text-bold">Especificar: </label>
             </div>            
             <div class="form-group col-lg-10">
-                <textarea name="observacionc" id="observacionc" rows="3" class="form-control"></textarea>
+                <textarea name="observacionc" id="observacionc" rows="3" class="form-control"
+                >{{ $get_id->observaciones_baja }}</textarea>
             </div>
         </div>
     </div>
