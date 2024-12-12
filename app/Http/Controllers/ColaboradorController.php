@@ -1515,7 +1515,7 @@ class ColaboradorController extends Controller
             if($request->fec_fin==""){
                 $errors['fec_fin'] = ['Debe ingresar fecha fin.'];
             }
-            if($request->fec_fin<=$get_id->fec_inicio){
+            if($request->fec_fin<$get_id->fec_inicio){
                 $errors['fec_fin_menor'] = ['Fecha fin no debe ser menor que la fecha de inicio.'];
             }
         }
