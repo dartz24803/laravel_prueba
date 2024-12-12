@@ -56,7 +56,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-    'base_api_url' => env('BASE_API_URL', 'http://127.0.0.1:8001/api/v1'),
+    'base_api_url' => env('BASE_API_URL', 'http://172.16.0.140:8001/api/v1'),
 
     'asset_url' => env('ASSET_URL'),
 

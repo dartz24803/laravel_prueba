@@ -27,12 +27,12 @@
     </div>
     <label>Del</label>
     <div class="col-lg-2">
-        <input type="date" class="form-control" name="fecha_iniciob" id="fecha_iniciob" value="{{ date('Y-m-d') }}">
+        <input type="date" class="form-control" name="fecha_iniciob_alm" id="fecha_iniciob_alm" value="{{ date('Y-m-d') }}">
 
     </div>
     <label>Al</label>
     <div class="col-lg-2">
-        <input type="date" class="form-control" name="fecha_finb" id="fecha_finb" value="{{ date('Y-m-d') }}">
+        <input type="date" class="form-control" name="fecha_finb_alm" id="fecha_finb_alm" value="{{ date('Y-m-d') }}">
     </div>
     <!-- <div class="col-lg-4">
         <span id="ultimaActualizacionEnviados">{{ $fecha_actualizacion_enviados }}</span><br>
@@ -139,9 +139,8 @@
         return `${day}/${month}/${year}`;
     }
     $('#btnActualizarEnviados').on('click', function() {
-
-        const fecha_iniciob = document.getElementById('fecha_iniciob').value;
-        const fecha_finb = document.getElementById('fecha_finb').value;
+        const fecha_iniciob = document.getElementById('fecha_iniciob_alm').value;
+        const fecha_finb = document.getElementById('fecha_finb_alm').value;
 
         const fechaInicioFormateada = formatDate(fecha_iniciob);
         const fechaFinFormateada = formatDate(fecha_finb);
