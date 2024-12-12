@@ -13,6 +13,9 @@
                         <div class="widget-content widget-content-area simple-tab">
                             <ul class="nav nav-tabs mt-4 ml-2" id="simpletab" role="tablist">
                                 <li class="nav-item">
+                                    <a id="a_tser" class="nav-link" onclick="Tipo_Servicio();" style="cursor: pointer;">Tipo de servicio</a>
+                                </li>
+                                <li class="nav-item">
                                     <a id="a_ptal" class="nav-link" onclick="Proveedor_Taller();" style="cursor: pointer;">Proveedor de taller</a>
                                 </li>
                                 <li class="nav-item">
@@ -42,8 +45,26 @@
             $("#hconf_manufactura").attr('aria-expanded', 'true');
             $("#conf_asignaciones_visitas").addClass('active');
 
-            Proveedor_Taller();
+            Tipo_Servicio();
         });
+
+        function Tipo_Servicio(){
+            Cargando();
+
+            var url="{{ route('avisita_conf_ts') }}";
+
+            $.ajax({
+                url: url,
+                type: "GET",
+                success:function (resp) {
+                    $('#div_avisita_conf').html(resp);  
+                    $("#a_tser").addClass('active');
+                    $("#a_ptal").removeClass('active');
+                    $("#a_ptel").removeClass('active');
+                    $("#a_ttra").removeClass('active');
+                }
+            });
+        }
         
         function Proveedor_Taller(){
             Cargando();
@@ -55,6 +76,7 @@
                 type: "GET",
                 success:function (resp) {
                     $('#div_avisita_conf').html(resp);  
+                    $("#a_tser").removeClass('active');
                     $("#a_ptal").addClass('active');
                     $("#a_ptel").removeClass('active');
                     $("#a_ttra").removeClass('active');
@@ -72,6 +94,7 @@
                 type: "GET",             
                 success:function (resp) {
                     $('#div_avisita_conf').html(resp);  
+                    $("#a_tser").removeClass('active');
                     $("#a_ptal").removeClass('active');
                     $("#a_ptel").addClass('active');
                     $("#a_ttra").removeClass('active');
@@ -88,7 +111,8 @@
                 url: url,
                 type: "GET",
                 success:function (resp) {
-                    $('#div_avisita_conf').html(resp);  
+                    $('#div_avisita_conf').html(resp); 
+                    $("#a_tser").removeClass('active'); 
                     $("#a_ptal").removeClass('active');
                     $("#a_ptel").removeClass('active');
                     $("#a_ttra").addClass('active');

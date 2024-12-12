@@ -1849,6 +1849,13 @@ Route::controller(TicketsConfController::class)->group(function () {
 //MANUFACTURA (PRODUCCIÓN) - ASIGNACION DE VISITA CONFIGURABLE
 Route::controller(AsignacionVisitaConfController::class)->group(function () {
     Route::get('avisita_conf', 'index')->name('avisita_conf');
+    Route::get('avisita_conf_ts', 'index_ts')->name('avisita_conf_ts');
+    Route::get('avisita_conf_ts/list', 'list_ts')->name('avisita_conf_ts.list');
+    Route::get('avisita_conf_ts/create', 'create_ts')->name('avisita_conf_ts.create');
+    Route::post('avisita_conf_ts', 'store_ts')->name('avisita_conf_ts.store');
+    Route::get('avisita_conf_ts/{id}/edit', 'edit_ts')->name('avisita_conf_ts.edit');
+    Route::put('avisita_conf_ts/{id}', 'update_ts')->name('avisita_conf_ts.update');
+    Route::delete('avisita_conf_ts/{id}', 'destroy_ts')->name('avisita_conf_ts.destroy');
     Route::get('avisita_conf_pr/{tipo}', 'index_pr')->name('avisita_conf_pr');
     Route::post('avisita_conf_pr/list', 'list_pr')->name('avisita_conf_pr.list');
     Route::get('avisita_conf_pr/{tipo}/create', 'create_pr')->name('avisita_conf_pr.create');

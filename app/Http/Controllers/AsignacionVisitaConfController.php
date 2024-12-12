@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Notificacion;
 use App\Models\ProveedorGeneral;
 use App\Models\SubGerencia;
+use App\Models\TipoServicio;
 use App\Models\TipoTransporteProduccion;
 use Illuminate\Http\Request;
 
@@ -27,6 +28,87 @@ class AsignacionVisitaConfController extends Controller
         ));
     }
 
+    public function index_ts()
+    {
+        return view('manufactura.produccion.administracion.asignacion_visita.tipo_servicio.index');
+    }
+
+    public function list_ts()
+    {
+        $list_tipo_servicio = TipoServicio::select('id_tipo_servicio',
+                            'nom_tipo_servicio')->where('estado',1)->get();
+        return view('manufactura.produccion.administracion.asignacion_visita.tipo_servicio.lista', compact(
+            'list_tipo_servicio'
+        ));
+    }
+
+    public function create_ts()
+    {
+        return view('manufactura.produccion.administracion.asignacion_visita.tipo_servicio.modal_registrar');
+    }
+
+    public function store_ts(Request $request)
+    {
+        $request->validate([
+            'nom_tipo_servicio' => 'required'
+        ], [
+            'nom_tipo_servicio.required' => 'Debe ingresar nombre.'
+        ]);
+
+        $valida = TipoServicio::where('nom_tipo_servicio', $request->nom_tipo_servicio)
+                ->where('estado', 1)->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            TipoServicio::create([
+                'nom_tipo_servicio' => $request->nom_tipo_servicio,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function edit_ts($id)
+    {
+        $get_id = TipoServicio::findOrFail($id);
+        return view('manufactura.produccion.administracion.asignacion_visita.tipo_servicio.modal_editar', compact(
+            'get_id'
+        ));
+    }
+
+    public function update_ts(Request $request, $id)
+    {
+        $request->validate([
+            'nom_tipo_servicioe' => 'required'
+        ], [
+            'nom_tipo_servicioe.required' => 'Debe ingresar nombre.'
+        ]);
+
+        $valida = TipoServicio::where('nom_tipo_servicio', $request->nom_tipo_servicioe)
+                ->where('estado', 1)->where('id_tipo_servicio', '!=', $id)->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            TipoServicio::findOrFail($id)->update([
+                'nom_tipo_servicio' => $request->nom_tipo_servicioe,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
+    }
+
+    public function destroy_ts($id)
+    {
+        TipoServicio::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
+    }
+
     public function index_pr(Request $request)
     {
         $tipo = $request->tipo;
@@ -44,6 +126,40 @@ class AsignacionVisitaConfController extends Controller
         return view('manufactura.produccion.administracion.asignacion_visita.proveedor.lista', compact(
             'list_proveedor'
         ));
+    }
+
+    
+    public function create_pr($tipo)
+    {
+        return view('manufactura.produccion.administracion.asignacion_visita.proveedor.registrar', compact(
+            'tipo',
+            'list_departamento',
+            ''
+        ));
+    }
+
+    public function store_pr(Request $request)
+    {
+        $request->validate([
+            'nom_tipo_transporte' => 'required'
+        ], [
+            'nom_tipo_transporte.required' => 'Debe ingresar nombre.'
+        ]);
+
+        $valida = TipoTransporteProduccion::where('nom_tipo_transporte', $request->nom_tipo_transporte)
+                ->where('estado', 1)->exists();
+        if ($valida) {
+            echo "error";
+        } else {
+            TipoTransporteProduccion::create([
+                'nom_tipo_transporte' => $request->nom_tipo_transporte,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
+        }
     }
 
     public function index_tt()
