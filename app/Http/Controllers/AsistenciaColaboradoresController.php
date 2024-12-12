@@ -1232,12 +1232,13 @@ class AsistenciaColaboradoresController extends Controller
             $dato['semana'] = null; // O algún valor predeterminado
         }
         $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
+        // $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=205);
         $dato['excel'] = 1;
-        
-        
+
+
         foreach($usuarios as $usuario){
             $dato['area'] = $usuario->id_area;
-            
+
             $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();

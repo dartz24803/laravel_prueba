@@ -2293,6 +2293,9 @@ Route::controller(TareasController::class)->group(function () {
     Route::get('Tareas/Excel_Pendiente/{cpi}/{cp}/{cf}/{cs}/{area}', 'Excel_Pendiente');
     Route::get('Tareas/Descargar_Archivo_Gestion_Pendiente/{id}', 'Descargar_Archivo_Gestion_Pendiente');
     Route::post('Tareas/Delete_Archivo_Gestion_Pendiente', 'Delete_Archivo_Gestion_Pendiente');
+    Route::get('Tareas/Modal_Ver_Solucion_Pendiente/{id}', 'Modal_Ver_Solucion_Pendiente');
+    Route::get('Tareas/Modal_Solucion_Pendiente/{id}', 'Modal_Solucion_Pendiente');
+    Route::post('Tareas/Update_Pendiente_Solucion', 'Update_Pendiente_Solucion');
 });
 
 use App\Http\Controllers\ContactosController;
@@ -2477,5 +2480,5 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
 
     Route::get('asistencia_colaborador/inconsistencias_colaborador/{base}/{area}/{usuario}/{tipo_fecha}/{dia}/{semana}', 'Excel_Inconsistencias_Colaborador')->name('inconsistencias_colaborador.excel');
 
-    Route::post('AsistenciaColaborador/Enviar_Correos_GerenteXJefe', 'Enviar_Correos_GerenteXJefe');
+    Route::get('AsistenciaColaborador/Enviar_Correos_GerenteXJefe', 'Enviar_Correos_GerenteXJefe');
 });
