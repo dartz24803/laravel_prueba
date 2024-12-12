@@ -717,7 +717,8 @@ class AsistenciaColaborador extends Model
                     DATE_FORMAT(a.hora_descanso_s,'%H:%i') as hora_descanso_s,
                     DATE_FORMAT(a.hora_descanso_s_desde,'%H:%i') as hora_descanso_s_desde,
                     DATE_FORMAT(a.hora_descanso_s_hasta,'%H:%i') as hora_descanso_s_hasta,
-                    a.observacion,a.estado,b.usuario_nombres,b.usuario_apater,b.usuario_amater,b.num_doc,b.centro_labores,
+                    a.observacion,a.estado,b.usuario_nombres,b.usuario_apater,b.usuario_amater,b.num_doc,
+                    ub.cod_ubi AS centro_labores,
                     CONCAT(CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres,' ',1),1,1)),
                     LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres,' ',1),2))),' ',
                     CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),1,1)),
@@ -730,7 +731,8 @@ class AsistenciaColaborador extends Model
                         else concat(date_format(a.hora_entrada,'%H:%i'),' - ',date_format(a.hora_salida,'%H:%i')) end
                     ) end as turno
                     FROM asistencia_colaborador_inconsistencia a 
-                    left join users b on a.id_usuario=b.id_usuario
+                    INNER JOIN users b on a.id_usuario=b.id_usuario
+                    INNER JOIN ubicacion ub ON ub.id_ubicacion=b.id_centro_labor
                     where a.id_asistencia_inconsistencia='$id_asistencia_inconsistencia' and a.flag_ausencia=0";
         } else {
             $fecha = "ai.fecha='" . $dato->dia . "' AND";
