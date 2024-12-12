@@ -637,14 +637,14 @@ class TareasController extends Controller
             $id_puesto = session('usuario')->id_puesto;
             $responsable_area = DB::table('area')
                 ->select(DB::raw("
-                        CASE 
+                        CASE
                             WHEN (
-                                SELECT COUNT(*) 
-                                FROM area ar 
+                                SELECT COUNT(*)
+                                FROM area ar
                                 WHERE CONCAT(',', ar.puestos, ',') LIKE CONCAT('%,', $id_puesto, ',%')
-                            ) > 0 
-                            THEN 'SI' 
-                            ELSE 'NO' 
+                            ) > 0
+                            THEN 'SI'
+                            ELSE 'NO'
                         END AS encargado_p
                     "))->first(); // Obtener un solo resultado
 
@@ -824,7 +824,7 @@ class TareasController extends Controller
                     $mail->Username   =  'intranet@lanumero1.com.pe';
                     $mail->Password   =  'lanumero1$1';
                     $mail->SMTPSecure =  'tls';
-                    $mail->Port     =  587; 
+                    $mail->Port     =  587;
                     $mail->setFrom('intranet@lanumero1.com.pe','PENDIENTE');
 
                     if($responsable_area=="SI"){
@@ -857,10 +857,10 @@ class TareasController extends Controller
                     }else{
                         $mail->Subject = "Por iniciar";
                     }
-                
+
                     $mailContent = view('Pendiente/mail_por_iniciar', $dato, TRUE);
                     $mail->Body= $mailContent;
-                
+
                     $mail->CharSet = 'UTF-8';
                     $mail->send();
 
@@ -1299,5 +1299,29 @@ class TareasController extends Controller
         header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
         header('Cache-Control: max-age=0');
         $writer->save('php://output');
+    }
+
+    public function Modal_Ver_Solucion_Pendiente($id_pendiente){
+            $dato['get_id'] = $this->modelo->get_list_pendiente($id_pendiente);
+            $dato['list_responsable']=$this->Model_Corporacion->get_list_responsable_area($dato['get_id'][0]['id_area']);
+            $dato['list_estado'] = $this->Model_Corporacion->get_list_estado_tickets();
+            $dato['list_archivo'] = $this->Model_Corporacion->get_list_archivo_pendiente($id_pendiente);
+            $dato['list_gestion_archivo'] = $this->Model_Corporacion->get_list_archivo_gestion_pendiente($id_pendiente);
+            $dato['historial_comentarios'] = $this->Model_Corporacion->get_list_historial_comentario_pendiente($id_pendiente);
+            $dato['list_responsable'] = Usuario::get_list_responsable_area($dato['get_id'][0]['id_area']);
+            $dato['list_estado'] = DB::table('estado_tickets')
+                ->where('estado', 1)
+                ->orderBy('id_estado_tickets', 'ASC')
+                ->get();
+            $dato['list_archivo'] = ArchivoPendiente::where('id_pendiente', $id_pendiente)
+                ->get();
+            $dato['list_gestion_archivo'] = ArchivoGestionPendiente::where('id_pendiente', $id_pendiente)
+                ->get();
+            $dato['historial_comentarios'] = PendienteHistorialC::get_list_historial_comentario_pendiente($id_pendiente);
+            $dato['url'] = Config::where('descrip_config', 'Pendientes_Doc')
+                ->where('estado', 1)
+                ->get();
+            $get_id = $this->Model_Perfil->get_id_usuario($dato['get_id'][0]['id_usuario']);
+            $this->load->view('Pendiente/modal_ver_solucion',$dato);
     }
 }
