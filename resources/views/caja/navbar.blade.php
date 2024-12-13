@@ -91,10 +91,10 @@ session('usuario')->id_sede_laboral == 6 )
         session('usuario')->id_puesto == 128 ||
         session('usuario')->id_puesto == 148 ||
         //JEFE DE DTO. GESTIÓN DE TIENDAS
-        session('usuario')->id_puesto == 158 ||            
+        session('usuario')->id_puesto == 158 ||
         session('usuario')->id_puesto == 161 ||
         session('usuario')->id_puesto == 167 ||
-        session('usuario')->id_puesto == 314 ||    
+        session('usuario')->id_puesto == 314 ||
         //ASISTENTE DE COMPENSACIONES
         session('usuario')->id_puesto == 209 ||
         session('usuario')->id_sede_laboral == 6 )
@@ -135,7 +135,7 @@ session('usuario')->id_sede_laboral == 6 )
         /*ASISTENTE DE TECNOLOGÍAS DE LA INFORMACIÓN (OSCAR LOZA)*/
         session('usuario')->id_puesto == 148 ||
         //JEFE DE DTO. GESTIÓN DE TIENDAS
-        session('usuario')->id_puesto == 158 ||        
+        session('usuario')->id_puesto == 158 ||
         //ASISTENTE DE COMPENSACIONES
         session('usuario')->id_puesto == 209 ||
         /*TODOS LOS USUARIOS DE TIENDA*/
@@ -153,7 +153,7 @@ session('usuario')->id_sede_laboral == 6 )
         session('usuario')->id_puesto == 128 ||
         session('usuario')->id_puesto == 161 ||
         //JEFE DE DTO. GESTIÓN DE TIENDAS
-        session('usuario')->id_puesto == 158 ||        
+        session('usuario')->id_puesto == 158 ||
         //ASISTENTE DE COMPENSACIONES
         session('usuario')->id_puesto == 209)
         <li id="lineas_carreras">
@@ -172,7 +172,7 @@ session('usuario')->id_sede_laboral == 6 )
         session('usuario')->id_puesto == 161 ||
         session('usuario')->id_puesto == 167 ||
         //ASISTENTE DE COMPENSACIONES
-        session('usuario')->id_puesto == 209 ||        
+        session('usuario')->id_puesto == 209 ||
         session('usuario')->id_puesto == 314 ||
         session('usuario')->id_sede_laboral == 6 )
         <li id="observaciones">
@@ -192,10 +192,10 @@ session('usuario')->id_sede_laboral == 6 )
         session('usuario')->id_puesto == 83 ||
         session('usuario')->id_puesto == 128 ||
         //JEFE DE DTO. GESTIÓN DE TIENDAS
-        session('usuario')->id_puesto == 158 ||        
+        session('usuario')->id_puesto == 158 ||
         session('usuario')->id_puesto == 161 ||
         //ASISTENTE DE COMPENSACIONES
-        session('usuario')->id_puesto == 209 ||        
+        session('usuario')->id_puesto == 209 ||
         session('usuario')->id_puesto == 314 ||
         session('usuario')->id_sede_laboral == 6 )
         <li id="requisiciones_tiendas">
@@ -241,12 +241,18 @@ session('usuario')->id_sede_laboral == 6 )
     <ul class="collapse submenu list-unstyled" id="rreportbi_primario" data-parent="#accordionExample">
         @foreach ($list_subgerencia['areas'] as $area)
         <li id="{{ $area['id_area'] }}">
-            <a href="{{ route('reporte_primario', ['id_area' => $area['id_area'], 'id_subgerencia' => $area['id_subgerencia']]) }}" id="{{ $area['id_area'] }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                <p class="romperpalabra"><span id="icono_active2"></span> {{ $area['nom_area'] }}</p>
+            <a href="{{ route('reporte_primario', ['id_area' => $area['id_area'], 'id_subgerencia' => $area['id_subgerencia']]) }}"
+                id="{{ $area['id_area'] }}"
+                data-toggle="tooltip"
+                data-placement="right"
+                data-html="true"
+                title="{{ $area['nom_area'] }}"> <!-- Se agrega el atributo title -->
+                <p class="romperpalabra">
+                    <span id="icono_active2"></span> {{ $area['nom_area'] }}
+                </p>
             </a>
         </li>
         @endforeach
-
     </ul>
 </li>
 

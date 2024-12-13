@@ -438,7 +438,77 @@
                         @endforeach
                     </div>
                 </div>
+                <label class="d-block mb-3">Documentos Cargados:</label>
 
+                <div class="row justify-content-center" id="documentos-cargados">
+                    <div class="col-md-12 text-center" id="div_documentos_ver">
+                        @if ($get_id->documento1 || $get_id->documento2 || $get_id->documento3)
+                        <ul id="documentos-lista" class="list-unstyled">
+                            @if ($get_id->documento1)
+                            <li id="doc-item-1" class="mb-2">
+                                Documento 1:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento1 }}"
+                                    target="_blank"
+                                    class="document-link">
+                                    {{ $get_id->documento1 }}
+                                </a>
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento1 }}"
+                                    target="_blank"
+                                    class="icon-link ms-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download-cloud">
+                                        <polyline points="8 17 12 21 16 17"></polyline>
+                                        <line x1="12" y1="12" x2="12" y2="21"></line>
+                                        <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
+                                    </svg>
+                                </a>
+                            </li>
+                            @endif
+
+                            @if ($get_id->documento2)
+                            <li id="doc-item-2" class="mb-2">
+                                Documento 2:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento2 }}"
+                                    target="_blank"
+                                    class="document-link">
+                                    {{ $get_id->documento2 }}
+                                </a>
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento2 }}"
+                                    target="_blank"
+                                    class="icon-link ms-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download-cloud">
+                                        <polyline points="8 17 12 21 16 17"></polyline>
+                                        <line x1="12" y1="12" x2="12" y2="21"></line>
+                                        <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
+                                    </svg>
+                                </a>
+                            </li>
+                            @endif
+
+                            @if ($get_id->documento3)
+                            <li id="doc-item-3" class="mb-2">
+                                Documento 3:
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento3 }}"
+                                    target="_blank"
+                                    class="document-link">
+                                    {{ $get_id->documento3 }}
+                                </a>
+                                <a href="https://lanumerounocloud.com/intranet/SOPORTE/{{ $get_id->documento3 }}"
+                                    target="_blank"
+                                    class="icon-link ms-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-download-cloud">
+                                        <polyline points="8 17 12 21 16 17"></polyline>
+                                        <line x1="12" y1="12" x2="12" y2="21"></line>
+                                        <path d="M20.88 18.09A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.29"></path>
+                                    </svg>
+                                </a>
+                            </li>
+                            @endif
+                        </ul>
+                        @else
+                        <p>No se han cargado documentos.</p>
+                        @endif
+                    </div>
+                </div>
                 <div class="row" style="padding-top: 1rem;">
                     <div class="d-flex justify-content-center" style="max-width: 100%;" id="div_imagenes_ver">
                         <input type="hidden" id="imagenes_input_ver" name="imagenes_ver" value="">

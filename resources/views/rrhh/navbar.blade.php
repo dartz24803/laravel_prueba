@@ -1,6 +1,6 @@
-@if(session('usuario')->id_puesto !== 9  &&
-    session('usuario')->id_puesto !== 32 &&
-    session('usuario')->id_puesto !== 128)
+@if(session('usuario')->id_puesto !== 9 &&
+session('usuario')->id_puesto !== 32 &&
+session('usuario')->id_puesto !== 128)
 <li class="menu menu-heading">
     <div class="heading">
         <span>INICIO Talento Humano</span>
@@ -74,11 +74,11 @@
         session('usuario')->id_puesto == 22 ||
         session('usuario')->id_puesto == 157 ||
         session('usuario')->id_puesto == 209)
-            <li id="asist_colaborador">
-                <a href="{{url('AsistenciaColaboradores/ListaAsistenciaColaboradores') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Asistencia <br>• Inconsistencias <br>• Ausencias <br>• Dotación <br>• Tardanza">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Asistencia Colaboradores</p>
-                </a>
-            </li>
+        <li id="asist_colaborador">
+            <a href="{{url('AsistenciaColaboradores/ListaAsistenciaColaboradores') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="• Asistencia <br>• Inconsistencias <br>• Ausencias <br>• Dotación <br>• Tardanza">
+                <p class="romperpalabra"><span id="icono_active2"></span> Asistencia Colaboradores</p>
+            </a>
+        </li>
         @endif
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 21 ||
@@ -97,11 +97,11 @@
         session('usuario')->id_puesto == 310 ||
         session('usuario')->id_puesto == 311 ||
         session('usuario')->id_puesto == 314)
-            <li>
-                <a id="caps" href="{{ route('cap') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> CAP</p>
-                </a>
-            </li>
+        <li>
+            <a id="caps" href="{{ route('cap') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> CAP</p>
+            </a>
+        </li>
         @endif
         @if (session('usuario')->id_nivel == 1 ||
         session('usuario')->id_puesto == 27 ||
@@ -160,19 +160,20 @@
                     <p class="romperpalabra"><span id="icono_active2"></span> Mi Equipo</p>
                 </a>
             </li>
-        <?php } ?>        
+        <?php } ?>
         <?php
-        if (session('usuario')->estadopps==1 ||
-            session('usuario')->id_nivel == 1 || 
-            session('usuario')->id_puesto == 19 || 
-            session('usuario')->id_puesto == 21 || 
+        if (
+            session('usuario')->estadopps == 1 ||
+            session('usuario')->id_nivel == 1 ||
+            session('usuario')->id_puesto == 19 ||
+            session('usuario')->id_puesto == 21 ||
             session('usuario')->id_puesto == 278 ||
-            session('usuario')->id_puesto == 279 || 
-            session('usuario')->id_puesto == 23 || 
-            session('usuario')->id_puesto == 40 || 
+            session('usuario')->id_puesto == 279 ||
+            session('usuario')->id_puesto == 23 ||
+            session('usuario')->id_puesto == 40 ||
             session('usuario')->id_puesto == 10 ||
-            session('usuario')->id_puesto == 93 || 
-            session('usuario')->id_puesto == 30 || 
+            session('usuario')->id_puesto == 93 ||
+            session('usuario')->id_puesto == 30 ||
             session('usuario')->id_puesto == 314 ||
             session('usuario')->id_puesto == 209
         ) {
@@ -181,14 +182,14 @@
             $hpapeletas2 = "";
         }
         if (
-            session('usuario')->id_nivel == 1 || 
-            session('usuario')->id_puesto == 23 || 
-            session('usuario')->id_puesto == 36 || 
-            session('usuario')->id_puesto == 24 || 
-            session('usuario')->id_puesto == 26 || 
+            session('usuario')->id_nivel == 1 ||
+            session('usuario')->id_puesto == 23 ||
+            session('usuario')->id_puesto == 36 ||
+            session('usuario')->id_puesto == 24 ||
+            session('usuario')->id_puesto == 26 ||
             session('usuario')->id_puesto == 128 ||
-            session('usuario')->id_puesto == 21 || 
-            session('usuario')->id_puesto == 279 || 
+            session('usuario')->id_puesto == 21 ||
+            session('usuario')->id_puesto == 279 ||
             session('usuario')->id_puesto == 19 ||
             session('usuario')->id_puesto == 209
         ) {
@@ -198,17 +199,19 @@
         }
         ?>
 
-        <?php if(session('usuario')->estadopps==1 || 
-        session('usuario')->id_nivel==1 || 
-        session('usuario')->id_puesto==19 || 
-        session('usuario')->id_puesto==21 || 
-        session('usuario')->id_puesto==23 || 
-        session('usuario')->id_puesto==40 ||
-        session('usuario')->id_puesto==10 || 
-        session('usuario')->id_puesto==93 || 
-        session('usuario')->id_puesto==314 || 
-        session('usuario')->id_puesto==315 ||
-        session('usuario')->id_puesto==209){?>
+        <?php if (
+            session('usuario')->estadopps == 1 ||
+            session('usuario')->id_nivel == 1 ||
+            session('usuario')->id_puesto == 19 ||
+            session('usuario')->id_puesto == 21 ||
+            session('usuario')->id_puesto == 23 ||
+            session('usuario')->id_puesto == 40 ||
+            session('usuario')->id_puesto == 10 ||
+            session('usuario')->id_puesto == 93 ||
+            session('usuario')->id_puesto == 314 ||
+            session('usuario')->id_puesto == 315 ||
+            session('usuario')->id_puesto == 209
+        ) { ?>
             <li id="papeletas">
                 <a id="hpapeletas" href="{{ url('Papeletas/Lista_Papeletas_Salida_seguridad') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="<?= $hpapeletas2 ?> <?= $hpapeletas3 ?>">
                     <p class="romperpalabra"><span id="icono_active2"></span> Papeletas de Salida</p>
@@ -229,19 +232,21 @@
         session('usuario')->id_puesto == "278" ||
         session('usuario')->id_puesto == "314" ||
         session('usuario')->id_sede_laboral == 6)
-            <li id="postulantes">
-                <a href="{{ route('postulante') }}">
-                    <p class="romperpalabra"><span id="icono_active2"></span> Postulantes</p>
-                </a>
-            </li>
+        <li id="postulantes">
+            <a href="{{ route('postulante') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Postulantes</p>
+            </a>
+        </li>
         @endif
-        <?php if (session('usuario')->visualizar_responsable_area == 1 ||
-        session('usuario')->id_nivel == 1 ||
-        session('usuario')->id_puesto == 21 ||
-        session('usuario')->id_puesto == 22 ||
-        session('usuario')->id_puesto == 27 ||
-        session('usuario')->id_puesto == 277 ||
-        session('usuario')->id_puesto == 278) { ?>
+        <?php if (
+            session('usuario')->visualizar_responsable_area == 1 ||
+            session('usuario')->id_nivel == 1 ||
+            session('usuario')->id_puesto == 21 ||
+            session('usuario')->id_puesto == 22 ||
+            session('usuario')->id_puesto == 27 ||
+            session('usuario')->id_puesto == 277 ||
+            session('usuario')->id_puesto == 278
+        ) { ?>
             <?php if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2) {
                 $hreclutamiento2 = "<br>• Completados";
             } else {
@@ -285,12 +290,18 @@
     <ul class="collapse submenu list-unstyled" id="rreportbi_primario" data-parent="#accordionExample">
         @foreach ($list_subgerencia['areas'] as $area)
         <li id="{{ $area['id_area'] }}">
-            <a href="{{ route('reporte_primario', ['id_area' => $area['id_area'], 'id_subgerencia' => $area['id_subgerencia']]) }}" id="{{ $area['id_area'] }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                <p class="romperpalabra"><span id="icono_active2"></span> {{ $area['nom_area'] }}</p>
+            <a href="{{ route('reporte_primario', ['id_area' => $area['id_area'], 'id_subgerencia' => $area['id_subgerencia']]) }}"
+                id="{{ $area['id_area'] }}"
+                data-toggle="tooltip"
+                data-placement="right"
+                data-html="true"
+                title="{{ $area['nom_area'] }}"> <!-- Se agrega el atributo title -->
+                <p class="romperpalabra">
+                    <span id="icono_active2"></span> {{ $area['nom_area'] }}
+                </p>
             </a>
         </li>
         @endforeach
-
     </ul>
 </li>
 

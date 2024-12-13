@@ -158,12 +158,18 @@
     <ul class="collapse submenu list-unstyled" id="rreportbi_primario" data-parent="#accordionExample">
         @foreach ($list_subgerencia['areas'] as $area)
         <li id="{{ $area['id_area'] }}">
-            <a href="{{ route('reporte_primario', ['id_area' => $area['id_area'], 'id_subgerencia' => $area['id_subgerencia']]) }}" id="{{ $area['id_area'] }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                <p class="romperpalabra"><span id="icono_active2"></span> {{ $area['nom_area'] }}</p>
+            <a href="{{ route('reporte_primario', ['id_area' => $area['id_area'], 'id_subgerencia' => $area['id_subgerencia']]) }}"
+                id="{{ $area['id_area'] }}"
+                data-toggle="tooltip"
+                data-placement="right"
+                data-html="true"
+                title="{{ $area['nom_area'] }}"> <!-- Se agrega el atributo title -->
+                <p class="romperpalabra">
+                    <span id="icono_active2"></span> {{ $area['nom_area'] }}
+                </p>
             </a>
         </li>
         @endforeach
-
     </ul>
 </li>
 
