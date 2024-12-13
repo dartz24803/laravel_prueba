@@ -179,6 +179,9 @@ class AsistenciaController extends Controller
 
         $codBase = $request->input('cod_base', 0);
         $numDoc = $request->input('num_doc', []);
+        if (empty($numDoc)) {
+            $numDoc = [0];
+        }
         $area = $request->input('area', 0);
         $estado = $request->input('estado', null);
         $tipo = $request->input('tipo');
@@ -206,13 +209,13 @@ class AsistenciaController extends Controller
             'clabores' => $codBase, // Aquí mapeamos 'cod_base' como 'clabores'
             'area' => $area,
             'estado' => $estado,
-            'colaborador' => json_encode($numDoc),
+            'colaborador' => $numDoc,
         ];
         // print_r(json_encode($numDoc));
-        print_r($queryParams);
+        // print_r($queryParams);
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
-        print_r($response->json());
-/*
+        // print_r($response->json());
+
         // Verificar si la respuesta fue exitosa
         if ($response->successful()) {
             // Obtener los datos de la respuesta JSON
@@ -221,17 +224,17 @@ class AsistenciaController extends Controller
 
             // Obtener la lista de colaboradores
             if ($numDoc != 0) {
-                $list_colaborador = $this->modelo->get_list_usuario_xnum_doc($numDoc);
+                //$list_colaborador = $this->modelo->get_list_usuario_xnum_doc($numDoc);
             } else {
-                $list_colaborador = $this->modelo->get_list_usuarios_x_baset($codBase, $area, $estado);
+                //$list_colaborador = $this->modelo->get_list_usuarios_x_baset($codBase, $area, $estado);
             }
 
             // Pasar las variables a la vista
-            return view('rrhh.Asistencia.reporte.listar', compact('initialDate', 'endDate', 'list_asistencia', 'list_colaborador', 'numDoc'));
+            return view('rrhh.Asistencia.reporte.listar', compact('initialDate', 'endDate', 'list_asistencia',/* 'list_colaborador',*/ 'numDoc'));
         } else {
             // Si la API falla, puedes manejar el error
             return redirect()->back()->with('error', 'Hubo un problema al obtener los datos de la API.');
-        }*/
+        }
     }
     public function Traer_Colaborador_Asistencia(Request $request){
             $dato['cod_base'] = $request->input('cod_base');
