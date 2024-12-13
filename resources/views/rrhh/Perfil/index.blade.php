@@ -3215,415 +3215,6 @@ if($get_id[0]['edicion_perfil']==1){
 </div>
 
 
-<script>
-    $(document).ready(function() {
-        $("#usuario").addClass('active');
-        $("#husuario").attr('aria-expanded','true');
-        $("#upersonales").addClass('active');
-        $('.dropify').dropify();
-
-        Planilla_Parte_Superior();
-        Planilla_Parte_Inferior();
-    });
-
-    function solo_Numeros(e) {
-        var key = event.which || event.keyCode;
-        if (key >= 48 && key <= 57) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function solo_Numeros_Punto(e) {
-        var key = event.which || event.keyCode;
-        if ((key >= 48 && key <= 57) || key == 46) {
-            if (key == 46 && event.target.value.indexOf('.') !== -1) {
-                return false;
-            }
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    function Valida_Archivo(val) {
-        var archivoInput = document.getElementById(val);
-        var archivoRuta = archivoInput.value;
-        var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
-
-        if (!extPermitidas.exec(archivoRuta)) {
-            Swal({
-                title: 'Registro Denegado',
-                text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
-                type: 'error',
-                showCancelButton: false,
-                confirmButtonColor: '#3085d6',
-                confirmButtonText: 'OK',
-            });
-            archivoInput.value = '';
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    function Planilla_Parte_Superior(){
-        Cargando();
-
-        var url = "{{ route('colaborador_pl.parte_superior', $get_id[0]['id_usuario']) }}";
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            success:function (resp) {
-                $('#parte_superior_pl').html(resp);
-            }
-        });
-    }
-
-    function Planilla_Parte_Inferior(){
-        Cargando();
-
-        var url = "{{ route('colaborador_pl.parte_inferior', $get_id[0]['id_usuario']) }}";
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            success:function (resp) {
-                $('#parte_inferior_pl').html(resp);
-            }
-        });
-    }
-
-    function Valida_Planilla_Activa(id){
-        Cargando();
-
-        var url = "{{ url('ColaboradorController/Valida_Planilla_Activa') }}";
-
-        $.ajax({
-            type: "POST",
-            url: url,
-            data: {
-                'id_usuario': id
-            },
-            headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            success: function(data) {
-                if(data=="0"){
-                    $('#btn_registrar_planilla').click();
-                }else{
-                    Swal({
-                        title: '¡Advertencia!',
-                        text: "¡Existe un registro en estado activo! Por favor actualice Fecha Fin del último registro para continuar",
-                        type: 'warning',
-                        showCancelButton: false,
-                        confirmButtonText: 'OK',
-                    });
-                }
-            }
-        });
-    }
-
-    function Cambio_Situacion(v){
-        if($('#id_situacion_laboral'+v).val()=="2" || $('#id_situacion_laboral'+v).val()=="3"){
-            $('.ver_sl'+v).show();
-        }else{
-            $('.ver_sl'+v).hide();
-            $('#id_tipo_contrato'+v).val('0');
-            $('#id_empresa'+v).val('0');
-            $('#id_regimen'+v).val('0');
-            if(v=="r"){
-                $('#bono'+v).val('');
-            }
-        }
-    }
-
-    function Fecha_Vencimiento(v){
-        if($('#id_tipo_contrato'+v).val()=="1"){
-            $('.ver_fv'+v).hide();
-            $('#fec_vencimiento'+v).val('');
-        }else{
-            $('.ver_fv'+v).show();
-        }
-    }
-
-    function Delete_Planilla(id) {
-        Cargando();
-
-        var url = "{{ route('colaborador_pl.destroy', ':id') }}".replace(':id', id);
-
-        Swal({
-            title: '¿Realmente desea eliminar el registro?',
-            text: "El registro será eliminado permanentemente",
-            type: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Si',
-            cancelButtonText: 'No',
-            padding: '2em'
-        }).then((result) => {
-            if (result.value) {
-                $.ajax({
-                    type: "DELETE",
-                    url: url,
-                    headers: {
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                    },
-                    success: function() {
-                        Swal(
-                            '¡Eliminado!',
-                            'El registro ha sido eliminado satisfactoriamente.',
-                            'success'
-                        ).then(function() {
-                            Planilla_Parte_Superior();
-                            Planilla_Parte_Inferior();
-                        });
-                    }
-                });
-            }
-        })
-    }
-
-    var checkaractualidad = document.getElementById('checkactualidad');
-    var dia_finel = document.getElementById('dia_finel');
-    var mes_finel = document.getElementById('mes_finel');
-    var anio_finel = document.getElementById('anio_finel');
-
-    checkaractualidad.onchange = function() {
-        dia_finel.disabled = !!this.checked;
-        mes_finel.disabled = !!this.checked;
-        anio_finel.disabled = !!this.checked;
-    };
-
-
-    $(document).ready(function() {
-        $("#usuario").addClass('active');
-        $("#husuario").attr('aria-expanded','true');
-        $("#upersonales").addClass('active');
-    });
-
-    function area(){
-        var url = "{{ url('ColaboradorController/List_Area') }}";
-        $.ajax({
-            url: url,
-            type: 'POST',
-            //data: frm,
-            data: $("#formulario_datos_laborales").serialize(),
-            success: function(data)
-            {
-                $('#marea').html(data);
-                puesto();
-                cargo();
-
-            }
-        });
-    }
-
-    function empresa(){
-        var dataString = $("#formulario_datos_planilla").serialize();
-        var url="{{ url('ColaboradorController/List_Empresa') }}";
-        var id_situacion = $('#id_situacion_laboral').val();
-        if(id_situacion=="2"){
-
-            $.ajax({
-                url: url,
-                data:dataString,
-                type:"POST",
-                processData: false,
-                contentType: false,
-                success:function (data) {
-                    //window.location = "<?php //echo url(); ?>ColaboradorController/Cargo";
-                    $('#memprepl').html(data);
-
-                }
-            });
-
-        }else{
-            $('#memprepl').html("");
-        }
-    }
-
-    function PlanillaEmpresa(){
-        var div = document.getElementById("memprepl");
-
-        if($('#id_situacion_laboral').val() == 2) {
-            div.style.display = "block";
-        }else{
-            div.style.display = "none";
-        }
-    }
-
-    function puesto(){
-        var url = "{{ url('ColaboradorController/List_Puesto') }}";
-        $.ajax({
-            url: url,
-            type: 'POST',
-            //data: frm,
-            data: $("#formulario_datos_laborales").serialize(),
-            success: function(data)
-            {
-                $('#mpuesto').html(data);
-                cargo();
-            }
-        });
-    }
-
-    function cargo(){
-        var url = "{{ url('ColaboradorController/List_Cargo') }}";
-        $.ajax({
-
-            url: url,
-            type: 'POST',
-            //data: frm,
-            data: $("#formulario_datos_laborales").serialize(),
-            success: function(data)
-            {
-                $('#mcargo').html(data);
-            }
-        });
-    }
-</script>
-
-<script>
-    google.maps.event.addDomListener(window, 'load', function(){
-        var lati = <?php if(isset($get_id_d['0']['lat'])) {echo $get_id_d['0']['lat'];} else {echo "-12.0746254";}?>;
-        var lngi = <?php if(isset($get_id_d['0']['lng'])) {echo $get_id_d['0']['lng'];} else {echo "-77.021754";}?>;
-
-        var coords = {lat: lati, lng: lngi};
-
-        setMapa(coords);
-
-        function setMapa (coords)
-        {
-            //Se crea una nueva instancia del objeto mapa
-            var mapa =  new google.maps.Map(document.getElementById('map'),{
-                            zoom: 18,
-                            center: coords,
-                        });
-
-            texto = '<h1> Nombre del lugar</h1>'+'<p> Descripción del lugar </p>'+
-                    '<a href="https://www.lanumero1.com.pe/" target="_blank">Página WEB</a>';
-
-            //Creamos el marcador en el mapa con sus propiedades
-            //para nuestro obetivo tenemos que poner el atributo draggable en true
-            //position pondremos las mismas coordenas que obtuvimos en la geolocalización
-            marker = new google.maps.Marker({
-                position: coords,
-                map: mapa,
-                draggable: true,
-                animation: google.maps.Animation.DROP,
-                title: 'Ubicación de Mi Casa'
-            });
-
-            var informacion = new google.maps.InfoWindow({
-                content: texto
-            });
-
-            marker.addListener('click', function(){
-                informacion.open(mapa, marker);
-            });
-
-            //agregamos un evento al marcador junto con la funcion callback al igual que el evento dragend que indica
-            //cuando el usuario a soltado el marcador
-            marker.addListener('click', toggleBounce);
-
-            marker.addListener( 'dragend', function (event){
-                //escribimos las coordenadas de la posicion actual del marcador dentro del input #coords
-                document.getElementById("coordsltd").value = this.getPosition().lat();
-                document.getElementById("coordslgt").value = this.getPosition().lng();
-            });
-
-            var autocomplete = document.getElementById('autocomplete');
-
-            const search = new google.maps.places.Autocomplete(autocomplete);
-            search.bindTo("bounds", mapa);
-
-            search.addListener('place_changed', function(){
-                informacion.close();
-                marker.setVisible(false);
-
-                var place = search.getPlace();
-
-                if(!place.geometry.viewport){
-                    window.alert("Error al mostrar el lugar");
-                    return;
-                }
-
-                if(place.geometry.viewport){
-                    mapa.fitBounds(place.geometry.viewport);
-                }else{
-                    mapa.setCenter(place.geometry.location);
-                    mapa.setZoom(18);
-                }
-
-                marker.setPosition(place.geometry.location);
-
-                marker.setVisible(true);
-
-                var address = "";
-                if(place.address_components){
-                    address = [
-                        (place.address_components[0] && place.address_components[0].short_name || ''),
-                        (place.address_components[1] && place.address_components[1].short_name || ''),
-                        (place.address_components[2] && place.address_components[2].short_name || ''),
-                    ]
-                }
-
-                informacion.setContent('<div><strong>'+place.name + '</strong><br>' + address);
-                informacion.open(map, marker);
-
-                document.getElementById("coordsltd").value = place.geometry.location.lat();
-                document.getElementById("coordslng").value = place.geometry.location.lng();
-
-            });
-
-        }
-
-        function toggleBounce() {
-            if (marker.getAnimation() !== null) {
-                marker.setAnimation(null);
-            } else {
-                marker.setAnimation(google.maps.Animation.BOUNCE);
-            }
-        }
-    });
-</script>
-
-<script>
-    function provincia(){
-        var url = "{{ url('ColaboradorController/Provincia') }}";
-        $.ajax({
-            url: url,
-            type: 'POST',
-            //data: frm,
-            data: $("#formulario_domicilio").serialize(),
-            success: function(data)
-            {
-                $('#mprovincia').html(data);
-            }
-        });
-        distrito();
-    }
-
-    function distrito(){
-        var url = "{{ url('ColaboradorController/Distrito') }}";
-        $.ajax({
-            url: url,
-            type: 'POST',
-            //data: frm,
-            data: $("#formulario_domicilio").serialize(),
-            success: function(data)
-            {
-                $('#mdistrito').html(data);
-            }
-        });
-    }
-</script>
-@endsection
-
-
-
 <div id="zoomupModalDocPlanilla" class="modal animated zoomInUp custo-zoomInUp bd-example-modal-xl" role="dialog" tabindex="-1" role="dialog" aria-labelledby="ModalUpdate" aria-hidden="true">
     <div class="modal-dialog modal-xl" role="document">
         <!-- Modal content-->
@@ -3638,14 +3229,13 @@ if($get_id[0]['edicion_perfil']==1){
                     <div class="form-group col-sm-12">
                     <div id="datos_ajax"></div>
                         <input type="hidden" name="rutafoto" id="rutafoto" value= '<?php //echo base_url() ?>'>
-                            <div align="center" id="capital222"></div>
-                        </div>
+                        <div align="center" id="capital222"></div>
                     </div>
+                </div>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -3664,14 +3254,13 @@ if($get_id[0]['edicion_perfil']==1){
                     <div class="form-group col-sm-12">
                         <div id="datos_ajax"></div>
                         <input type="hidden" name="rutacv" id="rutacv" value= ''>
-                            <div align="center" id="cv"></div>
-                        </div>
+                        <div align="center" id="cv"></div>
                     </div>
+                </div>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -3691,14 +3280,13 @@ if($get_id[0]['edicion_perfil']==1){
                     <div class="form-group col-sm-12">
                         <div id="datos_ajax"></div>
                         <input type="hidden" name="rutadni" id="rutadni" value= ''>
-                            <div align="center" id="dni"></div>
-                        </div>
+                        <div align="center" id="dni"></div>
                     </div>
+                </div>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -3718,14 +3306,13 @@ if($get_id[0]['edicion_perfil']==1){
                     <div class="form-group col-sm-12">
                         <div id="datos_ajax"></div>
                         <input type="hidden" name="rutarecibo" id="rutarecibo" value= ''>
-                            <div align="center" id="recibo"></div>
-                        </div>
+                        <div align="center" id="recibo"></div>
                     </div>
+                </div>
 
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
-                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
@@ -4095,9 +3682,7 @@ if($get_id[0]['edicion_perfil']==1){
         $('.alert').hide();//Oculto alert
     })
 
-</script>
 
-<script>
 
 
     $('#num_cele').inputmask("999999999");
@@ -7417,4 +7002,407 @@ if($get_id[0]['edicion_perfil']==1){
             }
         });
     }
+
+    $(document).ready(function() {
+        $("#usuario").addClass('active');
+        $("#husuario").attr('aria-expanded','true');
+        $("#upersonales").addClass('active');
+        $('.dropify').dropify();
+
+        Planilla_Parte_Superior();
+        Planilla_Parte_Inferior();
+    });
+
+    function solo_Numeros(e) {
+        var key = event.which || event.keyCode;
+        if (key >= 48 && key <= 57) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function solo_Numeros_Punto(e) {
+        var key = event.which || event.keyCode;
+        if ((key >= 48 && key <= 57) || key == 46) {
+            if (key == 46 && event.target.value.indexOf('.') !== -1) {
+                return false;
+            }
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function Valida_Archivo(val) {
+        var archivoInput = document.getElementById(val);
+        var archivoRuta = archivoInput.value;
+        var extPermitidas = /(.pdf|.png|.jpg|.jpeg)$/i;
+
+        if (!extPermitidas.exec(archivoRuta)) {
+            Swal({
+                title: 'Registro Denegado',
+                text: "Asegurese de ingresar archivo con extensión .pdf|.jpg|.png|.jpeg",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+            });
+            archivoInput.value = '';
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    function Planilla_Parte_Superior(){
+        Cargando();
+
+        var url = "{{ route('colaborador_pl.parte_superior', $get_id[0]['id_usuario']) }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success:function (resp) {
+                $('#parte_superior_pl').html(resp);
+            }
+        });
+    }
+
+    function Planilla_Parte_Inferior(){
+        Cargando();
+
+        var url = "{{ route('colaborador_pl.parte_inferior', $get_id[0]['id_usuario']) }}";
+
+        $.ajax({
+            url: url,
+            type: "GET",
+            success:function (resp) {
+                $('#parte_inferior_pl').html(resp);
+            }
+        });
+    }
+
+    function Valida_Planilla_Activa(id){
+        Cargando();
+
+        var url = "{{ url('ColaboradorController/Valida_Planilla_Activa') }}";
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: {
+                'id_usuario': id
+            },
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(data) {
+                if(data=="0"){
+                    $('#btn_registrar_planilla').click();
+                }else{
+                    Swal({
+                        title: '¡Advertencia!',
+                        text: "¡Existe un registro en estado activo! Por favor actualice Fecha Fin del último registro para continuar",
+                        type: 'warning',
+                        showCancelButton: false,
+                        confirmButtonText: 'OK',
+                    });
+                }
+            }
+        });
+    }
+
+    function Cambio_Situacion(v){
+        if($('#id_situacion_laboral'+v).val()=="2" || $('#id_situacion_laboral'+v).val()=="3"){
+            $('.ver_sl'+v).show();
+        }else{
+            $('.ver_sl'+v).hide();
+            $('#id_tipo_contrato'+v).val('0');
+            $('#id_empresa'+v).val('0');
+            $('#id_regimen'+v).val('0');
+            if(v=="r"){
+                $('#bono'+v).val('');
+            }
+        }
+    }
+
+    function Fecha_Vencimiento(v){
+        if($('#id_tipo_contrato'+v).val()=="1"){
+            $('.ver_fv'+v).hide();
+            $('#fec_vencimiento'+v).val('');
+        }else{
+            $('.ver_fv'+v).show();
+        }
+    }
+
+    function Delete_Planilla(id) {
+        Cargando();
+
+        var url = "{{ route('colaborador_pl.destroy', ':id') }}".replace(':id', id);
+
+        Swal({
+            title: '¿Realmente desea eliminar el registro?',
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "DELETE",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function() {
+                        Swal(
+                            '¡Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Planilla_Parte_Superior();
+                            Planilla_Parte_Inferior();
+                        });
+                    }
+                });
+            }
+        })
+    }
+
+    var checkaractualidad = document.getElementById('checkactualidad');
+    var dia_finel = document.getElementById('dia_finel');
+    var mes_finel = document.getElementById('mes_finel');
+    var anio_finel = document.getElementById('anio_finel');
+
+    checkaractualidad.onchange = function() {
+        dia_finel.disabled = !!this.checked;
+        mes_finel.disabled = !!this.checked;
+        anio_finel.disabled = !!this.checked;
+    };
+
+
+    $(document).ready(function() {
+        $("#usuario").addClass('active');
+        $("#husuario").attr('aria-expanded','true');
+        $("#upersonales").addClass('active');
+    });
+
+    function area(){
+        var url = "{{ url('ColaboradorController/List_Area') }}";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            //data: frm,
+            data: $("#formulario_datos_laborales").serialize(),
+            success: function(data)
+            {
+                $('#marea').html(data);
+                puesto();
+                cargo();
+
+            }
+        });
+    }
+
+    function empresa(){
+        var dataString = $("#formulario_datos_planilla").serialize();
+        var url="{{ url('ColaboradorController/List_Empresa') }}";
+        var id_situacion = $('#id_situacion_laboral').val();
+        if(id_situacion=="2"){
+
+            $.ajax({
+                url: url,
+                data:dataString,
+                type:"POST",
+                processData: false,
+                contentType: false,
+                success:function (data) {
+                    //window.location = "<?php //echo url(); ?>ColaboradorController/Cargo";
+                    $('#memprepl').html(data);
+
+                }
+            });
+
+        }else{
+            $('#memprepl').html("");
+        }
+    }
+
+    function PlanillaEmpresa(){
+        var div = document.getElementById("memprepl");
+
+        if($('#id_situacion_laboral').val() == 2) {
+            div.style.display = "block";
+        }else{
+            div.style.display = "none";
+        }
+    }
+
+    function puesto(){
+        var url = "{{ url('ColaboradorController/List_Puesto') }}";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            //data: frm,
+            data: $("#formulario_datos_laborales").serialize(),
+            success: function(data)
+            {
+                $('#mpuesto').html(data);
+                cargo();
+            }
+        });
+    }
+
+    function cargo(){
+        var url = "{{ url('ColaboradorController/List_Cargo') }}";
+        $.ajax({
+
+            url: url,
+            type: 'POST',
+            //data: frm,
+            data: $("#formulario_datos_laborales").serialize(),
+            success: function(data)
+            {
+                $('#mcargo').html(data);
+            }
+        });
+    }
+
+    google.maps.event.addDomListener(window, 'load', function(){
+        var lati = <?php if(isset($get_id_d['0']['lat'])) {echo $get_id_d['0']['lat'];} else {echo "-12.0746254";}?>;
+        var lngi = <?php if(isset($get_id_d['0']['lng'])) {echo $get_id_d['0']['lng'];} else {echo "-77.021754";}?>;
+
+        var coords = {lat: lati, lng: lngi};
+
+        setMapa(coords);
+
+        function setMapa (coords)
+        {
+            //Se crea una nueva instancia del objeto mapa
+            var mapa =  new google.maps.Map(document.getElementById('map'),{
+                            zoom: 18,
+                            center: coords,
+                        });
+
+            texto = '<h1> Nombre del lugar</h1>'+'<p> Descripción del lugar </p>'+
+                    '<a href="https://www.lanumero1.com.pe/" target="_blank">Página WEB</a>';
+
+            //Creamos el marcador en el mapa con sus propiedades
+            //para nuestro obetivo tenemos que poner el atributo draggable en true
+            //position pondremos las mismas coordenas que obtuvimos en la geolocalización
+            marker = new google.maps.Marker({
+                position: coords,
+                map: mapa,
+                draggable: true,
+                animation: google.maps.Animation.DROP,
+                title: 'Ubicación de Mi Casa'
+            });
+
+            var informacion = new google.maps.InfoWindow({
+                content: texto
+            });
+
+            marker.addListener('click', function(){
+                informacion.open(mapa, marker);
+            });
+
+            //agregamos un evento al marcador junto con la funcion callback al igual que el evento dragend que indica
+            //cuando el usuario a soltado el marcador
+            marker.addListener('click', toggleBounce);
+
+            marker.addListener( 'dragend', function (event){
+                //escribimos las coordenadas de la posicion actual del marcador dentro del input #coords
+                document.getElementById("coordsltd").value = this.getPosition().lat();
+                document.getElementById("coordslgt").value = this.getPosition().lng();
+            });
+
+            var autocomplete = document.getElementById('autocomplete');
+
+            const search = new google.maps.places.Autocomplete(autocomplete);
+            search.bindTo("bounds", mapa);
+
+            search.addListener('place_changed', function(){
+                informacion.close();
+                marker.setVisible(false);
+
+                var place = search.getPlace();
+
+                if(!place.geometry.viewport){
+                    window.alert("Error al mostrar el lugar");
+                    return;
+                }
+
+                if(place.geometry.viewport){
+                    mapa.fitBounds(place.geometry.viewport);
+                }else{
+                    mapa.setCenter(place.geometry.location);
+                    mapa.setZoom(18);
+                }
+
+                marker.setPosition(place.geometry.location);
+
+                marker.setVisible(true);
+
+                var address = "";
+                if(place.address_components){
+                    address = [
+                        (place.address_components[0] && place.address_components[0].short_name || ''),
+                        (place.address_components[1] && place.address_components[1].short_name || ''),
+                        (place.address_components[2] && place.address_components[2].short_name || ''),
+                    ]
+                }
+
+                informacion.setContent('<div><strong>'+place.name + '</strong><br>' + address);
+                informacion.open(map, marker);
+
+                document.getElementById("coordsltd").value = place.geometry.location.lat();
+                document.getElementById("coordslng").value = place.geometry.location.lng();
+
+            });
+
+        }
+
+        function toggleBounce() {
+            if (marker.getAnimation() !== null) {
+                marker.setAnimation(null);
+            } else {
+                marker.setAnimation(google.maps.Animation.BOUNCE);
+            }
+        }
+    });
+
+    function provincia(){
+        var url = "{{ url('ColaboradorController/Provincia') }}";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            //data: frm,
+            data: $("#formulario_domicilio").serialize(),
+            success: function(data)
+            {
+                $('#mprovincia').html(data);
+            }
+        });
+        distrito();
+    }
+
+    function distrito(){
+        var url = "{{ url('ColaboradorController/Distrito') }}";
+        $.ajax({
+            url: url,
+            type: 'POST',
+            //data: frm,
+            data: $("#formulario_domicilio").serialize(),
+            success: function(data)
+            {
+                $('#mdistrito').html(data);
+            }
+        });
+    }
 </script>
+@endsection
+
+

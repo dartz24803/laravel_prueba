@@ -1650,6 +1650,7 @@ class ColaboradorController extends Controller
                 }
             }
         }elseif($request->motivo_fin=="2"){
+            /*
             $archivo = "";
             if($_FILES["archivo_cesec"]["name"] != ""){
                 $ftp_server = "lanumerounocloud.com";
@@ -1702,56 +1703,58 @@ class ColaboradorController extends Controller
                 'id_usuario' => 0,
                 'fecha' => now(),
                 'usuario' => session('usuario')->id_usuario
-            ]);
+            ]);*/
 
-            $get_id = Usuario::from('users AS us')->select(DB::raw("LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
+            $get_id = Usuario::from('users AS us')->select('pu.id_nivel', DB::raw("LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
                     us.usuario_apater,' ',us.usuario_amater)) AS nom_usuario"),DB::raw("CASE WHEN us.id_genero=1 THEN 'el Sr.'
                     WHEN us.id_genero=2 THEN 'la Sra.' ELSE '' END AS genero"),DB::raw('LOWER(pu.nom_puesto) AS nom_puesto'))
                     ->join('puesto AS pu','pu.id_puesto','=','us.id_puesto')
                     ->where('us.id_usuario',$get_id->id_usuario)->first();
 
             
-/*
-            $mail = new PHPMailer(true);
+            if($get_id->id_nivel!=10){
+                print_r('envio');
+                /*$mail = new PHPMailer(true);
 
-            try {
-                $mail->SMTPDebug = 0;
-                $mail->isSMTP();
-                $mail->Host       =  'mail.lanumero1.com.pe';
-                $mail->SMTPAuth   =  true;
-                $mail->Username   =  'intranet@lanumero1.com.pe';
-                $mail->Password   =  'lanumero1$1';
-                $mail->SMTPSecure =  'tls';
-                $mail->Port     =  587;
-                $mail->setFrom('somosuno@lanumero1.com.pe','Somos Uno');
+                try {
+                    $mail->SMTPDebug = 0;
+                    $mail->isSMTP();
+                    $mail->Host       =  'mail.lanumero1.com.pe';
+                    $mail->SMTPAuth   =  true;
+                    $mail->Username   =  'intranet@lanumero1.com.pe';
+                    $mail->Password   =  'lanumero1$1';
+                    $mail->SMTPSecure =  'tls';
+                    $mail->Port     =  587;
+                    $mail->setFrom('somosuno@lanumero1.com.pe','Somos Uno');
 
-                $mail->addAddress('oficina@lanumero1.com.pe');
-                $mail->addAddress('tiendas@lanumero1.com.pe');
-                $mail->addAddress('cd@lanumero1.com.pe');
-                $mail->addAddress('amauta@lanumero1.com.pe');
-                $mail->addAddress('seguridadgeneral@lanumero1.com.pe');
-                $mail->addAddress('oficina@lanumero1.com.pe');
-                $mail->addAddress('seguridad.central@lanumero1.com.pe');
+                    $mail->addAddress('oficina@lanumero1.com.pe');
+                    $mail->addAddress('tiendas@lanumero1.com.pe');
+                    $mail->addAddress('cd@lanumero1.com.pe');
+                    $mail->addAddress('amauta@lanumero1.com.pe');
+                    $mail->addAddress('seguridadgeneral@lanumero1.com.pe');
+                    $mail->addAddress('oficina@lanumero1.com.pe');
+                    $mail->addAddress('seguridad.central@lanumero1.com.pe');
 
-                $mail->isHTML(true);
+                    $mail->isHTML(true);
 
-                $mail->Subject =  "Término de Relaciones Laborales - ".ucwords($get_id->nom_usuario);
+                    $mail->Subject =  "Término de Relaciones Laborales - ".ucwords($get_id->nom_usuario);
 
-                $mail->Body = 'Estimados colaboradores.<br><br>
-                                Esperamos que este mensaje les encuentre bien.<br><br>
-                                Nos dirigimos a ustedes para informarles que '.$get_id->genero.' '.ucwords($get_id->nom_usuario).',
-                                quien ocupaba el cargo de '. ucwords($get_id->nom_puesto).',
-                                ha concluido su relación laboral con nuestra empresa. Con el fin de proteger nuestra información corporativa,
-                                les pedimos que a partir de este momento eviten cualquier comunicación de carácter laboral con el mencionado ex colaborador.<br><br>
-                                Queremos expresar nuestro sincero agradecimiento por el tiempo y el talento que dedicó al
-                                cumplimiento de sus funciones durante su permanencia en nuestro equipo.<br><br>
-                                Reciban un cordial saludo.<br>';
+                    $mail->Body = 'Estimados colaboradores.<br><br>
+                                    Esperamos que este mensaje les encuentre bien.<br><br>
+                                    Nos dirigimos a ustedes para informarles que '.$get_id->genero.' '.ucwords($get_id->nom_usuario).',
+                                    quien ocupaba el cargo de '. ucwords($get_id->nom_puesto).',
+                                    ha concluido su relación laboral con nuestra empresa. Con el fin de proteger nuestra información corporativa,
+                                    les pedimos que a partir de este momento eviten cualquier comunicación de carácter laboral con el mencionado ex colaborador.<br><br>
+                                    Queremos expresar nuestro sincero agradecimiento por el tiempo y el talento que dedicó al
+                                    cumplimiento de sus funciones durante su permanencia en nuestro equipo.<br><br>
+                                    Reciban un cordial saludo.<br>';
 
-                $mail->CharSet = 'UTF-8';
-                $mail->send();
-            }catch(Exception $e) {
-                echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-            }*/
+                    $mail->CharSet = 'UTF-8';
+                    $mail->send();
+                }catch(Exception $e) {
+                    echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
+                }*/
+            }
         }
     }
 

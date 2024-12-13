@@ -1199,7 +1199,7 @@ class AsistenciaColaboradoresController extends Controller
         $usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp','area.nom_area')
             ->leftJoin('puesto', 'users.id_puesto', '=', 'puesto.id_puesto')
             ->leftJoin('area', 'puesto.id_area', '=', 'area.id_area')
-            ->whereIn('puesto.id_nivel', [2, 3])
+            ->whereIn('puesto.id_nivel', [2, 3, 4])
             ->where('users.estado', 1)
             // ->whereIn('users.id_usuario', [2692]) // test comentar al subir
             ->orderBy('users.id_usuario', 'ASC')
