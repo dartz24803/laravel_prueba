@@ -42,7 +42,7 @@
                     @endif
                     {{ $list->nom_suceso }}
                 </td>
-                <td class="text-left">{{ $list->user_suceso }}</td>
+                <td class="text-left" col="2">{{ $list->user_suceso }}</td>
                 @if (session('usuario')->id_nivel==1 ||
                 session('usuario')->id_puesto==9 ||
                 session('usuario')->id_puesto==29 ||
