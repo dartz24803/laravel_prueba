@@ -886,12 +886,11 @@ class FacturacionController extends Controller
 
     public function actualizarEnviadosTablaEndpoint(Request $request)
     {
-        $baseUrl = config('app.base_api_url', 'http://127.0.0.1:8001/api/v1');
         $initialDate = $request->input('initialDate');
         $endDate = $request->input('endDate');
         $client = new Client();
         // Endpoint y datos a enviar
-        $url = $baseUrl . '/update/informeContabilidad';
+        $url = 'http://172.16.0.140:8001/api/v1/update/informeContabilidad';
         $body = [
             'initialDate' => $initialDate,
             'endDate' => $endDate,
@@ -906,6 +905,15 @@ class FacturacionController extends Controller
             // Decodificar la respuesta
             $responseBody = json_decode($response->getBody(), true);
             // dd($responseBody);
+            // Actualizar fecha en tb_contabilidad tipo=2
+            DB::table('tb_contabilidad_configuracion')
+                ->where('tipo', 2) //CONFIGURACIÓN PARA ACTUALIZAR "enviados"
+                ->update([
+                    'fecha_actualizacion' => now(),
+                    'estado' => 1,
+                    'cantidad_registros' => 0,
+                ]);
+
             return $responseBody;
         } catch (ClientException $e) {
             // Acceder al cuerpo de la respuesta del error

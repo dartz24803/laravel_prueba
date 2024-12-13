@@ -100,7 +100,8 @@ class SoporteController extends Controller
                 $ticket->status_cancelado = true;
             } elseif ($ticket->estado_registro_sr == 4 || $ticket->estado_registro == 4) {
                 $ticket->status_standby = true;
-            } elseif ($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2) {
+            } elseif (($ticket->estado_registro_sr == 2 || $ticket->estado_registro == 2) || (($ticket->estado_registro == 3 || $ticket->estado_registro_sr == 3)
+                && $multirepsonsable == 1)) {
                 $ticket->status_enproceso = true;
             } elseif ($ticket->estado_registro == 6 || $ticket->estado_registro_sr == 6) {
                 $ticket->status_derivado = true;
