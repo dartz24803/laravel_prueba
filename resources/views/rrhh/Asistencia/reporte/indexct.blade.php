@@ -85,7 +85,7 @@ $nom_area=Session('usuario')->nom_area;
                                                 <select id="num_doc" name="num_doc" class="form-control basic">
                                                     <option value="0">TODOS</option>
                                                     <?php foreach ($list_colaborador as $list) { ?>
-                                                        <option value="<?php echo $list['num_doc']; ?>"> <?php echo $list['usuario_apater'] . " " . $list['usuario_amater'] . ", " . $list['usuario_nombres']; ?> </option>
+                                                        <option value="<?php echo $list['id_usuario']; ?>"> <?php echo $list['usuario_apater'] . " " . $list['usuario_amater'] . ", " . $list['usuario_nombres']; ?> </option>
                                                     <?php } ?>
                                                 </select>
                                             </div>
