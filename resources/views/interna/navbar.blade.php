@@ -113,13 +113,13 @@
         </a>
 
         <ul class="collapse submenu list-unstyled" id="rbi" data-parent="#accordionExample">
-            @if (session('usuario')->id_nivel == 1 || 
+            @if (session('usuario')->id_nivel == 1 ||
             session('usuario')->id_nivel == 5)
-                <li id="sprocedure">
-                    <a href="{{ url('ActualizacionProcedimientos/index') }}">
-                        <p class="romperpalabra" title="Actualizacion de Procedimientos"><span id="icono_active2"></span> Actualizacion de Procedimientos</p>
-                    </a>
-                </li>
+            <li id="sprocedure">
+                <a href="{{ url('ActualizacionProcedimientos/index') }}">
+                    <p class="romperpalabra" title="Actualizacion de Procedimientos"><span id="icono_active2"></span> Actualizacion de Procedimientos</p>
+                </a>
+            </li>
             @endif
             <li>
                 <a id="bireporte" href="{{ route('bireporte') }}">
@@ -215,12 +215,19 @@
         @foreach ($list_subgerencia['areas'] as $area)
         <li id="{{ $area['id_area'] }}">
             <a href="{{ route('reporte_primario', ['id_area' => $area['id_area'], 'id_subgerencia' => $area['id_subgerencia']]) }}"
-                id="{{ $area['id_area'] }}" data-toggle="tooltip" data-placement="right" data-html="true">
-                <p class="romperpalabra"><span id="icono_active2"></span> {{ $area['nom_area'] }}</p>
+                id="{{ $area['id_area'] }}"
+                data-toggle="tooltip"
+                data-placement="right"
+                data-html="true"
+                title="{{ $area['nom_area'] }}"> <!-- Se agrega el atributo title -->
+                <p class="romperpalabra">
+                    <span id="icono_active2"></span> {{ $area['nom_area'] }}
+                </p>
             </a>
         </li>
         @endforeach
     </ul>
+
 
 </li>
 
