@@ -6724,14 +6724,22 @@ if($get_id[0]['edicion_perfil']==1){
     function Valida_Sistema_Pensionario() {
         if ($('#id_respuestasp').val() == '0') {
             msgDate = 'Debe seleccionar una opción.';
-            inputFocus = '#id_respuestasp';
+            Swal(
+                'Ups!',
+                msgDate,
+                'warning'
+            ).then(function() { });
             return false;
         }
 
         if ($('#id_respuestasp').val() == '1') {
             if ($('#id_sistema_pensionario').val() == '0') {
                 msgDate = 'Debe seleccionar un sistema de pensión.';
-                inputFocus = '#id_sistema_pensionario';
+                Swal(
+                    'Ups!',
+                    msgDate,
+                    'warning'
+                ).then(function() { });
                 return false;
             }
         }
@@ -6739,7 +6747,11 @@ if($get_id[0]['edicion_perfil']==1){
         if ($('#id_sistema_pensionario').val() == '2') {
             if ($('#id_afp').val() == '0') {
                 msgDate = 'Debe seleccionar el AFP al que pertenece.';
-                inputFocus = '#id_afp';
+                Swal(
+                    'Ups!',
+                    msgDate,
+                    'warning'
+                ).then(function() { });
                 return false;
             }
         }
