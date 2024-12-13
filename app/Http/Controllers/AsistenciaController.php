@@ -221,14 +221,6 @@ class AsistenciaController extends Controller
             // Obtener los datos de la respuesta JSON
             $list_asistencia = $response->json()['data']; // Aquí asumimos que 'data' es la clave que contiene los resultados
             // print_r($list_asistencia);
-
-            // Obtener la lista de colaboradores
-            if ($numDoc != 0) {
-                //$list_colaborador = $this->modelo->get_list_usuario_xnum_doc($numDoc);
-            } else {
-                //$list_colaborador = $this->modelo->get_list_usuarios_x_baset($codBase, $area, $estado);
-            }
-
             // Pasar las variables a la vista
             return view('rrhh.Asistencia.reporte.listar', compact('initialDate', 'endDate', 'list_asistencia',/* 'list_colaborador',*/ 'numDoc'));
         } else {
