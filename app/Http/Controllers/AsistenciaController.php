@@ -178,12 +178,10 @@ class AsistenciaController extends Controller
         $codAnio = $request->input('cod_anio');
 
         $codBase = $request->input('cod_base', 0);
-        $numDoc = $request->input('num_doc', 0);
+        $numDoc = $request->input('num_doc', []);
         $area = $request->input('area', 0);
         $estado = $request->input('estado', null);
         $tipo = $request->input('tipo');
-        $fInicio = $request->input('finicio');
-        $fFin = $request->input('ffin');
 
         if ($tipo == 1) {
             // Convertir el mes y el año a un rango de fechas (initialDate, endDate)
@@ -195,6 +193,9 @@ class AsistenciaController extends Controller
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Error al procesar las fechas: ' . $e->getMessage()], 400);
             }
+        }else{
+            $initialDate = $request->input('finicio');
+            $endDate = $request->input('ffin');
         }
 
 
@@ -205,12 +206,13 @@ class AsistenciaController extends Controller
             'clabores' => $codBase, // Aquí mapeamos 'cod_base' como 'clabores'
             'area' => $area,
             'estado' => $estado,
-            'colaborador' => $numDoc, // 'num_doc' es el identificador del colaborador
+            'colaborador' => json_encode($numDoc),
         ];
-        // print_r($queryParams);
+        // print_r(json_encode($numDoc));
+        print_r($queryParams);
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
-        // print_r($response->json()['data']);
-
+        print_r($response->json());
+/*
         // Verificar si la respuesta fue exitosa
         if ($response->successful()) {
             // Obtener los datos de la respuesta JSON
@@ -229,7 +231,7 @@ class AsistenciaController extends Controller
         } else {
             // Si la API falla, puedes manejar el error
             return redirect()->back()->with('error', 'Hubo un problema al obtener los datos de la API.');
-        }
+        }*/
     }
     public function Traer_Colaborador_Asistencia(Request $request){
             $dato['cod_base'] = $request->input('cod_base');

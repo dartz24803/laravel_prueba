@@ -580,7 +580,7 @@ class ProduccionController extends Controller
             // Create new Spreadsheet object
             $spreadsheet = new Spreadsheet();
             $sheet = $spreadsheet->getActiveSheet();
-            $spreadsheet->getActiveSheet()->setTitle('Asignación de Visita');
+            // $spreadsheet->getActiveSheet()->setTitle('Asignación de Visita');
             $sheet->setCellValue('A1', 'FECHA');
             $sheet->setCellValue('B1', 'INSPECTOR');
             $sheet->setCellValue('C1', 'PUNTO DE PARTIDA');
@@ -607,19 +607,20 @@ class ProduccionController extends Controller
             $spreadsheet->getActiveSheet()->setAutoFilter('A1:J1');  
             //$slno = 1;
             $start = 1;
+            // print_r($data);
             foreach($data as $d){
                 $start = $start+1;          
                 
-                $spreadsheet->getActiveSheet()->setCellValue("A{$start}", date('d/m/Y', strtotime($d['fecha'])));
-                $spreadsheet->getActiveSheet()->setCellValue("B{$start}", $d['usuario_nombres']." ".$d['usuario_apater']." ".$d['usuario_amater']);
-                $spreadsheet->getActiveSheet()->setCellValue("C{$start}", $d['desc_punto_partida']);
-                $spreadsheet->getActiveSheet()->setCellValue("D{$start}", $d['desc_punto_llegada']);
-                $spreadsheet->getActiveSheet()->setCellValue("E{$start}", $d['modelos']);
-                $spreadsheet->getActiveSheet()->setCellValue("F{$start}", $d['transporte']);
-                $spreadsheet->getActiveSheet()->setCellValue("G{$start}", "S/ ".$d['total_transporte']);
-                $spreadsheet->getActiveSheet()->setCellValue("H{$start}", $d['fecha_inicio']);
-                $spreadsheet->getActiveSheet()->setCellValue("I{$start}", $d['fecha_fin']);
-                $spreadsheet->getActiveSheet()->setCellValue("J{$start}", $d['desc_estado_registro']);
+                $spreadsheet->getActiveSheet()->setCellValue("A{$start}", date('d/m/Y', strtotime($d->fecha)));
+                $spreadsheet->getActiveSheet()->setCellValue("B{$start}", $d->usuario_nombres." ".$d->usuario_apater." ".$d->usuario_amater);
+                $spreadsheet->getActiveSheet()->setCellValue("C{$start}", $d->desc_punto_partida);
+                $spreadsheet->getActiveSheet()->setCellValue("D{$start}", $d->desc_punto_llegada);
+                $spreadsheet->getActiveSheet()->setCellValue("E{$start}", $d->modelos);
+                $spreadsheet->getActiveSheet()->setCellValue("F{$start}", $d->transporte);
+                $spreadsheet->getActiveSheet()->setCellValue("G{$start}", "S/ ".$d->total_transporte);
+                $spreadsheet->getActiveSheet()->setCellValue("H{$start}", $d->fecha_inicio);
+                $spreadsheet->getActiveSheet()->setCellValue("I{$start}", $d->fecha_fin);
+                $spreadsheet->getActiveSheet()->setCellValue("J{$start}", $d->desc_estado_registro);
 
                 $sheet->getStyle("A{$start}:J{$start}")->applyFromArray($styleThinBlackBorderOutline);
             }
