@@ -93,18 +93,25 @@ class AperturaCierreTiendaController extends Controller
         return view('seguridad.apertura_cierre.registro.modal_registrar', compact('get_hora', 'list_observacion'));
     }
 
-    public function list_archivo_reg()
+    public function list_archivo_reg(Request $request)
     {
+        $v = $request->v;
+        $tipo = $request->tipo;
         $list_archivo = ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
                         ->where('tabla','APERTURA_CIERRE_TIENDA')->get();
-        return view('seguridad.apertura_cierre.registro.lista_archivo', compact('list_archivo'));
+        return view('seguridad.apertura_cierre.registro.lista_archivo', compact(
+            'v',
+            'tipo',
+            'list_archivo'
+        ));
     }
 
-    public function habilitar_boton_reg()
+    public function habilitar_boton_reg(Request $request)
     {
         $cantidad = ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
                     ->where('tabla','APERTURA_CIERRE_TIENDA')->count();
-        $get_id = TiendaMarcacion::where('cod_base',session('usuario')->centro_labores)->first();                    
+        $get_id = TiendaMarcacion::select('cant_foto_'.$request->tipo.' AS cantidad_foto')
+                ->where('cod_base',session('usuario')->centro_labores)->first();                    
         if($cantidad==$get_id->cantidad_foto){
             echo "Si";
         }else{
@@ -112,11 +119,12 @@ class AperturaCierreTiendaController extends Controller
         }
     }
 
-    public function previsualizacion_captura_reg()
+    public function previsualizacion_captura_reg(Request $request)
     {
         $valida = ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
                 ->where('tabla','APERTURA_CIERRE_TIENDA')->get();
-        $get_id = TiendaMarcacion::where('cod_base',session('usuario')->centro_labores)->first();
+        $get_id = TiendaMarcacion::select('cant_foto_'.$request->tipo.' AS cantidad_foto')
+                ->where('cod_base',session('usuario')->centro_labores)->first();
         if(count($valida)==$get_id->cantidad_foto){
             echo "¡No se puede tomar más de ".$get_id->cantidad_foto." captura(s)!";
         }else{
@@ -247,48 +255,72 @@ class AperturaCierreTiendaController extends Controller
 
     public function edit_reg($id)
     {
+        //LIMPIAR LOS ARCHIVOS TEMPORALES
+        $list_archivo = ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                        ->where('tabla','APERTURA_CIERRE_TIENDA')->get();
+        if(count($list_archivo)>0){
+            $ftp_server = "lanumerounocloud.com";
+            $ftp_usuario = "intranet@lanumerounocloud.com";
+            $ftp_pass = "Intranet2022@";
+            $con_id = ftp_connect($ftp_server);
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                foreach($list_archivo as $list){
+                    $file_to_delete = "APERTURA_CIERRE_TIENDA/".basename($list->archivo);
+                    if (ftp_delete($con_id, $file_to_delete)) {
+                        ArchivoTemporal::where('id', $list->id)->delete();
+                    }
+                }
+            }
+        }
         $get_id = AperturaCierreTienda::get_list_apertura_cierre_tienda(['id_apertura_cierre' => $id]);
         if ($get_id->tipo_apertura == "2") {
-            $minuscula = "apertura";
+            $tipo = "apertura";
             $titulo = "Apertura de tienda";
         } elseif ($get_id->tipo_apertura == "3") {
-            $minuscula = "cierre";
+            $tipo = "cierre";
             $titulo = "Cierre de tienda";
         } elseif ($get_id->tipo_apertura == "4") {
-            $minuscula = "salida";
+            $tipo = "salida";
             $titulo = "Salida de personal";
         }
-        $get_hora = TiendaMarcacionDia::select('tienda_marcacion_dia.hora_' . $minuscula . ' AS hora_programada')
-            ->join('tienda_marcacion', 'tienda_marcacion.id_tienda_marcacion', '=', 'tienda_marcacion_dia.id_tienda_marcacion')
-            ->where('tienda_marcacion.cod_base', $get_id->cod_base)
-            ->where('tienda_marcacion.estado', 1)
-            ->where('tienda_marcacion_dia.dia', date('N'))
-            ->first();
+        $get_hora = TiendaMarcacionDia::select('tienda_marcacion_dia.hora_'.$tipo.' AS hora_programada')
+                    ->join('tienda_marcacion', 'tienda_marcacion.id_tienda_marcacion', '=', 'tienda_marcacion_dia.id_tienda_marcacion')
+                    ->where('tienda_marcacion.cod_base', $get_id->cod_base)
+                    ->where('tienda_marcacion.estado', 1)
+                    ->where('tienda_marcacion_dia.dia', date('N'))
+                    ->first();
         $list_observacion = CObservacionAperturaCierreTienda::select('id', 'descripcion')->get();
-        return view('seguridad.apertura_cierre.registro.modal_editar', compact('get_id', 'get_hora', 'titulo', 'list_observacion'));
+        return view('seguridad.apertura_cierre.registro.modal_editar', compact(
+            'get_id', 
+            'get_hora', 
+            'tipo',
+            'titulo', 
+            'list_observacion'
+        ));
     }
 
     public function update_reg(Request $request, $id)
     {
         $get_id = AperturaCierreTienda::get_list_apertura_cierre_tienda(['id_apertura_cierre' => $id]);
         if ($get_id->tipo_apertura == "2") {
-            $minuscula = "apertura";
+            $tipo = "apertura";
         } elseif ($get_id->tipo_apertura == "3") {
-            $minuscula = "cierre";
+            $tipo = "cierre";
         } elseif ($get_id->tipo_apertura == "4") {
-            $minuscula = "salida";
+            $tipo = "salida";
         }
-        $get_hora = TiendaMarcacionDia::select('tienda_marcacion_dia.hora_' . $minuscula . ' AS hora_programada')
-            ->join('tienda_marcacion', 'tienda_marcacion.id_tienda_marcacion', '=', 'tienda_marcacion_dia.id_tienda_marcacion')
-            ->where('tienda_marcacion.cod_base', session('usuario')->centro_labores)
-            ->where('tienda_marcacion.estado', 1)
-            ->where('tienda_marcacion_dia.dia', date('N'))
-            ->first();
+        $get_hora = TiendaMarcacionDia::select('tienda_marcacion_dia.hora_'.$tipo.' AS hora_programada')
+                    ->join('tienda_marcacion', 'tienda_marcacion.id_tienda_marcacion', '=', 'tienda_marcacion_dia.id_tienda_marcacion')
+                    ->where('tienda_marcacion.cod_base', session('usuario')->centro_labores)
+                    ->where('tienda_marcacion.estado', 1)
+                    ->where('tienda_marcacion_dia.dia', date('N'))
+                    ->first();
 
         AperturaCierreTienda::findOrFail($id)->update([
-            $minuscula . '_horario' => $get_hora->hora_programada,
-            $minuscula => now(),
-            'obs_' . $minuscula => $request->otra_observacione,
+            $tipo . '_horario' => $get_hora->hora_programada,
+            $tipo => now(),
+            'obs_' . $tipo => $request->otra_observacione,
             'fec_act' => now(),
             'user_act' => session('usuario')->id_usuario
         ]);
@@ -303,47 +335,54 @@ class AperturaCierreTiendaController extends Controller
             }
         }
 
-        if ($request->capturae == "1") {
+        $list_archivo = ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+                        ->where('tabla','APERTURA_CIERRE_TIENDA')->get();
+
+        if(count($list_archivo)>0){
             $ftp_server = "lanumerounocloud.com";
             $ftp_usuario = "intranet@lanumerounocloud.com";
             $ftp_pass = "Intranet2022@";
             $con_id = ftp_connect($ftp_server);
-            $lr = ftp_login($con_id, $ftp_usuario, $ftp_pass);
-            if ($con_id && $lr) {
-                $nombre_actual = "APERTURA_CIERRE_TIENDA/temporal_" . session('usuario')->id_usuario . ".jpg";
-                $nuevo_nombre = "APERTURA_CIERRE_TIENDA/Evidencia_" . $id . "_" . date('YmdHis') . ".jpg";
-                ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
-                $archivo = "https://lanumerounocloud.com/intranet/" . $nuevo_nombre;
+            $lr = ftp_login($con_id,$ftp_usuario,$ftp_pass);
+            if($con_id && $lr){
+                $i = 1;
+                foreach($list_archivo as $list){
+                    $nombre_actual = "APERTURA_CIERRE_TIENDA/".basename($list->archivo);
+                    $nuevo_nombre = "APERTURA_CIERRE_TIENDA/Evidencia_".$id."_".date('YmdHis')."_".$i.".jpg";
+                    ftp_rename($con_id, $nombre_actual, $nuevo_nombre);
+                    $archivo = "https://lanumerounocloud.com/intranet/".$nuevo_nombre;
 
-                ArchivosAperturaCierreTienda::create([
-                    'id_apertura_cierre' => $id,
-                    'tipo_apertura' => $get_id->tipo_apertura,
-                    'archivo' => $archivo,
-                    'fecha' => now(),
-                    'usuario' => session('usuario')->id_usuario
-                ]);
-            } else {
-                echo "No se conecto";
+                    ArchivosAperturaCierreTienda::create([
+                        'id_apertura_cierre' => $id,
+                        'tipo_apertura' => $get_id->tipo_apertura,
+                        'archivo' => $archivo,
+                        'fecha' => now(),
+                        'usuario' => session('usuario')->id_usuario
+                    ]);
+
+                    $i++;
+                }
             }
-        }
+            ArchivoTemporal::where('id_usuario',session('usuario')->id_usuario)
+            ->where('tabla','APERTURA_CIERRE_TIENDA')->delete();
+        }        
     }
 
     public function archivo_reg($id)
     {
         $get_id = AperturaCierreTienda::select('cod_base', DB::raw('DATE_FORMAT(fecha,"%d/%m/%Y") AS fecha_v'))
-            ->where('id_apertura_cierre', $id)
-            ->first();
-        $list_archivo = ArchivosAperturaCierreTienda::select(
-            'archivo',
-            'tipo_apertura',
-            DB::raw('CASE WHEN tipo_apertura=1 THEN "INGRESO DE PERSONAL" 
-                                                    WHEN tipo_apertura=2 THEN "APERTURA DE TIENDA" 
-                                                    WHEN tipo_apertura=3 THEN "CIERRE DE TIENDA" 
-                                                    WHEN tipo_apertura=4 THEN "SALIDA DE PERSONAL" 
-                                                    ELSE "" END AS titulo')
-        )
-            ->where('id_apertura_cierre', $id)->get();
-        return view('seguridad.apertura_cierre.registro.modal_archivo', compact('get_id', 'list_archivo'));
+                ->where('id_apertura_cierre', $id)
+                ->first();
+        $list_archivo = ArchivosAperturaCierreTienda::select('archivo','tipo_apertura',
+                        DB::raw('CASE WHEN tipo_apertura=1 THEN "INGRESO DE PERSONAL" 
+                        WHEN tipo_apertura=2 THEN "APERTURA DE TIENDA" 
+                        WHEN tipo_apertura=3 THEN "CIERRE DE TIENDA" 
+                        WHEN tipo_apertura=4 THEN "SALIDA DE PERSONAL" 
+                        ELSE "" END AS titulo'))->where('id_apertura_cierre', $id)->get();
+        return view('seguridad.apertura_cierre.registro.modal_archivo', compact(
+            'get_id', 
+            'list_archivo'
+        ));
     }
 
     public function excel_reg($cod_base, $fec_ini, $fec_fin)

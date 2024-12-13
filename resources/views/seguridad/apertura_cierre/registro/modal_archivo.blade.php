@@ -11,18 +11,20 @@
             @php $i = 0; @endphp
             @foreach ($list_archivo as $list)
                 <li data-target="#carouselExampleCaptions" data-slide-to="{{ $i }}" 
-                @if ($list->tipo_apertura=="1") class="active" @endif></li>
+                @if ($i=="0") class="active" @endif></li>
                 @php $i++; @endphp
             @endforeach
         </ol>
         <div class="carousel-inner">
+            @php $i = 0; @endphp
             @foreach ($list_archivo as $list)
-                <div class="carousel-item @php if($list->tipo_apertura=="1"){ echo 'active'; } @endphp">
+                <div class="carousel-item @php if($i=="0"){ echo 'active'; } @endphp">
                     <img class="d-block w-100" src="{{ $list->archivo }}">
                     <div class="carousel-caption d-none d-sm-block">
                         <h3 style="color: white;">{{ $list->titulo }}</h3>
                     </div>
                 </div>
+                @php $i++; @endphp
             @endforeach
         </div>
         <a class="carousel-control-prev" href="#carouselExampleCaptions" role="button" data-slide="prev">

@@ -39,37 +39,35 @@
     </div>
 
     <div class="col-lg-4 col-xl-6">
-        <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" onclick="Lista_Archivo();" title="Buscar">
+        <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" onclick="Lista_Galeria();" title="Buscar">
             Buscar
         </button>
     </div>
 </div>
 
-@csrf
-<div class="p-2 row ml-2" id="lista_archivo">
+<div class="p-2 row ml-2" id="lista_galeria">
 </div>
 
 <script>
-    Lista_Archivo();
+    Lista_Galeria();
 
-    function Lista_Archivo(){
+    function Lista_Galeria(){
         Cargando();
 
         var cod_base = $('#cod_baseb').val();
         var fec_ini = $('#fecha_iniciob').val();
         var fec_fin = $('#fecha_finb').val();
         var url = "{{ route('apertura_cierre_img.list') }}";
-        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             type:"POST",
             url: url,
             data:{'cod_base':cod_base,'fec_ini':fec_ini,'fec_fin':fec_fin},
             headers: {
-                'X-CSRF-TOKEN': csrfToken
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success:function (data) {
-                $("#lista_archivo").html(data);
+                $("#lista_galeria").html(data);
             }
         });
     }

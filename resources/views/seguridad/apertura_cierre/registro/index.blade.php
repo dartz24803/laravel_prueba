@@ -175,6 +175,45 @@
         });
     }
 
+    function Habilitar_Boton(v,tipo){
+        var url = "{{ route('apertura_cierre_reg.habilitar_boton') }}";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {'tipo': tipo},
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(resp) {
+                if(resp.trim()=="Si"){
+                    $('#boton_disabled'+v).prop('disabled', false);
+                }else{
+                    $('#boton_disabled'+v).prop('disabled', true);
+                }
+            }
+        });          
+    }
+
+    function Lista_Archivo(v,tipo) {
+        Cargando();
+
+        var url = "{{ route('apertura_cierre_reg.list_archivo') }}";
+
+        $.ajax({
+            url: url,
+            type: "POST",
+            data: {'v':v,'tipo':tipo},
+            headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            success: function(resp) {
+                $('#lista_archivo'+v).html(resp);
+                Habilitar_Boton(v,tipo);
+            }
+        });
+    }
+
     function Otra_Observacion(v) {
         if ($('#otros' + v).is(':checked')) {
             $('#otra_observacion' + v).show();
