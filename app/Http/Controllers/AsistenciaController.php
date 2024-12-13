@@ -185,6 +185,8 @@ class AsistenciaController extends Controller
         $area = $request->input('area', 0);
         $estado = $request->input('estado', null);
         $tipo = $request->input('tipo');
+        $initialDate = $request->input('finicio');
+        $endDate = $request->input('ffin');
 
         if ($tipo == 1) {
             // Convertir el mes y el año a un rango de fechas (initialDate, endDate)
@@ -199,8 +201,10 @@ class AsistenciaController extends Controller
         }else{
             $initialDate = $request->input('finicio');
             $endDate = $request->input('ffin');
+            // Transformar las fechas al formato dd/mm/yyyy
+            $initialDate = date('d/m/Y', strtotime($initialDate));
+            $endDate = date('d/m/Y', strtotime($endDate));
         }
-
 
         // Construir los datos para la consulta a la API
         $queryParams = [
@@ -214,7 +218,7 @@ class AsistenciaController extends Controller
         // print_r(json_encode($numDoc));
         // print_r($queryParams);
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
-        // print_r($response->json());
+        // print_r($response->json()['data']);
 
         // Verificar si la respuesta fue exitosa
         if ($response->successful()) {
@@ -222,7 +226,7 @@ class AsistenciaController extends Controller
             $list_asistencia = $response->json()['data']; // Aquí asumimos que 'data' es la clave que contiene los resultados
             // print_r($list_asistencia);
             // Pasar las variables a la vista
-            return view('rrhh.Asistencia.reporte.listar', compact('initialDate', 'endDate', 'list_asistencia',/* 'list_colaborador',*/ 'numDoc'));
+            return view('rrhh.Asistencia.reporte.listar', compact('initialDate', 'endDate', 'list_asistencia','numDoc'));
         } else {
             // Si la API falla, puedes manejar el error
             return redirect()->back()->with('error', 'Hubo un problema al obtener los datos de la API.');
