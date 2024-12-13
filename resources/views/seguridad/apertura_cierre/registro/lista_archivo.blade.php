@@ -58,7 +58,7 @@
                 'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success: function() {
-                Lista_Archivo();
+                Lista_Archivo('{{ $v }}','{{ $tipo }}');
                 file_col.remove();          
             }
         });

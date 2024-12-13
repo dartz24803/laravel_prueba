@@ -83,7 +83,11 @@ class AperturaCierreTienda extends Model
                     FROM observacion_apertura_cierre_tienda oa
                     INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
                     WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=1) ELSE '' END,
-                    CASE WHEN ac.obs_ingreso IS NOT NULL THEN CONCAT(', ',ac.obs_ingreso) 
+                    CASE WHEN (SELECT COUNT(1) FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=1)>0 THEN ', '
+                    ELSE '' END,
+                    CASE WHEN ac.obs_ingreso IS NOT NULL THEN ac.obs_ingreso 
                     ELSE '' END) AS obs_ingreso,
                     DATE_FORMAT(ac.apertura_horario,'%H:%i') AS apertura_programada,
                     DATE_FORMAT(ac.apertura,'%H:%i') AS apertura_real,
@@ -95,7 +99,11 @@ class AperturaCierreTienda extends Model
                     FROM observacion_apertura_cierre_tienda oa
                     INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
                     WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=2) ELSE '' END,
-                    CASE WHEN ac.obs_apertura IS NOT NULL THEN CONCAT(', ',ac.obs_apertura) 
+                    CASE WHEN (SELECT COUNT(1) FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=2)>0 THEN ', '
+                    ELSE '' END,
+                    CASE WHEN ac.obs_apertura IS NOT NULL THEN ac.obs_apertura
                     ELSE '' END) AS obs_apertura,
                     DATE_FORMAT(ac.cierre_horario,'%H:%i') AS cierre_programado,
                     DATE_FORMAT(ac.cierre,'%H:%i') AS cierre_real,
@@ -107,7 +115,11 @@ class AperturaCierreTienda extends Model
                     FROM observacion_apertura_cierre_tienda oa
                     INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
                     WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=3) ELSE '' END,
-                    CASE WHEN ac.obs_cierre IS NOT NULL THEN CONCAT(', ',ac.obs_cierre) 
+                    CASE WHEN (SELECT COUNT(1) FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=3)>0 THEN ', '
+                    ELSE '' END,
+                    CASE WHEN ac.obs_cierre IS NOT NULL THEN ac.obs_cierre
                     ELSE '' END) AS obs_cierre,
                     DATE_FORMAT(ac.salida_horario,'%H:%i') AS salida_programada,
                     DATE_FORMAT(ac.salida,'%H:%i') AS salida_real,
@@ -119,7 +131,11 @@ class AperturaCierreTienda extends Model
                     FROM observacion_apertura_cierre_tienda oa
                     INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
                     WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=4) ELSE '' END,
-                    CASE WHEN ac.obs_salida IS NOT NULL THEN CONCAT(', ',ac.obs_salida) 
+                    CASE WHEN (SELECT COUNT(1) FROM observacion_apertura_cierre_tienda oa
+                    INNER JOIN c_observacion_apertura_cierre_tienda co ON co.id=oa.id_observacion
+                    WHERE oa.id_apertura_cierre=ac.id_apertura_cierre AND oa.tipo_apertura=4)>0 THEN ', '
+                    ELSE '' END,
+                    CASE WHEN ac.obs_salida IS NOT NULL THEN ac.obs_salida
                     ELSE '' END) AS obs_salida,
                     CASE WHEN ac.apertura IS NULL AND ac.cierre IS NULL AND ac.salida IS NULL THEN '2'
                     WHEN ac.apertura IS NOT NULL AND ac.cierre IS NULL AND ac.salida IS NULL THEN '3'

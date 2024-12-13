@@ -10,7 +10,7 @@
         <div class="row">
             <div class="form-group col-lg-2">
                 <label>Base:</label>
-            </div> 
+            </div>
             <div class="form-group col-lg-4">
                 <input type="text" class="form-control" value="{{ session('usuario')->centro_labores }}" disabled>
             </div>
@@ -45,8 +45,10 @@
             <video id="videoe" autoplay style="max-width: 95%;"></video>
         </div>
         <div class="row d-flex justify-content-center text-center mb-4" id="div_canvase" style="display:none !important;">
-            <p class="mt-2">Recuerda que puedes tomar otra foto presionando nuevamente <mark style="background-color:#2196F3;color:white;">Tomar foto</mark> o guardar el registro presionando <mark style=background-color:#1B55E2;color:white;>Guardar</mark></p>
             <canvas id="canvase" style="max-width:95%;"></canvas>
+        </div>
+
+        <div id="lista_archivoe">
         </div>
         
         <div class="row mt-2">
@@ -76,8 +78,6 @@
 
     <div class="modal-footer">
         @csrf
-        @method('PUT')
-        <input type="hidden" id="capturae" name="capturae">
         <button id="boton_disablede" class="btn btn-primary" type="button" onclick="Update_Apertura_Cierre();" disabled>Guardar</button>
         <button class="btn" data-dismiss="modal"><i class="flaticon-cancel-12"></i> Cancelar</button>
     </div>
@@ -87,6 +87,8 @@
     $('.multivalue').select2({
         dropdownParent: $('#ModalUpdate')
     });
+
+    Lista_Archivo('e','{{ $tipo }}');
 
     var video = document.getElementById('videoe');
     var boton = document.getElementById('boton_camarae');
@@ -172,7 +174,7 @@
         Cargando();
 
         var dataString = new FormData(document.getElementById('formularioe'));
-        var url = "{{ route('apertura_cierre_reg.previsualizacion_captura_put') }}";
+        var url = "{{ route('apertura_cierre_reg.previsualizacion_captura') }}";
         var video = document.getElementById('videoe');
         var div_canvas = document.getElementById('div_canvase');
         var canvas = document.getElementById('canvase');
@@ -186,6 +188,8 @@
         canvas.toBlob(function(blob) {
             // Crea un formulario para enviar la imagen al servidor
             dataString.append('photo', blob, 'photo.jpg');
+            // Mandar tipo (ingreso, apertura, cierre o salida)
+            dataString.append('tipo', '{{ $tipo }}');            
 
             // Realiza la solicitud AJAX
             $.ajax({
@@ -195,9 +199,21 @@
                 processData: false,
                 contentType: false,
                 success: function(response) {
-                    div_canvas.style.cssText = "display: block;";
+                    /*div_canvas.style.cssText = "display: block;";
                     $('#boton_disablede').prop('disabled', false);
-                    $('#capturae').val('1');
+                    $('#capturae').val('1');*/
+                    if(response.trim()!=""){
+                        Swal({
+                            title: '¡Carga Denegada!',
+                            text: response.trim(),
+                            type: 'error',
+                            showCancelButton: false,
+                            confirmButtonColor: '#3085d6',
+                            confirmButtonText: 'OK',
+                        });
+                    }else{
+                        Lista_Archivo('e','{{ $tipo }}');
+                    }
                 }
             });
         }, 'image/jpeg');

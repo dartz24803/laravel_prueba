@@ -88,38 +88,7 @@
         dropdownParent: $('#ModalRegistro')
     });
 
-    Lista_Archivo();
-
-    function Habilitar_Boton(){
-        var url = "{{ route('apertura_cierre_reg.habilitar_boton') }}";
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            success: function(resp) {
-                if(resp.trim()=="Si"){
-                    $('#boton_disabled').prop('disabled', false);
-                }else{
-                    $('#boton_disabled').prop('disabled', true);
-                }
-            }
-        });          
-    }
-
-    function Lista_Archivo() {
-        Cargando();
-
-        var url = "{{ route('apertura_cierre_reg.list_archivo') }}";
-
-        $.ajax({
-            url: url,
-            type: "GET",
-            success: function(resp) {
-                $('#lista_archivo').html(resp);
-                Habilitar_Boton();
-            }
-        });
-    }
+    Lista_Archivo('','ingreso');
 
     var video = document.getElementById('video');
     var boton = document.getElementById('boton_camara');
@@ -219,6 +188,8 @@
         canvas.toBlob(function(blob) {
             // Crea un formulario para enviar la imagen al servidor
             dataString.append('photo', blob, 'photo.jpg');
+            // Mandar tipo (ingreso, apertura, cierre o salida)
+            dataString.append('tipo', 'ingreso');
 
             // Realiza la solicitud AJAX
             $.ajax({
@@ -238,7 +209,7 @@
                             confirmButtonText: 'OK',
                         });
                     }else{
-                        Lista_Archivo();
+                        Lista_Archivo('','ingreso');
                     }
                 }
             });
