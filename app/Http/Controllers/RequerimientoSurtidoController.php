@@ -81,7 +81,7 @@ class RequerimientoSurtidoController extends Controller
             'mes' => 'Debe escoger mes.',
             'drequerimiento' => 'Debe adjuntar documento',
         ]);
-        $data['anio'] = $this->input->post("anio");
+        $dato['anio'] = $this->input->post("anio");
         $dato['semana'] = $this->input->post("semana");
         $path = $_FILES["drequerimiento"]["tmp_name"];
 
@@ -187,10 +187,12 @@ class RequerimientoSurtidoController extends Controller
                     ->where('codigo_barra', $dato['codigo_barra'])
                     ->where('semana', $dato['semana'])
                     ->where('anio', $dato['anio'])
+                    ->where('estado', 1)
                     ->get();
+                // print_r($list_duplicados);
                 $dato['caracter'] = "";
 
-                if ((trim($dato['RN']) !== 'N' && trim($dato['RN']) !== 'R' && trim($dato['RN']) !== 'T') || count($list_duplicados) > 0) {
+                if ((trim($dato['RN']) !== 'N' && trim($dato['RN']) !== 'R' && trim($dato['RN']) !== 'T') || $list_duplicados->isEmpty()) {
                     $duplicados = $duplicados + 1;
                     if (trim($dato['RN']) !== 'N' && trim($dato['RN']) !== 'R' && trim($dato['RN']) !== 'T') {
                         $dato['caracter'] = "Caracter no permitido:" . $dato['RN'];

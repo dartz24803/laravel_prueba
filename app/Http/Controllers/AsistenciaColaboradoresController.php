@@ -1201,7 +1201,7 @@ class AsistenciaColaboradoresController extends Controller
             ->leftJoin('area', 'puesto.id_area', '=', 'area.id_area')
             ->whereIn('puesto.id_nivel', [2, 3, 4])
             ->where('users.estado', 1)
-            // ->whereIn('users.id_usuario', [2692]) // test comentar al subir
+            ->whereIn('users.id_usuario', [133,1459,2655]) // test comentar al subir
             ->orderBy('users.id_usuario', 'ASC')
             ->get();
         // print_r($usuarios);

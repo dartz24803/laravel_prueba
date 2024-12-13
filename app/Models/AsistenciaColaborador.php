@@ -622,6 +622,9 @@ class AsistenciaColaborador extends Model
             if($dato['excel']==1 && $dato['area']==18){
                 $parte_area = "pu.id_area IN ('13','18') AND";
             }
+            if($dato['excel']==1 && $dato['area']==49){
+                $parte_area = "pu.id_area IN ('47','48','27','28') AND";
+            }
         }
         $parte_usuario = "";
         if ($dato['usuario'] != "0") {
@@ -638,7 +641,7 @@ class AsistenciaColaborador extends Model
                 INNER JOIN lanumerouno.puesto pu ON us.id_puesto=pu.id_puesto
                 LEFT JOIN lanumerouno.horario_dia hd ON us.id_horario=hd.id_horario AND 
                 hd.id_turno>0 AND (WEEKDAY(vm.fecha)+1)=hd.dia
-                WHERE $parte_fecha $parte_base $parte_area $parte_usuario us.estado=1 AND 
+                WHERE $parte_fecha $parte_base $parte_area $parte_usuario us.estado=1 AND pu.id_nivel NOT IN (10) AND 
                 hd.estado=1 AND FLOOR(TIME_TO_SEC(TIMEDIFF(vm.hora_llegada, hd.hora_entrada))/60)>0";
         $query = DB::connection('second_mysql')->select($sql);
         // print_r($sql);
