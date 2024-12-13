@@ -1710,6 +1710,8 @@ class ColaboradorController extends Controller
                     ->join('puesto AS pu','pu.id_puesto','=','us.id_puesto')
                     ->where('us.id_usuario',$get_id->id_usuario)->first();
 
+            
+/*
             $mail = new PHPMailer(true);
 
             try {
@@ -1749,7 +1751,7 @@ class ColaboradorController extends Controller
                 $mail->send();
             }catch(Exception $e) {
                 echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-            }
+            }*/
         }
     }
 
