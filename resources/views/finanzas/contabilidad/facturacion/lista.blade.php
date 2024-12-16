@@ -261,7 +261,7 @@
             </button>
         </div>
         <div class="form-group col-lg-1">
-            <a class="btn mb-1 mb-sm-0" title="Exportar excel"
+            <a class="btn mb-1 mb-sm-0" title="Exportar excel2222"
                 style="background-color: #28a745 !important;"
                 onclick="Excel_Facturacion_Informe();">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
@@ -507,7 +507,6 @@
         $('#customSearch').on('keypress', function(e) {
             if (e.which === 13) { // Detectar tecla Enter
                 var searchTerm = $(this).val(); // Obtener valor del input
-                console.log(searchTerm)
                 table.search(searchTerm).draw();
             }
         });

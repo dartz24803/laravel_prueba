@@ -56,6 +56,16 @@ class TbContabilidadCerrados extends Model
 
 
 
+    public static function filtrarCerradosExcel($fechaInicio, $fechaFin)
+    {
+        // Filtrar solo por rango de fechas en fecha_documento y stock = 1
+        $registros = self::whereBetween('fecha_documento', [$fechaInicio, $fechaFin])
+            ->where('stock', 1)
+            ->get();
+
+        return $registros;
+    }
+
 
     public static function filtrarCerrados(array $ids)
     {

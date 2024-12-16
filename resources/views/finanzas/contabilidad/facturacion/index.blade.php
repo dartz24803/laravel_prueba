@@ -138,6 +138,8 @@
         const [year, month, day] = date.split('-');
         return `${day}/${month}/${year}`;
     }
+
+
     $('#btnActualizarEnviados').on('click', function() {
         const fecha_iniciob = document.getElementById('fecha_iniciob_alm').value;
         const fecha_finb = document.getElementById('fecha_finb_alm').value;
@@ -170,6 +172,8 @@
                                 data.data,
                                 'success'
                             ).then(function() {
+                                $('#ultimaActualizacionEnviados').text(data.message);
+
                                 limpiarSeleccionados();
                             });
                         } else {
