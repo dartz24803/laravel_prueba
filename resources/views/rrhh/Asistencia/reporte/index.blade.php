@@ -235,7 +235,7 @@
                                         <div class="col-md-2" id="cmb_colaborador">
                                             <div class="form-group" >
                                                 <label class="control-label text-bold">Colaborador:</label>
-                                                <select id="num_doc_nm" name="num_doc_nm" class="form-control basic" multiple>
+                                                <select id="num_doc_nm" name="num_doc_nm" class="form-control basic">
                                                     <option value="0" selected>TODOS</option>
                                                     <?php foreach($list_colaborador as $list){?>
                                                         <option value="<?php echo $list['num_doc']; ?>"> <?php echo $list['usuario_apater']." ".$list['usuario_amater'].", ".$list['usuario_nombres'];?> </option>
