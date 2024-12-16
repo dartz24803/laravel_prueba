@@ -2268,7 +2268,7 @@ Route::controller(ReclutamientoController::class)->group(function () {
 use App\Http\Controllers\TareasController;
 
 Route::controller(TareasController::class)->group(function () {
-    Route::get('Tareas/index', 'Gestion_Pendiente');
+    Route::get('Tareas/index', 'Gestion_Pendiente')->name('tarea');
     Route::get('Tareas/Cargar_Mis_Tareas', 'Cargar_Mis_Tareas');
     Route::post('Tareas/Lista_Mis_Tareas', 'Lista_Mis_Tareas');
     Route::get('Tareas/Excel_Gestion_Pendiente/{id_area}/{base}/{cpiniciar}/{cproceso}/{cfinalizado}/{cstandby}/{mis_tareas}/{mi_equipo}/{responsablei}', 'Excel_Gestion_Pendiente');
