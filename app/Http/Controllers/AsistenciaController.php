@@ -14,6 +14,7 @@ use App\Models\SubGerencia;
 use DateTime;
 use App\Models\Notificacion;
 use App\Models\Ubicacion;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
@@ -239,8 +240,7 @@ class AsistenciaController extends Controller
             $dato['list_colaborador'] = $this->modelousuarios->get_list_usuarios_x_baset($dato['cod_base'],$dato['id_area'],$dato['estado']);
             return view('rrhh.Asistencia.reporte.colaborador', $dato);
     }
-
-    public function Excel_Reporte_Asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $area, $estado, $tipo, $finicio, $ffin, Request $request) {
+    /*public function Excel_Reporte_Asistencia($cod_mes, $cod_anio, $cod_base, $num_doc, $area, $estado, $tipo, $finicio, $ffin, Request $request) {
         set_time_limit(600);
         ini_set('max_execution_time', 600);
         // Crear una nueva instancia de Spreadsheet
@@ -423,6 +423,259 @@ class AsistenciaController extends Controller
         // Guardar y enviar el archivo al navegador
         $writer->save('php://output');
 
+    }*/
+
+    public function Excel_Reporte_Asistencia($codMes, $codAnio, $codBase, $numDoc, $area, $estado, $tipo, $initialDate, $endDate, Request $request) {
+        set_time_limit(600);
+        ini_set('max_execution_time', 600);
+        // Crear una nueva instancia de Spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $spreadsheet->getActiveSheet()->setTitle('Reporte Control Asistencia');
+
+        if (empty($numDoc)) {
+            $numDoc = [0];
+        }
+
+        // print_r($initialDate);
+        // print_r($endDate);
+        // print_r($tipo);
+
+        if ($tipo == 1) {
+            // Convertir el mes y el año a un rango de fechas (initialDate, endDate)
+            try {
+                // Primer día del mes
+                $initialDate = \Carbon\Carbon::createFromDate($codAnio, $codMes, 1)->format('d/m/Y'); // Primer día del mes
+                // Último día del mes
+                $endDate = \Carbon\Carbon::createFromDate($codAnio, $codMes, 1)->endOfMonth()->format('d/m/Y'); // Último día del mes
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Error al procesar las fechas: ' . $e->getMessage()], 400);
+            }
+        }else{
+            $initialDate = $request->input('finicio');
+            $endDate = $request->input('ffin');
+            // Transformar las fechas al formato dd/mm/yyyy
+            $initialDate = date('d/m/Y', strtotime($initialDate));
+            $endDate = date('d/m/Y', strtotime($endDate));
+        }
+        $colaboradores = explode(',', $numDoc); // Convertir la cadena a un array
+
+        // Construir los datos para la consulta a la API
+        $queryParams = [
+            'initialDate' => $initialDate,
+            'endDate' => $endDate,
+            'clabores' => $codBase, // Aquí mapeamos 'cod_base' como 'clabores'
+            'area' => $area,
+            'estado' => $estado,
+            'colaborador' => $colaboradores,
+        ];
+        // print_r(json_encode($numDoc));
+        // print_r($queryParams);
+        $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
+        $list_asistencia = $response->json()['data'];
+        // print_r($list_asistencia);
+        // Establecer fechas de inicio y fin
+
+        $fechas = [];
+        if ($tipo == 1) {
+            $fecha_inicio = new DateTime("$codAnio-$codMes-01");
+            $fecha_fin = new DateTime("$codAnio-$codMes-" . $fecha_inicio->format('t'));
+        } else {
+            $fecha_inicio = new DateTime($initialDate);
+            $fecha_fin = new DateTime($endDate);
+        }
+        $get_mes = Mes::where('cod_mes', $codMes)->get();
+        if($tipo==1){
+            $spreadsheet->getActiveSheet()->setCellValue("C1", $get_mes[0]->nom_mes .' '.$codAnio);
+        }else{
+            $spreadsheet->getActiveSheet()->setCellValue("C1", date("d/m/Y", strtotime($initialDate)).' - '.date("d/m/Y", strtotime($endDate)));
+        }
+
+        while ($fecha_inicio <= $fecha_fin) {
+            $fechas[] = $fecha_inicio->format('Y-m-d');
+            $fecha_inicio->modify('+1 day');
+        }
+
+        $spreadsheet->getActiveSheet()->setCellValue("Q1", 'CONTROL DE ASISTENCIA');
+        $spreadsheet->getActiveSheet()->setCellValue("A6", 'N°');
+        $spreadsheet->getActiveSheet()->setCellValue("B6", 'APELLIDOS Y NOMBRES');
+
+        $spreadsheet->getActiveSheet()->setCellValue("D3", 'ASISTENCIA');
+        $spreadsheet->getActiveSheet()->setCellValue("G3", '1');
+        $spreadsheet->getActiveSheet()->setCellValue("J3", 'FALTAS');
+        $spreadsheet->getActiveSheet()->setCellValue("L3", '0');
+        $spreadsheet->getActiveSheet()->setCellValue("Q3", 'TARDANZAS');
+        $spreadsheet->getActiveSheet()->setCellValue("T3", 'T');
+        $spreadsheet->getActiveSheet()->setCellValue("Y3", 'FALTA JUSTIFICADA');
+        $spreadsheet->getActiveSheet()->setCellValue("AC3", 'FJ');
+
+        $sheet->getStyle('C1:Q1')->applyFromArray([
+            'font' => [
+                'bold' => true,
+                'size' => 16,
+                'color' => ['rgb' => '51B9D6'], // Color de texto en formato RGB
+            ],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER]
+        ]);
+
+        $sheet->getStyle("D3:AC3")->getFont()->setBold(true);
+
+        $colIndex = 3; // Comenzamos en la columna C
+        foreach ($fechas as $fecha) {
+            $colLetter = Coordinate::stringFromColumnIndex($colIndex); // Convertir índice de columna a letra
+            $fechaDatetime = new DateTime($fecha);
+
+            // Día de la semana (L, M, M, J, V, S, D)
+            $diaSemana = [
+                'Mon' => 'L',
+                'Tue' => 'M',
+                'Wed' => 'M',
+                'Thu' => 'J',
+                'Fri' => 'V',
+                'Sat' => 'S',
+                'Sun' => 'D',
+            ][$fechaDatetime->format('D')];
+
+            // Número del día
+            $numeroDia = $fechaDatetime->format('d');
+
+            // Escribir en las celdas
+            $sheet->setCellValue($colLetter . '5', $diaSemana);
+            $sheet->setCellValue($colLetter . '6', $numeroDia);
+
+            $colIndex++;
+        }
+        $sheet->getStyle('A5:'.$colLetter.'6')->applyFromArray([
+            'font' => ['bold' => true],
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                    'color' => ['argb' => '000000'],
+                ],
+            ],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => [
+                    'argb' => 'FFdce6f1', // Color de fondo en formato ARGB (A: alfa, R: rojo, G: verde, B: azul)
+                ],
+            ],
+        ]);
+
+        $sheet->getColumnDimension('A')->setWidth(5);
+        $sheet->getColumnDimension('B')->setWidth(40);
+        // $sheet->getColumnDimension('C')->setWidth(40);
+            $allborder = [
+                'borders' => [
+                    'allBorders' => [
+                        'borderStyle' => Border::BORDER_THIN,
+                        'color' => ['rgb' => '000000']
+                    ]
+                ]
+            ];
+
+        // Agregar los datos de los usuarios
+        $rowIndex = 7; // Comenzamos en la fila 7
+        $usuarios = [];
+
+        $usuarios = []; // Inicializamos el array para los usuarios sin repetir
+        $usuarios_unique = []; // Este array almacenará los números de documento para garantizar que los usuarios no se repitan
+
+        foreach ($list_asistencia as $registro) {
+            // Verificar si el usuario ya existe en el array (por el número de documento)
+            if (!in_array($registro['Num_Doc'], $usuarios_unique)) {
+                // Si no existe, agregar al array de usuarios y al array de referencia
+                $usuarios[] = [
+                    'num_doc' => $registro['Num_Doc'],
+                    'usuario_apater' => $registro['Usuario_Apater'],
+                    'usuario_amater' => $registro['Usuario_Amater'],
+                    'usuario_nombres' => $registro['Usuario_Nombres'],
+                    'fecha' => $registro['Fecha'],
+                ];
+                $usuarios_unique[] = $registro['Num_Doc']; // Guardamos el número de documento para verificarlo en el siguiente ciclo
+            }
+        }
+
+        // print_r($list_asistencia);
+        foreach ($usuarios as $key => $usuario) {
+            $sheet->setCellValue('A' . $rowIndex, $key + 1); // Número
+            $sheet->setCellValue('B' . $rowIndex, $usuario['usuario_apater'] . ' ' . $usuario['usuario_amater'] . ', ' . $usuario['usuario_nombres']);
+
+            $colIndex = 3; // Columna inicial para las fechas
+
+            foreach ($fechas as $fecha) {
+                $colLetter = Coordinate::stringFromColumnIndex($colIndex); // Convertir índice de columna a letra
+                $fechaFormateada = Carbon::createFromFormat('Y-m-d', $fecha)->format('d/m/Y');
+
+                $estadoMarcacion = 0; // Por defecto, asumimos 0
+                if (isset($list_asistencia)) {
+                    foreach ($list_asistencia as $asistencia) {
+                        // print_r("Usuario:". $usuario['fecha']);
+                        // print_r("Asistencia:". $asistencia['Fecha']);
+                        if ($asistencia['Num_Doc']==$usuario['num_doc']) {
+                            if ($fechaFormateada==$asistencia['Fecha']) {
+                                if (!empty($asistencia['Salida'])) {
+                                    $estadoMarcacion = 1; // Si hay salida, marcar como 1
+                                }
+                            }
+                        }
+                    }
+                }
+
+                // Escribir en la celda
+                $sheet->setCellValue($colLetter . $rowIndex, $estadoMarcacion);
+                $colIndex++;
+            }
+            $rowIndex++;
+        }
+        /*foreach ($list_asistencia as $key => $row) {
+            $sheet->setCellValue('A' . $rowIndex, $key + 1); // Número
+            $sheet->setCellValue('B' . $rowIndex, $row['Usuario_Apater'] . ' ' . $row['Usuario_Amater'] . ', ' . $row['Usuario_Nombres']);
+
+            $colIndex = 3; // Columna inicial para las fechas
+
+            foreach ($fechas as $fecha) {
+                $colLetter = Coordinate::stringFromColumnIndex($colIndex); // Convertir índice de columna a letra
+
+                $estadoMarcacion = 0; // Por defecto, asumimos 0
+
+                // Convertir la fecha de la iteración a formato 'Y-m-d' para asegurarse de que se pueda comparar con la fecha de la API
+                $fechaFormateada = Carbon::createFromFormat('Y-m-d', $fecha)->format('d/m/Y');
+
+                // Obtener la fecha de asistencia para este usuario desde la API
+                $fechaAsistencia = isset($row['Fecha']) ? $row['Fecha'] : null;
+                // print_r('Asistencia:'.$fechaAsistencia);
+                // print_r('formateada'.$fechaFormateada);
+
+                // Comparar la fecha de asistencia con la fecha de la iteración
+                if ($fechaAsistencia === $fechaFormateada) {
+                    // Asignamos el estado de marcación aquí, por ejemplo, 1 si es presente, 2 si es tarde, etc.
+                    $estadoMarcacion = 1; // Estado predeterminado de marcación, ajusta según tu lógica
+                }
+
+                // Escribir el estado de marcación en la celda correspondiente
+                $sheet->setCellValue($colLetter . $rowIndex, $estadoMarcacion);
+                $colIndex++;
+            }
+            $rowIndex++;
+        }*/
+
+        $bordeTabla = $rowIndex-1;
+        $sheet->getStyle('A5:'.$colLetter.$bordeTabla)->applyFromArray($allborder);
+
+        // Descargar el archivo Excel
+        $curdate = date('d-m-Y');
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Reporte Control Asistencia ' . $curdate;
+
+        // Configuración de cabeceras para la descarga
+        ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        // Guardar y enviar el archivo al navegador
+        $writer->save('php://output');
     }
 
     public function Update_Asistencia_Diaria(Request $request){
