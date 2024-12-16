@@ -38,7 +38,8 @@ class Notificacion extends Model
                 LEFT JOIN config co ON nt.id_tipo=co.id_config
                 LEFT JOIN users us ON nt.solicitante=us.id_usuario
                 LEFT JOIN puesto pu ON nt.solicitante=pu.id_puesto
-                WHERE nt.id_usuario=".session('usuario')->id_usuario." AND nt.leido=0 AND nt.estado=1";
+                WHERE nt.id_usuario=".session('usuario')->id_usuario." AND nt.leido=0 AND nt.estado=1
+                ORDER BY nt.fec_reg DESC";
         $query = DB::select($sql);
         return $query;
     }

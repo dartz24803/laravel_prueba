@@ -714,6 +714,17 @@ class TareasController extends Controller
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
             ]);
+            Notificacion::create([
+                'id_usuario' => $dato['id_usuario'],
+                'solicitante' => session('usuario')->id_usuario,
+                'id_tipo' => 6,
+                'leido' => 0,
+                'estado' => 1,
+                'fec_reg' => now(),
+                'user_reg' => session('usuario')->id_usuario,
+                'fec_act' => now(),
+                'user_act' => session('usuario')->id_usuario
+            ]);
 
             $dato['id_pendiente'] = $pendiente->id;
 
