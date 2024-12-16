@@ -534,10 +534,10 @@
                     </li>
 
                     <?php if (
-                        session('usuario')->id_nivel == 1 || 
-                        session('usuario')->id_puesto == 75 || 
-                        session('usuario')->id_puesto == 83 || 
-                        session('usuario')->id_puesto == 122 || 
+                        session('usuario')->id_nivel == 1 ||
+                        session('usuario')->id_puesto == 75 ||
+                        session('usuario')->id_puesto == 83 ||
+                        session('usuario')->id_puesto == 122 ||
                         session('usuario')->id_puesto == 195
                     ) { ?>
                         <li class="menu" id="calendarios_logisticos">
@@ -615,7 +615,7 @@
                     </li>
                     <?php } ?>
                     <?php if (
-                        session('usuario')->nivel_jerarquico != 9 || session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 32
+                        /*session('usuario')->nivel_jerarquico != 9 ||*/ session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 32
                         || session('usuario')->id_puesto == 35
                     ) { ?>
                         <li class="menu" id="tareas_adm">
