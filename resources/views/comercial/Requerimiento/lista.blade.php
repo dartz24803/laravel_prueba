@@ -68,7 +68,7 @@
     function Delete_Pedido(id,division,usuario) {
         Cargando();
 
-        var url = "{{ url('Logistica/Delete_Pedido') }}";
+        var url = "{{ url('RequerimientoSurtido/delete_pedido') }}";
         var texto= "¿Realmente desea eliminar el registro de la división "+division+" del usuario "+usuario+"?";
         var csrfToken = $('input[name="_token"]').val();
 
