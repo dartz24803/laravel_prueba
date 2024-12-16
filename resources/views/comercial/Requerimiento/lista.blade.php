@@ -64,4 +64,45 @@
         "lengthMenu": [10, 20, 50],
         "pageLength": 10
     });
+
+    function Delete_Pedido(id,division,usuario) {
+        Cargando();
+
+        var url = "{{ url('Logistica/Delete_Pedido') }}";
+        var texto= "¿Realmente desea eliminar el registro de la división "+division+" del usuario "+usuario+"?";
+        var csrfToken = $('input[name="_token"]').val();
+
+        Swal({
+            title: texto,
+            text: "El registro será eliminado permanentemente",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    headers: {
+                        'X-CSRF-TOKEN': csrfToken
+                    },
+                    data: {
+                        'id_pedido_lnuno': id
+                    },
+                    success: function() {
+                        Swal(
+                            'Eliminado!',
+                            'El registro ha sido eliminado satisfactoriamente.',
+                            'success'
+                        ).then(function() {
+                            Buscar_Semana();
+                        });
+                    }
+                });
+            }
+        })
+    }
 </script>

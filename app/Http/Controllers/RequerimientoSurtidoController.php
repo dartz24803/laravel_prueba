@@ -70,8 +70,7 @@ class RequerimientoSurtidoController extends Controller
         return view('comercial.Requerimiento.modal_registrar', $dato);
     }
 
-    public function Insert_Requerimiento()
-    {
+    public function Insert_Requerimiento(){
         $this->input->validate([
             'anio' => 'not_in:0',
             'mes' => 'not_in:0',
@@ -251,7 +250,7 @@ class RequerimientoSurtidoController extends Controller
                     if (substr($dato['tipo_prenda'], 0, 1) == "=" || $dato['tipo_prenda'] == "") {
                         $columna = $columna . "J,";
                     }
-                    if (substr($dato['codigo_barra'], 0, 1) == "=" || $dato['codigo_barra'] == "") {
+                    if ((substr($dato['codigo_barra'], 0, 1) == "=" || $dato['codigo_barra'] == "") && !is_int($dato['codigo_barra'])) {
                         $columna = $columna . "K,";
                     }
                     if (substr($dato['autogenerado'], 0, 1) == "=" || $dato['autogenerado'] == "") {
@@ -440,5 +439,10 @@ class RequerimientoSurtidoController extends Controller
         header('Cache-Control: max-age=0');
 
         $writer->save('php://output');
+    }
+
+    public function Delete_Pedido(){
+        $dato['id_pedido_lnuno'] = $this->input->post("id_pedido_lnuno");
+        $this->Model_RequerimientoSurtido->delete_pedido($dato);
     }
 }

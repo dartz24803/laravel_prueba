@@ -2225,6 +2225,7 @@ Route::controller(RequerimientoSurtidoController::class)->group(function () {
     Route::post('RequerimientoSurtido/Delete_Requerimiento_Prenda', 'Delete_Requerimiento_Prenda');
     Route::post('RequerimientoSurtido/Delete_Todo_Requerimiento_Prenda', 'Delete_Todo_Requerimiento_Prenda');
     Route::get('RequerimientoSurtido/Excel_Duplicado/{us}/{sem}', 'Excel_Duplicado');
+    Route::post('RequerimientoSurtido/delete_pedido', 'delete_pedido');
 });
 
 use App\Http\Controllers\ActualizacionProcedimientosController;

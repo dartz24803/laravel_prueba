@@ -127,8 +127,7 @@ class RequerimientoSurtido extends Model
        return json_decode(json_encode($result), true);
    }
 
-   function insert_pedido($dato)
-   {
+   function insert_pedido($dato){
        $id_usuario = substr(session('usuario')->usuario_nombres, 0, 1) . session('usuario')->usuario_apater;
        $semana = $dato['semana'];
        $sql4 = "insert into pedido_lnuno (tipo_usuario, stock, total, observacion, semana,anio,estado,
@@ -138,8 +137,7 @@ class RequerimientoSurtido extends Model
        DB::connection('sqlsrv')->insert($sql4);
    }
 
-   function get_list_pedido($dato)
-   {
+   function get_list_pedido($dato){
        $id_usuario = substr(session('usuario')->usuario_nombres, 0, 1) . session('usuario')->usuario_apater;
        $semana = $dato['semana'];
        $sql = "select * from pedido_lnuno where user_reg='$id_usuario' and semana=$semana
@@ -148,5 +146,19 @@ class RequerimientoSurtido extends Model
         $result = DB::connection('sqlsrv')->select($sql);
         // Convertir el resultado a un array
         return json_decode(json_encode($result), true);
+   }
+
+   function delete_pedido($dato){
+       $id_usuario = substr(session('usuario')->usuario_nombres, 0, 1) . session('usuario')->usuario_apater;
+
+       $sql1 = "update pedido_lnuno set estado=2, user_eli='$id_usuario', fec_eli=getdate()
+               where id_pedido_lnuno=" . $dato['id_pedido_lnuno'] . "";
+
+        DB::connection('sqlsrv')->update($sql1);
+
+       $sql2 = "update dpedido_lnuno set estado=2, user_eli='$id_usuario', fec_eli=getdate()
+               where id_pedido_lnuno=" . $dato['id_pedido_lnuno'] . "";
+
+        DB::connection('sqlsrv')->update($sql2);
    }
 }
