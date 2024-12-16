@@ -434,7 +434,7 @@ class AsistenciaController extends Controller
         $spreadsheet->getActiveSheet()->setTitle('Reporte Control Asistencia');
 
         if (empty($numDoc)) {
-            $numDoc = [0];
+            $numDoc = 0;
         }
 
         // print_r($initialDate);
@@ -452,8 +452,6 @@ class AsistenciaController extends Controller
                 return response()->json(['error' => 'Error al procesar las fechas: ' . $e->getMessage()], 400);
             }
         }else{
-            $initialDate = $request->input('finicio');
-            $endDate = $request->input('ffin');
             // Transformar las fechas al formato dd/mm/yyyy
             $initialDate = date('d/m/Y', strtotime($initialDate));
             $endDate = date('d/m/Y', strtotime($endDate));
@@ -470,25 +468,25 @@ class AsistenciaController extends Controller
             'colaborador' => $colaboradores,
         ];
         // print_r(json_encode($numDoc));
-        // print_r($queryParams);
+        print_r($queryParams);
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
         $list_asistencia = $response->json()['data'];
         // print_r($list_asistencia);
-        // Establecer fechas de inicio y fin
 
+        // Establecer fechas de inicio y fin
         $fechas = [];
         if ($tipo == 1) {
             $fecha_inicio = new DateTime("$codAnio-$codMes-01");
             $fecha_fin = new DateTime("$codAnio-$codMes-" . $fecha_inicio->format('t'));
         } else {
-            $fecha_inicio = new DateTime($initialDate);
-            $fecha_fin = new DateTime($endDate);
+            $fecha_inicio = DateTime::createFromFormat('d/m/Y', $initialDate);
+            $fecha_fin = DateTime::createFromFormat('d/m/Y', $endDate);
         }
         $get_mes = Mes::where('cod_mes', $codMes)->get();
         if($tipo==1){
             $spreadsheet->getActiveSheet()->setCellValue("C1", $get_mes[0]->nom_mes .' '.$codAnio);
         }else{
-            $spreadsheet->getActiveSheet()->setCellValue("C1", date("d/m/Y", strtotime($initialDate)).' - '.date("d/m/Y", strtotime($endDate)));
+            $spreadsheet->getActiveSheet()->setCellValue("C1", $initialDate.' - '.$endDate);
         }
 
         while ($fecha_inicio <= $fecha_fin) {
@@ -628,37 +626,6 @@ class AsistenciaController extends Controller
             }
             $rowIndex++;
         }
-        /*foreach ($list_asistencia as $key => $row) {
-            $sheet->setCellValue('A' . $rowIndex, $key + 1); // Número
-            $sheet->setCellValue('B' . $rowIndex, $row['Usuario_Apater'] . ' ' . $row['Usuario_Amater'] . ', ' . $row['Usuario_Nombres']);
-
-            $colIndex = 3; // Columna inicial para las fechas
-
-            foreach ($fechas as $fecha) {
-                $colLetter = Coordinate::stringFromColumnIndex($colIndex); // Convertir índice de columna a letra
-
-                $estadoMarcacion = 0; // Por defecto, asumimos 0
-
-                // Convertir la fecha de la iteración a formato 'Y-m-d' para asegurarse de que se pueda comparar con la fecha de la API
-                $fechaFormateada = Carbon::createFromFormat('Y-m-d', $fecha)->format('d/m/Y');
-
-                // Obtener la fecha de asistencia para este usuario desde la API
-                $fechaAsistencia = isset($row['Fecha']) ? $row['Fecha'] : null;
-                // print_r('Asistencia:'.$fechaAsistencia);
-                // print_r('formateada'.$fechaFormateada);
-
-                // Comparar la fecha de asistencia con la fecha de la iteración
-                if ($fechaAsistencia === $fechaFormateada) {
-                    // Asignamos el estado de marcación aquí, por ejemplo, 1 si es presente, 2 si es tarde, etc.
-                    $estadoMarcacion = 1; // Estado predeterminado de marcación, ajusta según tu lógica
-                }
-
-                // Escribir el estado de marcación en la celda correspondiente
-                $sheet->setCellValue($colLetter . $rowIndex, $estadoMarcacion);
-                $colIndex++;
-            }
-            $rowIndex++;
-        }*/
 
         $bordeTabla = $rowIndex-1;
         $sheet->getStyle('A5:'.$colLetter.$bordeTabla)->applyFromArray($allborder);
@@ -676,6 +643,7 @@ class AsistenciaController extends Controller
 
         // Guardar y enviar el archivo al navegador
         $writer->save('php://output');
+
     }
 
     public function Update_Asistencia_Diaria(Request $request){
