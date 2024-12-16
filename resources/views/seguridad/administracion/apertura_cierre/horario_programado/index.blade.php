@@ -14,6 +14,15 @@
 <script>
     Lista_Horario_Programado();
 
+    function solo_Numeros(e) {
+        var key = event.which || event.keyCode;
+        if (key >= 48 && key <= 57) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     function Lista_Horario_Programado(){
         Cargando();
 

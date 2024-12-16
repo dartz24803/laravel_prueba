@@ -1706,14 +1706,15 @@ Route::controller(FacturacionController::class)->group(function () {
     Route::get('tabla_facturacion/{inicio}/{fin}/excel', 'excel_ic')->name('tabla_facturacion.excel');
     Route::get('tabla_facturacion/excel_filtrado/{ids}', 'excel_filtrado')->name('tabla_facturacion.excel_filtrado');
 
-
     // FACTURACIÓN PARCIAL
     Route::post('tabla_facturacion_parcial/list', 'list_fp')->name('tabla_facturacion_parcial.list');
     Route::post('tabla_facturacion_fp/datatable_fp', 'list_datatable_fp')->name('tabla_facturacion_fp.datatable_fp');
+    Route::get('tabla_facturacion_parcial/{inicio}/{fin}/excel', 'excel_ic_parcial')->name('tabla_facturacion_parcial.excel');
 
     // FACTURACIÓN TOTAL
     Route::post('tabla_facturacion_total/list', 'list_ft')->name('tabla_facturacion_total.list');
     Route::post('tabla_facturacion_ft/datatable_ft', 'list_datatable_ft')->name('tabla_facturacion_ft.datatable_ft');
+    Route::get('tabla_facturacion_total/{inicio}/{fin}/excel', 'excel_ic_cerrado')->name('tabla_facturacion_total.excel');
 });
 //TESORERÍA - REGISTRO LETRAS
 Route::controller(RegistroLetraController::class)->group(function () {

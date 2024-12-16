@@ -39,13 +39,14 @@ class UsersHistoricoPuesto extends Model
 
     static function get_list_historico_puesto_colaborador($id_usuario){
         $sql = "SELECT a.*,b.nom_gerencia,c.nom_area,d.nom_puesto,e.nom_tipo_cambio
-        FROM users_historico_puesto a 
-        left join gerencia b on a.id_gerencia=b.id_gerencia
-        left join area c on a.id_area=c.id_area
-        left join puesto d on a.id_puesto=d.id_puesto
-        left join vw_tipo_cambio_puesto e on a.id_tipo_cambio=e.id_tipo_cambio
-        WHERE a.estado=1 and a.id_usuario=$id_usuario order by a.fec_reg desc";
-        
+                FROM users_historico_puesto a 
+                LEFT JOIN puesto d ON a.id_puesto=d.id_puesto
+                LEFT JOIN area c ON d.id_area=c.id_area
+                LEFT JOIN sub_gerencia sg ON sg.id_sub_gerencia=c.id_departamento
+                LEFT JOIN gerencia b ON sg.id_gerencia=b.id_gerencia
+                LEFT JOIN vw_tipo_cambio_puesto e on a.id_tipo_cambio=e.id_tipo_cambio
+                WHERE a.estado=1 AND a.id_usuario=$id_usuario 
+                ORDER BY a.fec_reg DESC";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }

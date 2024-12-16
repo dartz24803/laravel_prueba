@@ -47,6 +47,10 @@ class AperturaCierreTiendaConfController extends Controller
     {
         $request->validate([
             'cod_base' => 'not_in:0',
+            'cant_foto_ingreso' => 'required',
+            'cant_foto_apertura' => 'required',
+            'cant_foto_cierre' => 'required',
+            'cant_foto_salida' => 'required',
             'ch_lu' => 'required_without_all:ch_ma,ch_mi,ch_ju,ch_vi,ch_sa,ch_do|boolean',
             'ch_ma' => 'required_without_all:ch_lu,ch_mi,ch_ju,ch_vi,ch_sa,ch_do|boolean',
             'ch_mi' => 'required_without_all:ch_lu,ch_ma,ch_ju,ch_vi,ch_sa,ch_do|boolean',
@@ -84,6 +88,10 @@ class AperturaCierreTiendaConfController extends Controller
             //'hora_salida_do' => 'required_if:ch_do,1',
         ], [
             'cod_base.not_in' => 'Debe seleccionar base.',
+            'cant_foto_ingreso.required' => 'Debe ingresar cantidad de fotos (ingreso).',
+            'cant_foto_apertura.required' => 'Debe ingresar cantidad de fotos (apertura).',
+            'cant_foto_cierre.required' => 'Debe ingresar cantidad de fotos (cierre).',
+            'cant_foto_salida.required' => 'Debe ingresar cantidad de fotos (salida).',
             'ch_lu.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
             'ch_ma.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
             'ch_mi.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
@@ -127,6 +135,10 @@ class AperturaCierreTiendaConfController extends Controller
         } else {
             $tienda_marcacion = TiendaMarcacion::create([
                 'cod_base' => $request->cod_base,
+                'cant_foto_ingreso' => $request->cant_foto_ingreso,
+                'cant_foto_apertura' => $request->cant_foto_apertura,
+                'cant_foto_cierre' => $request->cant_foto_cierre,
+                'cant_foto_salida' => $request->cant_foto_salida,
                 'estado' => 1,
                 'fec_reg' => now(),
                 'user_reg' => session('usuario')->id_usuario,
@@ -227,6 +239,10 @@ class AperturaCierreTiendaConfController extends Controller
     {
         $request->validate([
             'cod_basee' => 'not_in:0',
+            'cant_foto_ingresoe' => 'required',
+            'cant_foto_aperturae' => 'required',
+            'cant_foto_cierree' => 'required',
+            'cant_foto_salidae' => 'required',
             'ch_lue' => 'required_without_all:ch_mae,ch_mie,ch_jue,ch_vie,ch_sae,ch_doe|boolean',
             'ch_mae' => 'required_without_all:ch_lue,ch_mie,ch_jue,ch_vie,ch_sae,ch_doe|boolean',
             'ch_mie' => 'required_without_all:ch_lue,ch_mae,ch_jue,ch_vie,ch_sae,ch_doe|boolean',
@@ -264,6 +280,10 @@ class AperturaCierreTiendaConfController extends Controller
             //'hora_salida_doe' => 'required_if:ch_do,1',
         ], [
             'cod_basee.not_in' => 'Debe seleccionar base.',
+            'cant_foto_ingresoe.required' => 'Debe ingresar cantidad de fotos (ingreso).',
+            'cant_foto_aperturae.required' => 'Debe ingresar cantidad de fotos (apertura).',
+            'cant_foto_cierree.required' => 'Debe ingresar cantidad de fotos (cierre).',
+            'cant_foto_salidae.required' => 'Debe ingresar cantidad de fotos (salida).',
             'ch_lue.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
             'ch_mae.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
             'ch_mie.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
@@ -307,6 +327,10 @@ class AperturaCierreTiendaConfController extends Controller
         } else {
             TiendaMarcacion::findOrFail($id)->update([
                 'cod_base' => $request->cod_basee,
+                'cant_foto_ingreso' => $request->cant_foto_ingresoe,
+                'cant_foto_apertura' => $request->cant_foto_aperturae,
+                'cant_foto_cierre' => $request->cant_foto_cierree,
+                'cant_foto_salida' => $request->cant_foto_salidae,
                 'fec_act' => now(),
                 'user_act' => session('usuario')->id_usuario
             ]);

@@ -20,6 +20,42 @@
                 </select>
             </div>
         </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Cantidad de fotos (ingreso):</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="cant_foto_ingreso" id="cant_foto_ingreso" 
+                placeholder="Cantidad foto ingreso" onkeypress="return solo_Numeros(event);">
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Cantidad de fotos (apertura):</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="cant_foto_apertura" id="cant_foto_apertura" 
+                placeholder="Cantidad foto apertura" onkeypress="return solo_Numeros(event);">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Cantidad de fotos (cierre):</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="cant_foto_cierre" id="cant_foto_cierre" 
+                placeholder="Cantidad foto cierre" onkeypress="return solo_Numeros(event);">
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Cantidad de fotos (salida):</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="cant_foto_salida" id="cant_foto_salida" 
+                placeholder="Cantidad foto salida" onkeypress="return solo_Numeros(event);">
+            </div>
+        </div>
         
         <div class="row">
             <div class="form-group col-lg-2 n-chk d-flex align-items-center">
