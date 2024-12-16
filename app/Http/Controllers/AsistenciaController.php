@@ -185,6 +185,9 @@ class AsistenciaController extends Controller
         }
         $area = $request->input('area', 0);
         $estado = $request->input('estado', null);
+        if (empty($estado)) {
+            $estado = 1;
+        }
         $tipo = $request->input('tipo');
         $initialDate = $request->input('finicio');
         $endDate = $request->input('ffin');
@@ -218,6 +221,7 @@ class AsistenciaController extends Controller
         ];
         // print_r(json_encode($numDoc));
         // print_r($queryParams);
+
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
         // print_r($response->json()['data']);
 
@@ -468,7 +472,7 @@ class AsistenciaController extends Controller
             'colaborador' => $colaboradores,
         ];
         // print_r(json_encode($numDoc));
-        print_r($queryParams);
+        // print_r($queryParams);
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
         $list_asistencia = $response->json()['data'];
         // print_r($list_asistencia);
