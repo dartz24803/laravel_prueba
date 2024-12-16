@@ -1722,13 +1722,6 @@ class ColaboradorConfController extends Controller
             'id_centro_laborc.gt' => 'Debe seleccionar centro de labor.'
         ]);
 
-        Organigrama::findOrFail($id)->update([
-            'id_centro_labor' => $request->id_centro_laborc,
-            'temporal' => $request->temporalc,
-            'fecha' => now(),
-            'usuario' => session('usuario')->id_usuario
-        ]);
-
         //ACTUALIZAR EL CENTRO DE LABOR DEL COLABORADOR
         $get_id = Organigrama::findOrFail($id);
         if($request->id_centro_laborc!=$get_id->id_centro_labor){
@@ -1751,6 +1744,13 @@ class ColaboradorConfController extends Controller
                 'user_act' => session('usuario')->id_usuario
             ]);
         }
+
+        Organigrama::findOrFail($id)->update([
+            'id_centro_labor' => $request->id_centro_laborc,
+            'temporal' => $request->temporalc,
+            'fecha' => now(),
+            'usuario' => session('usuario')->id_usuario
+        ]);
     }
 
     public function destroy_or($id)
