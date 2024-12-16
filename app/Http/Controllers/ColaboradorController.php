@@ -1116,7 +1116,7 @@ class ColaboradorController extends Controller
         //VALIDACIÓN DE CAPACIDAD DE ORGANIGRAMA
         $get_id = Usuario::findOrFail($id_usuario);
         $valida = Organigrama::where('id_puesto',$request->id_puesto_hp)
-                ->where('id_centro_labor',$get_id->id_centro_labor)->where('id_usuario',0)->count();
+                ->where('id_centro_labor',$request->id_centro_labor_hp)->where('id_usuario',0)->count();
         if($valida>0){
             $get_id = UsersHistoricoPuesto::from('users_historico_puesto AS up')
                     ->select('up.id_historico_puesto','pu.id_puesto','ar.id_area','sg.id_sub_gerencia',
