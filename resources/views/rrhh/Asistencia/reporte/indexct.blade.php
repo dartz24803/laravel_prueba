@@ -83,7 +83,7 @@ $nom_area=Session('usuario')->nom_area;
                                             <div class="form-group">
                                                 <label class="control-label text-bold">Colaborador:</label>
                                                 <select id="num_doc" name="num_doc" class="form-control basic" multiple>
-                                                    <option value="0">TODOS</option>
+                                                    <option value="0" selected>TODOS</option>
                                                     <?php foreach ($list_colaborador as $list) { ?>
                                                         <option value="<?php echo $list['id_usuario']; ?>"> <?php echo $list['usuario_apater'] . " " . $list['usuario_amater'] . ", " . $list['usuario_nombres']; ?> </option>
                                                     <?php } ?>
@@ -526,22 +526,26 @@ $nom_area=Session('usuario')->nom_area;
 
 
         var url = "{{ url('Buscar_Reporte_Control_Asistencia')}}";
-        /*if (cod_base==0) {
+        var url = "{{ url('Asistencia/Buscar_No_Marcados')}}";
+        if (num_doc == '') {
             swal.fire(
-                'Error!',
-                'Debe seleccionar base de busqueda!',
-                'error'
+                'Error',
+                'Debe escoger colaborador!',
+                'warning'
             ).then(function() {
             });
-        }else{*/
+        }else{
             if(tipo==2){
                 var ini = moment(finicio);
                 var fin = moment(ffin);
 
                 if (ini.isAfter(fin) == true) {
                     msgDate = 'La Fecha de Inicio no debe ser mayor a la de Fecha de Fin. <br> Porfavor corrígelo. ';
-                    inputFocus = '#hora_salida_hoy';
-                    bootbox.alert(msgDate)
+                    swal.fire(
+                        'Error',
+                        msgDate,
+                        'warning'
+                    )
                     var input = $(inputFocus).parent();
                     $(input).addClass("has-error");
                     $(input).on("change", function() {
@@ -554,8 +558,11 @@ $nom_area=Session('usuario')->nom_area;
                     var f2=ffin;
                     if(restaFechas(f1,f2)>31){
                         msgDate = 'Solo se permite busquedas de hasta 31 días';
-                        inputFocus = '#hora_salida_hoy';
-                        bootbox.alert(msgDate)
+                        swal.fire(
+                            'Error',
+                            msgDate,
+                            'warning'
+                        )
                         var input = $(inputFocus).parent();
                         $(input).addClass("has-error");
                         $(input).on("change", function() {
@@ -612,7 +619,7 @@ $nom_area=Session('usuario')->nom_area;
                     }
                 });
             }
-        //}
+        }
 
     }
 
@@ -684,7 +691,7 @@ $nom_area=Session('usuario')->nom_area;
         var cod_base = $('#cod_base').val();
         var id_area = $('#id_area').val();
         var id_puesto = $('#id_puesto').val();
-        
+
         if(id_puesto == 29){
             var estado = 1;
         }else{
@@ -708,7 +715,7 @@ $nom_area=Session('usuario')->nom_area;
             },
         });
     }
-    
+
     function Buscar_No_Marcados() {
         Cargando();
         var cod_mes = $('#cod_mes_nm').val();

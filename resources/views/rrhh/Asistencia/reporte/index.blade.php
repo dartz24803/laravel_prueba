@@ -118,7 +118,7 @@
                                             <div class="form-group" >
                                                 <label class="control-label text-bold">Colaborador:</label>
                                                 <select id="num_doc" name="num_doc" class="form-control basic" multiple>
-                                                    <option value="0">TODOS</option>
+                                                    <option value="0" selected>TODOS</option>
                                                     <?php foreach($list_colaborador as $list){?>
                                                         <option value="<?php echo $list['id_usuario']; ?>"> <?php echo $list['usuario_apater']." ".$list['usuario_amater'].", ".$list['usuario_nombres'];?> </option>
                                                     <?php } ?>
@@ -235,8 +235,8 @@
                                         <div class="col-md-2" id="cmb_colaborador">
                                             <div class="form-group" >
                                                 <label class="control-label text-bold">Colaborador:</label>
-                                                <select id="num_doc_nm" name="num_doc_nm" class="form-control basic">
-                                                    <option value="0">TODOS</option>
+                                                <select id="num_doc_nm" name="num_doc_nm" class="form-control basic" multiple>
+                                                    <option value="0" selected>TODOS</option>
                                                     <?php foreach($list_colaborador as $list){?>
                                                         <option value="<?php echo $list['num_doc']; ?>"> <?php echo $list['usuario_apater']." ".$list['usuario_amater'].", ".$list['usuario_nombres'];?> </option>
                                                     <?php } ?>
@@ -584,14 +584,25 @@
 
 
         var url = "{{ url('Buscar_Reporte_Control_Asistencia')}}";
+        if (num_doc == '') {
+            swal.fire(
+                'Error',
+                'Debe escoger colaborador!',
+                'warning'
+            ).then(function() {
+            });
+        }else{
             if(tipo==2){
                 var ini = moment(finicio);
                 var fin = moment(ffin);
 
                 if (ini.isAfter(fin) == true) {
                     msgDate = 'La Fecha de Inicio no debe ser mayor a la de Fecha de Fin. <br> Porfavor corrígelo. ';
-                    inputFocus = '#hora_salida_hoy';
-                    bootbox.alert(msgDate)
+                    swal.fire(
+                        'Error',
+                        msgDate,
+                        'warning'
+                    )
                     var input = $(inputFocus).parent();
                     $(input).addClass("has-error");
                     $(input).on("change", function() {
@@ -604,8 +615,11 @@
                     var f2=ffin;
                     if(restaFechas(f1,f2)>31){
                         msgDate = 'Solo se permite busquedas de hasta 31 días';
-                        inputFocus = '#hora_salida_hoy';
-                        bootbox.alert(msgDate)
+                        swal.fire(
+                            'Error',
+                            msgDate,
+                            'warning'
+                        )
                         var input = $(inputFocus).parent();
                         $(input).addClass("has-error");
                         $(input).on("change", function() {
@@ -636,8 +650,6 @@
                             }
                         });
                     }
-
-
                 }
             }else{
                 $.ajax({
@@ -662,6 +674,8 @@
                     }
                 });
             }
+
+        }
     }
 
     function Excel_Reporte_Asistencia() {
@@ -685,46 +699,52 @@
         var ffin = $('#ffin').val();
 
         var url = "{{ url('Buscar_Reporte_Control_Asistencia') }}";
-        if(tipo==2){
-            var ini = moment(finicio);
-            var fin = moment(ffin);
-
-            if (ini.isAfter(fin) == true) {
-                msgDate = 'La Fecha de Inicio no debe ser mayor a la de Fecha de Fin. <br> Porfavor corrígelo. ';
-                inputFocus = '#hora_salida_hoy';
-                bootbox.alert(msgDate)
-                var input = $(inputFocus).parent();
-                $(input).addClass("has-error");
-                $(input).on("change", function() {
-                    if ($(input).hasClass("has-error")) {
-                        $(input).removeClass("has-error");
-                    }
-                });
-            } else {
-                var f1 = finicio;
-                var f2=ffin;
-                if(restaFechas(f1,f2)>31){
-                    msgDate = 'Solo se permite busquedas de hasta 31 días';
-                    inputFocus = '#hora_salida_hoy';
-                    bootbox.alert(msgDate)
-                    var input = $(inputFocus).parent();
-                    $(input).addClass("has-error");
-                    $(input).on("change", function() {
-                        if ($(input).hasClass("has-error")) {
-                            $(input).removeClass("has-error");
-                        }
-                    });
-                }else{
-                    window.location = "{{ url('Asistencia/Excel_Reporte_Asistencia')}}/"+cod_mes+"/"+cod_anio+"/"+cod_base+"/"+num_doc+"/"+area+"/"+estado+"/"+tipo+"/"+finicio+"/"+ffin;
-                }
-
-
-            }
+        if (num_doc == '') {
+            swal.fire(
+                'Error',
+                'Debe escoger colaborador!',
+                'warning'
+            ).then(function() {
+            });
         }else{
-            window.location = "{{ url('Asistencia/Excel_Reporte_Asistencia')}}/"+cod_mes+"/"+cod_anio+"/"+cod_base+"/"+num_doc+"/"+area+"/"+estado+"/"+tipo+"/"+finicio+"/"+ffin;
+            if(tipo==2){
+                var ini = moment(finicio);
+                var fin = moment(ffin);
+
+                if (ini.isAfter(fin) == true) {
+                    msgDate = 'La Fecha de Inicio no debe ser mayor a la de Fecha de Fin. <br> Porfavor corrígelo. ';
+                    swal.fire(
+                        'Error',
+                        msgDate,
+                        'warning'
+                    )
+                } else {
+                    var f1 = finicio;
+                    var f2=ffin;
+                    if(restaFechas(f1,f2)>31){
+                        msgDate = 'Solo se permite busquedas de hasta 31 días';
+                        swal.fire(
+                            'Error',
+                            msgDate,
+                            'warning'
+                        )
+                        var input = $(inputFocus).parent();
+                        $(input).addClass("has-error");
+                        $(input).on("change", function() {
+                            if ($(input).hasClass("has-error")) {
+                                $(input).removeClass("has-error");
+                            }
+                        });
+                    }else{
+                        window.location = "{{ url('Asistencia/Excel_Reporte_Asistencia')}}/"+cod_mes+"/"+cod_anio+"/"+cod_base+"/"+num_doc+"/"+area+"/"+estado+"/"+tipo+"/"+finicio+"/"+ffin;
+                    }
+
+
+                }
+            }else{
+                window.location = "{{ url('Asistencia/Excel_Reporte_Asistencia')}}/"+cod_mes+"/"+cod_anio+"/"+cod_base+"/"+num_doc+"/"+area+"/"+estado+"/"+tipo+"/"+finicio+"/"+ffin;
+            }
         }
-
-
     }
 
     function Modal_Registrar(){
@@ -787,28 +807,34 @@
 
         //console.log(tipo);
         var url = "{{ url('Asistencia/Buscar_No_Marcados')}}";
+        if (num_doc == '') {
+            swal.fire(
+                'Error',
+                'Debe escoger colaborador!',
+                'warning'
+            )
+        }else{
             if(tipo==2){
                 var ini = moment(finicio);
                 var fin = moment(ffin);
 
                 if (ini.isAfter(fin) == true) {
                     msgDate = 'La Fecha de Inicio no debe ser mayor a la de Fecha de Fin. <br> Porfavor corrígelo. ';
-                    inputFocus = '#hora_salida_hoy';
-                    bootbox.alert(msgDate)
-                    var input = $(inputFocus).parent();
-                    $(input).addClass("has-error");
-                    $(input).on("change", function() {
-                        if ($(input).hasClass("has-error")) {
-                            $(input).removeClass("has-error");
-                        }
-                    });
+                    swal.fire(
+                        'Error',
+                        msgDate,
+                        'warning'
+                    )
                 } else {
                     var f1 = finicio;
                     var f2=ffin;
                     if(restaFechas(f1,f2)>31){
                         msgDate = 'Solo se permite busquedas de hasta 31 días';
-                        inputFocus = '#hora_salida_hoy';
-                        bootbox.alert(msgDate)
+                        swal.fire(
+                            'Error',
+                            msgDate,
+                            'warning'
+                        )
                         var input = $(inputFocus).parent();
                         $(input).addClass("has-error");
                         $(input).on("change", function() {
@@ -863,6 +889,7 @@
                     }
                 });
             }
+        }
     }
 
     function Traer_Colaborador_nm(){
