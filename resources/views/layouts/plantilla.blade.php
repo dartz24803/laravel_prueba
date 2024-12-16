@@ -598,8 +598,11 @@
                         </a>
                     </li>
 
-                    <?php if (
-                        session('usuario')->id_puesto !== 30 || session('usuario')->id_puesto !== 38 || session('usuario')->id_puesto !== 161 || session('usuario')->id_puesto !== 314
+                    <?php if (session('usuario')->id_nivel == 1 || 
+                    session('usuario')->id_puesto !== 30 || 
+                    session('usuario')->id_puesto !== 38 || 
+                    session('usuario')->id_puesto !== 161 || 
+                    session('usuario')->id_puesto !== 314
                     ) { ?>
                     <li class="menu" id="tickets">
                         <a id="htickets" href="{{ url('Tickets/index') }}" class="dropdown-toggle">
@@ -614,9 +617,11 @@
                         </a>
                     </li>
                     <?php } ?>
-                    <?php if (
-                        session('usuario')->nivel_jerarquico != 9 || session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 32
-                        || session('usuario')->id_puesto == 35
+                    <?php if (session('usuario')->id_nivel == 1 || 
+                    ('usuario')->nivel_jerarquico != 9 || 
+                    session('usuario')->id_puesto == 31 || 
+                    session('usuario')->id_puesto == 32 || 
+                    session('usuario')->id_puesto == 35
                     ) { ?>
                         <li class="menu" id="tareas_adm">
                             <a href="{{ url('Tareas/index') }}" id="hgpendientes" class="dropdown-toggle" data-toggle="tooltip" data-placement="right" data-html="true" title="• Mis tareas<br>• Tareas solicitadas">
