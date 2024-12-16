@@ -1,3 +1,9 @@
+<style>
+    table.table td {
+        white-space: normal !important;
+    }
+</style>
+
 <table id="tabla_js" class="table" style="width:100%">
     <thead>
         <tr class="text-center">
@@ -42,7 +48,7 @@
                     @endif
                     {{ $list->nom_suceso }}
                 </td>
-                <td class="text-left" col="2">{{ $list->user_suceso }}</td>
+                <td class="text-left">{{ $list->user_suceso }}</td>
                 @if (session('usuario')->id_nivel==1 ||
                 session('usuario')->id_puesto==9 ||
                 session('usuario')->id_puesto==29 ||
@@ -114,6 +120,7 @@
             "<'table-responsive'tr>" +
             "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
             responsive: true,
+            autoWidth: true,
             order: [[0,"asc"]],
             "oLanguage": {
                 "oPaginate": { "sPrevious": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-left"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>', "sNext": '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-right"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>' },

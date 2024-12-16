@@ -615,7 +615,7 @@
                     </li>
                     <?php } ?>
                     <?php if (
-                        /*session('usuario')->nivel_jerarquico != 9 ||*/ session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 32
+                        session('usuario')->nivel_jerarquico != 9 || session('usuario')->id_puesto == 31 || session('usuario')->id_puesto == 32
                         || session('usuario')->id_puesto == 35
                     ) { ?>
                         <li class="menu" id="tareas_adm">
