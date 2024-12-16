@@ -17,6 +17,10 @@ class TiendaMarcacion extends Model
 
     protected $fillable = [
         'cod_base',
+        'cant_foto_ingreso',
+        'cant_foto_apertura',
+        'cant_foto_cierre',
+        'cant_foto_salida',
         'estado',
         'fec_reg',
         'user_reg',
