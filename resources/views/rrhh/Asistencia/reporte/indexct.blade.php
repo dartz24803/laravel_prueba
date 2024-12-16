@@ -526,7 +526,6 @@ $nom_area=Session('usuario')->nom_area;
 
 
         var url = "{{ url('Buscar_Reporte_Control_Asistencia')}}";
-        var url = "{{ url('Asistencia/Buscar_No_Marcados')}}";
         if (num_doc == '') {
             swal.fire(
                 'Error',

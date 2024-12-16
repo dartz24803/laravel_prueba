@@ -213,7 +213,7 @@ class ProcesosController extends Controller
 
     public function store_lm(Request $request)
     {
-
+        // dd("222");
         $accesoTodo = $request->has('acceso_todo') ? 1 : 0;
 
         // Obtener Lista de Bases
@@ -593,6 +593,17 @@ class ProcesosController extends Controller
         $area_p = $request->input('id_area_p', []);
         $areas = implode(',', $area_p);
 
+        // Obtén el código actual
+        $currentCode = $request->codigo;
+        // Divide el código por el delimitador '-'
+        $codeParts = explode('-', $currentCode);
+        // Obtén el último segmento como número
+        $lastNumber = (int) array_pop($codeParts); // Convierte el último segmento en entero
+        // Incrementa el número
+        $newNumber = $lastNumber + 1;
+        // Reconstruye el código con el nuevo número
+        $newCode = implode('-', $codeParts) . '-' . $newNumber;
+        // dd($newCode);
         // Actualiza la tabla 'ProcesosHistorial'
         DB::table('portal_procesos_historial')
             // ->where('id_portal', $id)
@@ -604,7 +615,7 @@ class ProcesosController extends Controller
                 'fecha' => $request->fecha,
                 'etiqueta' => '',
                 'id_responsable' => $request->id_responsablee,
-                'codigo' => $request->codigo,
+                'codigo' => $newCode,
                 'numero' => $request->ndocumento,
                 'acceso' =>  $acceso,
                 'estado' => 1,

@@ -143,15 +143,6 @@
                 <input type="number" class="form-control" id="ndocumento" name="ndocumento" placeholder="Ingresar documento">
             </div>
 
-            <!-- <div class="form-group col-lg-6">
-                <label>Area:</label>
-
-                <select class="form-control multivalue" name="id_area[]" id="id_area" multiple="multiple">
-                    @foreach ($list_area as $list)
-                    <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
-                    @endforeach
-                </select>
-            </div> -->
         </div>
 
         <div class="row">

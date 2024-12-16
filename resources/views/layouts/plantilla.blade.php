@@ -534,10 +534,10 @@
                     </li>
 
                     <?php if (
-                        session('usuario')->id_nivel == 1 || 
-                        session('usuario')->id_puesto == 75 || 
-                        session('usuario')->id_puesto == 83 || 
-                        session('usuario')->id_puesto == 122 || 
+                        session('usuario')->id_nivel == 1 ||
+                        session('usuario')->id_puesto == 75 ||
+                        session('usuario')->id_puesto == 83 ||
+                        session('usuario')->id_puesto == 122 ||
                         session('usuario')->id_puesto == 195
                     ) { ?>
                         <li class="menu" id="calendarios_logisticos">
@@ -598,10 +598,10 @@
                         </a>
                     </li>
 
-                    <?php if (session('usuario')->id_nivel == 1 || 
-                    session('usuario')->id_puesto !== 30 || 
-                    session('usuario')->id_puesto !== 38 || 
-                    session('usuario')->id_puesto !== 161 || 
+                    <?php if (session('usuario')->id_nivel == 1 ||
+                    session('usuario')->id_puesto !== 30 ||
+                    session('usuario')->id_puesto !== 38 ||
+                    session('usuario')->id_puesto !== 161 ||
                     session('usuario')->id_puesto !== 314
                     ) { ?>
                     <li class="menu" id="tickets">
@@ -617,10 +617,9 @@
                         </a>
                     </li>
                     <?php } ?>
-                    <?php if (session('usuario')->id_nivel == 1 || 
-                    ('usuario')->nivel_jerarquico != 9 || 
-                    session('usuario')->id_puesto == 31 || 
-                    session('usuario')->id_puesto == 32 || 
+                    <?php if (session('usuario')->id_nivel == 1 ||
+                    session('usuario')->id_puesto == 31 ||
+                    session('usuario')->id_puesto == 32 ||
                     session('usuario')->id_puesto == 35
                     ) { ?>
                         <li class="menu" id="tareas_adm">

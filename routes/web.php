@@ -372,7 +372,7 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos_lm/list', 'list_lm')->name('portalprocesos_lm.list');
     Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
     Route::get('portalprocesos_lm/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('portalprocesos_lm.excel');
-    Route::get('portalprocesos_lm/store', 'store_lm')->name('portalprocesos_lm.store');
+    Route::post('portalprocesos_lm/store', 'store_lm')->name('portalprocesos_lm.store');
     Route::get('portalprocesos_lm/{id}/image', 'image_lm')->name('portalprocesos_lm.image');
     Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
     Route::post('portalprocesos_lm/{id}', 'approve_lm')->name('portalprocesos_lm.approve');
