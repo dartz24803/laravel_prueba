@@ -25,6 +25,46 @@
         </div>
         
         <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Cantidad de fotos (ingreso):</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="cant_foto_ingresoe" id="cant_foto_ingresoe" 
+                placeholder="Cantidad foto ingreso" value="{{ $get_id->cant_foto_ingreso }}" 
+                onkeypress="return solo_Numeros(event);">
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Cantidad de fotos (apertura):</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="cant_foto_aperturae" id="cant_foto_aperturae" 
+                placeholder="Cantidad foto apertura" value="{{ $get_id->cant_foto_apertura }}" 
+                onkeypress="return solo_Numeros(event);">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-lg-2">
+                <label>Cantidad de fotos (cierre):</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="cant_foto_cierree" id="cant_foto_cierree" 
+                placeholder="Cantidad foto cierre" value="{{ $get_id->cant_foto_cierre }}" 
+                onkeypress="return solo_Numeros(event);">
+            </div>
+
+            <div class="form-group col-lg-2">
+                <label>Cantidad de fotos (salida):</label>
+            </div>
+            <div class="form-group col-lg-4">
+                <input type="text" class="form-control" name="cant_foto_salidae" id="cant_foto_salidae" 
+                placeholder="Cantidad foto salida" value="{{ $get_id->cant_foto_salida }}" 
+                onkeypress="return solo_Numeros(event);">
+            </div>
+        </div>
+        
+        <div class="row">
             <div class="form-group col-lg-2 n-chk d-flex align-items-center">
                 <label class="new-control new-checkbox new-checkbox-rounded checkbox-primary">
                     @php 
