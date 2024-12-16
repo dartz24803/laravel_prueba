@@ -322,16 +322,22 @@
                 },
                 success: function(resp) {
                     if (id_tipo == "44") {
+                        //SOLICITUD DE PUESTO
                         window.location = "{{ route('linea_carrera') }}";
                     } else if (id_tipo == "45") {
+                        //CAMBIO DE PUESTO
                         window.location = "{{ route('inicio') }}";
                     } else if (id_tipo == "46") {
+                        //EVALUACIÓN DE LÍNEA DE CARRERA
                         window.open("{{ route('linea_carrera.evaluacion', ':id') }}".replace(':id', resp), "_blank");
                     } else if (id_tipo == "47") {
+                        //REVISIÓN DE EVALUACIÓN DE LÍNEA DE CARRERA
                         window.location = "{{ route('linea_carrera') }}";
                     } else if (id_tipo == "6") {
-                        window.location = "{{ route('inicio') }}";
+                        //TAREAS
+                        window.location = "{{ route('tarea') }}";
                     } else {
+                        //PAPELETA DE SALIDA
                         window.location = "{{ route('inicio') }}";
                     }
                 }

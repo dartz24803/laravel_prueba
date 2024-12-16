@@ -81,9 +81,9 @@
             </td>
             <td class="
                     @if ($reporte->estado_valid == 0)
-                        bg-warning text-white
+                        bg-orange text-white
                     @elseif ($reporte->estado_valid == 1)
-                        bg-success text-white
+                        bg-green text-white
                     @else
                         bg-secondary text-white
                     @endif

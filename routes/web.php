@@ -372,7 +372,7 @@ Route::controller(ProcesosController::class)->group(function () {
     Route::get('portalprocesos_lm/list', 'list_lm')->name('portalprocesos_lm.list');
     Route::get('portalprocesos_lm/create', 'create_lm')->name('portalprocesos_lm.create');
     Route::get('portalprocesos_lm/{cod_base}/{fec_ini}/{fec_fin}/excel', 'excel_lm')->name('portalprocesos_lm.excel');
-    Route::get('portalprocesos_lm/store', 'store_lm')->name('portalprocesos_lm.store');
+    Route::post('portalprocesos_lm/store', 'store_lm')->name('portalprocesos_lm.store');
     Route::get('portalprocesos_lm/{id}/image', 'image_lm')->name('portalprocesos_lm.image');
     Route::delete('portalprocesos_lm/{id}', 'destroy_lm')->name('portalprocesos_lm.destroy');
     Route::post('portalprocesos_lm/{id}', 'approve_lm')->name('portalprocesos_lm.approve');
@@ -2268,7 +2268,7 @@ Route::controller(ReclutamientoController::class)->group(function () {
 use App\Http\Controllers\TareasController;
 
 Route::controller(TareasController::class)->group(function () {
-    Route::get('Tareas/index', 'Gestion_Pendiente');
+    Route::get('Tareas/index', 'Gestion_Pendiente')->name('tarea');
     Route::get('Tareas/Cargar_Mis_Tareas', 'Cargar_Mis_Tareas');
     Route::post('Tareas/Lista_Mis_Tareas', 'Lista_Mis_Tareas');
     Route::get('Tareas/Excel_Gestion_Pendiente/{id_area}/{base}/{cpiniciar}/{cproceso}/{cfinalizado}/{cstandby}/{mis_tareas}/{mi_equipo}/{responsablei}', 'Excel_Gestion_Pendiente');
