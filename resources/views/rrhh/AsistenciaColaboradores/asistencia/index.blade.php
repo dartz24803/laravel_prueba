@@ -4,6 +4,7 @@
         <div>
             <select id="basei" name="basei" class="form-control" onchange="Cmb_Colaboradori()">
                 <option value="0" selected>Todos</option>
+                <option value="-1">Tiendas</option>
                 <?php foreach ($data['list_base'] as $list) { ?>
                     <option value="<?php echo $list->cod_base; ?>"><?php echo $list->cod_base; ?></option>
                 <?php } ?>

@@ -1329,6 +1329,10 @@ class AsistenciaColaboradoresController extends Controller
                     $mail->addAddress($usuario->emailp);
                 }
                 // $mail->addAddress('pcardenas@lanumero1.com.pe');
+                // $mail->addCC('fclaverias@lanumero1.com.pe');
+                // $mail->addAddress('DVILCA@LANUMERO1.COM.PE');
+                // $mail->addAddress('');
+                // $mail->addAddress('');
 
                 $mail->isHTML(true);
 

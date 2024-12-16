@@ -84,10 +84,16 @@ class AsistenciaColaborador extends Model
                 $queryParams['dia'] = $dato['dia'];
             }
 
+            $parte_tienda1 = "";
             // Filtramos por base
             if ($dato['base'] != "0") {
-                $conditions[] = "ac.centro_labores = :base";
-                $queryParams['base'] = $dato['base'];
+                if($dato['base'] === "-1" ){
+                    $parte_tienda1 = "LEFT JOIN ubicacion ON us.id_centro_labor = ubicacion.id_ubicacion";
+                    $conditions[]= "ubicacion.estado = 1 AND ubicacion.id_sede = 6";
+                }else{
+                    $conditions[] = "ac.centro_labores = :base";
+                    $queryParams['base'] = $dato['base'];
+                }
             }
 
             // Filtramos por área
@@ -112,7 +118,7 @@ class AsistenciaColaborador extends Model
                     us.num_doc,
                     ac.centro_labores,
                     DATE_FORMAT(ac.fecha, '%d/%m/%Y') AS fecha,
-                    CASE 
+                    CASE
                         WHEN ac.con_descanso = 1 THEN CONCAT(
                             DATE_FORMAT(ac.hora_entrada, '%H:%i'), ' - ',
                             DATE_FORMAT(ac.hora_salida, '%H:%i'), ' (',
@@ -122,46 +128,48 @@ class AsistenciaColaborador extends Model
                         ELSE CONCAT(
                             DATE_FORMAT(ac.hora_entrada, '%H:%i'), ' - ',
                             DATE_FORMAT(ac.hora_salida, '%H:%i')
-                        ) 
+                        )
                     END AS turno,
-                    CASE 
-                        WHEN ac.estado_registro IN (1, 2) THEN DATE_FORMAT(ac.marcacion_entrada, '%H:%i') 
-                        ELSE '-' 
+                    CASE
+                        WHEN ac.estado_registro IN (1, 2) THEN DATE_FORMAT(ac.marcacion_entrada, '%H:%i')
+                        ELSE '-'
                     END AS marcacion_entrada,
-                    CASE 
-                        WHEN ac.estado_registro IN (1, 2) THEN 
-                            CASE WHEN ac.con_descanso = 1 THEN DATE_FORMAT(ac.marcacion_idescanso, '%H:%i') ELSE '-' END 
-                        ELSE '-' 
+                    CASE
+                        WHEN ac.estado_registro IN (1, 2) THEN
+                            CASE WHEN ac.con_descanso = 1 THEN DATE_FORMAT(ac.marcacion_idescanso, '%H:%i') ELSE '-' END
+                        ELSE '-'
                     END AS marcacion_idescanso,
-                    CASE 
-                        WHEN ac.estado_registro IN (1, 2) THEN 
-                            CASE WHEN ac.con_descanso = 1 THEN DATE_FORMAT(ac.marcacion_fdescanso, '%H:%i') ELSE '-' END 
-                        ELSE '-' 
+                    CASE
+                        WHEN ac.estado_registro IN (1, 2) THEN
+                            CASE WHEN ac.con_descanso = 1 THEN DATE_FORMAT(ac.marcacion_fdescanso, '%H:%i') ELSE '-' END
+                        ELSE '-'
                     END AS marcacion_fdescanso,
-                    CASE 
-                        WHEN ac.estado_registro IN (1, 2) THEN DATE_FORMAT(ac.marcacion_salida, '%H:%i') 
-                        ELSE '-' 
+                    CASE
+                        WHEN ac.estado_registro IN (1, 2) THEN DATE_FORMAT(ac.marcacion_salida, '%H:%i')
+                        ELSE '-'
                     END AS marcacion_salida,
-                    CASE 
-                        WHEN ac.estado_registro = '1' THEN '#5cb85c' 
+                    CASE
+                        WHEN ac.estado_registro = '1' THEN '#5cb85c'
                         WHEN ac.estado_registro = '2' THEN '#f0ad4e'
-                        WHEN ac.estado_registro = '3' THEN '#d9534f' 
+                        WHEN ac.estado_registro = '3' THEN '#d9534f'
                         WHEN ac.estado_registro = '4' THEN '#5bc0de'
-                        WHEN ac.estado_registro = '8' THEN '#292b2c' 
+                        WHEN ac.estado_registro = '8' THEN '#292b2c'
                         WHEN ac.estado_registro = '7' THEN '#59287a'
-                        WHEN ac.estado_registro = '9' THEN '#0275d8' 
+                        WHEN ac.estado_registro = '9' THEN '#0275d8'
                         WHEN ac.estado_registro = '10' THEN '#6c757d'
-                        WHEN ac.estado_registro = '11' THEN '#a76d46' 
+                        WHEN ac.estado_registro = '11' THEN '#a76d46'
                     END AS bandage,
                     ea.nom_estado,
                     us.usuario_nombres, us.usuario_apater, us.usuario_amater, ac.flag_diatrabajado
                 FROM asistencia_colaborador ac
                 LEFT JOIN users us ON ac.id_usuario = us.id_usuario
+                $parte_tienda1
                 LEFT JOIN estado_asistencia ea ON ac.estado_registro = ea.id_estado_asistencia
                 WHERE " . implode(" AND ", $conditions) . " AND ac.estado = 1
                 ORDER BY ac.fecha DESC";
         }
 
+        // print_r($sql);
         // Ejecutamos la consulta con los parámetros
         $query = DB::select($sql, $queryParams);
 
@@ -170,10 +178,10 @@ class AsistenciaColaborador extends Model
 
     public static function get_list_base_reg_agente()
     {
-        $sql = "SELECT cod_base 
-        FROM base 
-        WHERE estado = '1' 
-        GROUP BY cod_base 
+        $sql = "SELECT cod_base
+        FROM base
+        WHERE estado = '1'
+        GROUP BY cod_base
         ORDER BY cod_base ASC";
         $query = DB::select($sql);
 
@@ -183,11 +191,11 @@ class AsistenciaColaborador extends Model
     public static function get_list_colaboradort($id_usuario = null, $estado = null)
     {
         if (isset($id_usuario) && $id_usuario > 0) {
-            $sql = "SELECT u.*, 
-                    n.nom_nacionalidad, 
-                    a.nom_area, 
-                    g.nom_gerencia, 
-                    p.nom_puesto, 
+            $sql = "SELECT u.*,
+                    n.nom_nacionalidad,
+                    a.nom_area,
+                    g.nom_gerencia,
+                    p.nom_puesto,
                     c.nom_cargo
                 FROM users u
                 LEFT JOIN nacionalidad n ON n.id_nacionalidad = u.id_nacionalidad
@@ -210,11 +218,11 @@ class AsistenciaColaborador extends Model
                 }
             }
 
-            $sql = "SELECT u.*, 
-                    n.nom_nacionalidad, 
-                    a.nom_area, 
-                    g.nom_gerencia, 
-                    p.nom_puesto, 
+            $sql = "SELECT u.*,
+                    n.nom_nacionalidad,
+                    a.nom_area,
+                    g.nom_gerencia,
+                    p.nom_puesto,
                     c.nom_cargo
                 FROM users u
                 LEFT JOIN nacionalidad n ON n.id_nacionalidad = u.id_nacionalidad
@@ -257,7 +265,7 @@ class AsistenciaColaborador extends Model
             WHERE estado = '1' AND id_gerencia = :id_gerencia";
             $query = DB::select($sql, ['id_gerencia' => $id_gerencia]);
         } else {
-            $sql = "SELECT g.*, d.direccion 
+            $sql = "SELECT g.*, d.direccion
             FROM gerencia g
             LEFT JOIN direccion d ON g.id_direccion = d.id_direccion
             WHERE g.estado = '1'";
@@ -321,11 +329,11 @@ class AsistenciaColaborador extends Model
         }
 
         // Consulta SQL con LEFT JOIN y la condición dinámica para el área
-        $sql = "SELECT u.* 
+        $sql = "SELECT u.*
                 FROM users u
                 LEFT JOIN puesto p ON p.id_puesto = u.id_puesto
                 LEFT JOIN area a ON a.id_area = p.id_area
-                WHERE u.estado = 1 
+                WHERE u.estado = 1
                   AND u.id_nivel != 8 ";
 
         // Ejecutar la consulta y obtener los resultados
@@ -368,7 +376,7 @@ class AsistenciaColaborador extends Model
     public static  function get_list_notificacion()
     {
         $id_usuario = session('usuario')->id_usuario;
-        $sql = "SELECT n.*,co.mensaje,co.icono,concat_ws(' ',us.usuario_nombres,us.usuario_apater) AS solicitante 
+        $sql = "SELECT n.*,co.mensaje,co.icono,concat_ws(' ',us.usuario_nombres,us.usuario_apater) AS solicitante
                 FROM notificacion n
                 LEFT JOIN config co ON co.id_config=n.id_tipo
                 LEFT JOIN users us ON us.id_usuario=n.solicitante
@@ -403,14 +411,14 @@ class AsistenciaColaborador extends Model
                             LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres,' ',1),2))),' ',
                             CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),1,1)),
                             LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),2)))) AS colaborador,
-        
-                            CASE WHEN a.con_descanso = 1 THEN 
+
+                            CASE WHEN a.con_descanso = 1 THEN
                             CONCAT(DATE_FORMAT(a.hora_entrada,'%H:%i'),' - ', DATE_FORMAT(a.hora_salida,'%H:%i'),' (',
                             DATE_FORMAT(a.hora_descanso_e,'%H:%i'),' - ', DATE_FORMAT(a.hora_descanso_s,'%H:%i'),')')
-                            ELSE CONCAT(DATE_FORMAT(a.hora_entrada,'%H:%i'),' - ', DATE_FORMAT(a.hora_salida,'%H:%i')) 
+                            ELSE CONCAT(DATE_FORMAT(a.hora_entrada,'%H:%i'),' - ', DATE_FORMAT(a.hora_salida,'%H:%i'))
                             END AS turno
-        
-                            FROM asistencia_colaborador_inconsistencia a 
+
+                            FROM asistencia_colaborador_inconsistencia a
                             LEFT JOIN users b ON a.id_usuario=b.id_usuario
                             WHERE a.id_asistencia_inconsistencia='$id_asistencia_inconsistencia' AND a.flag_ausencia=1";
         } else {
@@ -495,14 +503,14 @@ class AsistenciaColaborador extends Model
                             LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres,' ',1),2))),' ',
                             CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),1,1)),
                             LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),2)))) AS colaborador,
-        
-                            CASE WHEN a.con_descanso = 1 THEN 
+
+                            CASE WHEN a.con_descanso = 1 THEN
                             CONCAT(DATE_FORMAT(a.hora_entrada,'%H:%i'),' - ', DATE_FORMAT(a.hora_salida,'%H:%i'),' (',
                             DATE_FORMAT(a.hora_descanso_e,'%H:%i'),' - ', DATE_FORMAT(a.hora_descanso_s,'%H:%i'),')')
-                            ELSE CONCAT(DATE_FORMAT(a.hora_entrada,'%H:%i'),' - ', DATE_FORMAT(a.hora_salida,'%H:%i')) 
+                            ELSE CONCAT(DATE_FORMAT(a.hora_entrada,'%H:%i'),' - ', DATE_FORMAT(a.hora_salida,'%H:%i'))
                             END AS turno
-        
-                            FROM asistencia_colaborador_inconsistencia a 
+
+                            FROM asistencia_colaborador_inconsistencia a
                             LEFT JOIN users b ON a.id_usuario=b.id_usuario
                             WHERE a.id_asistencia_inconsistencia='$id_asistencia_inconsistencia' AND a.flag_ausencia=1";
         } else {
@@ -592,9 +600,9 @@ class AsistenciaColaborador extends Model
                 INNER JOIN lanumerouno.users us ON vm.emp_code=us.num_doc
                 INNER JOIN lanumerouno.ubicacion ub ON ub.id_ubicacion=us.id_centro_labor
                 INNER JOIN lanumerouno.puesto pu ON us.id_puesto=pu.id_puesto
-                LEFT JOIN lanumerouno.horario_dia hd ON us.id_horario=hd.id_horario AND 
+                LEFT JOIN lanumerouno.horario_dia hd ON us.id_horario=hd.id_horario AND
                 hd.id_turno>0 AND (WEEKDAY(vm.fecha)+1)=hd.dia
-                WHERE $parte_fecha $parte_base $parte_area $parte_usuario us.estado=1 AND 
+                WHERE $parte_fecha $parte_base $parte_area $parte_usuario us.estado=1 AND
                 hd.estado=1 AND FLOOR(TIME_TO_SEC(TIMEDIFF(vm.hora_llegada, hd.hora_entrada))/60)>0";
         $query = DB::connection('second_mysql')->select($sql);
         return $query;
@@ -639,9 +647,9 @@ class AsistenciaColaborador extends Model
                 INNER JOIN lanumerouno.users us ON vm.emp_code=us.num_doc
                 INNER JOIN lanumerouno.ubicacion ub ON ub.id_ubicacion=us.id_centro_labor
                 INNER JOIN lanumerouno.puesto pu ON us.id_puesto=pu.id_puesto
-                LEFT JOIN lanumerouno.horario_dia hd ON us.id_horario=hd.id_horario AND 
+                LEFT JOIN lanumerouno.horario_dia hd ON us.id_horario=hd.id_horario AND
                 hd.id_turno>0 AND (WEEKDAY(vm.fecha)+1)=hd.dia
-                WHERE $parte_fecha $parte_base $parte_area $parte_usuario us.estado=1 AND pu.id_nivel NOT IN (10) AND 
+                WHERE $parte_fecha $parte_base $parte_area $parte_usuario us.estado=1 AND pu.id_nivel NOT IN (10) AND
                 hd.estado=1 AND FLOOR(TIME_TO_SEC(TIMEDIFF(vm.hora_llegada, hd.hora_entrada))/60)>0";
         $query = DB::connection('second_mysql')->select($sql);
         // print_r($sql);
@@ -651,10 +659,10 @@ class AsistenciaColaborador extends Model
 
     public static function get_list_dotacion($fecha)
     {
-        $sql = "SELECT 
-                    CASE 
-                        WHEN COALESCE(us.centro_labores, '1') LIKE 'B%' THEN CONCAT('ZZZ', COALESCE(us.centro_labores, '1')) 
-                        ELSE COALESCE(us.centro_labores, '1') 
+        $sql = "SELECT
+                    CASE
+                        WHEN COALESCE(us.centro_labores, '1') LIKE 'B%' THEN CONCAT('ZZZ', COALESCE(us.centro_labores, '1'))
+                        ELSE COALESCE(us.centro_labores, '1')
                     END AS orden,
                     COALESCE(us.centro_labores, '1') AS centro_labores,
                     COUNT(*) AS dotacion,
@@ -662,34 +670,34 @@ class AsistenciaColaborador extends Model
                     COUNT(*) - COUNT(DISTINCT presentes.emp_code) AS ausentes,
                     CONCAT(ROUND((COUNT(DISTINCT presentes.emp_code) * 100 / COUNT(*)), 1), '%') AS porcentaje_asistencia,
                     MIN(presentes.punch_time_formatted) AS hora_apertura,
-                    CASE 
-                        WHEN COUNT(*) = COUNT(DISTINCT presentes.emp_code) THEN 'Todos marcaron' 
-                        ELSE 'Faltan marcas' 
+                    CASE
+                        WHEN COUNT(*) = COUNT(DISTINCT presentes.emp_code) THEN 'Todos marcaron'
+                        ELSE 'Faltan marcas'
                     END AS nom_estado
-                FROM 
+                FROM
                     users us
-                LEFT JOIN horario_dia hd 
-                    ON us.id_horario = hd.id_horario 
+                LEFT JOIN horario_dia hd
+                    ON us.id_horario = hd.id_horario
                     AND hd.estado = 1
                     AND (WEEKDAY(?) + 1) = hd.dia
                     AND hd.id_turno > 0
                 LEFT JOIN (
-                    SELECT 
+                    SELECT
                         bi.emp_code,
                         DATE_FORMAT(MIN(bi.punch_time), '%H:%i') AS punch_time_formatted
-                    FROM 
+                    FROM
                         zkbiotime.iclock_transaction bi
-                    WHERE 
+                    WHERE
                         DATE(bi.punch_time) = ?
-                    GROUP BY 
+                    GROUP BY
                         bi.emp_code
-                ) AS presentes 
+                ) AS presentes
                     ON presentes.emp_code = us.num_doc
-                WHERE 
+                WHERE
                     us.estado = 1
-                GROUP BY 
+                GROUP BY
                     orden, centro_labores
-                ORDER BY 
+                ORDER BY
                     orden ASC;
                 ";
 
@@ -726,14 +734,14 @@ class AsistenciaColaborador extends Model
                     LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres,' ',1),2))),' ',
                     CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),1,1)),
                     LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),2)))) AS colaborador,
-                    case when a.tipo_inconsistencia=3 then 'Sin Turno' 
+                    case when a.tipo_inconsistencia=3 then 'Sin Turno'
                     else (
-                        case when 
-                        a.con_descanso=1 then 
+                        case when
+                        a.con_descanso=1 then
                         concat(date_format(a.hora_entrada,'%H:%i'),' - ',date_format(a.hora_salida,'%H:%i'),' (',date_format(a.hora_descanso_e,'%H:%i'),' - ',date_format(a.hora_descanso_s,'%H:%i'),')')
                         else concat(date_format(a.hora_entrada,'%H:%i'),' - ',date_format(a.hora_salida,'%H:%i')) end
                     ) end as turno
-                    FROM asistencia_colaborador_inconsistencia a 
+                    FROM asistencia_colaborador_inconsistencia a
                     INNER JOIN users b on a.id_usuario=b.id_usuario
                     INNER JOIN ubicacion ub ON ub.id_ubicacion=b.id_centro_labor
                     where a.id_asistencia_inconsistencia='$id_asistencia_inconsistencia' and a.flag_ausencia=0";
@@ -770,21 +778,21 @@ class AsistenciaColaborador extends Model
                     DATE_FORMAT(ai.hora_salida,'%H:%i'),' (',DATE_FORMAT(ai.hora_descanso_e,'%H:%i'),' - ',
                     DATE_FORMAT(ai.hora_descanso_s,'%H:%i'),')') ELSE CONCAT(DATE_FORMAT(ai.hora_entrada,'%H:%i'),' - ',
                     DATE_FORMAT(ai.hora_salida,'%H:%i')) END) END AS turno,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=1 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=1 AND
                     am.visible=1 AND am.estado=1) AS entrada,ai.tipo_inconsistencia,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=2 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=2 AND
                     am.visible=1 AND am.estado=1) AS salidaarefrigerio,ai.con_descanso,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=3 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=3 AND
                     am.visible=1 AND am.estado=1) AS entradaderefrigerio,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=4 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=4 AND
                     am.visible=1 AND am.estado=1) AS salida,us.usuario_nombres,us.usuario_apater,us.usuario_amater
                     FROM asistencia_colaborador_inconsistencia ai
                     LEFT JOIN users us ON ai.id_usuario=us.id_usuario
@@ -819,14 +827,14 @@ class AsistenciaColaborador extends Model
                     LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres,' ',1),2))),' ',
                     CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),1,1)),
                     LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),2)))) AS colaborador,
-                    case when a.tipo_inconsistencia=3 then 'Sin Turno' 
+                    case when a.tipo_inconsistencia=3 then 'Sin Turno'
                     else (
-                        case when 
-                        a.con_descanso=1 then 
+                        case when
+                        a.con_descanso=1 then
                         concat(date_format(a.hora_entrada,'%H:%i'),' - ',date_format(a.hora_salida,'%H:%i'),' (',date_format(a.hora_descanso_e,'%H:%i'),' - ',date_format(a.hora_descanso_s,'%H:%i'),')')
                         else concat(date_format(a.hora_entrada,'%H:%i'),' - ',date_format(a.hora_salida,'%H:%i')) end
                     ) end as turno
-                    FROM asistencia_colaborador_inconsistencia a 
+                    FROM asistencia_colaborador_inconsistencia a
                     left join users b on a.id_usuario=b.id_usuario
                     where a.id_asistencia_inconsistencia='$id_asistencia_inconsistencia' and a.flag_ausencia=0";
         } else {
@@ -862,21 +870,21 @@ class AsistenciaColaborador extends Model
                     DATE_FORMAT(ai.hora_salida,'%H:%i'),' (',DATE_FORMAT(ai.hora_descanso_e,'%H:%i'),' - ',
                     DATE_FORMAT(ai.hora_descanso_s,'%H:%i'),')') ELSE CONCAT(DATE_FORMAT(ai.hora_entrada,'%H:%i'),' - ',
                     DATE_FORMAT(ai.hora_salida,'%H:%i')) END) END AS turno,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=1 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=1 AND
                     am.visible=1 AND am.estado=1) AS entrada,ai.tipo_inconsistencia,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=2 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=2 AND
                     am.visible=1 AND am.estado=1) AS salidaarefrigerio,ai.con_descanso,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=3 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=3 AND
                     am.visible=1 AND am.estado=1) AS entradaderefrigerio,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=4 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=4 AND
                     am.visible=1 AND am.estado=1) AS salida,us.usuario_nombres,us.usuario_apater,us.usuario_amater
                     FROM asistencia_colaborador_inconsistencia ai
                     LEFT JOIN users us ON ai.id_usuario=us.id_usuario
@@ -911,14 +919,14 @@ class AsistenciaColaborador extends Model
                     LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres, ' ', 1), 2))), ' ',
                     CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater, ' ', 1), 1, 1)),
                     LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater, ' ', 1), 2)))) AS colaborador,
-                    CASE WHEN a.tipo_inconsistencia = 3 THEN 'Sin Turno' 
+                    CASE WHEN a.tipo_inconsistencia = 3 THEN 'Sin Turno'
                     ELSE (
-                        CASE WHEN 
-                        a.con_descanso = 1 THEN 
+                        CASE WHEN
+                        a.con_descanso = 1 THEN
                         CONCAT(DATE_FORMAT(a.hora_entrada, '%H:%i'), ' - ', DATE_FORMAT(a.hora_salida, '%H:%i'), ' (', DATE_FORMAT(a.hora_descanso_e, '%H:%i'), ' - ', DATE_FORMAT(a.hora_descanso_s, '%H:%i'), ')')
                         ELSE CONCAT(DATE_FORMAT(a.hora_entrada, '%H:%i'), ' - ', DATE_FORMAT(a.hora_salida, '%H:%i')) END
                     ) END AS turno
-                    FROM asistencia_colaborador_inconsistencia a 
+                    FROM asistencia_colaborador_inconsistencia a
                     LEFT JOIN users b ON a.id_usuario = b.id_usuario
                     WHERE a.id_asistencia_inconsistencia = '$id_asistencia_inconsistencia' AND a.flag_ausencia = 0";
         } else {
@@ -956,21 +964,21 @@ class AsistenciaColaborador extends Model
                     DATE_FORMAT(ai.hora_salida, '%H:%i'), ' (', DATE_FORMAT(ai.hora_descanso_e, '%H:%i'), ' - ',
                     DATE_FORMAT(ai.hora_descanso_s, '%H:%i'), ')') ELSE CONCAT(DATE_FORMAT(ai.hora_entrada, '%H:%i'), ' - ',
                     DATE_FORMAT(ai.hora_salida, '%H:%i')) END) END AS turno,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 1 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 1 AND
                     am.visible = 1 AND am.estado = 1) AS entrada, ai.tipo_inconsistencia,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 2 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 2 AND
                     am.visible = 1 AND am.estado = 1) AS salidaarefrigerio, ai.con_descanso,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 3 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 3 AND
                     am.visible = 1 AND am.estado = 1) AS entradaderefrigerio,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion, '%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 4 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion = 4 AND
                     am.visible = 1 AND am.estado = 1) AS salida, us.usuario_nombres, us.usuario_apater, us.usuario_amater
                     FROM asistencia_colaborador_inconsistencia ai
                     LEFT JOIN users us ON ai.id_usuario = us.id_usuario
@@ -1008,14 +1016,14 @@ class AsistenciaColaborador extends Model
                     LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_nombres,' ',1),2))),' ',
                     CONCAT(UPPER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),1,1)),
                     LOWER(SUBSTRING(SUBSTRING_INDEX(b.usuario_apater,' ',1),2)))) AS colaborador,
-                    case when a.tipo_inconsistencia=3 then 'Sin Turno' 
+                    case when a.tipo_inconsistencia=3 then 'Sin Turno'
                     else (
-                        case when 
-                        a.con_descanso=1 then 
+                        case when
+                        a.con_descanso=1 then
                         concat(date_format(a.hora_entrada,'%H:%i'),' - ',date_format(a.hora_salida,'%H:%i'),' (',date_format(a.hora_descanso_e,'%H:%i'),' - ',date_format(a.hora_descanso_s,'%H:%i'),')')
                         else concat(date_format(a.hora_entrada,'%H:%i'),' - ',date_format(a.hora_salida,'%H:%i')) end
                     ) end as turno
-                    FROM asistencia_colaborador_inconsistencia a 
+                    FROM asistencia_colaborador_inconsistencia a
                     left join users b on a.id_usuario=b.id_usuario
                     where a.id_asistencia_inconsistencia='$id_asistencia_inconsistencia' and a.flag_ausencia=0";
         } else {
@@ -1051,21 +1059,21 @@ class AsistenciaColaborador extends Model
                     DATE_FORMAT(ai.hora_salida,'%H:%i'),' (',DATE_FORMAT(ai.hora_descanso_e,'%H:%i'),' - ',
                     DATE_FORMAT(ai.hora_descanso_s,'%H:%i'),')') ELSE CONCAT(DATE_FORMAT(ai.hora_entrada,'%H:%i'),' - ',
                     DATE_FORMAT(ai.hora_salida,'%H:%i')) END) END AS turno,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=1 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=1 AND
                     am.visible=1 AND am.estado=1) AS entrada,ai.tipo_inconsistencia,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=2 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=2 AND
                     am.visible=1 AND am.estado=1) AS salidaarefrigerio,ai.con_descanso,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=3 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=3 AND
                     am.visible=1 AND am.estado=1) AS entradaderefrigerio,
-                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ') 
+                    (SELECT GROUP_CONCAT(DATE_FORMAT(am.marcacion,'%H:%i') SEPARATOR ', ')
                     FROM asistencia_colaborador_marcaciones am
-                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=4 AND 
+                    WHERE am.id_asistencia_inconsistencia = ai.id_asistencia_inconsistencia AND am.tipo_marcacion=4 AND
                     am.visible=1 AND am.estado=1) AS salida,us.usuario_nombres,us.usuario_apater,us.usuario_amater
                     FROM asistencia_colaborador_inconsistencia ai
                     LEFT JOIN users us ON ai.id_usuario=us.id_usuario
@@ -1080,7 +1088,7 @@ class AsistenciaColaborador extends Model
     {
         $sql = "SELECT a.id_asistencia_detalle,a.id_asistencia_inconsistencia,
         a.marcacion,a.obs_marcacion,a.tipo_marcacion,a.visible
-        from asistencia_colaborador_marcaciones a 
+        from asistencia_colaborador_marcaciones a
         where a.id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "' and a.estado=1 order by a.marcacion asc";
         $query = DB::select($sql);
         return $query;
@@ -1091,7 +1099,7 @@ class AsistenciaColaborador extends Model
     {
         $sql = "SELECT a.id_asistencia_detalle,a.id_asistencia_inconsistencia,
         a.marcacion,a.obs_marcacion,a.tipo_marcacion,a.visible
-        from asistencia_colaborador_marcaciones a 
+        from asistencia_colaborador_marcaciones a
         where a.id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "' and a.estado=1 order by a.marcacion asc";
         $query = DB::select($sql);
         // return $query;
@@ -1115,7 +1123,7 @@ class AsistenciaColaborador extends Model
     {
         $id_usuario = session('usuario')->id_usuario;
         $sql = "UPDATE asistencia_colaborador_marcaciones SET marcacion='" . $dato['marcacion'] . "',
-        obs_marcacion='" . $dato['obs_marcacion'] . "',tipo_marcacion='" . $dato['tipo_marcacion'] . "',visible='" . $dato['visible'] . "',user_act='$id_usuario',fec_act=NOW() 
+        obs_marcacion='" . $dato['obs_marcacion'] . "',tipo_marcacion='" . $dato['tipo_marcacion'] . "',visible='" . $dato['visible'] . "',user_act='$id_usuario',fec_act=NOW()
         WHERE id_asistencia_detalle='" . $dato['id_asistencia_detalle'] . "';";
         DB::statement($sql);
     }
@@ -1126,7 +1134,7 @@ class AsistenciaColaborador extends Model
         $id_usuario = session('usuario')->id_usuario;
 
         $sql = "UPDATE asistencia_colaborador_inconsistencia SET observacion='" . $dato['observacion_inconsistencia'] . "',
-        user_act='$id_usuario',fec_act=NOW() 
+        user_act='$id_usuario',fec_act=NOW()
         WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "';";
         DB::statement($sql);
     }
@@ -1135,8 +1143,8 @@ class AsistenciaColaborador extends Model
     {
         $sql = "SELECT a.id_asistencia_detalle, a.id_asistencia_inconsistencia,
             a.marcacion, a.obs_marcacion, a.tipo_marcacion, a.visible
-            FROM asistencia_colaborador_marcaciones a 
-            WHERE a.id_asistencia_inconsistencia = ? AND a.estado = 1 AND a.visible = 1 
+            FROM asistencia_colaborador_marcaciones a
+            WHERE a.id_asistencia_inconsistencia = ? AND a.estado = 1 AND a.visible = 1
             ORDER BY a.marcacion ASC";
 
         // Ejecuta la consulta y convierte el resultado en array
@@ -1146,36 +1154,36 @@ class AsistenciaColaborador extends Model
 
     public static function get_list_detalle_marcacion_inconsistencia_total($dato)
     {
-        $sql = "SELECT 
+        $sql = "SELECT
                     COUNT(1) as total_marcaciones,
-                    (SELECT COUNT(1) 
-                     FROM asistencia_colaborador_marcaciones 
-                     WHERE id_asistencia_inconsistencia = ? 
-                           AND estado = 1 
-                           AND visible = 1 
+                    (SELECT COUNT(1)
+                     FROM asistencia_colaborador_marcaciones
+                     WHERE id_asistencia_inconsistencia = ?
+                           AND estado = 1
+                           AND visible = 1
                            AND tipo_marcacion = 1) as t_entrada,
-                    (SELECT COUNT(1) 
-                     FROM asistencia_colaborador_marcaciones 
-                     WHERE id_asistencia_inconsistencia = ? 
-                           AND estado = 1 
-                           AND visible = 1 
+                    (SELECT COUNT(1)
+                     FROM asistencia_colaborador_marcaciones
+                     WHERE id_asistencia_inconsistencia = ?
+                           AND estado = 1
+                           AND visible = 1
                            AND tipo_marcacion = 2) as t_srefri,
-                    (SELECT COUNT(1) 
-                     FROM asistencia_colaborador_marcaciones 
-                     WHERE id_asistencia_inconsistencia = ? 
-                           AND estado = 1 
-                           AND visible = 1 
+                    (SELECT COUNT(1)
+                     FROM asistencia_colaborador_marcaciones
+                     WHERE id_asistencia_inconsistencia = ?
+                           AND estado = 1
+                           AND visible = 1
                            AND tipo_marcacion = 3) as t_erefri,
-                    (SELECT COUNT(1) 
-                     FROM asistencia_colaborador_marcaciones 
-                     WHERE id_asistencia_inconsistencia = ? 
-                           AND estado = 1 
-                           AND visible = 1 
+                    (SELECT COUNT(1)
+                     FROM asistencia_colaborador_marcaciones
+                     WHERE id_asistencia_inconsistencia = ?
+                           AND estado = 1
+                           AND visible = 1
                            AND tipo_marcacion = 4) as t_salida
-                FROM asistencia_colaborador_marcaciones a 
-                WHERE a.id_asistencia_inconsistencia = ? 
-                      AND a.estado = 1 
-                      AND a.visible = 1 
+                FROM asistencia_colaborador_marcaciones a
+                WHERE a.id_asistencia_inconsistencia = ?
+                      AND a.estado = 1
+                      AND a.visible = 1
                       AND a.tipo_marcacion <> '0'";
 
         // Ejecuta la consulta usando parámetros de enlace para evitar inyecciones SQL
@@ -1194,8 +1202,8 @@ class AsistenciaColaborador extends Model
         INSERT INTO asistencia_colaborador (
             id_usuario, fecha, id_horario, con_descanso, dia, centro_labores, id_area,
             hora_entrada, hora_entrada_desde, hora_entrada_hasta, hora_salida, hora_salida_desde, hora_salida_hasta,
-            hora_descanso_e, hora_descanso_e_desde, hora_descanso_e_hasta, hora_descanso_s, hora_descanso_s_desde, 
-            hora_descanso_s_hasta, marcacion_entrada, marcacion_idescanso, marcacion_fdescanso, marcacion_salida, 
+            hora_descanso_e, hora_descanso_e_desde, hora_descanso_e_hasta, hora_descanso_s, hora_descanso_s_desde,
+            hora_descanso_s_hasta, marcacion_entrada, marcacion_idescanso, marcacion_fdescanso, marcacion_salida,
             flag_editado, flag_diatrabajado, registro, estado_registro, nom_horario, observacion, obs_marc_entrada,
             obs_marc_idescanso, obs_marc_fdescanso, obs_marc_salida, estado, fec_reg, user_reg
         ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), ?)", [
@@ -1238,8 +1246,8 @@ class AsistenciaColaborador extends Model
 
         // Actualiza el estado de `asistencia_colaborador_inconsistencia`
         DB::update("
-        UPDATE asistencia_colaborador_inconsistencia 
-        SET estado = 2, user_eli = ?, fec_eli = NOW() 
+        UPDATE asistencia_colaborador_inconsistencia
+        SET estado = 2, user_eli = ?, fec_eli = NOW()
         WHERE id_asistencia_inconsistencia = ?", [
             $id_usuario,
             $dato['id_asistencia_inconsistencia']
@@ -1247,8 +1255,8 @@ class AsistenciaColaborador extends Model
 
         // Actualiza el estado de `asistencia_colaborador_marcaciones`
         DB::update("
-        UPDATE asistencia_colaborador_marcaciones 
-        SET estado = 2, user_eli = ?, fec_eli = NOW() 
+        UPDATE asistencia_colaborador_marcaciones
+        SET estado = 2, user_eli = ?, fec_eli = NOW()
         WHERE id_asistencia_inconsistencia = ?", [
             $id_usuario,
             $dato['id_asistencia_inconsistencia']
@@ -1264,12 +1272,12 @@ class AsistenciaColaborador extends Model
             case when a.t_refrigerio=1 then date_format(a.fin_refri, '%H:%i') end as fin_refri,
             case when a.t_refrigerio=2 then 'Sin Refrigerio' when a.t_refrigerio=1 then 'Refrigerio Fijo' end as desc_t_refrigerio,
             a.estado_registro,
-            case when a.t_refrigerio=1 then 
+            case when a.t_refrigerio=1 then
                 (case when a.ini_refri<>'00:00:00' and a.fin_refri<>'00:00:00' then
                     concat(date_format(a.entrada,'%H:%i'),' - ',date_format(a.salida,'%H:%i'),' (',date_format(a.ini_refri,'%H:%i'),' - ',date_format(a.fin_refri, '%H:%i'),')')
                     else concat(date_format(a.entrada,'%H:%i'),' - ',date_format(a.salida,'%H:%i')) end)
                 else concat(date_format(a.entrada,'%H:%i'),' - ',date_format(a.salida,'%H:%i')) end as option_select
-            FROM turno a 
+            FROM turno a
             WHERE a.base='" . $dato['cod_base'] . "' and a.estado_registro=1 and a.estado=1";
 
         $query = DB::select($sql);
@@ -1286,7 +1294,7 @@ class AsistenciaColaborador extends Model
             case when a.t_refrigerio=1 then date_format(a.fin_refri, '%H:%i') end as fin_refri,
             case when a.t_refrigerio=2 then 'Sin Refrigerio' when a.t_refrigerio=1 then 'Refrigerio Fijo' end as desc_t_refrigerio,
             a.estado_registro
-            FROM turno a 
+            FROM turno a
             left join tolerancia_horario b on b.id_tolerancia=1
             WHERE a.id_turno=$id_turno";
         } else {
@@ -1296,7 +1304,7 @@ class AsistenciaColaborador extends Model
             case when a.t_refrigerio=1 then date_format(a.fin_refri, '%H:%i') end as fin_refri,
             case when a.t_refrigerio=2 then 'Sin Refrigerio' when a.t_refrigerio=1 then 'Refrigerio Fijo' end as desc_t_refrigerio,
             case when a.estado_registro=1 then 'Activo' when a.estado_registro=2 then 'Inactivo' end as desc_estado
-            FROM turno a 
+            FROM turno a
             WHERE a.estado=1";
         }
         $query = DB::select($sql);
@@ -1305,9 +1313,9 @@ class AsistenciaColaborador extends Model
 
     public static function consulta_tolerancia_horario_activo()
     {
-        $sql = "SELECT a.*,CASE WHEN a.tipo=1 THEN a.tolerancia 
-                WHEN a.tipo=2 THEN a.tolerancia*60 END AS minutos 
-                FROM tolerancia_horario a 
+        $sql = "SELECT a.*,CASE WHEN a.tipo=1 THEN a.tolerancia
+                WHEN a.tipo=2 THEN a.tolerancia*60 END AS minutos
+                FROM tolerancia_horario a
                 WHERE a.estado=1 AND a.estado_registro=1";
         $query = DB::select($sql);
         return json_decode(json_encode($query), true);
@@ -1322,7 +1330,7 @@ class AsistenciaColaborador extends Model
         $hora_descanso_e = isset($dato['ini_refri']) ? "'" . $dato['ini_refri'] . "'" : 'NULL';
         $hora_descanso_s = isset($dato['fin_refri']) ? "'" . $dato['fin_refri'] . "'" : 'NULL';
         // First SQL statement to update main fields
-        $sql = "UPDATE asistencia_colaborador_inconsistencia SET 
+        $sql = "UPDATE asistencia_colaborador_inconsistencia SET
         con_descanso='" . $dato['con_descanso'] . "',
         hora_entrada='" . $dato['entrada'] . "',
         hora_salida='" . $dato['salida'] . "',
@@ -1331,11 +1339,11 @@ class AsistenciaColaborador extends Model
         id_turno='" . $dato['id_turno'] . "',
         tipo_inconsistencia='0',
         user_act='$id_usuario',
-        fec_act=NOW() 
+        fec_act=NOW()
         WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "';";
         DB::statement($sql);
         // Second SQL statement to update calculated fields
-        $sql = "UPDATE asistencia_colaborador_inconsistencia SET 
+        $sql = "UPDATE asistencia_colaborador_inconsistencia SET
         hora_entrada_desde=(DATE_FORMAT(DATE_SUB(hora_entrada,INTERVAL $minutos MINUTE), '%H:%i:%s')),
         hora_entrada_hasta=(DATE_FORMAT(DATE_ADD(hora_entrada,INTERVAL $minutos MINUTE), '%H:%i:%s')),
         hora_salida_desde=(DATE_FORMAT(DATE_SUB(hora_salida,INTERVAL $minutos MINUTE), '%H:%i:%s')),
@@ -1344,7 +1352,7 @@ class AsistenciaColaborador extends Model
         hora_descanso_e_hasta=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_ADD(hora_descanso_e,INTERVAL $minutos MINUTE), '%H:%i:%s')) END,
         hora_descanso_s_desde=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_SUB(hora_descanso_s,INTERVAL $minutos MINUTE), '%H:%i:%s')) END,
         hora_descanso_s_hasta=CASE WHEN con_descanso=1 THEN (DATE_FORMAT(DATE_ADD(hora_descanso_s,INTERVAL $minutos MINUTE), '%H:%i:%s')) END,
-        fec_act=NOW() 
+        fec_act=NOW()
         WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "'";
 
         DB::statement($sql);
@@ -1355,7 +1363,7 @@ class AsistenciaColaborador extends Model
 
     public static function get_list_estado_asistencia_ausencia()
     {
-        $sql = "SELECT * FROM estado_asistencia 
+        $sql = "SELECT * FROM estado_asistencia
                 WHERE id_estado_asistencia in (3,5,7,8,9,10,11)";
         $query = DB::select($sql);
         // return $query;
@@ -1444,10 +1452,10 @@ class AsistenciaColaborador extends Model
     public static function delete_inconsistencia_ausencia($dato)
     {
         $id_usuario = session('usuario')->id_usuario;
-        $sql = "UPDATE asistencia_colaborador_inconsistencia SET estado='2',id_asistencia_colaborador='" . $dato['id_asistencia_colaborador'] . "',user_eli='$id_usuario',fec_eli=NOW() 
+        $sql = "UPDATE asistencia_colaborador_inconsistencia SET estado='2',id_asistencia_colaborador='" . $dato['id_asistencia_colaborador'] . "',user_eli='$id_usuario',fec_eli=NOW()
         WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "';";
         DB::statement($sql);
-        $sql = "UPDATE asistencia_colaborador_marcaciones SET estado='2',id_asistencia_colaborador='" . $dato['id_asistencia_colaborador'] . "',user_eli='$id_usuario',fec_eli=NOW() 
+        $sql = "UPDATE asistencia_colaborador_marcaciones SET estado='2',id_asistencia_colaborador='" . $dato['id_asistencia_colaborador'] . "',user_eli='$id_usuario',fec_eli=NOW()
         WHERE id_asistencia_inconsistencia='" . $dato['id_asistencia_inconsistencia'] . "';";
         DB::statement($sql);
     }
@@ -1486,13 +1494,13 @@ class AsistenciaColaborador extends Model
                     DATE_FORMAT(ac.hora_salida,'%H:%i'),' (',DATE_FORMAT(ac.hora_descanso_e,'%H:%i'),' - ',
                     DATE_FORMAT(ac.hora_descanso_s,'%H:%i'),')') ELSE CONCAT(DATE_FORMAT(ac.hora_entrada,'%H:%i'),' - ',
                     DATE_FORMAT(ac.hora_salida,'%H:%i')) END AS turno,
-                    CASE WHEN ac.estado_registro IN (1,2) THEN DATE_FORMAT(ac.marcacion_entrada,'%H:%i') 
+                    CASE WHEN ac.estado_registro IN (1,2) THEN DATE_FORMAT(ac.marcacion_entrada,'%H:%i')
                     ELSE '-' END AS marcacion_entrada,
-                    CASE WHEN ac.estado_registro in (1,2) THEN (CASE WHEN ac.con_descanso=1 THEN 
+                    CASE WHEN ac.estado_registro in (1,2) THEN (CASE WHEN ac.con_descanso=1 THEN
                     DATE_FORMAT(ac.marcacion_idescanso,'%H:%i') ELSE '-' END) ELSE '-' END AS marcacion_idescanso,
-                    CASE WHEN ac.estado_registro in (1,2) THEN (CASE WHEN ac.con_descanso=1 THEN 
+                    CASE WHEN ac.estado_registro in (1,2) THEN (CASE WHEN ac.con_descanso=1 THEN
                     DATE_FORMAT(ac.marcacion_fdescanso,'%H:%i') ELSE '-' END) ELSE '-' END AS marcacion_fdescanso,
-                    CASE WHEN ac.estado_registro in (1,2) THEN DATE_FORMAT(ac.marcacion_salida,'%H:%i') 
+                    CASE WHEN ac.estado_registro in (1,2) THEN DATE_FORMAT(ac.marcacion_salida,'%H:%i')
                     ELSE '-' END AS marcacion_salida,
                     CASE WHEN ac.estado_registro='1' THEN '#5cb85c' WHEN ac.estado_registro='2' THEN '#f0ad4e'
                     WHEN ac.estado_registro='3' THEN '#d9534f' WHEN ac.estado_registro='4' THEN '#5bc0de'
@@ -1572,10 +1580,10 @@ class AsistenciaColaborador extends Model
                     AND us.estado = 1
                   GROUP BY us.id_usuario,us.num_doc
               )
-            GROUP BY us.num_doc, 
-                     us.usuario_nombres, 
-                     us.usuario_apater, 
-                     pu.nom_puesto, 
+            GROUP BY us.num_doc,
+                     us.usuario_nombres,
+                     us.usuario_apater,
+                     pu.nom_puesto,
                      us.num_celp";
 
         // Ejecutar la consulta
@@ -1589,8 +1597,8 @@ class AsistenciaColaborador extends Model
     {
         $anio = date('Y');
         if (isset($id_asistencia_colaborador) && $id_asistencia_colaborador > 0) {
-            $sql = "SELECT a.* 
-            FROM asistencia_colaborador a 
+            $sql = "SELECT a.*
+            FROM asistencia_colaborador a
             where a.id_asistencia_colaborador='$id_asistencia_colaborador'";
         } else {
             $base = "";
@@ -1612,7 +1620,7 @@ class AsistenciaColaborador extends Model
             }
             $sql = "SELECT a.id_usuario,
             b.usuario_nombres,b.usuario_apater,b.usuario_amater,a.fecha,a.flag_diatrabajado
-            FROM asistencia_colaborador a 
+            FROM asistencia_colaborador a
             left join users b on a.id_usuario=b.id_usuario
             where a.estado=1 $base $area $usuario $fecha";
         }
@@ -1637,7 +1645,7 @@ class AsistenciaColaborador extends Model
         } else {
             $sql = "SELECT a.*, case when a.estado_registro=1 then 'Activo' when a.estado_registro=2 then 'Inactivo' end as desc_estado_registro,
             case when a.tipo=1 then 'Minuto(s)' when a.tipo=2 then 'Hora(s)' end as desc_tipo
-            FROM tolerancia_horario a 
+            FROM tolerancia_horario a
             WHERE a.estado='1' ";
         }
         $query = DB::select($sql);
@@ -1658,32 +1666,32 @@ class AsistenciaColaborador extends Model
 
     public static function update_tolerancia_horario_cron($minutos)
     {
-        $sql = "UPDATE horario_dia SET 
+        $sql = "UPDATE horario_dia SET
                 hora_entrada_desde = DATE_FORMAT(DATE_SUB(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s'),
                 hora_entrada_hasta = DATE_FORMAT(DATE_ADD(hora_entrada, INTERVAL $minutos MINUTE), '%H:%i:%s'),
                 hora_salida_desde = DATE_FORMAT(DATE_SUB(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s'),
                 hora_salida_hasta = DATE_FORMAT(DATE_ADD(hora_salida, INTERVAL $minutos MINUTE), '%H:%i:%s'),
-                hora_descanso_e_desde = CASE 
-                                            WHEN con_descanso = 1 
-                                            THEN DATE_FORMAT(DATE_SUB(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') 
-                                            ELSE hora_descanso_e_desde 
+                hora_descanso_e_desde = CASE
+                                            WHEN con_descanso = 1
+                                            THEN DATE_FORMAT(DATE_SUB(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s')
+                                            ELSE hora_descanso_e_desde
                                         END,
-                hora_descanso_e_hasta = CASE 
-                                            WHEN con_descanso = 1 
-                                            THEN DATE_FORMAT(DATE_ADD(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s') 
-                                            ELSE hora_descanso_e_hasta 
+                hora_descanso_e_hasta = CASE
+                                            WHEN con_descanso = 1
+                                            THEN DATE_FORMAT(DATE_ADD(hora_descanso_e, INTERVAL $minutos MINUTE), '%H:%i:%s')
+                                            ELSE hora_descanso_e_hasta
                                         END,
-                hora_descanso_s_desde = CASE 
-                                            WHEN con_descanso = 1 
-                                            THEN DATE_FORMAT(DATE_SUB(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') 
-                                            ELSE hora_descanso_s_desde 
+                hora_descanso_s_desde = CASE
+                                            WHEN con_descanso = 1
+                                            THEN DATE_FORMAT(DATE_SUB(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s')
+                                            ELSE hora_descanso_s_desde
                                         END,
-                hora_descanso_s_hasta = CASE 
-                                            WHEN con_descanso = 1 
-                                            THEN DATE_FORMAT(DATE_ADD(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s') 
-                                            ELSE hora_descanso_s_hasta 
+                hora_descanso_s_hasta = CASE
+                                            WHEN con_descanso = 1
+                                            THEN DATE_FORMAT(DATE_ADD(hora_descanso_s, INTERVAL $minutos MINUTE), '%H:%i:%s')
+                                            ELSE hora_descanso_s_hasta
                                         END,
-                fec_act = NOW() 
+                fec_act = NOW()
                 WHERE estado = 1";
         DB::statement($sql);
     }
@@ -1715,7 +1723,7 @@ class AsistenciaColaborador extends Model
         $sql = "UPDATE tolerancia_horario set estado_registro=2,fec_act=NOW(), user_reg='$id_usuario' where estado=1 and estado_registro=1";
         DB::statement($sql);
 
-        $sql = "INSERT INTO tolerancia_horario (tipo,tolerancia,estado_registro, fec_reg, user_reg, estado) 
+        $sql = "INSERT INTO tolerancia_horario (tipo,tolerancia,estado_registro, fec_reg, user_reg, estado)
                 values ('" . $dato['tipo'] . "','" . $dato['tolerancia'] . "',1, NOW()," . $id_usuario . ", '1')";
         DB::statement($sql);
     }
@@ -1724,7 +1732,7 @@ class AsistenciaColaborador extends Model
     public static function update_tolerancia_horario($dato)
     {
         $id_usuario = session('usuario')->id_usuario;
-        $sql = "UPDATE tolerancia_horario set tolerancia='" . $dato['tolerancia'] . "',tipo='" . $dato['tipo'] . "',fec_act=NOW(), 
+        $sql = "UPDATE tolerancia_horario set tolerancia='" . $dato['tolerancia'] . "',tipo='" . $dato['tipo'] . "',fec_act=NOW(),
                 user_act=" . $id_usuario . " where id_tolerancia=" . $dato['id_tolerancia'] . "";
         DB::statement($sql);
     }
@@ -1766,7 +1774,7 @@ class AsistenciaColaborador extends Model
 
     public static function get_list_colaborador_asistencia_manual()
     {
-        $sql = "SELECT id_usuario,CONCAT(usuario_nombres,' ',usuario_apater,' ',usuario_amater) AS nom_usuario 
+        $sql = "SELECT id_usuario,CONCAT(usuario_nombres,' ',usuario_apater,' ',usuario_amater) AS nom_usuario
                 FROM users
                 WHERE id_horario>0 AND estado=1";
         $query = DB::select($sql);
@@ -1779,7 +1787,7 @@ class AsistenciaColaborador extends Model
     public static function insert_asistencia_manual($dato)
     {
         $id_usuario = session('usuario')->id_usuario;
-        $sql = "INSERT INTO asistencia_manual (id_usuario,base,fecha,marcacion,estado,fec_reg,user_reg) 
+        $sql = "INSERT INTO asistencia_manual (id_usuario,base,fecha,marcacion,estado,fec_reg,user_reg)
                 VALUES ('" . $dato['id_usuario'] . "','" . $dato['base'] . "','" . $dato['fecha'] . "',
                 '" . $dato['marcacion'] . "',1,NOW(),$id_usuario)";
         DB::statement($sql);
