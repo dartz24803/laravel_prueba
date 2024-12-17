@@ -146,7 +146,7 @@ class AsistenciaController extends Controller
         // print_r($queryParams);
 
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
-        // print_r($response->json()['data']);
+        // print_r($response->json());
 
         // Verificar si la respuesta fue exitosa
         if ($response->successful()) {
@@ -156,8 +156,9 @@ class AsistenciaController extends Controller
             // Pasar las variables a la vista
             return view('rrhh.Asistencia.reporte.listar', compact('initialDate', 'endDate', 'list_asistencia', 'numDoc'));
         } else {
-            // Si la API falla, puedes manejar el error
-            return redirect()->back()->with('error', 'Hubo un problema al obtener los datos de la API.');
+            return response()->json([
+                'error' => true,
+            ]);
         }
     }
     public function Traer_Colaborador_Asistencia(Request $request)

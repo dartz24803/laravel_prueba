@@ -327,19 +327,12 @@ class Model_Perfil extends Model
     }
 
     function cursocu_porcentaje($id_usuario=null){
-        $sql = "SELECT (case when (select count(*) from curso_complementario
-                where curso_complementario.id_usuario=u.id_usuario
-                and curso_complementario.nom_curso_complementario IS NOT NULL
-                and curso_complementario.nom_curso_complementario is not null
-                and curso_complementario.estado=1)>0
-                then 1 else 0 end) as curso_complementario,
-                (case when (select count(*) from curso_complementario
-                where curso_complementario.id_usuario=u.id_usuario
-                and curso_complementario.anio is not null and curso_complementario.anio IS NOT NULL
-                and curso_complementario.estado=1)>0
-                then 1 else 0 end) as anio
-                from users u
-                WHERE u.id_usuario=$id_usuario";
+        $sql = "SELECT CASE WHEN us.cursos_complementarios=1 THEN 1
+                ELSE (CASE WHEN (SELECT count(1) FROM curso_complementario cc
+                WHERE cc.id_usuario=us.id_usuario AND cc.nom_curso_complementario IS NOT NULL AND 
+                cc.anio IS NOT NULL AND cc.estado=1)>0 THEN 1 ELSE 0 END) END AS curso_complementario
+                FROM users us
+                WHERE us.id_usuario=$id_usuario";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }

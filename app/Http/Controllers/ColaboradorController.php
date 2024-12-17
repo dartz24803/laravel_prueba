@@ -3876,24 +3876,21 @@ class ColaboradorController extends Controller
         return view('rrhh.Perfil.Curso_Complementario.index', $dato);
     }
 
-    public function Delete_CursosC(Request $request, $id_curso_complementario=null ,$id_usuario=null){
-        $this->Model_Perfil = new Model_Perfil();
-            $dato['get_id'] = $this->Model_Perfil->get_id_usuario($id_usuario);
-            $get_id = $this->Model_Perfil->get_id_usuario($id_usuario);
-            $dato['id_usuario'] = $get_id[0]['id_usuario'];
-            $dato['id_curso_complementario']= $request->input("id_curso_complementario");
-            $dato['id_usuario']= $request->input("id_usuario");
-
-            $id_usuario = session('usuario')->id_usuario;
-
-            CursoComplementario::where('id_curso_complementario', $dato['id_curso_complementario'])
-                ->update([
-                    'estado' => 2,
-                    'fec_eli' => now(),
-                    'user_eli' => $id_usuario,
-                ]);
+    public function Delete_CursosC($id){
+        CursoComplementario::findOrFail($id)->update([
+            'estado' => 2,
+            'fec_eli' => now(),
+            'user_eli' => session('usuario')->id_usuario
+        ]);
     }
 
+    public function no_aplica_cc(Request $request, $id){
+        Usuario::findOrFail($id)->update([
+            'cursos_complementarios' => $request->no_aplica,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
     /********************************************/
     public function Lista_ExperenciaL(Request $request){
             $id_usuario = $request->input("id_usuariodp");

@@ -142,7 +142,7 @@
                         Cursos Complementarios
                         <div class="progress br-30">
                             <div class="progress-bar bg-primary" role="progressbar" style="width: <?php
-                                $porcentaje=round((($cursocu_porcentaje['0']['curso_complementario']+$cursocu_porcentaje['0']['anio'])/2)*100,2);
+                                $porcentaje=round((($cursocu_porcentaje[0]['curso_complementario']))*100,2);
                                 echo $porcentaje."%"; ?>" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><div class="progress-title"><span></span> <span><?php echo $porcentaje."%"; ?></span> </div></div>
                         </div>
                     </div>
