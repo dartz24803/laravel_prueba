@@ -87,10 +87,10 @@ class AsistenciaColaborador extends Model
             $parte_tienda1 = "";
             // Filtramos por base
             if ($dato['base'] != "0") {
-                if($dato['base'] === "-1" ){
+                if ($dato['base'] === "-1") {
                     $parte_tienda1 = "LEFT JOIN ubicacion ON us.id_centro_labor = ubicacion.id_ubicacion";
-                    $conditions[]= "ubicacion.estado = 1 AND ubicacion.id_sede = 6";
-                }else{
+                    $conditions[] = "ubicacion.estado = 1 AND ubicacion.id_sede = 6";
+                } else {
                     $conditions[] = "ac.centro_labores = :base";
                     $queryParams['base'] = $dato['base'];
                 }
@@ -628,27 +628,31 @@ class AsistenciaColaborador extends Model
         if ($dato['area'] != "0") {
             $parte_area = "pu.id_area='" . $dato['area'] . "' AND";
             //Procesos y proyectos
-            if($dato['excel']==1 && $dato['area']==18){
+            if ($dato['excel'] == 1 && $dato['area'] == 18) {
                 $parte_area = "pu.id_area IN ('13','18') AND";
             }
             //Dto. Gestion de Infraestructura
-            if($dato['excel']==1 && $dato['area']==31){
+            if ($dato['excel'] == 1 && $dato['area'] == 31) {
                 $parte_area = "pu.id_area IN ('10','31','41') AND";
             }
             //Dto Gestion de Seguridad y Salud
-            if($dato['excel']==1 && $dato['area']==32){
+            if ($dato['excel'] == 1 && $dato['area'] == 32) {
                 $parte_area = "pu.id_area IN ('12','32','44') AND";
             }
             //Dto. Gestion de Tiendas
-            if($dato['excel']==1 && $dato['area']==33){
+            if ($dato['excel'] == 1 && $dato['area'] == 33) {
                 $parte_area = "pu.id_area IN ('14','33') AND";
             }
             //Dto. Gestion del Talento Humano
-            if($dato['excel']==1 && $dato['area']==34){
+            if ($dato['excel'] == 1 && $dato['area'] == 34) {
+                $parte_area = "pu.id_area IN ('5','7') AND";
+            }
+            //Dto. Gestion Comercial
+            if ($dato['excel'] == 1 && $dato['area'] == 39) {
                 $parte_area = "pu.id_area IN ('11','26','29','34') AND";
             }
             //Dto. Gestion de Manufactura
-            if($dato['excel']==1 && $dato['area']==49){
+            if ($dato['excel'] == 1 && $dato['area'] == 49) {
                 $parte_area = "pu.id_area IN ('27','28','47','48','49') AND";
             }
         }

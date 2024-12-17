@@ -593,9 +593,7 @@
                 });
             }
 
-            // Actualizar visualización de filas seleccionadas
             $('#tabla_js tbody tr').toggleClass('highlight-row', isChecked);
-            // Actualizar estado del botón de facturar
             $('#btnVer').prop('disabled', !isChecked);
         });
 
@@ -886,8 +884,6 @@
                 });
             }
         });
-
-        // Actualizar
 
     });
     // Función para cerrar el modal

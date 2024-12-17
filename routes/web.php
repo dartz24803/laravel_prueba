@@ -1694,8 +1694,7 @@ Route::controller(FacturacionController::class)->group(function () {
     Route::get('facturacion_ft', 'index_ft')->name('facturacion_ft');
 
     Route::post('tabla_facturacion/list', 'list')->name('tabla_facturacion.list');
-    Route::get('tabla_facturacion/update', 'actualizarTabla')->name('tabla_facturacion.update');
-    Route::get('tabla_facturacion/updateEnviados', 'actualizarEnviadosTabla')->name('tabla_facturacion.updateEnviados');
+    Route::post('tabla_facturacion/update', 'actualizarTabla')->name('tabla_facturacion.update');
     Route::post('tabla_facturacion/updateEnviadosEndpoint', 'actualizarEnviadosTablaEndpoint')->name('tabla_facturacion.updateEnviadosEndpoint');
 
     Route::post('tabla_facturacion/datatable', 'list_datatable')->name('tabla_facturacion.datatable');
@@ -1956,6 +1955,8 @@ Route::controller(AsistenciaController::class)->group(function () {
     Route::post('Buscar_Reporte_Control_Asistencia', 'Buscar_Reporte_Control_Asistencia');
     Route::get('Asistencia/Traer_Colaborador_Asistencia', 'Traer_Colaborador_Asistencia');
     Route::get('Asistencia/Excel_Reporte_Asistencia/{mes}/{anio}/{cl}/{num_doc}/{area}/{estado}/{tipo}/{fi}/{ff}', 'Excel_Reporte_Asistencia');
+    Route::get('Asistencia/Excel_Asistencia_Colaborador/{mes}/{anio}/{cl}/{num_doc}/{area}/{estado}/{tipo}/{fi}/{ff}', 'Excel_Asistencia_Colaborador');
+
     Route::get('Asistencia/Modal_Update_Asistencia/{nombre}/{dni}/{orden}/{time}', 'Modal_Update_Asistencia');
     Route::post('Asistencia/Update_Asistencia_Diaria', 'Update_Asistencia_Diaria');
     Route::get('Asistencia/Modal_Reg_Asistencia', 'Modal_Reg_Asistencia');
@@ -2483,5 +2484,5 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
 
     Route::get('asistencia_colaborador/inconsistencias_colaborador/{base}/{area}/{usuario}/{tipo_fecha}/{dia}/{semana}', 'Excel_Inconsistencias_Colaborador')->name('inconsistencias_colaborador.excel');
 
-    Route::post('AsistenciaColaborador/Enviar_Correos_GerenteXJefe', 'Enviar_Correos_GerenteXJefe');
+    Route::get('AsistenciaColaborador/Enviar_Correos_GerenteXJefe', 'Enviar_Correos_GerenteXJefe');
 });
