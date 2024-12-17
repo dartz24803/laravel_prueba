@@ -116,6 +116,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $tipo_fecha;
         $dato['dia'] = $dia;
         $dato['mes'] = $mes;
+        // dd($dato);
         $list_asistencia = AsistenciaColaborador::get_list_asistencia_colaborador(0, $dato);
 
         $spreadsheet = new Spreadsheet();
