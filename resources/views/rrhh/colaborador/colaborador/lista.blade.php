@@ -66,7 +66,6 @@
             <th>N° Documento</th>
             <th>Teléfono Celular</th>
             <th>Bajo Jefatura</th>
-            <th>Progreso</th>
             <th class="no-content"></th>
         </tr>
     </thead>
@@ -166,7 +165,6 @@
                 @endif
                 @endif
             </td>
-            <td></td>
             <td class="text-center">
                 @if (session('usuario')->id_puesto=="27" && $list->id_usuario>0)
                     <a class="efectob" title="Ver Perfil" href="{{ url('ColaboradorController/Mi_Perfil/' .$list['id_usuario']) }}>">
