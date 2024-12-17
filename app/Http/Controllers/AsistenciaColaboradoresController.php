@@ -37,7 +37,9 @@ class AsistenciaColaboradoresController extends Controller
 
     public function __construct(Request $request)
     {
-        $this->middleware('verificar.sesion.usuario');
+        $this->middleware('verificar.sesion.usuario')->except([
+            'Enviar_Correos_GerenteXJefe'
+        ]);
         $this->input = $request;
         $this->Model_Asignacion = new AsignacionJefatura();
         // $this->Model_Permiso = new PermisoPapeletasSalida();
