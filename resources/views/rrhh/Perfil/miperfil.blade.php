@@ -170,7 +170,7 @@
                                 <div class="progress-bar bg-primary" role="progressbar" style="width: <?php
                                     if(count($gestacionu_porcentaje)>0){
                                         $porcentaje = 100;
-                                    }else{$porcentaje = 0;}
+                                    }else{$porcentaje = 0; }
                                     echo $porcentaje."%"; ?>" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><div class="progress-title"><span></span> <span><?php echo $porcentaje."%"; ?></span> </div></div>
                             </div>
                         <?php } ?>
@@ -185,8 +185,8 @@
                         <div class="progress br-30">
                             <div class="progress-bar bg-primary" role="progressbar" style="width: <?php
                                 if(count($otrosu_porcentaje)>0){
-                                    $porcentaje=round((($otrosu_porcentaje['0']['id_grupo_sanguineo']+$otrosu_porcentaje['0']['cert_vacu'])/2)*100,2);
-                                }else{$porcentaje=0;}
+                                    $porcentaje = 100;
+                                }else{$porcentaje = 0; }
                                 echo $porcentaje."%"; ?>" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><div class="progress-title"><span></span> <span><?php echo $porcentaje."%"; ?></span> </div></div>
                         </div>
                         Referencia de Convocatoria
