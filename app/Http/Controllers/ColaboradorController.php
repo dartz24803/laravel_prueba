@@ -1650,7 +1650,7 @@ class ColaboradorController extends Controller
                 }
             }
         }elseif($request->motivo_fin=="2"){
-            /*
+            
             $archivo = "";
             if($_FILES["archivo_cesec"]["name"] != ""){
                 $ftp_server = "lanumerounocloud.com";
@@ -1703,7 +1703,7 @@ class ColaboradorController extends Controller
                 'id_usuario' => 0,
                 'fecha' => now(),
                 'usuario' => session('usuario')->id_usuario
-            ]);*/
+            ]);
 
             $get_id = Usuario::from('users AS us')->select('pu.id_nivel', DB::raw("LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
                     us.usuario_apater,' ',us.usuario_amater)) AS nom_usuario"),DB::raw("CASE WHEN us.id_genero=1 THEN 'el Sr.'
