@@ -2,7 +2,7 @@
     <div class="form-group col-md-1">
         <label for="" class="control-label text-bold">Base&nbsp;</label>
         <div>
-            <select id="basei" name="basei" class="form-control" onchange="Cmb_Colaboradori()">
+            <select id="basei" name="basei" class="form-control basic" onchange="Traer_Colaborador()">
                 <option value="0" selected>Todos</option>
                 <option value="-1">Tiendas</option>
                 <?php foreach ($data['list_base'] as $list) { ?>
@@ -16,7 +16,7 @@
     <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Área</label>
         <div>
-            <select class="form-control" id="areai" name="areai" onchange="Cmb_Colaboradori()">
+            <select class="form-control basic" id="areai" name="areai" onchange="Traer_Colaborador()">
                 <option value="0">Todos</option>
                 <?php foreach ($data['list_area'] as $list) { ?>
                     <option value="<?php echo $list->id_area ?>"><?php echo $list->nom_area ?></option>
@@ -29,7 +29,7 @@
     <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Colaborador</label>
         <div>
-            <select class="form-control basic" id="usuarioi" name="usuarioi">
+            <select class="form-control basic" id="usuarioi" name="usuarioi" multiple>
                 <option value="0">Todos</option>
                 <?php foreach ($data['list_colaborador'] as $list) { ?>
                     <option value="<?php echo $list->id_usuario ?>"><?php echo $list->usuario_nombres . " " . $list->usuario_apater . " " . $list->usuario_amater ?></option>
@@ -47,6 +47,10 @@
                 <span class="new-control-indicator"></span>Dia
             </label>
             <label class="new-control new-radio radio-primary">
+                <input type="radio" class="new-control-input" id="r_semanai" value="3" name="tipo_fechai" onclick="Div_Tipo_Fecha()">
+                <span class="new-control-indicator"></span>Semana
+            </label>
+            <label class="new-control new-radio radio-primary">
                 <input type="radio" class="new-control-input" id="r_mesi" value="2" name="tipo_fechai" onclick="Div_Tipo_Fecha()">
                 <span class="new-control-indicator"></span>Mes
             </label>
@@ -59,11 +63,26 @@
             <input type="date" name="diai" id="diai" class="form-control" value="<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day')) ?>" max="<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day')) ?>">
         </div>
         <div id="div2" style="display:none">
-            <select name="mesi" id="mesi" class="form-control basic">
+            <select name="mesi" id="mesi" class="form-control">
                 <?php foreach ($data['list_mes'] as $list) { ?>
                     <option value="<?php echo $list->cod_mes ?>" <?php if (date('m') == $list->cod_mes) {
                                                                         echo "selected";
                                                                     } ?>><?php echo $list->nom_mes ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <div id="div3" style="display:none">
+            <!-- Dropdown for selecting week -->
+            <select name="semanaih" id="semanaih" class="form-control">
+                <?php
+                $current_date = date('Y-m-d'); // Fecha actual en formato 'Y-m-d'
+                foreach ($data['list_semanas'] as $list) {
+                    // Comparar la fecha actual con el rango de la semana
+                    $is_selected = ($current_date >= $list->fec_inicio && $current_date <= $list->fec_fin) ? 'selected' : '';
+                ?>
+                    <option value="<?php echo $list->id_semanas ?>" <?php echo $is_selected; ?>>
+                        <?php echo "Semana " . $list->nom_semana . " (" . date('d/m/Y', strtotime($list->fec_inicio)) . " - " . date('d/m/Y', strtotime($list->fec_fin)) . ")" ?>
+                    </option>
                 <?php } ?>
             </select>
         </div>
@@ -104,14 +123,7 @@
 
 
 <script>
-    $('#usuarioi').select2({
-        placeholder: 'Seleccione un Colaborador',
-        allowClear: true
-    });
-    $('#areai').select2({
-        placeholder: 'Seleccione un Área',
-        allowClear: true
-    });
+    $('.basic').select2({});
 
     function Buscar_Asistencia_Colaborador() {
         Cargando();
@@ -151,12 +163,19 @@
         Cargando();
         var div1 = document.getElementById("div1");
         var div2 = document.getElementById("div2");
+        var div3 = document.getElementById("div3");
         if ($('#r_diai').is(":checked")) {
             div1.style.display = "block";
             div2.style.display = "none";
-        } else {
+            div3.style.display = "none";
+        } else if($('#r_mesi').is(":checked")) {
             div1.style.display = "none";
             div2.style.display = "block";
+            div3.style.display = "none";
+        } else{
+            div1.style.display = "none";
+            div2.style.display = "none";
+            div3.style.display = "block";
         }
     }
 
@@ -188,5 +207,27 @@
                 .replace(':mes', mes)
         }
 
+    }
+    
+    function Traer_Colaborador() {
+        Cargando();
+
+        var cod_base = 0; //$('#basei').val();
+        var id_area = $('#areai').val();
+        var estado = 1;
+        var url = "{{ url('Asistencia/Traer_Colaborador_Asistencia') }}";
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {
+                'cod_base': cod_base,
+                'id_area': id_area,
+                'estado': estado
+            },
+            success: function(data) {
+                $('#usuarioi').html(data);
+            }
+        });
     }
 </script>
