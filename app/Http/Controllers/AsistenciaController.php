@@ -158,7 +158,6 @@ class AsistenciaController extends Controller
         } else {
             return response()->json([
                 'error' => true,
-                'message' => $errorBody['message'] ?? 'Error desconocido',
             ]);
         }
     }
