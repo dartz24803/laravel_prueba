@@ -81,7 +81,7 @@
                         </svg>@if (count($list_notificacion)>0) <span class="badge badge-success"></span> @endif
                     </a>
                     <div class="dropdown-menu position-absolute" aria-labelledby="notificationDropdown">
-                        <div class="notification-scroll">
+                        <div class="notification-scroll" style="max-height: 300px; overflow-y: auto;">
                             @if (count($list_notificacion)>0)
                             @foreach ($list_notificacion as $list)
                             <div class="dropdown-item">

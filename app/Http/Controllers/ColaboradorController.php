@@ -1650,7 +1650,7 @@ class ColaboradorController extends Controller
                 }
             }
         }elseif($request->motivo_fin=="2"){
-            /*
+            
             $archivo = "";
             if($_FILES["archivo_cesec"]["name"] != ""){
                 $ftp_server = "lanumerounocloud.com";
@@ -1703,7 +1703,7 @@ class ColaboradorController extends Controller
                 'id_usuario' => 0,
                 'fecha' => now(),
                 'usuario' => session('usuario')->id_usuario
-            ]);*/
+            ]);
 
             $get_id = Usuario::from('users AS us')->select('pu.id_nivel', DB::raw("LOWER(CONCAT(SUBSTRING_INDEX(us.usuario_nombres,' ',1),' ',
                     us.usuario_apater,' ',us.usuario_amater)) AS nom_usuario"),DB::raw("CASE WHEN us.id_genero=1 THEN 'el Sr.'
@@ -1713,8 +1713,7 @@ class ColaboradorController extends Controller
 
             
             if($get_id->id_nivel!=10){
-                print_r('envio');
-                /*$mail = new PHPMailer(true);
+                $mail = new PHPMailer(true);
 
                 try {
                     $mail->SMTPDebug = 0;
@@ -1727,6 +1726,7 @@ class ColaboradorController extends Controller
                     $mail->Port     =  587;
                     $mail->setFrom('somosuno@lanumero1.com.pe','Somos Uno');
 
+                    // $mail->addAddress('pcardenas@lanumero1.com.pe');
                     $mail->addAddress('oficina@lanumero1.com.pe');
                     $mail->addAddress('tiendas@lanumero1.com.pe');
                     $mail->addAddress('cd@lanumero1.com.pe');
@@ -1753,7 +1753,7 @@ class ColaboradorController extends Controller
                     $mail->send();
                 }catch(Exception $e) {
                     echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-                }*/
+                }
             }
         }
     }

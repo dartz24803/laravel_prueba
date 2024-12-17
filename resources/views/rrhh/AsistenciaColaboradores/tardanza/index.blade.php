@@ -46,12 +46,12 @@
                 <span class="new-control-indicator"></span>Dia
             </label>
             <label class="new-control new-radio radio-primary">
-                <input type="radio" class="new-control-input" id="r_mes_t" value="2" name="tipo_fecha_t" onclick="Div_Tipo_Fecha_T()">
-                <span class="new-control-indicator"></span>Mes
-            </label>
-            <label class="new-control new-radio radio-primary">
                 <input type="radio" class="new-control-input" id="r_semanah" value="3" name="tipo_fecha_t" onclick="Div_Tipo_Fecha_T()">
                 <span class="new-control-indicator"></span>Semana
+            </label>
+            <label class="new-control new-radio radio-primary">
+                <input type="radio" class="new-control-input" id="r_mes_t" value="2" name="tipo_fecha_t" onclick="Div_Tipo_Fecha_T()">
+                <span class="new-control-indicator"></span>Mes
             </label>
         </div>
     </div>
@@ -100,7 +100,9 @@
                     <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
             </button>
-            <button type="button" class="btn btn-danger" onclick="CorreoJG();">zzz</button>
+            @if(session('usuario')->id_usuario===2692)
+                <button type="button" class="btn btn-danger" onclick="CorreoJG();">zzz</button>
+            @endif
             <a class="btn" style="background-color: #28a745 !important;" onclick="Excel_Tardanza();">
                 <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="64" height="64" viewBox="0 0 172 172" style=" fill:#000000;">
                     <g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal">

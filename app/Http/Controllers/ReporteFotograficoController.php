@@ -664,6 +664,21 @@ class ReporteFotograficoController extends Controller
                 $mail->addAddress("mponte@lanumero1.com.pe");
                 $mail->addAddress("AVALDIVIESO@LANUMERO1.COM.PE");
 
+                $mail->addCC('base03@lanumero1.com.pe');
+                $mail->addCC('base04@lanumero1.com.pe');
+                $mail->addCC('base05@lanumero1.com.pe');
+                $mail->addCC('base06@lanumero1.com.pe');
+                $mail->addCC('base07@lanumero1.com.pe');
+                $mail->addCC('base08@lanumero1.com.pe');
+                $mail->addCC('base09@lanumero1.com.pe');
+                $mail->addCC('base10@lanumero1.com.pe');
+                $mail->addCC('base11@lanumero1.com.pe');
+                $mail->addCC('base12@lanumero1.com.pe');
+                $mail->addCC('base15@lanumero1.com.pe');
+                $mail->addCC('base16@lanumero1.com.pe');
+                $mail->addCC('base18@lanumero1.com.pe');
+                $mail->addCC('base19@lanumero1.com.pe');
+
                 $mail->isHTML(true);
                 $mail->Subject = 'Reporte diario de bases';
                 $mail->Body    = $emailBody;

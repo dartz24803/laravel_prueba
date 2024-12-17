@@ -433,9 +433,7 @@ class Model_Perfil extends Model
     }
 
     function gestacionu_porcentaje($id_usuario=null){
-        $sql = "SELECT (case when gu.id_respuesta IS NOT NULL then 1 else 0 end) as id_respuesta,
-                (case when gu.fec_ges is not null then 1 else 0 end) as fec_ges
-                from gestacion_usuario gu
+        $sql = "SELECT * FROM gestacion_usuario
                 WHERE id_usuario=$id_usuario";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
@@ -454,12 +452,7 @@ class Model_Perfil extends Model
     }
 
     function otrosu_porcentaje($id_usuario=null){
-        $sql = "SELECT  (case when ou.id_grupo_sanguineo IS NOT NULL
-                and ou.id_grupo_sanguineo is not null
-                then 1 else 0 end) as id_grupo_sanguineo,
-                (case when ou.cert_covid IS NOT NULL then 1 else 0 end) as cert_covid,
-                (case when ou.cert_vacu_covid IS NOT NULL then 1 else 0 end) as cert_vacu
-                from otros_usuario ou
+        $sql = "SELECT * FROM otros_usuario
                 WHERE id_usuario=$id_usuario";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);

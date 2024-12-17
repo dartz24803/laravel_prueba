@@ -37,7 +37,9 @@ class AsistenciaColaboradoresController extends Controller
 
     public function __construct(Request $request)
     {
-        $this->middleware('verificar.sesion.usuario');
+        $this->middleware('verificar.sesion.usuario')->except([
+            'Enviar_Correos_GerenteXJefe'
+        ]);
         $this->input = $request;
         $this->Model_Asignacion = new AsignacionJefatura();
         // $this->Model_Permiso = new PermisoPapeletasSalida();
@@ -67,7 +69,6 @@ class AsistenciaColaboradoresController extends Controller
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
             $data['list_semanas'] = AsistenciaColaborador::get_list_semanas();
             $data['list_noti'] = AsistenciaColaborador::get_list_notificacion();
-            $data['list_nav_evaluaciones'] = AsistenciaColaborador::get_list_nav_evaluaciones();
             $list_asistencia = [];
         } else {
             redirect('');
@@ -323,7 +324,6 @@ class AsistenciaColaboradoresController extends Controller
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
             $data['list_semanas'] = AsistenciaColaborador::get_list_semanas();
             $data['list_noti'] = AsistenciaColaborador::get_list_notificacion();
-            $data['list_nav_evaluaciones'] = AsistenciaColaborador::get_list_nav_evaluaciones();
             // dd($data['list_colaborador']);
             $list_asistencia = [];
             // $list_asistencia = AsistenciaColaborador::getListAsistenciaColaborador(0, $dato);
@@ -940,7 +940,6 @@ class AsistenciaColaboradoresController extends Controller
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
             $data['list_semanas'] = AsistenciaColaborador::get_list_semanas();
             $data['list_noti'] = AsistenciaColaborador::get_list_notificacion();
-            $data['list_nav_evaluaciones'] = AsistenciaColaborador::get_list_nav_evaluaciones();
             // dd($data['list_colaborador']);
             $list_ausencias = [];
             // $list_asistencia = AsistenciaColaborador::getListAsistenciaColaborador(0, $dato);
@@ -1034,7 +1033,6 @@ class AsistenciaColaboradoresController extends Controller
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
             $data['list_semanas'] = AsistenciaColaborador::get_list_semanas();
             $data['list_noti'] = AsistenciaColaborador::get_list_notificacion();
-            $data['list_nav_evaluaciones'] = AsistenciaColaborador::get_list_nav_evaluaciones();
             $list_ausencias = [];
         } else {
             redirect('');
@@ -1083,7 +1081,6 @@ class AsistenciaColaboradoresController extends Controller
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
             $data['list_semanas'] = AsistenciaColaborador::get_list_semanas();
             $data['list_noti'] = AsistenciaColaborador::get_list_notificacion();
-            $data['list_nav_evaluaciones'] = AsistenciaColaborador::get_list_nav_evaluaciones();
             $list_ausencias = [];
         } else {
             redirect('');
@@ -1197,10 +1194,11 @@ class AsistenciaColaboradoresController extends Controller
 
     public function Enviar_Correos_GerenteXJefe()
     {
-        $usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp', 'area.nom_area')
+        $usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp')
             ->leftJoin('puesto', 'users.id_puesto', '=', 'puesto.id_puesto')
             ->leftJoin('area', 'puesto.id_area', '=', 'area.id_area')
-            ->whereIn('puesto.id_nivel', [2, 3, 4])
+            ->whereIn('puesto.id_nivel', [3, 4])
+            ->whereNot('users.id_usuario', 133)
             ->where('users.estado', 1)
             ->whereIn('users.id_usuario', [133, 1459, 2655]) // test comentar al subir
             ->orderBy('users.id_usuario', 'ASC')
@@ -1208,7 +1206,6 @@ class AsistenciaColaboradoresController extends Controller
         // print_r($usuarios);
 
         $dato['base'] = 0;
-        // $dato['area'] = 18;
         $dato['usuario'] = 0;
         $dato['tipo_fecha'] = 3;
         $dato['dia'] = null;
@@ -1239,6 +1236,7 @@ class AsistenciaColaboradoresController extends Controller
 
         foreach ($usuarios as $usuario) {
             $dato['area'] = $usuario->id_area;
+            // $dato['area'] = 34; // poner area para testear
 
             $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
             $spreadsheet = new Spreadsheet();
@@ -1330,10 +1328,10 @@ class AsistenciaColaboradoresController extends Controller
                     $mail->addAddress($usuario->emailp);
                 }
                 // $mail->addAddress('pcardenas@lanumero1.com.pe');
-                // $mail->addCC('fclaverias@lanumero1.com.pe');
-                // $mail->addAddress('DVILCA@LANUMERO1.COM.PE');
-                // $mail->addAddress('');
-                // $mail->addAddress('');
+                $mail->addCC('fclaverias@lanumero1.com.pe');
+                $mail->addCC('DVILCA@LANUMERO1.COM.PE');
+                $mail->addCC('william.marin@lanumero1.com.pe');
+                $mail->addCC('ACAMARGO@LANUMERO1.COM.PE');
 
                 $mail->isHTML(true);
 
@@ -1373,7 +1371,7 @@ class AsistenciaColaboradoresController extends Controller
                 $nombre = $usuario->usuario_nombres;
                 $primerNombre = explode(' ', $nombre)[0];
                 $mail->Body =  "Estimado/a $primerNombre <br>
-                    Te envío el archivo de ASISTENCIA Y MARCACION $area - SEM 43
+                    Te envío el archivo de ASISTENCIA Y MARCACION $area - SEM $semana
                     DEL $fec_inicio - $fec_fin <br><br>
                     De acuerdo a nuestras políticas del sábado free los colaboradores que llegaron tarde deberán asistir mañana.<br><br>
                     $tableHtml
@@ -1381,7 +1379,9 @@ class AsistenciaColaboradoresController extends Controller
                     <a style='color:blue'> Recordatorio: El beneficio del sábado free se brinda cuando se cumple los 2 siguientes puntos.</a><br><br>
                     1.- Cumplimiento de objetivos: El jefe inmediato dará la conformidad del cumplimiento de actividades planificados semanalmente.<br>
                     2.- Puntualidad perfecta: No acumular ningún minuto de tardanza de lunes a viernes.<br><br>
-                    Saludos.";
+                    Saludos.
+                    <br>
+                    ";
                 $mail->addAttachment($filePath);
 
                 $mail->CharSet = 'UTF-8';
