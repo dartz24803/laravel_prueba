@@ -328,158 +328,48 @@ class FacturacionController extends Controller
         ]);
     }
 
-    // public function list_datatable(Request $request)
-    // {
-    //     $draw = intval($request->input('draw'));
-    //     $start = intval($request->input('start'));
-    //     $length = intval($request->input('length'));
-    //     $search = $request->input('search')['value'] ?? ''; // Este es el valor de búsqueda global
-    //     $order = $request->input('order'); // Parámetros de ordenamiento
-    //     $columns = $request->input('columns'); // Información de las columnas
-    //     $almacenSeleccionadoInput = $request->input('almacenSeleccionadoInput');
-    //     $customSearch = $request->input('customSearch');
-    //     // dd($customSearch);
-    //     // Mapeo de almacenes
-    //     $almacenes = [
-    //         '1' => 'alm_dsc',
-    //         '2' => 'alm_discotela',
-    //         '3' => 'alm_pb',
-    //         '4' => 'alm_mad',
-    //         '5' => 'alm_fam',
-    //     ];
-    //     $almacenActivo = $almacenes[$almacenSeleccionadoInput] ?? null;
-
-    //     // Aplicar filtros
-    //     $query = TbContabilidadCerradosParcial::filtros([
-    //         'fecha_inicio' => $request->input('fecha_inicio'),
-    //         'fecha_fin' => $request->input('fecha_fin'),
-    //         'estado' => $request->input('estado'),
-    //         'sku' => $request->input('filtroSku'),
-    //         'empresa' => $request->input('filtroEmpresa'),
-    //         'search' => $search, // Valor de búsqueda global (la búsqueda por cualquier término)
-    //         'almacen' => $almacenActivo,
-    //     ]);
-
-    //     // Si se proporciona un término de búsqueda personalizado (customSearch), aplicarlo en la consulta
-    //     if (!empty($customSearch)) { // Verificar si $customSearch no es null ni vacío
-    //         $query->where(function ($query) use ($customSearch) {
-    //             $query->where('estilo', 'like', '%' . $customSearch . '%')
-    //                 ->orWhere('color', 'like', '%' . $customSearch . '%')
-    //                 ->orWhere('sku', 'like', '%' . $customSearch . '%')
-    //                 ->orWhere('descripcion', 'like', '%' . $customSearch . '%')
-    //                 ->orWhere('costo_precio', 'like', '%' . $customSearch . '%')
-    //                 ->orWhere('alm_dsc', 'like', '%' . $customSearch . '%')
-    //                 ->orWhere('alm_discotela', 'like', '%' . $customSearch . '%')
-    //                 ->orWhere('alm_pb', 'like', '%' . $customSearch . '%')
-    //                 ->orWhere('alm_mad', 'like', '%' . $customSearch . '%')
-    //                 ->orWhere('alm_fam', 'like', '%' . $customSearch . '%')
-    //                 ->orWhere('guia_remision', 'like', '%' . $customSearch . '%')
-    //                 ->orWhere('empresa', 'like', '%' . $customSearch . '%');
-    //         });
-    //     }
-
-
-    //     // Manejo de ordenamiento
-    //     if ($order) {
-    //         $columnIndex = $order[0]['column']; // Índice de la columna
-    //         $columnName = $columns[$columnIndex]['data']; // Nombre de la columna
-    //         $columnSortOrder = $order[0]['dir']; // Dirección (asc o desc)
-
-    //         if ($columnName) {
-    //             $query->orderBy($columnName, $columnSortOrder);
-    //         }
-    //     }
-
-    //     // Obtener el número total de registros
-    //     $totalRecords = $query->count();
-
-    //     // Obtener los datos de la página actual según el rango solicitado
-    //     $data = $query->skip($start)->take($length)->get();
-
-    //     // Obtener el total de facturados parcial y pendiente
-    //     $facturadosParcial = $query->sum('enviado');
-    //     $facturadosPendiente = $query->sum('pendiente');
-
-    //     // Respuesta de la tabla con los datos
-    //     return response()->json([
-    //         'draw' => $draw,
-    //         'recordsTotal' => $totalRecords,
-    //         'recordsFiltered' => $totalRecords, // Esto es necesario si no hay filtros adicionales
-    //         'data' => $data,
-    //         'facturadosParcial' => $facturadosParcial,
-    //         'facturadosPendiente' => $facturadosPendiente
-    //     ]);
-    // }
-
-
-
 
     public function actualizarTabla(Request $request)
     {
+        $initialDate = $request->input('initialDate');
+        $endDate = $request->input('endDate');
+        $client = new Client();
+        // Endpoint y datos a enviar
+        $url = 'http://172.16.0.140:8001/api/v1/insert/informeContabilidad';
+        $body = [
+            'initialDate' => $initialDate,
+            'endDate' => $endDate,
+        ];
         try {
-            // Llamar a la función para sincronizar datos
-            $cantidadRegistrosActualizados = TbContabilidad::sincronizarContabilidad();
-            // Obtener la configuración
-            $configuracion = DB::table('tb_contabilidad_configuracion')
-                ->where('tipo', 1)
-                ->first();
-            if ($configuracion) {
-                Carbon::setLocale('es');
-                $peruTimezone = 'America/Lima';
-                $fecha_actualizacion = Carbon::parse($configuracion->fecha_actualizacion, $peruTimezone)
-                    ->translatedFormat('l, d M y H:i');
-                $cantidad_registros = $configuracion->cantidad_registros;
-                // Retornar una respuesta JSON
-                return response()->json([
-                    'success' => true,
-                    'fecha_actualizacion' => $fecha_actualizacion,
-                    'cantidad_registros' => $cantidad_registros,
-                    'cantidad_insertados' => $cantidadRegistrosActualizados,
-                ]);
-            }
-            // Si no hay configuración, devolver valores predeterminados
-            return response()->json([
-                'success' => false,
-                'fecha_actualizacion' => 'No disponible',
-                'cantidad_registros' => 0,
+            $response = $client->post($url, [
+                'json' => $body,
+                'headers' => [
+                    'Accept' => 'application/json',
+                ],
             ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
+            // Decodificar la respuesta
+            $responseBody = json_decode($response->getBody(), true);
+            // Actualizar fecha en tb_contabilidad tipo=2
+            DB::table('tb_contabilidad_configuracion')
+                ->where('tipo', 1) //CONFIGURACIÓN PARA ACTUALIZAR "enviados"
+                ->update([
+                    'fecha_actualizacion' => now(),
+                    'estado' => 1,
+                    'cantidad_registros' => 0,
+                ]);
+
+            return $responseBody;
+        } catch (ClientException $e) {
+            // Acceder al cuerpo de la respuesta del error
+            $errorResponse = $e->getResponse();
+            $errorBody = json_decode($errorResponse->getBody()->getContents(), true);
+            // dd($errorBody['message']);
+            return response()->json([
+                'error' => true,
+                'message' => $errorBody['message'] ?? 'Error desconocido',
+            ]);
         }
     }
-
-    public function actualizarEnviadosTabla()
-    {
-        try {
-            // Llamar a la función para sincronizar datos
-            $cantidadRegistrosActualizados = TbContabilidad::sincronizarEnviadosContabilidad();
-            // Obtener la configuración
-            $configuracion = DB::table('tb_contabilidad_configuracion')
-                ->where('tipo', 2)
-                ->first();
-            if ($configuracion) {
-                Carbon::setLocale('es');
-                $peruTimezone = 'America/Lima';
-                $fecha_actualizacion_enviados = Carbon::parse($configuracion->fecha_actualizacion, $peruTimezone)
-                    ->translatedFormat('l, d M y H:i');
-                // Retornar una respuesta JSON
-                return response()->json([
-                    'success' => true,
-                    'fecha_actualizacion_enviados' => $fecha_actualizacion_enviados,
-                    'cantidad_insertados_enviados' => $cantidadRegistrosActualizados,
-                ]);
-            }
-            // Si no hay configuración, devolver valores predeterminados
-            return response()->json([
-                'success' => false,
-                'fecha_actualizacion_enviados' => 'No disponible',
-            ]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'error' => $e->getMessage()], 500);
-        }
-    }
-
-
 
 
     public function excel_ic($fecha_inicio, $fecha_fin)

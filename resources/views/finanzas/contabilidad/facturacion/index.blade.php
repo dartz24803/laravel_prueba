@@ -1,43 +1,62 @@
 @csrf
 <div class="form-group row">
-    <div class="col-lg-2">
-        <button type="button" class="btn btn-secondary w-100" title="Actualizar" id="btnActualizar">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw">
-                <polyline points="23 4 23 10 17 10"></polyline>
-                <polyline points="1 20 1 14 7 14"></polyline>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-            </svg> Actualizar
-        </button>
+    <!-- Sección Izquierda: Actualizar -->
+    <div class="col-lg-6">
+        <div class="card p-3">
+            <div class="row">
+                <div class="col-lg-4">
+                    <!-- Botón Actualizar -->
+                    <button type="button" class="btn btn-secondary w-100" title="Actualizar" id="btnActualizar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        Actualizar
+                    </button>
+                    <span id="ultimaActualizacion">{{ $fecha_actualizacion }}</span>
+                </div>
+                <div class="col-lg-4">
+                    <label for="fecha_iniciob_act">Del</label>
+                    <input type="date" class="form-control" name="fecha_iniciob_act" id="fecha_iniciob_act" value="{{ date('Y-m-d') }}">
+                </div>
+                <div class="col-lg-4">
+                    <label for="fecha_finb_act">Al</label>
+                    <input type="date" class="form-control" name="fecha_finb_act" id="fecha_finb_act" value="{{ date('Y-m-d') }}">
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="col-lg-3">
-        <span id="ultimaActualizacion">{{ $fecha_actualizacion }}</span><br>
-        Registros Totales: <span id="totalRegistros">{{ $cantidad_registros }}</span>
-    </div>
-    <div class="col-lg-2">
-        <button type="button" class="btn btn-primary w-100" title="Actualizar" id="btnActualizarEnviados">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw">
-                <polyline points="23 4 23 10 17 10"></polyline>
-                <polyline points="1 20 1 14 7 14"></polyline>
-                <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
-            </svg>
-            Almacenes
-        </button>
-        <span id="ultimaActualizacionEnviados">{{ $fecha_actualizacion_enviados }}</span><br>
 
+    <!-- Sección Derecha: Almacenes -->
+    <div class="col-lg-6">
+        <div class="card p-3">
+            <div class="row">
+                <div class="col-lg-4">
+                    <!-- Botón Almacenes -->
+                    <button type="button" class="btn btn-primary w-100" title="Actualizar" id="btnActualizarEnviados">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-refresh-cw">
+                            <polyline points="23 4 23 10 17 10"></polyline>
+                            <polyline points="1 20 1 14 7 14"></polyline>
+                            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                        </svg>
+                        Almacenes
+                    </button>
+                    <span id="ultimaActualizacionEnviados">{{ $fecha_actualizacion_enviados }}</span>
+                </div>
+                <div class="col-lg-4">
+                    <label for="fecha_iniciob_alm">Del</label>
+                    <input type="date" class="form-control" name="fecha_iniciob_alm" id="fecha_iniciob_alm" value="{{ date('Y-m-d') }}">
+                </div>
+                <div class="col-lg-4">
+                    <label for="fecha_finb_alm">Al</label>
+                    <input type="date" class="form-control" name="fecha_finb_alm" id="fecha_finb_alm" value="{{ date('Y-m-d') }}">
+                </div>
+            </div>
+        </div>
     </div>
-    <label>Del</label>
-    <div class="col-lg-2">
-        <input type="date" class="form-control" name="fecha_iniciob_alm" id="fecha_iniciob_alm" value="{{ date('Y-m-d') }}">
-
-    </div>
-    <label>Al</label>
-    <div class="col-lg-2">
-        <input type="date" class="form-control" name="fecha_finb_alm" id="fecha_finb_alm" value="{{ date('Y-m-d') }}">
-    </div>
-    <!-- <div class="col-lg-4">
-        <span id="ultimaActualizacionEnviados">{{ $fecha_actualizacion_enviados }}</span><br>
-    </div> -->
 </div>
+
 
 <div class="row" id="cancel-row">
     <div class="col-xl-12 col-lg-12 col-sm-12  layout-spacing">
@@ -71,20 +90,15 @@
     }
 
     $('#btnActualizar').on('click', function() {
-        const fechaInicio = `Julio 01 del ${new Date().getFullYear()}`;
-        const fechaActual = new Date();
-        const meses = [
-            "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-            "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-        ];
-        const dia = fechaActual.getDate().toString().padStart(2, "0");
-        const mes = meses[fechaActual.getMonth()];
-        const anio = fechaActual.getFullYear();
-        const fechaActualM = `${mes} ${dia} del ${anio}`;
+        const fecha_inicioact = document.getElementById('fecha_iniciob_act').value;
+        const fecha_finact = document.getElementById('fecha_finb_act').value;
+
+        const fechaInicioFormateada = formatDate(fecha_inicioact);
+        const fechaFinFormateada = formatDate(fecha_finact);
 
         Swal({
             title: '¿Estás seguro?',
-            text: `Se procederá a actualizar la tabla de datos desde ${fechaInicio}  hasta  ${fechaActualM}.`,
+            text: `Se procederá a actualizar la tabla de datos desde ${fechaInicioFormateada}  hasta  ${fechaFinFormateada}.`,
             icon: 'warning',
             showCancelButton: true,
             confirmButtonText: 'Sí, Actualizar',
@@ -94,42 +108,45 @@
             if (result.value) {
                 $.ajax({
                     url: "{{ route('tabla_facturacion.update') }}",
-                    type: "GET",
+                    type: "POST",
+                    data: {
+                        initialDate: fechaInicioFormateada,
+                        endDate: fechaFinFormateada,
+                        _token: $('meta[name="csrf-token"]').attr('content')
+                    },
                     success: function(data) {
-                        console.log("Respuesta del servidor:", data);
-
-                        if (data.success) {
-                            // Actualizar los valores en el DOM
-                            $('#ultimaActualizacion').text(data.fecha_actualizacion);
-                            $('#totalRegistros').text(data.cantidad_registros);
-
+                        if (data.status) {
                             Swal.fire(
                                 '¡Actualización Exitosa!',
-                                '¡' + data.cantidad_insertados + ' registros han sido actualizados correctamente!',
+                                data.data,
                                 'success'
                             ).then(function() {
+                                $('#ultimaActualizacion').text(data.message);
                                 table.ajax.reload();
+                                limpiarSeleccionados();
                             });
                         } else {
-                            Swal.fire(
-                                'Sin cambios',
-                                'No hay datos nuevos para actualizar',
-                                'info'
-                            ).then(function() {
-                                table.ajax.reload();
+                            Swal.fire({
+                                title: '¡Error al Actualizar!',
+                                text: data.message || "Ocurrió un error inesperado.",
+                                icon: 'error',
+                                confirmButtonColor: '#3085d6',
+                                confirmButtonText: 'OK'
                             });
                         }
                     },
                     error: function(xhr, status, error) {
                         Swal.fire({
-                            title: '¡Error al Actualizar!',
-                            text: 'Ha ocurrido un error: ' + error,
+                            title: '¡Error!',
+                            text: "Ocurrió un error al procesar la actualización.",
                             icon: 'error',
                             confirmButtonColor: '#3085d6',
                             confirmButtonText: 'OK'
                         });
                     }
+
                 });
+
             }
         });
     });
@@ -173,7 +190,6 @@
                                 'success'
                             ).then(function() {
                                 $('#ultimaActualizacionEnviados').text(data.message);
-
                                 limpiarSeleccionados();
                             });
                         } else {
@@ -201,69 +217,4 @@
             }
         });
     });
-
-
-
-    // $('#btnActualizarEnviados').on('click', function() {
-    //     const fechaInicio = `Julio 01 del ${new Date().getFullYear()}`;
-    //     const fechaActual = new Date();
-    //     const meses = [
-    //         "Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio",
-    //         "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"
-    //     ];
-    //     const dia = fechaActual.getDate().toString().padStart(2, "0");
-    //     const mes = meses[fechaActual.getMonth()];
-    //     const anio = fechaActual.getFullYear();
-    //     const fechaActualM = `${mes} ${dia} del ${anio}`;
-
-    //     Swal({
-    //         title: '¿Estás seguro?',
-    //         text: `Se procederá a actualizar la cantidad de "stock", en todos los almacenes desde ${fechaInicio} hasta  ${fechaActualM}.`,
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonText: 'Sí, Actualizar',
-    //         cancelButtonText: 'Cancelar',
-    //         padding: '2em'
-    //     }).then((result) => {
-    //         if (result.value) {
-    //             $.ajax({
-    //                 url: "{{ route('tabla_facturacion.updateEnviados') }}",
-    //                 type: "GET",
-    //                 success: function(data) {
-    //                     console.log("Respuesta del servidor:", data);
-    //                     if (data.success) {
-    //                         // Actualizar los valores en el DOM
-    //                         $('#ultimaActualizacionEnviados').text(data.fecha_actualizacion_enviados);
-
-    //                         Swal.fire(
-    //                             '¡Actualización Exitosa!',
-    //                             '¡' + data.cantidad_insertados_enviados + ' registros han sido actualizados correctamente!',
-    //                             'success'
-    //                         ).then(function() {
-    //                             table.ajax.reload();
-    //                         });
-    //                     } else {
-    //                         Swal.fire(
-    //                             'Sin cambios',
-    //                             'No hay datos nuevos para actualizar',
-    //                             'info'
-    //                         ).then(function() {
-    //                             table.ajax.reload();
-    //                         });
-    //                     }
-    //                 },
-    //                 error: function(xhr, status, error) {
-    //                     Swal.fire({
-    //                         title: '¡Error al Actualizar!',
-    //                         text: 'Ha ocurrido un error: ' + error,
-    //                         icon: 'error',
-    //                         confirmButtonColor: '#3085d6',
-    //                         confirmButtonText: 'OK'
-    //                     });
-    //                 }
-    //             });
-    //         }
-    //     });
-
-    // });
 </script>

@@ -1099,8 +1099,8 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $this->input->post("tipo_fecha");
         $dato['dia'] = $this->input->post("dia");
         $dato['mes'] = $this->input->post("mes");
-        $dato['semana']=$request->semana;
-        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
+        $dato['semana'] = $request->semana;
+        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas = $dato['semana']);
         $list_tardanza =  AsistenciaColaborador::get_list_tardanza($dato);
         // Retornar la vista con los datos
         return view('rrhh.AsistenciaColaboradores.tardanza.lista', compact('list_tardanza', 'dato'));
@@ -1115,7 +1115,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['dia'] = $dia;
         $dato['mes'] = $mes;
         $dato['semana'] = $semana;
-        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
+        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas = $dato['semana']);
         $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
 
         $spreadsheet = new Spreadsheet();
@@ -1195,13 +1195,14 @@ class AsistenciaColaboradoresController extends Controller
         $writer->save('php://output');
     }
 
-    public function Enviar_Correos_GerenteXJefe(){
-        $usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp','area.nom_area')
+    public function Enviar_Correos_GerenteXJefe()
+    {
+        $usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp', 'area.nom_area')
             ->leftJoin('puesto', 'users.id_puesto', '=', 'puesto.id_puesto')
             ->leftJoin('area', 'puesto.id_area', '=', 'area.id_area')
             ->whereIn('puesto.id_nivel', [2, 3, 4])
             ->where('users.estado', 1)
-            ->whereIn('users.id_usuario', [133,1459,2655]) // test comentar al subir
+            ->whereIn('users.id_usuario', [133, 1459, 2655]) // test comentar al subir
             ->orderBy('users.id_usuario', 'ASC')
             ->get();
         // print_r($usuarios);
@@ -1231,12 +1232,12 @@ class AsistenciaColaboradoresController extends Controller
             // Manejar el caso en que no se encontró una semana actual (opcional)
             $dato['semana'] = null; // O algún valor predeterminado
         }
-        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
+        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas = $dato['semana']);
         // $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=205);
         $dato['excel'] = 1;
 
 
-        foreach($usuarios as $usuario){
+        foreach ($usuarios as $usuario) {
             $dato['area'] = $usuario->id_area;
 
             $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
@@ -1400,6 +1401,5 @@ class AsistenciaColaboradoresController extends Controller
                 }
             }
         }
-
     }
 }

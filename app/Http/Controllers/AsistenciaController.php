@@ -70,12 +70,12 @@ class AsistenciaController extends Controller
         $cod_base = 0;
         $num_doc = 0;
         $list_base = Ubicacion::select('id_ubicacion', 'cod_ubi')
-                    ->where('estado', 1)
-                    ->orderBy('cod_ubi', 'ASC')
-                    ->get();
+            ->where('estado', 1)
+            ->orderBy('cod_ubi', 'ASC')
+            ->get();
         //print_r($list_base[0]);
 
-        if ($id_puesto == 29 || $id_puesto == 98 || $id_puesto == 26 || $id_puesto == 16 || $id_puesto == 197 || $id_puesto == 161  || $id_puesto==314) {
+        if ($id_puesto == 29 || $id_puesto == 98 || $id_puesto == 26 || $id_puesto == 16 || $id_puesto == 197 || $id_puesto == 161  || $id_puesto == 314) {
             $cod_base = $centro_labores;
         } else {
             $cod_base = 23;
@@ -93,7 +93,8 @@ class AsistenciaController extends Controller
         }
     }
 
-    public function Buscar_Reporte_Control_Asistencia(Request $request){
+    public function Buscar_Reporte_Control_Asistencia(Request $request)
+    {
         set_time_limit(600);
         ini_set('max_execution_time', 600);
         $tipo = $request->input("tipo");
@@ -124,7 +125,7 @@ class AsistenciaController extends Controller
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Error al procesar las fechas: ' . $e->getMessage()], 400);
             }
-        }else{
+        } else {
             $initialDate = $request->input('finicio');
             $endDate = $request->input('ffin');
             // Transformar las fechas al formato dd/mm/yyyy
@@ -153,21 +154,23 @@ class AsistenciaController extends Controller
             $list_asistencia = $response->json()['data']; // Aquí asumimos que 'data' es la clave que contiene los resultados
             // print_r($list_asistencia);
             // Pasar las variables a la vista
-            return view('rrhh.Asistencia.reporte.listar', compact('initialDate', 'endDate', 'list_asistencia','numDoc'));
+            return view('rrhh.Asistencia.reporte.listar', compact('initialDate', 'endDate', 'list_asistencia', 'numDoc'));
         } else {
             // Si la API falla, puedes manejar el error
             return redirect()->back()->with('error', 'Hubo un problema al obtener los datos de la API.');
         }
     }
-    public function Traer_Colaborador_Asistencia(Request $request){
-            $dato['cod_base'] = $request->input('cod_base');
-            $dato['id_area'] = $request->input('id_area');
-            $dato['estado'] = $request->input('estado');
-            $dato['list_colaborador'] = $this->modelousuarios->get_list_usuarios_x_baset($dato['cod_base'],$dato['id_area'],$dato['estado']);
-            return view('rrhh.Asistencia.reporte.colaborador', $dato);
+    public function Traer_Colaborador_Asistencia(Request $request)
+    {
+        $dato['cod_base'] = $request->input('cod_base');
+        $dato['id_area'] = $request->input('id_area');
+        $dato['estado'] = $request->input('estado');
+        $dato['list_colaborador'] = $this->modelousuarios->get_list_usuarios_x_baset($dato['cod_base'], $dato['id_area'], $dato['estado']);
+        return view('rrhh.Asistencia.reporte.colaborador', $dato);
     }
 
-    public function Excel_Reporte_Asistencia($codMes, $codAnio, $codBase, $numDoc, $area, $estado, $tipo, $initialDate, $endDate, Request $request) {
+    public function Excel_Reporte_Asistencia($codMes, $codAnio, $codBase, $numDoc, $area, $estado, $tipo, $initialDate, $endDate, Request $request)
+    {
         set_time_limit(600);
         ini_set('max_execution_time', 600);
         // Crear una nueva instancia de Spreadsheet
@@ -178,11 +181,6 @@ class AsistenciaController extends Controller
         if (empty($numDoc)) {
             $numDoc = 0;
         }
-
-        // print_r($initialDate);
-        // print_r($endDate);
-        // print_r($tipo);
-
         if ($tipo == 1) {
             // Convertir el mes y el año a un rango de fechas (initialDate, endDate)
             try {
@@ -193,7 +191,7 @@ class AsistenciaController extends Controller
             } catch (\Exception $e) {
                 return response()->json(['error' => 'Error al procesar las fechas: ' . $e->getMessage()], 400);
             }
-        }else{
+        } else {
             // Transformar las fechas al formato dd/mm/yyyy
             $initialDate = date('d/m/Y', strtotime($initialDate));
             $endDate = date('d/m/Y', strtotime($endDate));
@@ -225,10 +223,10 @@ class AsistenciaController extends Controller
             $fecha_fin = DateTime::createFromFormat('d/m/Y', $endDate);
         }
         $get_mes = Mes::where('cod_mes', $codMes)->get();
-        if($tipo==1){
-            $spreadsheet->getActiveSheet()->setCellValue("C1", $get_mes[0]->nom_mes .' '.$codAnio);
-        }else{
-            $spreadsheet->getActiveSheet()->setCellValue("C1", $initialDate.' - '.$endDate);
+        if ($tipo == 1) {
+            $spreadsheet->getActiveSheet()->setCellValue("C1", $get_mes[0]->nom_mes . ' ' . $codAnio);
+        } else {
+            $spreadsheet->getActiveSheet()->setCellValue("C1", $initialDate . ' - ' . $endDate);
         }
 
         while ($fecha_inicio <= $fecha_fin) {
@@ -285,7 +283,7 @@ class AsistenciaController extends Controller
 
             $colIndex++;
         }
-        $sheet->getStyle('A5:'.$colLetter.'6')->applyFromArray([
+        $sheet->getStyle('A5:' . $colLetter . '6')->applyFromArray([
             'font' => ['bold' => true],
             'borders' => [
                 'allBorders' => [
@@ -305,14 +303,14 @@ class AsistenciaController extends Controller
         $sheet->getColumnDimension('A')->setWidth(5);
         $sheet->getColumnDimension('B')->setWidth(40);
         // $sheet->getColumnDimension('C')->setWidth(40);
-            $allborder = [
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => Border::BORDER_THIN,
-                        'color' => ['rgb' => '000000']
-                    ]
+        $allborder = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['rgb' => '000000']
                 ]
-            ];
+            ]
+        ];
 
         // Agregar los datos de los usuarios
         $rowIndex = 7; // Comenzamos en la fila 7
@@ -352,8 +350,8 @@ class AsistenciaController extends Controller
                     foreach ($list_asistencia as $asistencia) {
                         // print_r("Usuario:". $usuario['fecha']);
                         // print_r("Asistencia:". $asistencia['Fecha']);
-                        if ($asistencia['Num_Doc']==$usuario['num_doc']) {
-                            if ($fechaFormateada==$asistencia['Fecha']) {
+                        if ($asistencia['Num_Doc'] == $usuario['num_doc']) {
+                            if ($fechaFormateada == $asistencia['Fecha']) {
                                 if (!empty($asistencia['Salida'])) {
                                     $estadoMarcacion = 1; // Si hay salida, marcar como 1
                                 }
@@ -369,8 +367,8 @@ class AsistenciaController extends Controller
             $rowIndex++;
         }
 
-        $bordeTabla = $rowIndex-1;
-        $sheet->getStyle('A5:'.$colLetter.$bordeTabla)->applyFromArray($allborder);
+        $bordeTabla = $rowIndex - 1;
+        $sheet->getStyle('A5:' . $colLetter . $bordeTabla)->applyFromArray($allborder);
 
         // Descargar el archivo Excel
         $curdate = date('d-m-Y');
@@ -385,19 +383,181 @@ class AsistenciaController extends Controller
 
         // Guardar y enviar el archivo al navegador
         $writer->save('php://output');
-
     }
 
-    public function Update_Asistencia_Diaria(Request $request){
+
+
+
+    public function Excel_Asistencia_Colaborador($codMes, $codAnio, $codBase, $numDoc, $area, $estado, $tipo, $initialDate, $endDate, Request $request)
+    {
+        set_time_limit(600);
+        ini_set('max_execution_time', 600);
+        // Crear una nueva instancia de Spreadsheet
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $spreadsheet->getActiveSheet()->setTitle('Reporte Control Asistencia');
+
+        if (empty($numDoc)) {
+            $numDoc = 0;
+        }
+        if ($tipo == 1) {
+            // Convertir el mes y el año a un rango de fechas (initialDate, endDate)
+            try {
+                // Primer día del mes
+                $initialDate = \Carbon\Carbon::createFromDate($codAnio, $codMes, 1)->format('d/m/Y'); // Primer día del mes
+                // Último día del mes
+                $endDate = \Carbon\Carbon::createFromDate($codAnio, $codMes, 1)->endOfMonth()->format('d/m/Y'); // Último día del mes
+            } catch (\Exception $e) {
+                return response()->json(['error' => 'Error al procesar las fechas: ' . $e->getMessage()], 400);
+            }
+        } else {
+            // Transformar las fechas al formato dd/mm/yyyy
+            $initialDate = date('d/m/Y', strtotime($initialDate));
+            $endDate = date('d/m/Y', strtotime($endDate));
+        }
+        $colaboradores = explode(',', $numDoc); // Convertir la cadena a un array
+
+        // Construir los datos para la consulta a la API
+        $queryParams = [
+            'initialDate' => $initialDate,
+            'endDate' => $endDate,
+            'clabores' => $codBase, // Aquí mapeamos 'cod_base' como 'clabores'
+            'area' => $area,
+            'estado' => $estado,
+            'colaborador' => $colaboradores,
+        ];
+        // dd($queryParams);
+        // Solicitud HTTP a la API externa
+        $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
+        $list_asistencia = $response->json()['data'];
+        // dd($list_asistencia);
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Configuración de estilos y dimensiones
+        $sheet->getStyle("A1:K1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:K1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $spreadsheet->getActiveSheet()->setTitle('Asistencias');
+        $sheet->setAutoFilter('A1:K1');
+
+        $columnWidths = [
+            'A' => 50,
+            'B' => 15,
+            'C' => 15,
+            'D' => 15,
+            'E' => 30,
+            'F' => 15,
+            'G' => 25,
+            'H' => 25,
+            'I' => 15,
+            'J' => 15,
+            'K' => 18
+        ];
+
+        foreach ($columnWidths as $col => $width) {
+            $sheet->getColumnDimension($col)->setWidth($width);
+        }
+
+        $sheet->getStyle('A1:K1')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("A1:K1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:K1")->applyFromArray($styleThinBlackBorderOutline);
+
+        // Encabezados del Excel
+        $headers = [
+            'A' => 'Colaborador',
+            'B' => 'DNI',
+            'C' => 'Base',
+            'D' => 'Fecha',
+            'E' => 'Turno',
+            'F' => 'Entrada',
+            'G' => 'Salida a refrigerio',
+            'H' => 'Entrada de refrigerio',
+            'I' => 'Salida',
+            'J' => 'Registro',
+            'K' => 'Dia Laborado'
+        ];
+
+        foreach ($headers as $col => $text) {
+            $sheet->setCellValue("{$col}1", $text);
+        }
+
+        // Llenar datos en el Excel
+        $contador = 1;
+        foreach ($list_asistencia as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:K{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("E{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:K{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:K{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $spreadsheet->getActiveSheet()->setCellValue(
+                "A{$contador}",
+                $list['Usuario_Nombres'] . " " . $list['Usuario_Apater'] . " " . $list['Usuario_Amater']
+            );
+            $spreadsheet->getActiveSheet()->setCellValue("B{$contador}", $list['Num_Doc']);
+            $spreadsheet->getActiveSheet()->setCellValue("C{$contador}", $list['Centro_Labores']);
+
+            // Convertir la fecha al formato Excel
+            $fechaExcel = Date::PHPToExcel(\DateTime::createFromFormat('d/m/Y', $list['Fecha']));
+            $sheet->setCellValue("D{$contador}", $fechaExcel);
+            $sheet->getStyle("D{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+
+            // Extraer solo la hora de los campos con fecha y hora
+            $horaIngreso = $list['Ingreso'] ? date('H:i:s', strtotime($list['Ingreso'])) : '';
+            $horaInicioRefrigerio = $list['Inicio_Refrigerio'] ? date('H:i:s', strtotime($list['Inicio_Refrigerio'])) : '';
+            $horaFinRefrigerio = $list['Fin_Refrigerio'] ? date('H:i:s', strtotime($list['Fin_Refrigerio'])) : '';
+            $horaSalida = $list['Salida'] ? date('H:i:s', strtotime($list['Salida'])) : '';
+
+            // Colocar valores en las columnas
+            $spreadsheet->getActiveSheet()->setCellValue("E{$contador}", '');
+            $spreadsheet->getActiveSheet()->setCellValue("F{$contador}", $horaIngreso);
+            $spreadsheet->getActiveSheet()->setCellValue("G{$contador}", $horaInicioRefrigerio);
+            $spreadsheet->getActiveSheet()->setCellValue("H{$contador}", $horaFinRefrigerio);
+            $spreadsheet->getActiveSheet()->setCellValue("I{$contador}", $horaSalida);
+            $spreadsheet->getActiveSheet()->setCellValue("J{$contador}", 'Registro'); // Ajusta si existe un valor
+            $spreadsheet->getActiveSheet()->setCellValue("K{$contador}", 'Día Laborado'); // Ajusta si existe otro valor
+        }
+
+
+
+        // Configuración para la descarga del archivo
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Asistencias';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
+
+
+
+    public function Update_Asistencia_Diaria(Request $request)
+    {
         $request->validate([
             'hora' => 'required'
-        ],[
+        ], [
             'hora' => 'Debe ingresar hora.',
         ]);
 
         $dato['hora'] = $request->post("hora");
         $dato['fecha'] = $request->post("fecha");
-        $dato['punch_time']=$dato['fecha']." ".$dato['hora'];
+        $dato['punch_time'] = $dato['fecha'] . " " . $dato['hora'];
         $dato['id_asistencia_remota'] = $request->post("id_asistencia_remota");
 
         DB::connection('second_mysql')
@@ -408,76 +568,80 @@ class AsistenciaController extends Controller
             ]);
     }
 
-    public function Modal_Reg_Asistencia(Request $request) {
+    public function Modal_Reg_Asistencia(Request $request)
+    {
         return view('rrhh.Asistencia.reporte.modal_reg');
     }
 
-    public function Modal_Registro_Dia($nombres,$num_doc,$orden,$time){
-        $dato['nombres']=$nombres;
-        $dato['num_doc']=$num_doc;
-        $dato['fecha']=$orden;
-        $dato['time']=$time;
-        return view('rrhh.Asistencia.reporte.modal_reg',$dato);
+    public function Modal_Registro_Dia($nombres, $num_doc, $orden, $time)
+    {
+        $dato['nombres'] = $nombres;
+        $dato['num_doc'] = $num_doc;
+        $dato['fecha'] = $orden;
+        $dato['time'] = $time;
+        return view('rrhh.Asistencia.reporte.modal_reg', $dato);
     }
 
-    public function Insert_Asistencia_Diaria(Request $request){
-            $dato['hora']=$request->post("horar");
-            $dato['fecha']=$request->post("fechar");
-            $dato['num_doc']=$request->post("num_docr");
-            $dato['punch_time']=$dato['fecha']." ".$dato['hora'];
-            $dato['get_id'] = Usuario::select('ubicacion.cod_ubi AS centro_labores')
-                            ->leftJoin('ubicacion', 'users.id_centro_labor' ,'=', 'ubicacion.id_ubicacion')
-                            ->where('users.num_doc',$dato['num_doc'])
-                            ->get();
+    public function Insert_Asistencia_Diaria(Request $request)
+    {
+        $dato['hora'] = $request->post("horar");
+        $dato['fecha'] = $request->post("fechar");
+        $dato['num_doc'] = $request->post("num_docr");
+        $dato['punch_time'] = $dato['fecha'] . " " . $dato['hora'];
+        $dato['get_id'] = Usuario::select('ubicacion.cod_ubi AS centro_labores')
+            ->leftJoin('ubicacion', 'users.id_centro_labor', '=', 'ubicacion.id_ubicacion')
+            ->where('users.num_doc', $dato['num_doc'])
+            ->get();
 
-            //print_r($dato['get_id']);
-            if(empty($dato['get_id'])){
-                echo "error";
-            }else{
-                $dato['base']=$dato['get_id'][0]->centro_labores;
-                $dato['get_employee']=DB::connection('second_mysql')
-                            ->table('personnel_employee')
-                            ->select('id')
-                            ->whereRaw("LPAD(emp_code, 8, '0') = ?", [$dato['num_doc']])
-                            ->first();
+        //print_r($dato['get_id']);
+        if (empty($dato['get_id'])) {
+            echo "error";
+        } else {
+            $dato['base'] = $dato['get_id'][0]->centro_labores;
+            $dato['get_employee'] = DB::connection('second_mysql')
+                ->table('personnel_employee')
+                ->select('id')
+                ->whereRaw("LPAD(emp_code, 8, '0') = ?", [$dato['num_doc']])
+                ->first();
 
-                //print_r($dato['get_employee']);
-                $dato['emp_id']=$dato['get_employee']->id;
-                $dato['get_terminal']=DB::connection('second_mysql')
-                            ->table('iclock_terminal')
-                            ->select('id', 'sn', 'alias')
-                            ->where('alias', $dato['base'])
-                            ->get();
-                if(count($dato['get_terminal'])>0){
-                    $dato['terminal_id']=$dato['get_terminal'][0]->id;
-                    $dato['terminal_sn']=$dato['get_terminal'][0]->sn;
-                    $dato['terminal_alias']=$dato['get_terminal'][0]->alias;
-                }else{
-                    $dato['terminal_id']="23";
-                    $dato['terminal_sn']="AF6P211660021";
-                    $dato['terminal_alias']=$dato['base'];//"OFC";
-                }
-                DB::connection('second_mysql')
-                    ->table('iclock_transaction')
-                    ->insert([
-                        'emp_code'      => $dato['num_doc'],
-                        'punch_time'    => $dato['punch_time'],
-                        'punch_state'   => 0,
-                        'verify_type'   => 1,
-                        'terminal_sn'   => $dato['terminal_sn'],
-                        'terminal_alias'=> $dato['terminal_alias'],
-                        'source'        => 1,
-                        'purpose'       => 9,
-                        'upload_time'   => $dato['punch_time'],
-                        'emp_id'        => $dato['emp_id'],
-                        'terminal_id'   => $dato['terminal_id'],
-                        'is_mask'       => '255',
-                        'temperature'   => '255.0',
-                    ]);
+            //print_r($dato['get_employee']);
+            $dato['emp_id'] = $dato['get_employee']->id;
+            $dato['get_terminal'] = DB::connection('second_mysql')
+                ->table('iclock_terminal')
+                ->select('id', 'sn', 'alias')
+                ->where('alias', $dato['base'])
+                ->get();
+            if (count($dato['get_terminal']) > 0) {
+                $dato['terminal_id'] = $dato['get_terminal'][0]->id;
+                $dato['terminal_sn'] = $dato['get_terminal'][0]->sn;
+                $dato['terminal_alias'] = $dato['get_terminal'][0]->alias;
+            } else {
+                $dato['terminal_id'] = "23";
+                $dato['terminal_sn'] = "AF6P211660021";
+                $dato['terminal_alias'] = $dato['base']; //"OFC";
             }
+            DB::connection('second_mysql')
+                ->table('iclock_transaction')
+                ->insert([
+                    'emp_code'      => $dato['num_doc'],
+                    'punch_time'    => $dato['punch_time'],
+                    'punch_state'   => 0,
+                    'verify_type'   => 1,
+                    'terminal_sn'   => $dato['terminal_sn'],
+                    'terminal_alias' => $dato['terminal_alias'],
+                    'source'        => 1,
+                    'purpose'       => 9,
+                    'upload_time'   => $dato['punch_time'],
+                    'emp_id'        => $dato['emp_id'],
+                    'terminal_id'   => $dato['terminal_id'],
+                    'is_mask'       => '255',
+                    'temperature'   => '255.0',
+                ]);
+        }
     }
 
-    public function Buscar_No_Marcados(Request $request){
+    public function Buscar_No_Marcados(Request $request)
+    {
         $id_puesto = Session('usuario')->id_puesto;
         $cod_mes = $request->input("cod_mes");
         $cod_anio = $request->input("cod_anio");
@@ -498,11 +662,11 @@ class AsistenciaController extends Controller
             $usuarios->where('users.usuario_codigo', $num_doc);
         }
         if ($cod_base != 0) {
-            if($cod_base === "t" ){
+            if ($cod_base === "t") {
                 $usuarios->leftJoin('ubicacion', 'users.id_centro_labor', 'ubicacion.id_ubicacion');
                 $usuarios->where('ubicacion.estado', 1);
                 $usuarios->where('ubicacion.id_sede', 6);
-            }else{
+            } else {
                 $usuarios->where('users.id_centro_labor', $cod_base);
             }
         }
@@ -549,16 +713,16 @@ class AsistenciaController extends Controller
         }
     }
 
-    public function Modal_Update_Asistencia($nombres,$dni,$orden,$time){
-        $dato['nombres']=$nombres;
+    public function Modal_Update_Asistencia($nombres, $dni, $orden, $time)
+    {
+        $dato['nombres'] = $nombres;
         $dato['get_id'] = DB::connection('second_mysql')
-                        ->table('iclock_transaction')
-                        ->whereDate('punch_time',$orden)
-                        ->where('punch_time', 'LIKE', '%' .$time .'%')
-                        ->where('emp_code',$dni)
-                        ->get();
+            ->table('iclock_transaction')
+            ->whereDate('punch_time', $orden)
+            ->where('punch_time', 'LIKE', '%' . $time . '%')
+            ->where('emp_code', $dni)
+            ->get();
         //print_r($dato['get_id']);
-        return view('rrhh.Asistencia.reporte.modal_editar',$dato);
+        return view('rrhh.Asistencia.reporte.modal_editar', $dato);
     }
-
 }

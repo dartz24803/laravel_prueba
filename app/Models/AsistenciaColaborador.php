@@ -87,10 +87,10 @@ class AsistenciaColaborador extends Model
             $parte_tienda1 = "";
             // Filtramos por base
             if ($dato['base'] != "0") {
-                if($dato['base'] === "-1" ){
+                if ($dato['base'] === "-1") {
                     $parte_tienda1 = "LEFT JOIN ubicacion ON us.id_centro_labor = ubicacion.id_ubicacion";
-                    $conditions[]= "ubicacion.estado = 1 AND ubicacion.id_sede = 6";
-                }else{
+                    $conditions[] = "ubicacion.estado = 1 AND ubicacion.id_sede = 6";
+                } else {
                     $conditions[] = "ac.centro_labores = :base";
                     $queryParams['base'] = $dato['base'];
                 }
@@ -627,10 +627,10 @@ class AsistenciaColaborador extends Model
         $parte_area = "";
         if ($dato['area'] != "0") {
             $parte_area = "pu.id_area='" . $dato['area'] . "' AND";
-            if($dato['excel']==1 && $dato['area']==18){
+            if ($dato['excel'] == 1 && $dato['area'] == 18) {
                 $parte_area = "pu.id_area IN ('13','18') AND";
             }
-            if($dato['excel']==1 && $dato['area']==49){
+            if ($dato['excel'] == 1 && $dato['area'] == 49) {
                 $parte_area = "pu.id_area IN ('47','48','27','28') AND";
             }
         }
