@@ -1193,18 +1193,18 @@ class AsistenciaColaboradoresController extends Controller
     }
 
     public function Enviar_Correos_GerenteXJefe(){
-        $usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp','area.nom_area')
+        $usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp')
             ->leftJoin('puesto', 'users.id_puesto', '=', 'puesto.id_puesto')
             ->leftJoin('area', 'puesto.id_area', '=', 'area.id_area')
-            ->whereIn('puesto.id_nivel', [2, 3, 4])
+            ->whereNot('users.id_usuario', 133)
+            ->whereIn('puesto.id_nivel', [3, 4])
             ->where('users.estado', 1)
-            ->whereIn('users.id_usuario', [133,1459,2655]) // test comentar al subir
+            // ->whereIn('users.id_usuario', [2692]) // test comentar al subir
             ->orderBy('users.id_usuario', 'ASC')
             ->get();
         // print_r($usuarios);
 
         $dato['base'] = 0;
-        // $dato['area'] = 18;
         $dato['usuario'] = 0;
         $dato['tipo_fecha'] = 3;
         $dato['dia'] = null;
@@ -1228,13 +1228,14 @@ class AsistenciaColaboradoresController extends Controller
             // Manejar el caso en que no se encontró una semana actual (opcional)
             $dato['semana'] = null; // O algún valor predeterminado
         }
-        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
-        // $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=205);
+        // $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
+        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=206);
         $dato['excel'] = 1;
 
 
         foreach($usuarios as $usuario){
-            $dato['area'] = $usuario->id_area;
+            // $dato['area'] = $usuario->id_area;
+            $dato['area'] = 34;
 
             $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
             $spreadsheet = new Spreadsheet();
@@ -1327,9 +1328,9 @@ class AsistenciaColaboradoresController extends Controller
                 }
                 // $mail->addAddress('pcardenas@lanumero1.com.pe');
                 // $mail->addCC('fclaverias@lanumero1.com.pe');
-                // $mail->addAddress('DVILCA@LANUMERO1.COM.PE');
-                // $mail->addAddress('');
-                // $mail->addAddress('');
+                // $mail->addCC('DVILCA@LANUMERO1.COM.PE');
+                // $mail->addCC('william.marin@lanumero1.com.pe');
+                // $mail->addCC('ACAMARGO@LANUMERO1.COM.PE');
 
                 $mail->isHTML(true);
 
