@@ -3894,6 +3894,13 @@ class ColaboradorController extends Controller
                 ]);
     }
 
+    public function no_aplica_cc(Request $request, $id){
+        Usuario::findOrFail($id)->update([
+            'cursos_complementarios' => $request->no_aplica,
+            'fec_act' => now(),
+            'user_act' => session('usuario')->id_usuario
+        ]);
+    }
     /********************************************/
     public function Lista_ExperenciaL(Request $request){
             $id_usuario = $request->input("id_usuariodp");

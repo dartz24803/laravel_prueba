@@ -2052,7 +2052,22 @@ if($get_id[0]['edicion_perfil']==1){
                                     <div class="chico">
                                         <div class="row">
                                             <div class="col">
-                                                <h6 class="">Cursos Complementarios</h6>
+                                                <div class="row">
+                                                    <div class="col">
+                                                        <h6 class="">Cursos Complementarios</h6>
+                                                    </div>
+                                                    <div class="col">
+                                                        <div style="display: inline-flex;">
+                                                            <label class="switch s-icons s-outline s-outline-success">
+                                                                <input type="checkbox" value="1" 
+                                                                id="cursos_complementarios" name="cursos_complementarios" 
+                                                                @if ($get_id[0]['cursos_complementarios']=="1") checked @endif 
+                                                                onchange="No_Aplica_Curso_Complementario('{{ $get_id[0]['id_usuario'] }}');">
+                                                                <span class="slider round"></span>
+                                                            </label>No aplica
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                             <div class="col">
                                                 <div class="col-md-12 text-right mb-5" id="btnCursosC">
@@ -5501,6 +5516,57 @@ if($get_id[0]['edicion_perfil']==1){
                         });
                     }
                 });
+            }
+        })
+    }
+
+    function No_Aplica_Curso_Complementario(id){
+        Cargando();
+
+        var no_aplica = null;
+        var titulo = "habilitar";
+        var mensaje = "Habilitación";
+        if($('#cursos_complementarios').is(":checked")){
+            var no_aplica = 1;
+            var titulo = "deshabilitar";
+            var mensaje = "Deshabilitación";
+        }
+
+        var url = "{{ route('colaborador_cc.no_aplica',':id') }}".replace(':id', id);
+
+        Swal({
+            title: '¿Realmente desea '+titulo+' los cursos complementarios?',
+            text: "Esto afectará el progreso de datos del colaborador",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No',
+            padding: '2em'
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    type: "POST",
+                    url: url,
+                    data: {'no_aplica':no_aplica},
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    success: function() {
+                        Swal(
+                            '¡'+mensaje+' Exitosa!',
+                            '¡Haga clic en el botón!',
+                            'success'
+                        ).then(function() {
+                           console.log('Actualizado');
+                        });
+                    }
+                });
+            }else{
+                if($('#cursos_complementarios').is(":checked")){
+                    $('#cursos_complementarios').prop('checked', false);
+                }else{
+                    $('#cursos_complementarios').prop('checked', true);
+                }
             }
         })
     }

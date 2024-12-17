@@ -1289,6 +1289,7 @@ Route::controller(ColaboradorController::class)->group(function () {
     Route::post('ColaboradorController/MDatos_CursosC', 'MDatos_CursosC');
     Route::post('ColaboradorController/Detalle_CursosC', 'Detalle_CursosC');
     Route::post('ColaboradorController/Delete_CursosC', 'Delete_CursosC');
+    Route::post('colaborador_cc/{id}/no_aplica', 'no_aplica_cc')->name('colaborador_cc.no_aplica');
     Route::post('ColaboradorController/Lista_ExperenciaL', 'Lista_ExperenciaL');
     Route::post('ColaboradorController/Insert_ExperenciaL', 'Insert_ExperenciaL');
     Route::post('ColaboradorController/Update_ExperenciaL', 'Update_ExperenciaL');

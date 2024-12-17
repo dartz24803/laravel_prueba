@@ -146,6 +146,7 @@ class Usuario extends Model
         'motivo_renuncia',
         'correo_bienvenida',
         'documento',
+        'cursos_complementarios',
         'estado',
         'fec_reg',
         'user_reg',
