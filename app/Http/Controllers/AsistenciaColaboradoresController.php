@@ -1197,7 +1197,6 @@ class AsistenciaColaboradoresController extends Controller
             ->leftJoin('puesto', 'users.id_puesto', '=', 'puesto.id_puesto')
             ->leftJoin('area', 'puesto.id_area', '=', 'area.id_area')
             ->whereNot('users.id_usuario', 133)
-            ->whereIn('puesto.id_nivel', [3, 4])
             ->where('users.estado', 1)
             // ->whereIn('users.id_usuario', [2692]) // test comentar al subir
             ->orderBy('users.id_usuario', 'ASC')
@@ -1234,8 +1233,8 @@ class AsistenciaColaboradoresController extends Controller
 
 
         foreach($usuarios as $usuario){
-            // $dato['area'] = $usuario->id_area;
-            $dato['area'] = 34;
+            $dato['area'] = $usuario->id_area;
+            // $dato['area'] = 34;
 
             $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
             $spreadsheet = new Spreadsheet();
