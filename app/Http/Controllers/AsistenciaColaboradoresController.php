@@ -69,7 +69,6 @@ class AsistenciaColaboradoresController extends Controller
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
             $data['list_semanas'] = AsistenciaColaborador::get_list_semanas();
             $data['list_noti'] = AsistenciaColaborador::get_list_notificacion();
-            $data['list_nav_evaluaciones'] = AsistenciaColaborador::get_list_nav_evaluaciones();
             $list_asistencia = [];
         } else {
             redirect('');
@@ -325,7 +324,6 @@ class AsistenciaColaboradoresController extends Controller
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
             $data['list_semanas'] = AsistenciaColaborador::get_list_semanas();
             $data['list_noti'] = AsistenciaColaborador::get_list_notificacion();
-            $data['list_nav_evaluaciones'] = AsistenciaColaborador::get_list_nav_evaluaciones();
             // dd($data['list_colaborador']);
             $list_asistencia = [];
             // $list_asistencia = AsistenciaColaborador::getListAsistenciaColaborador(0, $dato);
@@ -942,7 +940,6 @@ class AsistenciaColaboradoresController extends Controller
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
             $data['list_semanas'] = AsistenciaColaborador::get_list_semanas();
             $data['list_noti'] = AsistenciaColaborador::get_list_notificacion();
-            $data['list_nav_evaluaciones'] = AsistenciaColaborador::get_list_nav_evaluaciones();
             // dd($data['list_colaborador']);
             $list_ausencias = [];
             // $list_asistencia = AsistenciaColaborador::getListAsistenciaColaborador(0, $dato);
@@ -1036,7 +1033,6 @@ class AsistenciaColaboradoresController extends Controller
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
             $data['list_semanas'] = AsistenciaColaborador::get_list_semanas();
             $data['list_noti'] = AsistenciaColaborador::get_list_notificacion();
-            $data['list_nav_evaluaciones'] = AsistenciaColaborador::get_list_nav_evaluaciones();
             $list_ausencias = [];
         } else {
             redirect('');
@@ -1085,7 +1081,6 @@ class AsistenciaColaboradoresController extends Controller
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
             $data['list_semanas'] = AsistenciaColaborador::get_list_semanas();
             $data['list_noti'] = AsistenciaColaborador::get_list_notificacion();
-            $data['list_nav_evaluaciones'] = AsistenciaColaborador::get_list_nav_evaluaciones();
             $list_ausencias = [];
         } else {
             redirect('');
