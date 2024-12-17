@@ -1196,7 +1196,8 @@ class AsistenciaColaboradoresController extends Controller
     }
 
     public function Enviar_Correos_GerenteXJefe(){
-        $usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp','area.nom_area')
+        echo "Venado";
+        /*$usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp','area.nom_area')
             ->leftJoin('puesto', 'users.id_puesto', '=', 'puesto.id_puesto')
             ->leftJoin('area', 'puesto.id_area', '=', 'area.id_area')
             ->whereIn('puesto.id_nivel', [2, 3, 4])
@@ -1399,7 +1400,7 @@ class AsistenciaColaboradoresController extends Controller
                     unlink($file); // Eliminar archivo
                 }
             }
-        }
+        }*/
 
     }
 }
