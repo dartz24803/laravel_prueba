@@ -169,8 +169,8 @@
                             <div class="progress br-30">
                                 <div class="progress-bar bg-primary" role="progressbar" style="width: <?php
                                     if(count($gestacionu_porcentaje)>0){
-                                        $porcentaje=round((($gestacionu_porcentaje['0']['id_respuesta']+$gestacionu_porcentaje['0']['fec_ges'])/2)*100,2);
-                                    }else{$porcentaje=0;}
+                                        $porcentaje = 100;
+                                    }else{$porcentaje = 0;}
                                     echo $porcentaje."%"; ?>" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"><div class="progress-title"><span></span> <span><?php echo $porcentaje."%"; ?></span> </div></div>
                             </div>
                         <?php } ?>
