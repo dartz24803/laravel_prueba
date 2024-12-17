@@ -46,12 +46,12 @@
                 <span class="new-control-indicator"></span>Dia
             </label>
             <label class="new-control new-radio radio-primary">
-                <input type="radio" class="new-control-input" id="r_mes_t" value="2" name="tipo_fecha_t" onclick="Div_Tipo_Fecha_T()">
-                <span class="new-control-indicator"></span>Mes
-            </label>
-            <label class="new-control new-radio radio-primary">
                 <input type="radio" class="new-control-input" id="r_semanah" value="3" name="tipo_fecha_t" onclick="Div_Tipo_Fecha_T()">
                 <span class="new-control-indicator"></span>Semana
+            </label>
+            <label class="new-control new-radio radio-primary">
+                <input type="radio" class="new-control-input" id="r_mes_t" value="2" name="tipo_fecha_t" onclick="Div_Tipo_Fecha_T()">
+                <span class="new-control-indicator"></span>Mes
             </label>
         </div>
     </div>
