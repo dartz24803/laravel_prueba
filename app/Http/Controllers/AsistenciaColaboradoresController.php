@@ -84,6 +84,8 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $this->input->post("tipo_fecha");
         $dato['dia'] = $this->input->post("dia");
         $dato['mes'] = $this->input->post("mes");
+        $dato['semana'] = $request->input("semana");
+        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas = $dato['semana']);
         // dd($dato);
         // Llamar al método para obtener la lista de asistencia
         $list_asistencia = AsistenciaColaborador::getListAsistenciaColaborador(0, $dato);

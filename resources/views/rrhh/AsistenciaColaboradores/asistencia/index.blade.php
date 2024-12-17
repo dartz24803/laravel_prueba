@@ -29,7 +29,7 @@
     <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Colaborador</label>
         <div>
-            <select class="form-control basic" id="usuarioi" name="usuarioi" multiple>
+            <select class="form-control basic" id="usuarioi" name="usuarioi">
                 <option value="0">Todos</option>
                 <?php foreach ($data['list_colaborador'] as $list) { ?>
                     <option value="<?php echo $list->id_usuario ?>"><?php echo $list->usuario_nombres . " " . $list->usuario_apater . " " . $list->usuario_amater ?></option>
