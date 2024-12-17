@@ -627,11 +627,29 @@ class AsistenciaColaborador extends Model
         $parte_area = "";
         if ($dato['area'] != "0") {
             $parte_area = "pu.id_area='" . $dato['area'] . "' AND";
+            //Procesos y proyectos
             if($dato['excel']==1 && $dato['area']==18){
                 $parte_area = "pu.id_area IN ('13','18') AND";
             }
+            //Dto. Gestion de Infraestructura
+            if($dato['excel']==1 && $dato['area']==31){
+                $parte_area = "pu.id_area IN ('10','31','41') AND";
+            }
+            //Dto Gestion de Seguridad y Salud
+            if($dato['excel']==1 && $dato['area']==32){
+                $parte_area = "pu.id_area IN ('12','32','44') AND";
+            }
+            //Dto. Gestion de Tiendas
+            if($dato['excel']==1 && $dato['area']==33){
+                $parte_area = "pu.id_area IN ('14','33') AND";
+            }
+            //Dto. Gestion del Talento Humano
+            if($dato['excel']==1 && $dato['area']==34){
+                $parte_area = "pu.id_area IN ('11','26','29','34') AND";
+            }
+            //Dto. Gestion de Manufactura
             if($dato['excel']==1 && $dato['area']==49){
-                $parte_area = "pu.id_area IN ('47','48','27','28') AND";
+                $parte_area = "pu.id_area IN ('27','28','47','48','49') AND";
             }
         }
         $parte_usuario = "";
