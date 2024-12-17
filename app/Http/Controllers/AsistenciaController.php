@@ -427,13 +427,10 @@ class AsistenciaController extends Controller
             'estado' => $estado,
             'colaborador' => $colaboradores,
         ];
-        // dd($queryParams);
+
         // Solicitud HTTP a la API externa
-        $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
+        $response = Http::post('http://172.16.0.140:8001/api/v1/excel/asistenciaColaborador', $queryParams);
         $list_asistencia = $response->json()['data'];
-        // dd($list_asistencia);
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
 
         // Configuración de estilos y dimensiones
         $sheet->getStyle("A1:K1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
@@ -524,7 +521,7 @@ class AsistenciaController extends Controller
             $horaSalida = $list['Salida'] ? date('H:i:s', strtotime($list['Salida'])) : '';
 
             // Colocar valores en las columnas
-            $spreadsheet->getActiveSheet()->setCellValue("E{$contador}", '');
+            $spreadsheet->getActiveSheet()->setCellValue("E{$contador}", ''); // Si es necesario, agrega lógica para el turno
             $spreadsheet->getActiveSheet()->setCellValue("F{$contador}", $horaIngreso);
             $spreadsheet->getActiveSheet()->setCellValue("G{$contador}", $horaInicioRefrigerio);
             $spreadsheet->getActiveSheet()->setCellValue("H{$contador}", $horaFinRefrigerio);
@@ -532,8 +529,6 @@ class AsistenciaController extends Controller
             $spreadsheet->getActiveSheet()->setCellValue("J{$contador}", 'Registro'); // Ajusta si existe un valor
             $spreadsheet->getActiveSheet()->setCellValue("K{$contador}", 'Día Laborado'); // Ajusta si existe otro valor
         }
-
-
 
         // Configuración para la descarga del archivo
         $writer = new Xlsx($spreadsheet);
