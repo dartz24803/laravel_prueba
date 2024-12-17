@@ -645,6 +645,10 @@ class AsistenciaColaborador extends Model
             }
             //Dto. Gestion del Talento Humano
             if($dato['excel']==1 && $dato['area']==34){
+                $parte_area = "pu.id_area IN ('5','7') AND";
+            }
+            //Dto. Gestion Comercial
+            if($dato['excel']==1 && $dato['area']==39){
                 $parte_area = "pu.id_area IN ('11','26','29','34') AND";
             }
             //Dto. Gestion de Manufactura

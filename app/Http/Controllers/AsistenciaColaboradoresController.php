@@ -1196,6 +1196,7 @@ class AsistenciaColaboradoresController extends Controller
         $usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp')
             ->leftJoin('puesto', 'users.id_puesto', '=', 'puesto.id_puesto')
             ->leftJoin('area', 'puesto.id_area', '=', 'area.id_area')
+            ->whereIn('puesto.id_nivel', [3, 4])
             ->whereNot('users.id_usuario', 133)
             ->where('users.estado', 1)
             // ->whereIn('users.id_usuario', [2692]) // test comentar al subir
@@ -1227,14 +1228,14 @@ class AsistenciaColaboradoresController extends Controller
             // Manejar el caso en que no se encontró una semana actual (opcional)
             $dato['semana'] = null; // O algún valor predeterminado
         }
-        // $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
-        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=206);
+        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=$dato['semana']);
+        // $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas=206);
         $dato['excel'] = 1;
 
 
         foreach($usuarios as $usuario){
             $dato['area'] = $usuario->id_area;
-            // $dato['area'] = 34;
+            // $dato['area'] = 34; // poner area para testear
 
             $list_tardanza = AsistenciaColaborador::get_list_tardanza_excel($dato);
             $spreadsheet = new Spreadsheet();
@@ -1326,10 +1327,10 @@ class AsistenciaColaboradoresController extends Controller
                     $mail->addAddress($usuario->emailp);
                 }
                 // $mail->addAddress('pcardenas@lanumero1.com.pe');
-                // $mail->addCC('fclaverias@lanumero1.com.pe');
-                // $mail->addCC('DVILCA@LANUMERO1.COM.PE');
-                // $mail->addCC('william.marin@lanumero1.com.pe');
-                // $mail->addCC('ACAMARGO@LANUMERO1.COM.PE');
+                $mail->addCC('fclaverias@lanumero1.com.pe');
+                $mail->addCC('DVILCA@LANUMERO1.COM.PE');
+                $mail->addCC('william.marin@lanumero1.com.pe');
+                $mail->addCC('ACAMARGO@LANUMERO1.COM.PE');
 
                 $mail->isHTML(true);
 
@@ -1369,7 +1370,7 @@ class AsistenciaColaboradoresController extends Controller
                 $nombre = $usuario->usuario_nombres;
                 $primerNombre = explode(' ', $nombre)[0];
                 $mail->Body =  "Estimado/a $primerNombre <br>
-                    Te envío el archivo de ASISTENCIA Y MARCACION $area - SEM 43
+                    Te envío el archivo de ASISTENCIA Y MARCACION $area - SEM $semana
                     DEL $fec_inicio - $fec_fin <br><br>
                     De acuerdo a nuestras políticas del sábado free los colaboradores que llegaron tarde deberán asistir mañana.<br><br>
                     $tableHtml
@@ -1377,7 +1378,9 @@ class AsistenciaColaboradoresController extends Controller
                     <a style='color:blue'> Recordatorio: El beneficio del sábado free se brinda cuando se cumple los 2 siguientes puntos.</a><br><br>
                     1.- Cumplimiento de objetivos: El jefe inmediato dará la conformidad del cumplimiento de actividades planificados semanalmente.<br>
                     2.- Puntualidad perfecta: No acumular ningún minuto de tardanza de lunes a viernes.<br><br>
-                    Saludos.";
+                    Saludos.
+                    <br>
+                    ";
                 $mail->addAttachment($filePath);
 
                 $mail->CharSet = 'UTF-8';
