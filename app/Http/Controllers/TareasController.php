@@ -715,7 +715,7 @@ class TareasController extends Controller
                 'user_reg' => session('usuario')->id_usuario,
             ]);
             Notificacion::create([
-                'id_usuario' => $dato['id_usuario'],
+                'id_usuario' => $dato['id_responsable'],
                 'solicitante' => session('usuario')->id_usuario,
                 'id_tipo' => 6,
                 'leido' => 0,
