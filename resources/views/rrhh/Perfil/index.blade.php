@@ -2154,7 +2154,7 @@ if($get_id[0]['edicion_perfil']==1){
                                                                         </td>
                                                                         <td>
                                                                             <?php if($editable==0){?>
-                                                                            <a class="" title="Eliminar" onclick="Delete_CursosC('<?php echo $list['id_curso_complementario']; ?>','<?php echo $list['id_usuario']; ?>')" id="delete" role="button">
+                                                                            <a class="" title="Eliminar" onclick="Delete_CursosC('<?php echo $list['id_curso_complementario']; ?>')" id="delete" role="button">
                                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trash-2 text-danger">
                                                                                     <polyline points="3 6 5 6 21 6"></polyline>
                                                                                     <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
@@ -5476,38 +5476,30 @@ if($get_id[0]['edicion_perfil']==1){
         return true;
     }
 
-    function Delete_CursosC(id, id_usu) {
+    function Delete_CursosC(id) {
         Cargando();
 
-        var id = id;
-        var id_usu = id_usu;
-        var url = "{{ url('ColaboradorController/Delete_CursosC') }}";
-                var csrfToken = $('input[name="_token"]').val();
+        var url = "{{ route('colaborador_cc.delete',':id') }}".replace(':id', id);
 
         Swal({
             title: '¿Realmente desea eliminar el registro?',
             text: "El registro será eliminado permanentemente",
             type: 'warning',
             showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
             confirmButtonText: 'Si',
             cancelButtonText: 'No',
+            padding: '2em'
         }).then((result) => {
             if (result.value) {
                 $.ajax({
-                    type: "POST",
-                headers: {
-                    'X-CSRF-TOKEN': csrfToken
-                },
+                    type: "DELETE",
                     url: url,
-                    data: {
-                        'id_curso_complementario': id,
-                        'id_usuario': id_usu
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function(data) {
                         Swal(
-                            'Eliminado!',
+                            '¡Eliminado!',
                             'El registro ha sido eliminado satisfactoriamente.',
                             'success'
                         ).then(function() {
