@@ -1198,7 +1198,7 @@ class AsistenciaColaboradoresController extends Controller
     }
 
     public function Enviar_Correos_GerenteXJefe(){
-        $usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp', 'users.estado')
+        $usuarios = Usuario::select('users.id_usuario', 'users.usuario_nombres', 'puesto.id_area', 'puesto.id_nivel', 'users.emailp')
             ->leftJoin('puesto', 'users.id_puesto', '=', 'puesto.id_puesto')
             ->leftJoin('area', 'puesto.id_area', '=', 'area.id_area')
             ->whereNot('users.id_usuario', 133)
@@ -1207,8 +1207,8 @@ class AsistenciaColaboradoresController extends Controller
             // ->whereIn('users.id_usuario', [2692]) // test comentar al subir
             ->orderBy('users.id_usuario', 'ASC')
             ->get();
-        print_r($usuarios);
-/*
+        // print_r($usuarios);
+
         $dato['base'] = 0;
         $dato['usuario'] = 0;
         $dato['tipo_fecha'] = 3;
@@ -1403,6 +1403,6 @@ class AsistenciaColaboradoresController extends Controller
                 }
             }
         }
-*/
+
     }
 }
