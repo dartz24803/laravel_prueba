@@ -73,7 +73,7 @@ session('usuario')->id_puesto=="198")
 @endif
 
 @csrf
-<div class="table-responsive mt-4" id="lista_asignacion_visita">
+<div class="table-responsive" id="lista_asignacion_visita">
 </div>
 
 <script>

@@ -32,7 +32,7 @@
             <td>{{ $fichatec->nombre_completo }}</td> <!-- Si tienes que mostrar el nombre del inspector, podrías hacer una relación y extraerlo -->
             <td>{{ $fichatec->modelo }}</td>
             <td>
-                <a href="javascript:void(0);" title="Ver Contenido" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('produccion_ft.image', $fichatec->id_ft_produccion) }}">
+                <a title="Ver Contenido" href="{{ $fichatec->img_ft_produccion }}" target="_blank">
                     <svg version="1.1" id="Capa_1" style="width:20px; height:20px;" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 512.81 512.81" style="enable-background:new 0 0 512.81 512.81;" xml:space="preserve">
                         <rect x="260.758" y="276.339" transform="matrix(0.7071 -0.7071 0.7071 0.7071 -125.9193 303.0804)" style="fill:#344A5E;" width="84.266" height="54.399" />
                         <circle style="fill:#8AD7F8;" cx="174.933" cy="175.261" r="156.8" />

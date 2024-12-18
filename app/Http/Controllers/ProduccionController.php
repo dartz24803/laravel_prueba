@@ -500,17 +500,6 @@ class ProduccionController extends Controller
         return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.modal_registrar', compact('list_ficha_tecnica'));
     }
 
-    public function image_ft($id)
-    {
-        $get_id = FichaTecnicaProduccion::where('id_ft_produccion', $id)->firstOrFail();
-        // Construye la URL completa de la imagen
-        $imageUrl = null;
-        if ($get_id->nom_img_ft_produccion) {
-            $imageUrl = "https://lanumerounocloud.com/intranet/PRODUCCION/ficha_tecnica/" . $get_id->nom_img_ft_produccion;
-        }
-        return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.modal_imagen', compact('get_id', 'imageUrl'));
-    }
-
     public function destroy_ft($id)
     {
 
