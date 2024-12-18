@@ -107,7 +107,7 @@ class AsistenciaController extends Controller
         if (empty($numDoc)) {
             $numDoc = [0];
         }
-        $numDoc = array_map('intval', $numDoc);
+        //$numDoc = array_map('intval', $numDoc);
 
         $area = intval($request->input('area', 0));
         $estado = $request->input('estado', null);
@@ -146,7 +146,7 @@ class AsistenciaController extends Controller
             'colaborador' => $numDoc,
         ];
         // print_r(json_encode($numDoc));
-        // print_r($queryParams);
+        // dd($queryParams);
 
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
         // print_r($response->json()['data']);
