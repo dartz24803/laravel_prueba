@@ -626,9 +626,9 @@ $nom_area = Session('usuario')->nom_area;
         if (num_doc == '') {
             swal.fire(
                 'Error',
-                'Debe escoger colaborador!',
+                'Debe escoger colaborador válido!',
                 'warning'
-            ).then(function() {});
+            )
         } else {
             if (tipo == 2) {
                 var ini = moment(finicio);
@@ -669,7 +669,15 @@ $nom_area = Session('usuario')->nom_area;
                             'ffin': ffin
                         },
                         success: function(data) {
-                            $('#lista_colaborador').html(data);
+                            if(data.error==true){
+                                swal.fire(
+                                    'Error',
+                                    'Debe escoger colaborador válido!',
+                                    'warning'
+                                )
+                            }else{
+                                $('#lista_colaborador').html(data);
+                            }
                         }
                     });
 
@@ -693,8 +701,16 @@ $nom_area = Session('usuario')->nom_area;
                         'ffin': ffin
                     },
                     success: function(data) {
-                        $('#lista_colaborador').html(data);
-                    }
+                        if(data.error==true){
+                            swal.fire(
+                                'Error',
+                                'Debe escoger colaborador válido!',
+                                'warning'
+                            )
+                        }else{
+                            $('#lista_colaborador').html(data);
+                        }
+                    },
                 });
             }
 
@@ -727,7 +743,7 @@ $nom_area = Session('usuario')->nom_area;
         if (num_doc == '') {
             swal.fire(
                 'Error',
-                'Debe escoger colaborador!',
+                'Debe escoger colaborador válido!',
                 'warning'
             ).then(function() {});
         } else {
@@ -780,7 +796,7 @@ $nom_area = Session('usuario')->nom_area;
         if (num_doc == '') {
             swal.fire(
                 'Error',
-                'Debe escoger colaborador!',
+                'Debe escoger colaborador válido!',
                 'warning'
             ).then(function() {});
         } else {
@@ -876,7 +892,7 @@ $nom_area = Session('usuario')->nom_area;
         if (num_doc == '') {
             swal.fire(
                 'Error',
-                'Debe escoger colaborador!',
+                'Debe escoger colaborador válido!',
                 'warning'
             )
         } else {

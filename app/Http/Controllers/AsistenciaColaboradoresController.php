@@ -84,6 +84,8 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $this->input->post("tipo_fecha");
         $dato['dia'] = $this->input->post("dia");
         $dato['mes'] = $this->input->post("mes");
+        $dato['semana'] = $request->input("semana");
+        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas = $dato['semana']);
         // dd($dato);
         // Llamar al método para obtener la lista de asistencia
         $list_asistencia = AsistenciaColaborador::getListAsistenciaColaborador(0, $dato);
@@ -116,6 +118,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $tipo_fecha;
         $dato['dia'] = $dia;
         $dato['mes'] = $mes;
+
         $list_asistencia = AsistenciaColaborador::get_list_asistencia_colaborador(0, $dato);
 
         $spreadsheet = new Spreadsheet();
@@ -1200,7 +1203,7 @@ class AsistenciaColaboradoresController extends Controller
             ->whereIn('puesto.id_nivel', [3, 4])
             ->whereNot('users.id_usuario', 133)
             ->where('users.estado', 1)
-            // ->whereIn('users.id_usuario', [2692]) // test comentar al subir
+            ->whereIn('users.id_usuario', [133, 1459, 2655]) // test comentar al subir
             ->orderBy('users.id_usuario', 'ASC')
             ->get();
         // print_r($usuarios);

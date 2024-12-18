@@ -364,7 +364,11 @@ $nom_area=Session('usuario')->nom_area;
                 }
             });
         } else {
-            bootbox.alert(msgDate)
+            swal.fire(
+                'Error',
+                msgDate,
+                'warning'
+            )
             var input = $(inputFocus).parent();
             $(input).addClass("has-error");
             $(input).on("change", function() {
@@ -475,7 +479,11 @@ $nom_area=Session('usuario')->nom_area;
                 }
             });
         } else {
-            bootbox.alert(msgDate)
+            swal.fire(
+                'Error',
+                msgDate,
+                'warning'
+            )
             var input = $(inputFocus).parent();
             $(input).addClass("has-error");
             $(input).on("change", function() {
@@ -531,8 +539,7 @@ $nom_area=Session('usuario')->nom_area;
                 'Error',
                 'Debe escoger colaborador!',
                 'warning'
-            ).then(function() {
-            });
+            )
         }else{
             if(tipo==2){
                 var ini = moment(finicio);
@@ -588,7 +595,15 @@ $nom_area=Session('usuario')->nom_area;
                                 'ffin': ffin
                             },
                             success: function(data) {
-                                $('#lista_colaborador').html(data);
+                                if(data.error==true){
+                                    swal.fire(
+                                        'Error',
+                                        'Debe escoger colaborador válido!',
+                                        'warning'
+                                    )
+                                }else{
+                                    $('#lista_colaborador').html(data);
+                                }
                             }
                         });
                     }
@@ -614,7 +629,15 @@ $nom_area=Session('usuario')->nom_area;
                         'ffin': ffin
                     },
                     success: function(data) {
-                        $('#lista_colaborador').html(data);
+                        if(data.error==true){
+                            swal.fire(
+                                'Error',
+                                'Debe escoger colaborador válido!',
+                                'warning'
+                            )
+                        }else{
+                            $('#lista_colaborador').html(data);
+                        }
                     }
                 });
             }
@@ -651,8 +674,11 @@ $nom_area=Session('usuario')->nom_area;
 
             if (ini.isAfter(fin) == true) {
                 msgDate = 'La Fecha de Inicio no debe ser mayor a la de Fecha de Fin. <br> Porfavor corrígelo. ';
-                inputFocus = '#hora_salida_hoy';
-                bootbox.alert(msgDate)
+                swal.fire(
+                    'Error',
+                    msgDate,
+                    'warning'
+                )
                 var input = $(inputFocus).parent();
                 $(input).addClass("has-error");
                 $(input).on("change", function() {
@@ -665,8 +691,11 @@ $nom_area=Session('usuario')->nom_area;
                 var f2=ffin;
                 if(restaFechas(f1,f2)>31){
                     msgDate = 'Solo se permite busquedas de hasta 31 días';
-                    inputFocus = '#hora_salida_hoy';
-                    bootbox.alert(msgDate)
+                    swal.fire(
+                        'Error',
+                        msgDate,
+                        'warning'
+                    )
                     var input = $(inputFocus).parent();
                     $(input).addClass("has-error");
                     $(input).on("change", function() {
@@ -751,8 +780,11 @@ $nom_area=Session('usuario')->nom_area;
 
                 if (ini.isAfter(fin) == true) {
                     msgDate = 'La Fecha de Inicio no debe ser mayor a la de Fecha de Fin. <br> Porfavor corrígelo. ';
-                    inputFocus = '#hora_salida_hoy';
-                    bootbox.alert(msgDate)
+                    swal.fire(
+                        'Error',
+                        msgDate,
+                        'warning'
+                    )
                     var input = $(inputFocus).parent();
                     $(input).addClass("has-error");
                     $(input).on("change", function() {
@@ -765,8 +797,11 @@ $nom_area=Session('usuario')->nom_area;
                     var f2=ffin;
                     if(restaFechas(f1,f2)>31){
                         msgDate = 'Solo se permite busquedas de hasta 31 días';
-                        inputFocus = '#hora_salida_hoy';
-                        bootbox.alert(msgDate)
+                        swal.fire(
+                            'Error',
+                            msgDate,
+                            'warning'
+                        )
                         var input = $(inputFocus).parent();
                         $(input).addClass("has-error");
                         $(input).on("change", function() {

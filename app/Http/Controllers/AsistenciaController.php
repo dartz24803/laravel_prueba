@@ -458,8 +458,8 @@ class AsistenciaController extends Controller
             $sheet->getColumnDimension($col)->setWidth($width);
         }
 
-        $sheet->getStyle('A1:K1')->getFont()->setBold(true);
-        $spreadsheet->getActiveSheet()->getStyle("A1:K1")->getFill()
+        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->getStyle("A1:H1")->getFill()
             ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
             ->getStartColor()->setARGB('C8C8C8');
 
@@ -472,7 +472,7 @@ class AsistenciaController extends Controller
             ],
         ];
 
-        $sheet->getStyle("A1:K1")->applyFromArray($styleThinBlackBorderOutline);
+        $sheet->getStyle("A1:H1")->applyFromArray($styleThinBlackBorderOutline);
 
         // Encabezados del Excel
         $headers = [
@@ -480,13 +480,10 @@ class AsistenciaController extends Controller
             'B' => 'DNI',
             'C' => 'Base',
             'D' => 'Fecha',
-            'E' => 'Turno',
-            'F' => 'Entrada',
-            'G' => 'Salida a refrigerio',
-            'H' => 'Entrada de refrigerio',
-            'I' => 'Salida',
-            'J' => 'Registro',
-            'K' => 'Dia Laborado'
+            'E' => 'Entrada',
+            'F' => 'Salida a refrigerio',
+            'G' => 'Entrada de refrigerio',
+            'H' => 'Salida',
         ];
 
         foreach ($headers as $col => $text) {
@@ -498,11 +495,11 @@ class AsistenciaController extends Controller
         foreach ($list_asistencia as $list) {
             $contador++;
 
-            $sheet->getStyle("A{$contador}:K{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$contador}:H{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
             $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
             $sheet->getStyle("E{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
-            $sheet->getStyle("A{$contador}:K{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
-            $sheet->getStyle("A{$contador}:K{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+            $sheet->getStyle("A{$contador}:H{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:H{$contador}")->applyFromArray($styleThinBlackBorderOutline);
 
             $spreadsheet->getActiveSheet()->setCellValue(
                 "A{$contador}",
@@ -523,13 +520,10 @@ class AsistenciaController extends Controller
             $horaSalida = $list['Salida'] ? date('H:i:s', strtotime($list['Salida'])) : '';
 
             // Colocar valores en las columnas
-            $spreadsheet->getActiveSheet()->setCellValue("E{$contador}", '');
-            $spreadsheet->getActiveSheet()->setCellValue("F{$contador}", $horaIngreso);
-            $spreadsheet->getActiveSheet()->setCellValue("G{$contador}", $horaInicioRefrigerio);
-            $spreadsheet->getActiveSheet()->setCellValue("H{$contador}", $horaFinRefrigerio);
-            $spreadsheet->getActiveSheet()->setCellValue("I{$contador}", $horaSalida);
-            $spreadsheet->getActiveSheet()->setCellValue("J{$contador}", 'Registro'); // Ajusta si existe un valor
-            $spreadsheet->getActiveSheet()->setCellValue("K{$contador}", 'Día Laborado'); // Ajusta si existe otro valor
+            $spreadsheet->getActiveSheet()->setCellValue("E{$contador}", $horaIngreso);
+            $spreadsheet->getActiveSheet()->setCellValue("F{$contador}", $horaInicioRefrigerio);
+            $spreadsheet->getActiveSheet()->setCellValue("G{$contador}", $horaFinRefrigerio);
+            $spreadsheet->getActiveSheet()->setCellValue("H{$contador}", $horaSalida);
         }
 
 
