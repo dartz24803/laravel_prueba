@@ -658,11 +658,9 @@ class CronController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
-            //foreach($list_correo as $list){
-            //    $mail->addAddress($list->emailp);
-            //}
-            $mail->addAddress('dpalomino@lanumero1.com.pe');
-            $mail->addAddress('OGUTIERREZ@LANUMERO1.COM.PE');
+            foreach($list_correo as $list){
+                $mail->addAddress($list->emailp);
+            }
 
             $mail->isHTML(true);
 
@@ -687,7 +685,7 @@ class CronController extends Controller
                                     <tbody>';
                                 foreach($list_reporte as $list){
                                         if($list->ingreso!="" && $list->apertura!="" && $list->cierre!="" && $list->salida!=""){
-                                            $color_base = "transparent";
+                                            $color_base = "black";
                                         }else{
                                             $color_base = "red";
                                         }
