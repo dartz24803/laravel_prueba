@@ -22,7 +22,7 @@
             <th>Fecha Creación</th>
             <th>Creado Por</th>
             <th>Modelo</th>
-            <th>Acciones</th>
+            <th class="no-content"></th>
         </tr>
     </thead>
     <tbody>
