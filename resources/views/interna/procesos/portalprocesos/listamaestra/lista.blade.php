@@ -86,7 +86,9 @@
 
 <script>
     var tabla = $('#tabla_js').DataTable({
-        order: [[0, "desc"]],
+        order: [
+            [5, "desc"]
+        ],
         "autoWidth": false, // Desactiva el auto ajuste de ancho de DataTables
         "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
             "<'table-responsive'tr>" +
@@ -107,12 +109,4 @@
         "lengthMenu": [10, 20, 50],
         "pageLength": 10
     });
-    
-    /*$('#toggle').change(function() {
-        var visible = this.checked;
-        tabla.column(6).visible(visible);
-        tabla.column(10).visible(visible);
-        tabla.column(14).visible(visible);
-        tabla.column(18).visible(visible);
-    });*/
 </script>
