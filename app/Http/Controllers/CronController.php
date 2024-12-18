@@ -662,6 +662,7 @@ class CronController extends Controller
             //    $mail->addAddress($list->emailp);
             //}
             $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('OGUTIERREZ@LANUMERO1.COM.PE');
 
             $mail->isHTML(true);
 
@@ -719,15 +720,15 @@ class CronController extends Controller
                                             $color_salida = "black";
                                         }
             $mail->Body .=  '            <tr align="center">
-                                            <td style="color:#'.$color_base.';">'.$list->cod_base.'</td>
+                                            <td style="color:'.$color_base.';">'.$list->cod_base.'</td>
                                             <td>'.$list->ingreso.'</td>
-                                            <td style="color:#'.$color_ingreso.';">'.$list->diferencia_ingreso.'</td>
+                                            <td style="color:'.$color_ingreso.';">'.$list->diferencia_ingreso.'</td>
                                             <td>'.$list->apertura.'</td>
-                                            <td style="color:#'.$color_apertura.';">'.$list->diferencia_apertura.'</td>
+                                            <td style="color:'.$color_apertura.';">'.$list->diferencia_apertura.'</td>
                                             <td>'.$list->cierre.'</td>
-                                            <td style="color:#'.$color_cierre.';">'.$list->diferencia_cierre.'</td>
+                                            <td style="color:'.$color_cierre.';">'.$list->diferencia_cierre.'</td>
                                             <td>'.$list->salida.'</td>
-                                            <td style="color:#'.$color_salida.';">'.$list->diferencia_salida.'</td>
+                                            <td style="color:'.$color_salida.';">'.$list->diferencia_salida.'</td>
                                         </tr>';
                                 }
             $mail->Body .=  '        </tbody>
