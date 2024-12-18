@@ -421,7 +421,6 @@ class AsistenciaController extends Controller
             $endDate = date('d/m/Y', strtotime($endDate));
         }
         $colaboradores = explode(',', $numDoc); // Convertir la cadena a un array
-        $colaboradores = array_map('intval', $colaboradores);
 
         // Construir los datos para la consulta a la API
         $queryParams = [
