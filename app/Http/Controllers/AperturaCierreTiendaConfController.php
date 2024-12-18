@@ -58,34 +58,34 @@ class AperturaCierreTiendaConfController extends Controller
             'ch_vi' => 'required_without_all:ch_lu,ch_ma,ch_mi,ch_ju,ch_sa,ch_do|boolean',
             'ch_sa' => 'required_without_all:ch_lu,ch_ma,ch_mi,ch_ju,ch_vi,ch_do|boolean',
             'ch_do' => 'required_without_all:ch_lu,ch_ma,ch_mi,ch_ju,ch_vi,ch_sa|boolean',
-            //'hora_ingreso_lu' => 'required_if:ch_lu,1',
+            'hora_ingreso_lu' => 'required_if:ch_lu,1',
             'hora_apertura_lu' => 'required_if:ch_lu,1',
             'hora_cierre_lu' => 'required_if:ch_lu,1',
-            //'hora_salida_lu' => 'required_if:ch_lu,1',
-            //'hora_ingreso_ma' => 'required_if:ch_ma,1',
+            'hora_salida_lu' => 'required_if:ch_lu,1',
+            'hora_ingreso_ma' => 'required_if:ch_ma,1',
             'hora_apertura_ma' => 'required_if:ch_ma,1',
             'hora_cierre_ma' => 'required_if:ch_ma,1',
-            //'hora_salida_ma' => 'required_if:ch_ma,1',
-            //'hora_ingreso_mi' => 'required_if:ch_mi,1',
+            'hora_salida_ma' => 'required_if:ch_ma,1',
+            'hora_ingreso_mi' => 'required_if:ch_mi,1',
             'hora_apertura_mi' => 'required_if:ch_mi,1',
             'hora_cierre_mi' => 'required_if:ch_mi,1',
-            //'hora_salida_mi' => 'required_if:ch_mi,1',
-            //'hora_ingreso_ju' => 'required_if:ch_ju,1',
+            'hora_salida_mi' => 'required_if:ch_mi,1',
+            'hora_ingreso_ju' => 'required_if:ch_ju,1',
             'hora_apertura_ju' => 'required_if:ch_ju,1',
             'hora_cierre_ju' => 'required_if:ch_ju,1',
-            //'hora_salida_ju' => 'required_if:ch_ju,1',
-            //'hora_ingreso_vi' => 'required_if:ch_vi,1',
+            'hora_salida_ju' => 'required_if:ch_ju,1',
+            'hora_ingreso_vi' => 'required_if:ch_vi,1',
             'hora_apertura_vi' => 'required_if:ch_vi,1',
             'hora_cierre_vi' => 'required_if:ch_vi,1',
-            //'hora_salida_vi' => 'required_if:ch_vi,1',
-            //'hora_ingreso_sa' => 'required_if:ch_sa,1',
+            'hora_salida_vi' => 'required_if:ch_vi,1',
+            'hora_ingreso_sa' => 'required_if:ch_sa,1',
             'hora_apertura_sa' => 'required_if:ch_sa,1',
             'hora_cierre_sa' => 'required_if:ch_sa,1',
-            //'hora_salida_sa' => 'required_if:ch_sa,1',
-            //'hora_ingreso_do' => 'required_if:ch_do,1',
+            'hora_salida_sa' => 'required_if:ch_sa,1',
+            'hora_ingreso_do' => 'required_if:ch_do,1',
             'hora_apertura_do' => 'required_if:ch_do,1',
             'hora_cierre_do' => 'required_if:ch_do,1',
-            //'hora_salida_do' => 'required_if:ch_do,1',
+            'hora_salida_do' => 'required_if:ch_do,1',
         ], [
             'cod_base.not_in' => 'Debe seleccionar base.',
             'cant_foto_ingreso.required' => 'Debe ingresar cantidad de fotos (ingreso).',
@@ -99,34 +99,34 @@ class AperturaCierreTiendaConfController extends Controller
             'ch_vi.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
             'ch_sa.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
             'ch_do.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
-            //'hora_ingreso_lu.required_if' => 'Debe ingresar hora de ingreso para el día lunes.',
+            'hora_ingreso_lu.required_if' => 'Debe ingresar hora de ingreso para el día lunes.',
             'hora_apertura_lu.required_if' => 'Debe ingresar hora de apertura para el día lunes.',
             'hora_cierre_lu.required_if' => 'Debe ingresar hora de cierre para el día lunes.',
-            //'hora_salida_lu.required_if' => 'Debe ingresar hora de salida para el día lunes.',
-            //'hora_ingreso_ma.required_if' => 'Debe ingresar hora de ingreso para el día martes.',
+            'hora_salida_lu.required_if' => 'Debe ingresar hora de salida para el día lunes.',
+            'hora_ingreso_ma.required_if' => 'Debe ingresar hora de ingreso para el día martes.',
             'hora_apertura_ma.required_if' => 'Debe ingresar hora de apertura para el día martes.',
             'hora_cierre_ma.required_if' => 'Debe ingresar hora de cierre para el día martes.',
-            //'hora_salida_ma.required_if' => 'Debe ingresar hora de salida para el día martes.',
-            //'hora_ingreso_mi.required_if' => 'Debe ingresar hora de ingreso para el día miércoles.',
+            'hora_salida_ma.required_if' => 'Debe ingresar hora de salida para el día martes.',
+            'hora_ingreso_mi.required_if' => 'Debe ingresar hora de ingreso para el día miércoles.',
             'hora_apertura_mi.required_if' => 'Debe ingresar hora de apertura para el día miércoles.',
             'hora_cierre_mi.required_if' => 'Debe ingresar hora de cierre para el día miércoles.',
-            //'hora_salida_mi.required_if' => 'Debe ingresar hora de salida para el día miércoles.',
-            //'hora_ingreso_ju.required_if' => 'Debe ingresar hora de ingreso para el día jueves.',
+            'hora_salida_mi.required_if' => 'Debe ingresar hora de salida para el día miércoles.',
+            'hora_ingreso_ju.required_if' => 'Debe ingresar hora de ingreso para el día jueves.',
             'hora_apertura_ju.required_if' => 'Debe ingresar hora de apertura para el día jueves.',
             'hora_cierre_ju.required_if' => 'Debe ingresar hora de cierre para el día jueves.',
-            //'hora_salida_ju.required_if' => 'Debe ingresar hora de salida para el día jueves.',
-            //'hora_ingreso_vi.required_if' => 'Debe ingresar hora de ingreso para el día viernes.',
+            'hora_salida_ju.required_if' => 'Debe ingresar hora de salida para el día jueves.',
+            'hora_ingreso_vi.required_if' => 'Debe ingresar hora de ingreso para el día viernes.',
             'hora_apertura_vi.required_if' => 'Debe ingresar hora de apertura para el día viernes.',
             'hora_cierre_vi.required_if' => 'Debe ingresar hora de cierre para el día viernes.',
-            //'hora_salida_vi.required_if' => 'Debe ingresar hora de salida para el día viernes.',
-            //'hora_ingreso_sa.required_if' => 'Debe ingresar hora de ingreso para el día sábado.',
+            'hora_salida_vi.required_if' => 'Debe ingresar hora de salida para el día viernes.',
+            'hora_ingreso_sa.required_if' => 'Debe ingresar hora de ingreso para el día sábado.',
             'hora_apertura_sa.required_if' => 'Debe ingresar hora de apertura para el día sábado.',
             'hora_cierre_sa.required_if' => 'Debe ingresar hora de cierre para el día sábado.',
-            //'hora_salida_sa.required_if' => 'Debe ingresar hora de salida para el día sábado.',
-            //'hora_ingreso_do.required_if' => 'Debe ingresar hora de ingreso para el día domingo.',
+            'hora_salida_sa.required_if' => 'Debe ingresar hora de salida para el día sábado.',
+            'hora_ingreso_do.required_if' => 'Debe ingresar hora de ingreso para el día domingo.',
             'hora_apertura_do.required_if' => 'Debe ingresar hora de apertura para el día domingo.',
             'hora_cierre_do.required_if' => 'Debe ingresar hora de cierre para el día domingo.',
-            //'hora_salida_do.required_if' => 'Debe ingresar hora de salida para el día domingo.',
+            'hora_salida_do.required_if' => 'Debe ingresar hora de salida para el día domingo.',
         ]);
 
         $valida = TiendaMarcacion::where('cod_base', $request->cod_base)->where('estado', 1)->exists();
@@ -152,10 +152,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $tienda_marcacion->id_tienda_marcacion,
                     'dia' => 1,
                     'nom_dia' => "Lunes",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_lu . ' -10 minutes')), //$request->hora_ingreso_lu,
+                    'hora_ingreso' => $request->hora_ingreso_lu,
                     'hora_apertura' => $request->hora_apertura_lu,
                     'hora_cierre' => $request->hora_cierre_lu,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_lu . ' +15 minutes')), //$request->hora_salida_lu
+                    'hora_salida' => $request->hora_salida_lu
                 ]);
             }
             if ($request->ch_ma == "1") {
@@ -163,10 +163,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $tienda_marcacion->id_tienda_marcacion,
                     'dia' => 2,
                     'nom_dia' => "Martes",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_ma . ' -10 minutes')), //$request->hora_ingreso_ma,
+                    'hora_ingreso' => $request->hora_ingreso_ma,
                     'hora_apertura' => $request->hora_apertura_ma,
                     'hora_cierre' => $request->hora_cierre_ma,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_ma . ' +15 minutes')), //$request->hora_salida_ma
+                    'hora_salida' => $request->hora_salida_ma
                 ]);
             }
             if ($request->ch_mi == "1") {
@@ -174,10 +174,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $tienda_marcacion->id_tienda_marcacion,
                     'dia' => 3,
                     'nom_dia' => "Miércoles",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_mi . ' -10 minutes')), //$request->hora_ingreso_mi,
+                    'hora_ingreso' => $request->hora_ingreso_mi,
                     'hora_apertura' => $request->hora_apertura_mi,
                     'hora_cierre' => $request->hora_cierre_mi,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_mi . ' +15 minutes')), //$request->hora_salida_mi
+                    'hora_salida' => $request->hora_salida_mi
                 ]);
             }
             if ($request->ch_ju == "1") {
@@ -185,10 +185,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $tienda_marcacion->id_tienda_marcacion,
                     'dia' => 4,
                     'nom_dia' => "Jueves",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_ju . ' -10 minutes')), //$request->hora_ingreso_ju,
+                    'hora_ingreso' => $request->hora_ingreso_ju,
                     'hora_apertura' => $request->hora_apertura_ju,
                     'hora_cierre' => $request->hora_cierre_ju,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_ju . ' +15 minutes')), //$request->hora_salida_ju
+                    'hora_salida' => $request->hora_salida_ju
                 ]);
             }
             if ($request->ch_vi == "1") {
@@ -196,10 +196,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $tienda_marcacion->id_tienda_marcacion,
                     'dia' => 5,
                     'nom_dia' => "Viernes",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_vi . ' -10 minutes')), //$request->hora_ingreso_vi,
+                    'hora_ingreso' => $request->hora_ingreso_vi,
                     'hora_apertura' => $request->hora_apertura_vi,
                     'hora_cierre' => $request->hora_cierre_vi,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_vi . ' +15 minutes')), //$request->hora_salida_vi
+                    'hora_salida' => $request->hora_salida_vi
                 ]);
             }
             if ($request->ch_sa == "1") {
@@ -207,10 +207,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $tienda_marcacion->id_tienda_marcacion,
                     'dia' => 6,
                     'nom_dia' => "Sábado",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_sa . ' -10 minutes')), //$request->hora_ingreso_sa,
+                    'hora_ingreso' => $request->hora_ingreso_sa,
                     'hora_apertura' => $request->hora_apertura_sa,
                     'hora_cierre' => $request->hora_cierre_sa,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_sa . ' +15 minutes')), //$request->hora_salida_sa
+                    'hora_salida' => $request->hora_salida_sa
                 ]);
             }
             if ($request->ch_do == "1") {
@@ -218,10 +218,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $tienda_marcacion->id_tienda_marcacion,
                     'dia' => 7,
                     'nom_dia' => "Domingo",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_do . ' -10 minutes')), //$request->hora_ingreso_do,
+                    'hora_ingreso' => $request->hora_ingreso_do,
                     'hora_apertura' => $request->hora_apertura_do,
                     'hora_cierre' => $request->hora_cierre_do,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_do . ' +15 minutes')), //$request->hora_salida_do
+                    'hora_salida' => $request->hora_salida_do
                 ]);
             }
         }
@@ -250,34 +250,34 @@ class AperturaCierreTiendaConfController extends Controller
             'ch_vie' => 'required_without_all:ch_lue,ch_mae,ch_mie,ch_jue,ch_sae,ch_doe|boolean',
             'ch_sae' => 'required_without_all:ch_lue,ch_mae,ch_mie,ch_jue,ch_vie,ch_doe|boolean',
             'ch_doe' => 'required_without_all:ch_lue,ch_mae,ch_mie,ch_jue,ch_vie,ch_sae|boolean',
-            //'hora_ingreso_lue' => 'required_if:ch_lu,1',
+            'hora_ingreso_lue' => 'required_if:ch_lu,1',
             'hora_apertura_lue' => 'required_if:ch_lu,1',
             'hora_cierre_lue' => 'required_if:ch_lu,1',
-            //'hora_salida_lue' => 'required_if:ch_lu,1',
-            //'hora_ingreso_mae' => 'required_if:ch_ma,1',
+            'hora_salida_lue' => 'required_if:ch_lu,1',
+            'hora_ingreso_mae' => 'required_if:ch_ma,1',
             'hora_apertura_mae' => 'required_if:ch_ma,1',
             'hora_cierre_mae' => 'required_if:ch_ma,1',
-            //'hora_salida_mae' => 'required_if:ch_ma,1',
-            //'hora_ingreso_mie' => 'required_if:ch_mi,1',
+            'hora_salida_mae' => 'required_if:ch_ma,1',
+            'hora_ingreso_mie' => 'required_if:ch_mi,1',
             'hora_apertura_mie' => 'required_if:ch_mi,1',
             'hora_cierre_mie' => 'required_if:ch_mi,1',
-            //'hora_salida_mie' => 'required_if:ch_mi,1',
-            //'hora_ingreso_jue' => 'required_if:ch_ju,1',
+            'hora_salida_mie' => 'required_if:ch_mi,1',
+            'hora_ingreso_jue' => 'required_if:ch_ju,1',
             'hora_apertura_jue' => 'required_if:ch_ju,1',
             'hora_cierre_jue' => 'required_if:ch_ju,1',
-            //'hora_salida_jue' => 'required_if:ch_ju,1',
-            //'hora_ingreso_vie' => 'required_if:ch_vi,1',
+            'hora_salida_jue' => 'required_if:ch_ju,1',
+            'hora_ingreso_vie' => 'required_if:ch_vi,1',
             'hora_apertura_vie' => 'required_if:ch_vi,1',
             'hora_cierre_vie' => 'required_if:ch_vi,1',
-            //'hora_salida_vie' => 'required_if:ch_vi,1',
-            //'hora_ingreso_sae' => 'required_if:ch_sa,1',
+            'hora_salida_vie' => 'required_if:ch_vi,1',
+            'hora_ingreso_sae' => 'required_if:ch_sa,1',
             'hora_apertura_sae' => 'required_if:ch_sa,1',
             'hora_cierre_sae' => 'required_if:ch_sa,1',
-            //'hora_salida_sae' => 'required_if:ch_sa,1',
-            //'hora_ingreso_doe' => 'required_if:ch_do,1',
+            'hora_salida_sae' => 'required_if:ch_sa,1',
+            'hora_ingreso_doe' => 'required_if:ch_do,1',
             'hora_apertura_doe' => 'required_if:ch_do,1',
             'hora_cierre_doe' => 'required_if:ch_do,1',
-            //'hora_salida_doe' => 'required_if:ch_do,1',
+            'hora_salida_doe' => 'required_if:ch_do,1',
         ], [
             'cod_basee.not_in' => 'Debe seleccionar base.',
             'cant_foto_ingresoe.required' => 'Debe ingresar cantidad de fotos (ingreso).',
@@ -291,34 +291,34 @@ class AperturaCierreTiendaConfController extends Controller
             'ch_vie.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
             'ch_sae.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
             'ch_doe.required_without_all' => 'Debe seleccionar al menos un día de la semana.',
-            //'hora_ingreso_lue.required_if' => 'Debe ingresar hora de ingreso para el día lunes.',
+            'hora_ingreso_lue.required_if' => 'Debe ingresar hora de ingreso para el día lunes.',
             'hora_apertura_lue.required_if' => 'Debe ingresar hora de apertura para el día lunes.',
             'hora_cierre_lue.required_if' => 'Debe ingresar hora de cierre para el día lunes.',
-            //'hora_salida_lue.required_if' => 'Debe ingresar hora de salida para el día lunes.',
-            //'hora_ingreso_mae.required_if' => 'Debe ingresar hora de ingreso para el día martes.',
+            'hora_salida_lue.required_if' => 'Debe ingresar hora de salida para el día lunes.',
+            'hora_ingreso_mae.required_if' => 'Debe ingresar hora de ingreso para el día martes.',
             'hora_apertura_mae.required_if' => 'Debe ingresar hora de apertura para el día martes.',
             'hora_cierre_mae.required_if' => 'Debe ingresar hora de cierre para el día martes.',
-            //'hora_salida_mae.required_if' => 'Debe ingresar hora de salida para el día martes.',
-            //'hora_ingreso_mie.required_if' => 'Debe ingresar hora de ingreso para el día miércoles.',
+            'hora_salida_mae.required_if' => 'Debe ingresar hora de salida para el día martes.',
+            'hora_ingreso_mie.required_if' => 'Debe ingresar hora de ingreso para el día miércoles.',
             'hora_apertura_mie.required_if' => 'Debe ingresar hora de apertura para el día miércoles.',
             'hora_cierre_mie.required_if' => 'Debe ingresar hora de cierre para el día miércoles.',
-            //'hora_salida_mie.required_if' => 'Debe ingresar hora de salida para el día miércoles.',
-            //'hora_ingreso_jue.required_if' => 'Debe ingresar hora de ingreso para el día jueves.',
+            'hora_salida_mie.required_if' => 'Debe ingresar hora de salida para el día miércoles.',
+            'hora_ingreso_jue.required_if' => 'Debe ingresar hora de ingreso para el día jueves.',
             'hora_apertura_jue.required_if' => 'Debe ingresar hora de apertura para el día jueves.',
             'hora_cierre_jue.required_if' => 'Debe ingresar hora de cierre para el día jueves.',
-            //'hora_salida_jue.required_if' => 'Debe ingresar hora de salida para el día jueves.',
-            //'hora_ingreso_vie.required_if' => 'Debe ingresar hora de ingreso para el día viernes.',
+            'hora_salida_jue.required_if' => 'Debe ingresar hora de salida para el día jueves.',
+            'hora_ingreso_vie.required_if' => 'Debe ingresar hora de ingreso para el día viernes.',
             'hora_apertura_vie.required_if' => 'Debe ingresar hora de apertura para el día viernes.',
             'hora_cierre_vie.required_if' => 'Debe ingresar hora de cierre para el día viernes.',
-            //'hora_salida_vie.required_if' => 'Debe ingresar hora de salida para el día viernes.',
-            //'hora_ingreso_sae.required_if' => 'Debe ingresar hora de ingreso para el día sábado.',
+            'hora_salida_vie.required_if' => 'Debe ingresar hora de salida para el día viernes.',
+            'hora_ingreso_sae.required_if' => 'Debe ingresar hora de ingreso para el día sábado.',
             'hora_apertura_sae.required_if' => 'Debe ingresar hora de apertura para el día sábado.',
             'hora_cierre_sae.required_if' => 'Debe ingresar hora de cierre para el día sábado.',
-            //'hora_salida_sae.required_if' => 'Debe ingresar hora de salida para el día sábado.',
-            //'hora_ingreso_doe.required_if' => 'Debe ingresar hora de ingreso para el día domingo.',
+            'hora_salida_sae.required_if' => 'Debe ingresar hora de salida para el día sábado.',
+            'hora_ingreso_doe.required_if' => 'Debe ingresar hora de ingreso para el día domingo.',
             'hora_apertura_doe.required_if' => 'Debe ingresar hora de apertura para el día domingo.',
             'hora_cierre_doe.required_if' => 'Debe ingresar hora de cierre para el día domingo.',
-            //'hora_salida_doe.required_if' => 'Debe ingresar hora de salida para el día domingo.',
+            'hora_salida_doe.required_if' => 'Debe ingresar hora de salida para el día domingo.',
         ]);
 
         $valida = TiendaMarcacion::where('cod_base', $request->cod_basee)->where('estado', 1)->where('id_tienda_marcacion', '!=', $id)->exists();
@@ -341,10 +341,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $id,
                     'dia' => 1,
                     'nom_dia' => "Lunes",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_lue . ' -10 minutes')), //$request->hora_ingreso_lue,
+                    'hora_ingreso' => $request->hora_ingreso_lue,
                     'hora_apertura' => $request->hora_apertura_lue,
                     'hora_cierre' => $request->hora_cierre_lue,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_lue . ' +15 minutes')), //$request->hora_salida_lue
+                    'hora_salida' => $request->hora_salida_lue
                 ]);
             }
             if ($request->ch_mae == "1") {
@@ -352,10 +352,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $id,
                     'dia' => 2,
                     'nom_dia' => "Martes",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_mae . ' -10 minutes')), //$request->hora_ingreso_mae,
+                    'hora_ingreso' => $request->hora_ingreso_mae,
                     'hora_apertura' => $request->hora_apertura_mae,
                     'hora_cierre' => $request->hora_cierre_mae,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_mae . ' +15 minutes')), //$request->hora_salida_mae
+                    'hora_salida' => $request->hora_salida_mae
                 ]);
             }
             if ($request->ch_mie == "1") {
@@ -363,10 +363,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $id,
                     'dia' => 3,
                     'nom_dia' => "Miércoles",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_mie . ' -10 minutes')), //$request->hora_ingreso_mie,
+                    'hora_ingreso' => $request->hora_ingreso_mie,
                     'hora_apertura' => $request->hora_apertura_mie,
                     'hora_cierre' => $request->hora_cierre_mie,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_mie . ' +15 minutes')), //$request->hora_salida_mie
+                    'hora_salida' => $request->hora_salida_mie
                 ]);
             }
             if ($request->ch_jue == "1") {
@@ -374,10 +374,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $id,
                     'dia' => 4,
                     'nom_dia' => "Jueves",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_jue . ' -10 minutes')), //$request->hora_ingreso_jue,
+                    'hora_ingreso' => $request->hora_ingreso_jue,
                     'hora_apertura' => $request->hora_apertura_jue,
                     'hora_cierre' => $request->hora_cierre_jue,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_jue . ' +15 minutes')), //$request->hora_salida_jue
+                    'hora_salida' => $request->hora_salida_jue
                 ]);
             }
             if ($request->ch_vie == "1") {
@@ -385,10 +385,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $id,
                     'dia' => 5,
                     'nom_dia' => "Viernes",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_vie . ' -10 minutes')), //$request->hora_ingreso_vie,
+                    'hora_ingreso' => $request->hora_ingreso_vie,
                     'hora_apertura' => $request->hora_apertura_vie,
                     'hora_cierre' => $request->hora_cierre_vie,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_vie . ' +15 minutes')), //$request->hora_salida_vie
+                    'hora_salida' => $request->hora_salida_vie
                 ]);
             }
             if ($request->ch_sae == "1") {
@@ -396,10 +396,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $id,
                     'dia' => 6,
                     'nom_dia' => "Sábado",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_sae . ' -10 minutes')), //$request->hora_ingreso_sae,
+                    'hora_ingreso' => $request->hora_ingreso_sae,
                     'hora_apertura' => $request->hora_apertura_sae,
                     'hora_cierre' => $request->hora_cierre_sae,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_sae . ' +15 minutes')), //$request->hora_salida_sae
+                    'hora_salida' => $request->hora_salida_sae
                 ]);
             }
             if ($request->ch_doe == "1") {
@@ -407,10 +407,10 @@ class AperturaCierreTiendaConfController extends Controller
                     'id_tienda_marcacion' => $id,
                     'dia' => 7,
                     'nom_dia' => "Domingo",
-                    'hora_ingreso' => date('H:i:s', strtotime($request->hora_apertura_doe . ' -10 minutes')), //$request->hora_ingreso_doe,
+                    'hora_ingreso' => $request->hora_ingreso_doe,
                     'hora_apertura' => $request->hora_apertura_doe,
                     'hora_cierre' => $request->hora_cierre_doe,
-                    'hora_salida' => date('H:i:s', strtotime($request->hora_cierre_doe . ' +15 minutes')), //$request->hora_salida_doe
+                    'hora_salida' => $request->hora_salida_doe
                 ]);
             }
         }

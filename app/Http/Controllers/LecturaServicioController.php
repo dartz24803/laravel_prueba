@@ -105,12 +105,14 @@ class LecturaServicioController extends Controller
             'id_servicio' => 'gt:0',
             'id_datos_servicio' => 'gt:0',
             'hora_ing' => 'required',
-            'lect_ing' => 'required'
+            'lect_ing' => 'required',
+            'img_ing' => 'required'
         ], [
             'id_servicio.gt' => 'Debe seleccionar servicio.',
             'id_datos_servicio.gt' => 'Debe seleccionar suministro.',
             'hora_ing.required' => 'Debe ingresar hora.',
-            'lect_ing.required' => 'Debe ingresar lectura.'
+            'lect_ing.required' => 'Debe ingresar lectura.',
+            'img_ing.required' => 'Debe adjuntar imagen.'
         ]);
 
         $ultimo = LecturaServicio::select('lect_sal')
@@ -342,10 +344,12 @@ class LecturaServicioController extends Controller
     {
         $validate = $request->validate([
             'hora_' . $tipo . 'e' => 'required',
-            'lect_' . $tipo . 'e' => 'required'
+            'lect_' . $tipo . 'e' => 'required',
+            'img_' . $tipo . 'e' => 'required'
         ], [
             'hora_' . $tipo . 'e.required' => 'Debe ingresar hora.',
-            'lect_' . $tipo . 'e.required' => 'Debe ingresar lectura.'
+            'lect_' . $tipo . 'e.required' => 'Debe ingresar lectura.',
+            'img_' . $tipo . 'e.required' => 'Debe adjuntar imagen.'
         ]);
 
         $get_id = LecturaServicio::findOrFail($id);
@@ -465,10 +469,12 @@ class LecturaServicioController extends Controller
     {
         $validate = $request->validate([
             'hora_' . $tipo . 'e' => 'required',
-            'lect_' . $tipo . 'e' => 'required'
+            'lect_' . $tipo . 'e' => 'required',
+            'img_' . $tipo . 'e' => 'required'
         ], [
             'hora_' . $tipo . 'e.required' => 'Debe ingresar hora.',
-            'lect_' . $tipo . 'e.required' => 'Debe ingresar lectura.'
+            'lect_' . $tipo . 'e.required' => 'Debe ingresar lectura.',
+            'img_' . $tipo . 'e.required' => 'Debe adjuntar imagen.'
         ]);
 
         $get_id = LecturaServicio::findOrFail($id);
