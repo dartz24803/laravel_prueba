@@ -146,7 +146,7 @@ class AsistenciaController extends Controller
             'colaborador' => $numDoc,
         ];
         // print_r(json_encode($numDoc));
-        print_r($queryParams);
+        // print_r($queryParams);
 
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
         // print_r($response->json()['data']);
