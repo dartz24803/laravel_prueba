@@ -1032,6 +1032,9 @@ Route::controller(LecturaServicioController::class)->group(function () {
     Route::put('lectura_servicio_ges/{id}/{tipo}/direct', 'update_directo_reg')->name('lectura_servicio_ges.update_directo');
     Route::delete('lectura_servicio_ges/{id}', 'destroy_ges')->name('lectura_servicio_ges.destroy');
     Route::get('lectura_servicio_ges/{id_servicio}/{cod_base}/{mes}/{anio}/excel', 'excel_ges')->name('lectura_servicio_ges.excel');
+    //ACCESO DIRECTO EN EL ÁREA DE INFRAESTRUCTURA
+    Route::get('lectura_servicio_inf', 'index_inf')->name('lectura_servicio_inf');
+    Route::post('lectura_servicio_inf/list', 'list_inf')->name('lectura_servicio_inf.list');
 });
 
 //SEGURIDAD - OCURRENCIA SERVICIO CONFIGURABLE
