@@ -111,10 +111,8 @@ class ProduccionController extends Controller
 
 
         $list_proceso_visita = ProcesoVisita::select('id_procesov', 'nom_proceso')
-            ->where('estado', 1)
-            ->orderBy('nom_proceso', 'ASC')
-            ->distinct('nom_proceso')
-            ->get();
+                            ->orderBy('nom_proceso', 'ASC')
+                            ->get();
 
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_registrar', compact('list_area', 'list_inspector', 'list_proveedor', 'list_ficha_tecnica', 'list_proceso_visita'));
     }
@@ -248,10 +246,8 @@ class ProduccionController extends Controller
             ->get();
 
         $list_proceso_visita = ProcesoVisita::select('id_procesov', 'nom_proceso')
-            ->where('estado', 1)
-            ->orderBy('nom_proceso', 'ASC')
-            ->distinct('nom_proceso')
-            ->get();
+                            ->orderBy('nom_proceso', 'ASC')
+                            ->get();
 
 
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_editar', compact(
