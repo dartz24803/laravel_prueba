@@ -63,7 +63,7 @@
             <input type="date" name="diai" id="diai" class="form-control" value="<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day')) ?>" max="<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day')) ?>">
         </div>
         <div id="div2" style="display:none">
-            <select name="mesi" id="mesi" class="form-control">
+            <select name="mesi" id="mesi" class="form-control basic">
                 <?php foreach ($data['list_mes'] as $list) { ?>
                     <option value="<?php echo $list->cod_mes ?>" <?php if (date('m') == $list->cod_mes) {
                                                                         echo "selected";
@@ -73,7 +73,7 @@
         </div>
         <div id="div3" style="display:none">
             <!-- Dropdown for selecting week -->
-            <select name="semanaih" id="semanaih" class="form-control">
+            <select name="semanai" id="semanai" class="form-control basic">
                 <?php
                 $current_date = date('Y-m-d'); // Fecha actual en formato 'Y-m-d'
                 foreach ($data['list_semanas'] as $list) {
@@ -134,10 +134,10 @@
         var tipo_fecha = $('input:radio[name=tipo_fechai]:checked').val();
         var dia = $('#diai').val();
         var mes = $('#mesi').val();
+        var semana = $('#semanai').val();
 
         var url = "{{ route('asistencia_colaborador.list') }}";
         var csrfToken = $('input[name="_token"]').val();
-        console.log(base)
         $.ajax({
             type: "POST",
             url: url,
@@ -147,7 +147,8 @@
                 'usuario': usuario,
                 'tipo_fecha': tipo_fecha,
                 'dia': dia,
-                'mes': mes
+                'mes': mes,
+                'semana': semana
             },
             headers: {
                 'X-CSRF-TOKEN': csrfToken
@@ -188,6 +189,7 @@
         var tipo_fecha = $('input:radio[name=tipo_fechai]:checked').val();
         var dia = $('#diai').val();
         var mes = $('#mesi').val();
+        var semana = $('#semanai').val();
         if (tipo_fecha == 1) {
             window.location = "{{ route('asistencia_colaborador.excel', ['base' => ':base', 'area' => ':area', 'usuario' => ':usuario', 'tipo_fecha' => ':tipo_fecha', 'dia' => ':dia', 'mes' => ':mes']) }}"
                 .replace(':base', base)
@@ -197,6 +199,15 @@
                 .replace(':dia', dia)
                 .replace(':mes', mes);
 
+        } else if (tipo_fecha == 3) {
+            window.location = "{{ route('asistencia_colaborador_semana.excel', ['base' => ':base', 'area' => ':area', 'usuario' => ':usuario', 'tipo_fecha' => ':tipo_fecha', 'dia' => ':dia', 'mes' => ':mes']) }}"
+                .replace(':base', base)
+                .replace(':area', area)
+                .replace(':usuario', usuario)
+                .replace(':tipo_fecha', tipo_fecha)
+                .replace(':dia', semana)
+                .replace(':mes', mes)
+                
         } else {
             window.location = "{{ route('asistencia_colaborador.excel_control', ['base' => ':base', 'area' => ':area', 'usuario' => ':usuario', 'tipo_fecha' => ':tipo_fecha', 'dia' => ':dia', 'mes' => ':mes']) }}"
                 .replace(':base', base)
@@ -210,9 +221,7 @@
     }
     
     function Traer_Colaborador() {
-        Cargando();
-
-        var cod_base = 0; //$('#basei').val();
+        var cod_base = $('#basei').val();
         var id_area = $('#areai').val();
         var estado = 1;
         var url = "{{ url('Asistencia/Traer_Colaborador_Asistencia') }}";

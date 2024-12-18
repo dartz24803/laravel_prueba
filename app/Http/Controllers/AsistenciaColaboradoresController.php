@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use App\Models\AsignacionJefatura;
 use App\Models\AsistenciaColaborador;
 use App\Models\Base;
@@ -15,6 +16,7 @@ use App\Models\Puesto;
 use App\Models\Notificacion;
 use App\Models\SolicitudPuesto;
 use App\Models\SubGerencia;
+use App\Models\Ubicacion;
 use App\Models\Usuario;
 use Exception;
 use Illuminate\Http\Request;
@@ -62,8 +64,11 @@ class AsistenciaColaboradoresController extends Controller
     {
         if (session('usuario')->id_usuario) {
             $data['list_mes'] = AsistenciaColaborador::get_list_mes();
-            $data['list_area'] = AsistenciaColaborador::get_list_area();
-            $data['list_base'] = AsistenciaColaborador::get_list_base_general();
+            $data['list_area'] = Area::where('estado', 1)->orderBy('nom_area', 'ASC')->get();
+            $data['list_base'] = Ubicacion::select('id_ubicacion', 'cod_ubi AS cod_base')
+                        ->where('estado', 1)
+                        ->orderBy('cod_ubi', 'ASC')
+                        ->get();
             $dato['centro_labores'] = 0;
             $dato['id_area'] = 0;
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
@@ -84,7 +89,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $this->input->post("tipo_fecha");
         $dato['dia'] = $this->input->post("dia");
         $dato['mes'] = $this->input->post("mes");
-        $dato['semana'] = $request->input("semana");
+        $dato['semana'] = $this->input->post("semana");
         $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas = $dato['semana']);
         // dd($dato);
         // Llamar al método para obtener la lista de asistencia
@@ -206,8 +211,6 @@ class AsistenciaColaboradoresController extends Controller
         $writer->save('php://output');
     }
 
-
-
     public function Excel_Control_Mensual_Asistencia_Colaborador($base, $area, $usuario, $tipo_fecha, $dia, $mes)
     {
         $dato['base'] = $base;
@@ -303,16 +306,101 @@ class AsistenciaColaboradoresController extends Controller
         $writer->save('php://output');
     }
 
+    public function Excel_Asistencia_Semana_Colaborador($base, $area, $usuario, $tipo_fecha, $dia, $mes){
+        $dato['base'] = $base;
+        $dato['area'] = $area;
+        $dato['usuario'] = $usuario;
+        $dato['tipo_fecha'] = $tipo_fecha;
+        $dato['semana'] = $dia;
+        $dato['mes'] = $mes;
+        $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($id_semanas = $dato['semana']);
+        $list_asistencia = AsistenciaColaborador::get_list_asistencia_colaborador(0, $dato);
 
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
 
+        $sheet->getStyle("A1:K1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:K1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
+        $spreadsheet->getActiveSheet()->setTitle('Asistencia Semanal');
 
+        $sheet->setAutoFilter('A1:K1');
 
+        $sheet->getColumnDimension('A')->setWidth(50);
+        $sheet->getColumnDimension('B')->setWidth(15);
+        $sheet->getColumnDimension('C')->setWidth(15);
+        $sheet->getColumnDimension('D')->setWidth(15);
+        $sheet->getColumnDimension('E')->setWidth(30);
+        $sheet->getColumnDimension('F')->setWidth(15);
+        $sheet->getColumnDimension('G')->setWidth(25);
+        $sheet->getColumnDimension('H')->setWidth(25);
+        $sheet->getColumnDimension('I')->setWidth(15);
+        $sheet->getColumnDimension('J')->setWidth(15);
+        $sheet->getColumnDimension('K')->setWidth(18);
 
+        $sheet->getStyle('A1:K1')->getFont()->setBold(true);
 
+        $spreadsheet->getActiveSheet()->getStyle("A1:K1")->getFill()
+            ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+            ->getStartColor()->setARGB('C8C8C8');
 
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
 
+        $sheet->getStyle("A1:K1")->applyFromArray($styleThinBlackBorderOutline);
 
+        $sheet->setCellValue('A1', 'Colaborador');
+        $sheet->setCellValue('B1', 'DNI');
+        $sheet->setCellValue('C1', 'Base');
+        $sheet->setCellValue('D1', 'Fecha');
+        $sheet->setCellValue('E1', 'Turno');
+        $sheet->setCellValue('F1', 'Entrada');
+        $sheet->setCellValue('G1', 'Salida a refrigerio');
+        $sheet->setCellValue('H1', 'Entrada de refrigerio');
+        $sheet->setCellValue('I1', 'Salida');
+        $sheet->setCellValue('J1', 'Registro');
+        $sheet->setCellValue('K1', 'Dia Laborado');
+
+        $contador = 1;
+        foreach ($list_asistencia as $list) {
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:K{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+            $sheet->getStyle("A{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("E{$contador}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_LEFT);
+            $sheet->getStyle("A{$contador}:K{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:K{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $spreadsheet->getActiveSheet()->setCellValue("A{$contador}", $list['usuario_nombres'] . " " . $list['usuario_apater'] . " " . $list['usuario_amater']);
+            $spreadsheet->getActiveSheet()->setCellValue("B{$contador}", $list['num_doc']);
+            $spreadsheet->getActiveSheet()->setCellValue("C{$contador}", $list['centro_labores']);
+            $sheet->setCellValue("D{$contador}", Date::PHPToExcel($list['fecha']));
+            $sheet->getStyle("D{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DDMMYYYY);
+            $spreadsheet->getActiveSheet()->setCellValue("E{$contador}", $list['turno']);
+            $spreadsheet->getActiveSheet()->setCellValue("F{$contador}", $list['marcacion_entrada']);
+            $spreadsheet->getActiveSheet()->setCellValue("G{$contador}", $list['marcacion_idescanso']);
+            $spreadsheet->getActiveSheet()->setCellValue("H{$contador}", $list['marcacion_fdescanso']);
+            $spreadsheet->getActiveSheet()->setCellValue("I{$contador}", $list['marcacion_salida']);
+            $spreadsheet->getActiveSheet()->setCellValue("J{$contador}", $list['nom_estado']);
+            $spreadsheet->getActiveSheet()->setCellValue("K{$contador}", $list['flag_diatrabajado']);
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Asistencia Mensual';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+
+    }
 
 
     // INCONSISTENCIAS
@@ -320,8 +408,11 @@ class AsistenciaColaboradoresController extends Controller
     {
         if (session('usuario')->id_usuario) {
             $data['list_mes'] = AsistenciaColaborador::get_list_mes();
-            $data['list_area'] = AsistenciaColaborador::get_list_area();
-            $data['list_base'] = AsistenciaColaborador::get_list_base_general();
+            $data['list_area'] = Area::where('estado', 1)->orderBy('nom_area', 'ASC')->get();
+            $data['list_base'] = Ubicacion::select('id_ubicacion', 'cod_ubi AS cod_base')
+                        ->where('estado', 1)
+                        ->orderBy('cod_ubi', 'ASC')
+                        ->get();
             $dato['centro_labores'] = 0;
             $dato['id_area'] = 0;
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
@@ -346,6 +437,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $request->input("tipo_fecha");
         $dato['dia'] = $request->input("dia");
         $dato['semana'] = $request->input("semana");
+        $dato['mes'] = $request->input("mes");
         $dato['get_semana'] = AsistenciaColaborador::get_list_semanas($dato['semana']);
         $list_asistenciai = AsistenciaColaborador::get_list_marcacion_colaborador_inconsistencias(0, (object) $dato);
         return view('rrhh.AsistenciaColaboradores.inconsistencia.lista', compact('list_asistenciai', 'dato'));
@@ -765,6 +857,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $tipo_fecha;
         $dato['dia'] = $dia;
         $dato['semana'] = $semana;
+        $dato['mes'] = $semana;
         $dato['get_semana'] = AsistenciaColaborador::get_list_semanas_excel($dato['semana']);
         // dd($dato);
         $list_asistenciai = AsistenciaColaborador::get_list_marcacion_colaborador_inconsistencias_excel(0, $dato);
@@ -936,8 +1029,11 @@ class AsistenciaColaboradoresController extends Controller
     {
         if (session('usuario')->id_usuario) {
             $data['list_mes'] = AsistenciaColaborador::get_list_mes();
-            $data['list_area'] = AsistenciaColaborador::get_list_area();
-            $data['list_base'] = AsistenciaColaborador::get_list_base_general();
+            $data['list_area'] = Area::where('estado', 1)->orderBy('nom_area', 'ASC')->get();
+            $data['list_base'] = Ubicacion::select('id_ubicacion', 'cod_ubi AS cod_base')
+                        ->where('estado', 1)
+                        ->orderBy('cod_ubi', 'ASC')
+                        ->get();
             $dato['centro_labores'] = 0;
             $dato['id_area'] = 0;
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
@@ -961,6 +1057,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $this->input->post("tipo_fecha");
         $dato['dia'] = $this->input->post("dia");
         $dato['semana'] = $this->input->post("semana");
+        $dato['mes'] = $this->input->post("mes");
 
         $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($dato['semana']);
         // dd($dato['get_semana']);
@@ -1077,8 +1174,11 @@ class AsistenciaColaboradoresController extends Controller
     {
         if (session('usuario')->id_usuario) {
             $data['list_mes'] = AsistenciaColaborador::get_list_mes();
-            $data['list_area'] = AsistenciaColaborador::get_list_area();
-            $data['list_base'] = AsistenciaColaborador::get_list_base_general();
+            $data['list_area'] = Area::where('estado', 1)->orderBy('nom_area', 'ASC')->get();
+            $data['list_base'] = Ubicacion::select('id_ubicacion', 'cod_ubi AS cod_base')
+                        ->where('estado', 1)
+                        ->orderBy('cod_ubi', 'ASC')
+                        ->get();
             $dato['centro_labores'] = 0;
             $dato['id_area'] = 0;
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);

@@ -42,22 +42,47 @@ class TiendaMarcacion extends Model
     }
 
     public static function get_list_reporte_apertura_cierre_tienda(){
-        $sql = "SELECT tm.cod_base,(SELECT ac.ingreso FROM apertura_cierre_tienda ac
+        $sql = "SELECT tm.cod_base,
+                (SELECT ac.ingreso FROM apertura_cierre_tienda ac
                 WHERE ac.fecha=CURDATE() AND ac.cod_base=tm.cod_base AND ac.estado=1
                 ORDER BY ac.id_apertura_cierre DESC
                 LIMIT 1) AS ingreso,
+                (SELECT TIMESTAMPDIFF(MINUTE, ac.ingreso, ac.ingreso_horario)
+                FROM apertura_cierre_tienda ac
+                WHERE ac.fecha=CURDATE() AND ac.cod_base=tm.cod_base AND ac.estado=1
+                ORDER BY ac.id_apertura_cierre DESC
+                LIMIT 1) AS diferencia_ingreso,
                 (SELECT ac.apertura FROM apertura_cierre_tienda ac
                 WHERE ac.fecha=CURDATE() AND ac.cod_base=tm.cod_base AND ac.estado=1
                 ORDER BY ac.id_apertura_cierre DESC
                 LIMIT 1) AS apertura,
+                (SELECT TIMESTAMPDIFF(MINUTE, ac.apertura, ac.apertura_horario)
+                FROM apertura_cierre_tienda ac
+                WHERE ac.fecha=CURDATE() AND ac.cod_base=tm.cod_base AND ac.estado=1
+                ORDER BY ac.id_apertura_cierre DESC
+                LIMIT 1) AS diferencia_apertura,
                 (SELECT ac.cierre FROM apertura_cierre_tienda ac
-                WHERE ac.fecha=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND ac.cod_base=tm.cod_base AND ac.estado=1
+                WHERE ac.fecha=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND 
+                ac.cod_base=tm.cod_base AND ac.estado=1
                 ORDER BY ac.id_apertura_cierre DESC
                 LIMIT 1) AS cierre,
-                (SELECT ac.salida FROM apertura_cierre_tienda ac
-                WHERE ac.fecha=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND ac.cod_base=tm.cod_base AND ac.estado=1
+                (SELECT TIMESTAMPDIFF(MINUTE, ac.cierre, ac.cierre_horario)
+                FROM apertura_cierre_tienda ac
+                WHERE ac.fecha=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND 
+                ac.cod_base=tm.cod_base AND ac.estado=1
                 ORDER BY ac.id_apertura_cierre DESC
-                LIMIT 1) AS salida
+                LIMIT 1) AS diferencia_cierre,
+                (SELECT ac.salida FROM apertura_cierre_tienda ac
+                WHERE ac.fecha=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND 
+                ac.cod_base=tm.cod_base AND ac.estado=1
+                ORDER BY ac.id_apertura_cierre DESC
+                LIMIT 1) AS salida,
+                (SELECT TIMESTAMPDIFF(MINUTE, ac.salida, ac.salida_horario)
+                FROM apertura_cierre_tienda ac
+                WHERE ac.fecha=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND 
+                ac.cod_base=tm.cod_base AND ac.estado=1
+                ORDER BY ac.id_apertura_cierre DESC
+                LIMIT 1) AS diferencia_salida
                 FROM tienda_marcacion tm
                 WHERE tm.estado=1";
         $query = DB::select($sql);

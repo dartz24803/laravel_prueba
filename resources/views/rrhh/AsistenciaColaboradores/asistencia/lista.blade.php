@@ -1,3 +1,4 @@
+<?php use Carbon\Carbon; ?>
 <style>
     .tooltip-link {
         position: relative;
@@ -67,7 +68,7 @@
                 <td><?php echo $list->colaborador; ?></td>
                 <td><?php echo $list->num_doc; ?></td>
                 <td><?php echo $list->centro_labores; ?></td>
-                <td><?php echo $list->fecha; ?></td>
+                <td data-order="{{  Carbon::createFromFormat('d/m/Y', $list->fecha)->format('Y/m/d'); }}"><?php echo $list->fecha; ?></td>
                 <td><?php echo $list->turno; ?></td>
                 <td><?php echo $list->marcacion_entrada; ?></td>
                 <td><?php echo $list->marcacion_idescanso; ?></td>
@@ -92,6 +93,9 @@
 <script>
     $(document).ready(function() {
         $('#zero-configg').DataTable({
+            "dom": "<'dt--top-section'<'row'<'col-12 col-sm-6 d-flex justify-content-sm-start justify-content-center'l><'col-12 col-sm-6 d-flex justify-content-sm-end justify-content-center mt-sm-0 mt-3'f>>>" +
+            "<'table-responsive'tr>" +
+            "<'dt--bottom-section d-sm-flex justify-content-sm-between text-center'<'dt--pages-count  mb-sm-0 mb-3'i><'dt--pagination'p>>",
             responsive: true,
             "oLanguage": {
                 "oPaginate": {

@@ -94,7 +94,13 @@
         },
         "stripeClasses": [],
         "lengthMenu": [10, 20, 50],
-        "pageLength": 10
+        "pageLength": 10,
+        "columnDefs": [
+            {
+                'targets': [6,10,14,18],
+                'visible': false
+            }
+        ]
     });
     $('#toggle').change(function() {
         var visible = this.checked;
