@@ -102,11 +102,12 @@ class AsistenciaController extends Controller
         $codAnio = $request->input('cod_anio');
 
         $codBase = $request->input('cod_base', 0);
-        $numDoc = $request->input('num_doc');
-        /*if (empty($numDoc)) {
+        $codBase = ($codBase === "-1") ? -1 : (is_numeric($codBase) ? intval($codBase) : $codBase);
+        $numDoc = $request->input('num_doc', []);
+        if (empty($numDoc)) {
             $numDoc = [0];
         }
-        $numDoc = array_map('intval', $numDoc);*/
+        $numDoc = array_map('intval', $numDoc);
 
         $area = intval($request->input('area', 0));
         $estado = $request->input('estado', null);
@@ -139,13 +140,13 @@ class AsistenciaController extends Controller
         $queryParams = [
             'initialDate' => $initialDate,
             'endDate' => $endDate,
-            'clabores' => intval($codBase), // Aquí mapeamos 'cod_base' como 'clabores'
+            'clabores' => $codBase,
             'area' => intval($area),
             'estado' => intval($estado),
             'colaborador' => $numDoc,
         ];
         // print_r(json_encode($numDoc));
-        // dd($queryParams);
+        // print_r($queryParams);
 
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
         // print_r($response->json()['data']);
