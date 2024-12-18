@@ -296,7 +296,7 @@ class SoporteController extends Controller
             ]);
         }
         // GENERACIÓN DE CÓDIGO
-        $cod_area = Soporte::getCodAreaByAsunto($request->asunto); // Obtiene el área
+        $cod_area = Soporte::getCodAreaByAsunto($request->asunto);
         $request->validate($rules, $messages);
         $idsoporte_tipo = DB::table('soporte_asunto as sa')
             ->leftJoin('soporte_tipo as st', 'st.idsoporte_tipo', '=', 'sa.idsoporte_tipo')
@@ -319,7 +319,6 @@ class SoporteController extends Controller
             $codigo_generado = 'Código no disponible';
         }
         // GENERECIÓN DE CÓDIGO
-
         $soporte_solucion = SoporteSolucion::create([
             'estado_solucion' => 0,
             'archivo_solucion' => 0,
