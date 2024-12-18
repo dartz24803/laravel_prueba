@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AperturaCierreTienda;
 use App\Models\AsistenciaColaborador;
 use App\Models\AsistenciaColaboradorInconsistencia;
 use App\Models\AsistenciaColaboradorMarcaciones;
 use App\Models\BiotimeTemp;
 use App\Models\Feriado;
 use App\Models\HorarioDia;
+use App\Models\PuestoReporteAperturaCierreTienda;
 use App\Models\PuestoSinAsistencia;
 use App\Models\TiendaMarcacion;
 use App\Models\ToleranciaHorario;
@@ -641,8 +641,13 @@ class CronController extends Controller
     public function reporte_apertura_cierre_tienda()
     {
         $list_reporte = TiendaMarcacion::get_list_reporte_apertura_cierre_tienda();
+        $list_correo = Usuario::select('emailp')
+                    ->whereIn('id_puesto',PuestoReporteAperturaCierreTienda::select('id_puesto'))
+                    ->where('estado',1)->get();
 
-        $mail = new PHPMailer(true);
+        echo $list_correo;
+
+        /*$mail = new PHPMailer(true);
 
         try {
             $mail->SMTPDebug = 0;
@@ -655,7 +660,11 @@ class CronController extends Controller
             $mail->Port     =  587; 
             $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
 
+            //foreach($list_correo as $list){
+            //    $mail->addAddress($list->emailp);
+            //}
             $mail->addAddress('dpalomino@lanumero1.com.pe');
+            $mail->addAddress('OGUTIERREZ@LANUMERO1.COM.PE');
 
             $mail->isHTML(true);
 
@@ -663,7 +672,7 @@ class CronController extends Controller
         
             $mail->Body =  '<FONT SIZE=3>
                                 A continuación se presenta el detalle de las bases de hoy:<br><br>
-                                <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
+                                <table CELLPADDING="2" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
                                     <thead>
                                         <tr align="center">
                                             <th><b>BASE</b></th>
@@ -675,7 +684,7 @@ class CronController extends Controller
                                     </thead>
                                     <tbody>';
                                 foreach($list_reporte as $list){
-            $mail->Body .=  '            <tr align="left">
+            $mail->Body .=  '            <tr align="center">
                                             <td>'.$list->cod_base.'</td>
                                             <td>'.$list->ingreso.'</td>
                                             <td>'.$list->apertura.'</td>
@@ -689,6 +698,6 @@ class CronController extends Controller
             $mail->send();
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-        }
+        }*/
     }
 }
