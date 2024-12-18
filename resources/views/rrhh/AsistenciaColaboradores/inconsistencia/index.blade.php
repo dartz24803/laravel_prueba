@@ -3,7 +3,7 @@
     <div class="form-group col-md-1">
         <label for="" class="control-label text-bold">Base&nbsp;</label>
         <div>
-            <select id="baseih" name="baseih" class="form-control basic" onchange="Cmb_Colaboradori()">
+            <select id="baseih" name="baseih" class="form-control basic" onchange="Traer_Colaborador()">
                 <option value="0" selected>Todos</option>
                 <?php foreach ($data['list_base'] as $list) { ?>
                     <option value="<?php echo $list->cod_base; ?>"><?php echo $list->cod_base; ?></option>
@@ -230,7 +230,7 @@
     
     function Traer_Colaborador() {
 
-        var cod_base = 0; //$('#basei').val();
+        var cod_base = $('#baseih').val();
         var id_area = $('#areaih').val();
         var estado = 1;
         var url = "{{ url('Asistencia/Traer_Colaborador_Asistencia') }}";

@@ -80,7 +80,7 @@ class TbContabilidadCerrados extends Model
         if (isset($filters['fecha_inicio']) && isset($filters['fecha_fin'])) {
             $fechaInicio = $filters['fecha_inicio'] . ' 00:00:00';
             $fechaFin = $filters['fecha_fin'] . ' 23:59:59';
-            $query->whereBetween('fecha_documento', [$fechaInicio, $fechaFin]);
+            $query->whereBetween('fecha_cerrado_total', [$fechaInicio, $fechaFin]);
         }
 
         // Filtrar por estado de stock
