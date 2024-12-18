@@ -1,9 +1,8 @@
 <div class="col-md-12 row">
-
     <div class="form-group col-md-1">
         <label for="" class="control-label text-bold">Base&nbsp;</label>
         <div>
-            <select id="base_t" name="base_t" class="form-control" onchange="Traer_Colaborador_Tardanza(); Lista_Tardanza();">
+            <select id="base_t" name="base_t" class="form-control basic" onchange="Traer_Colaborador_Tardanza(); Lista_Tardanza();">
                 <option value="0" selected>Todos</option>
                 <?php foreach ($data['list_base'] as $list) { ?>
                     <option value="<?php echo $list->cod_base; ?>"><?php echo $list->cod_base; ?></option>
@@ -15,7 +14,7 @@
     <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Área&nbsp;</label>
         <div>
-            <select class="form-control" id="area_t" name="area_t" onchange="Traer_Colaborador_Tardanza(); Lista_Tardanza();">
+            <select class="form-control basic" id="area_t" name="area_t" onchange="Traer_Colaborador(); Lista_Tardanza();">
                 <option value="0" selected>Todos</option>
                 <?php foreach ($data['list_area'] as $list) { ?>
                     <option value="<?php echo $list->id_area; ?>"><?php echo $list->nom_area; ?></option>
@@ -127,15 +126,7 @@
 
 
 <script>
-    $('#colaborador_t').select2({
-        placeholder: 'Seleccione un Colaborador',
-        allowClear: true
-    });
-    $('#area_t').select2({
-        placeholder: 'Seleccione un Área',
-        allowClear: true
-    });
-
+    $('.basic').select2({});
 
     function Lista_Tardanza() {
         Cargando();
@@ -193,8 +184,6 @@
         }
     }
 
-
-
     function Excel_Tardanza() {
         Cargando();
         var base = $('#base_t').val();
@@ -234,6 +223,26 @@
                 ).then(function() {
                 });
             },
+        });
+    }
+
+    function Traer_Colaborador() {
+        var cod_base = 0; //$('#basei').val();
+        var id_area = $('#area_t').val();
+        var estado = 1;
+        var url = "{{ url('Asistencia/Traer_Colaborador_Asistencia') }}";
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {
+                'cod_base': cod_base,
+                'id_area': id_area,
+                'estado': estado
+            },
+            success: function(data) {
+                $('#colaborador_t').html(data);
+            }
         });
     }
 </script>

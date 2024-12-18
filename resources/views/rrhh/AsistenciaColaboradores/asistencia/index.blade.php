@@ -63,7 +63,7 @@
             <input type="date" name="diai" id="diai" class="form-control" value="<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day')) ?>" max="<?php echo date('Y-m-d', strtotime(date('Y-m-d') . ' -1 day')) ?>">
         </div>
         <div id="div2" style="display:none">
-            <select name="mesi" id="mesi" class="form-control">
+            <select name="mesi" id="mesi" class="form-control basic">
                 <?php foreach ($data['list_mes'] as $list) { ?>
                     <option value="<?php echo $list->cod_mes ?>" <?php if (date('m') == $list->cod_mes) {
                                                                         echo "selected";
@@ -73,7 +73,7 @@
         </div>
         <div id="div3" style="display:none">
             <!-- Dropdown for selecting week -->
-            <select name="semanai" id="semanai" class="form-control">
+            <select name="semanai" id="semanai" class="form-control basic">
                 <?php
                 $current_date = date('Y-m-d'); // Fecha actual en formato 'Y-m-d'
                 foreach ($data['list_semanas'] as $list) {
@@ -221,8 +221,6 @@
     }
     
     function Traer_Colaborador() {
-        Cargando();
-
         var cod_base = 0; //$('#basei').val();
         var id_area = $('#areai').val();
         var estado = 1;

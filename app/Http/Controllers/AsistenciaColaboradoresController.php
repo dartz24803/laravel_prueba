@@ -1046,6 +1046,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $this->input->post("tipo_fecha");
         $dato['dia'] = $this->input->post("dia");
         $dato['semana'] = $this->input->post("semana");
+        $dato['mes'] = $this->input->post("mes");
 
         $dato['get_semana'] =  AsistenciaColaborador::get_list_semanas($dato['semana']);
         // dd($dato['get_semana']);
