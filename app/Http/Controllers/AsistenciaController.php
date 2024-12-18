@@ -157,7 +157,9 @@ class AsistenciaController extends Controller
             return view('rrhh.Asistencia.reporte.listar', compact('initialDate', 'endDate', 'list_asistencia', 'numDoc'));
         } else {
             // Si la API falla, puedes manejar el error
-            return redirect()->back()->with('error', 'Hubo un problema al obtener los datos de la API.');
+            return response()->json([
+                'error' => true,
+            ]);
         }
     }
     public function Traer_Colaborador_Asistencia(Request $request)
