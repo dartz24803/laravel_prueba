@@ -779,7 +779,12 @@ class LecturaServicioController extends Controller
 
     public function list_inf(Request $request)
     {
-        $list_lectura_servicio = LecturaServicio::get_list_lectura_servicio(['id_servicio' => $request->id_servicio, 'cod_base' => session('usuario')->centro_labores, 'mes' => $request->mes, 'anio' => $request->anio]);
+        $list_lectura_servicio = LecturaServicio::get_list_lectura_servicio([
+            'id_servicio' => $request->id_servicio, 
+            'cod_base' => $request->cod_base, 
+            'mes' => $request->mes, 
+            'anio' => $request->anio
+        ]);
         return view('infraestructura.lectura_servicio.lista', compact('list_lectura_servicio'));
     }
 }
