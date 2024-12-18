@@ -221,8 +221,6 @@
     }
     
     function Traer_Colaborador() {
-        Cargando();
-
         var cod_base = 0; //$('#basei').val();
         var id_area = $('#areai').val();
         var estado = 1;

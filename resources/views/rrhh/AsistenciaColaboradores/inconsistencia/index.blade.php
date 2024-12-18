@@ -236,7 +236,6 @@
     }
     
     function Traer_Colaborador() {
-        Cargando();
 
         var cod_base = 0; //$('#basei').val();
         var id_area = $('#areaih').val();

@@ -14,7 +14,7 @@
     <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Área</label>
         <div>
-            <select class="form-control" id="areaau" name="areaau" onchange="Cmb_Colaboradoriau()">
+            <select class="form-control" id="areaau" name="areaau" onchange="Traer_Colaborador()">
                 <option value="0">Todos</option>
                 <?php foreach ($data['list_area'] as $list) { ?>
                     <option value="<?php echo $list->id_area ?>"><?php echo $list->nom_area ?></option>
@@ -273,5 +273,25 @@
             return false;
         }
         return true;
+    }
+    
+    function Traer_Colaborador() {
+        var cod_base = 0; //$('#basei').val();
+        var id_area = $('#areaau').val();
+        var estado = 1;
+        var url = "{{ url('Asistencia/Traer_Colaborador_Asistencia') }}";
+
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {
+                'cod_base': cod_base,
+                'id_area': id_area,
+                'estado': estado
+            },
+            success: function(data) {
+                $('#usuarioau').html(data);
+            }
+        });
     }
 </script>
