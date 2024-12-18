@@ -94,8 +94,6 @@
             Lista_Lectura_Servicio();
         });
 
-        Lista_Lectura_Servicio();
-
         function Lista_Lectura_Servicio() {
             Cargando();
 
