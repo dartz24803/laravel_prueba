@@ -429,6 +429,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $request->input("tipo_fecha");
         $dato['dia'] = $request->input("dia");
         $dato['semana'] = $request->input("semana");
+        $dato['mes'] = $request->input("mes");
         $dato['get_semana'] = AsistenciaColaborador::get_list_semanas($dato['semana']);
         $list_asistenciai = AsistenciaColaborador::get_list_marcacion_colaborador_inconsistencias(0, (object) $dato);
         return view('rrhh.AsistenciaColaboradores.inconsistencia.lista', compact('list_asistenciai', 'dato'));
@@ -848,6 +849,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $tipo_fecha;
         $dato['dia'] = $dia;
         $dato['semana'] = $semana;
+        $dato['mes'] = $semana;
         $dato['get_semana'] = AsistenciaColaborador::get_list_semanas_excel($dato['semana']);
         // dd($dato);
         $list_asistenciai = AsistenciaColaborador::get_list_marcacion_colaborador_inconsistencias_excel(0, $dato);

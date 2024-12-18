@@ -114,7 +114,9 @@ class AsistenciaColaborador extends Model
                 SELECT ac.id_asistencia_colaborador,
                     CONCAT(
                         UPPER(SUBSTRING(SUBSTRING_INDEX(us.usuario_nombres, ' ', 1), 1, 1)),
-                        LOWER(SUBSTRING(SUBSTRING_INDEX(us.usuario_nombres, ' ', 1), 2))
+                        LOWER(SUBSTRING(SUBSTRING_INDEX(us.usuario_nombres, ' ', 1), 2)),' ',
+                        UPPER(SUBSTRING(SUBSTRING_INDEX(us.usuario_apater, ' ', 1), 1, 1)),
+                        LOWER(SUBSTRING(SUBSTRING_INDEX(us.usuario_apater, ' ', 1), 2))
                     ) AS colaborador,
                     us.num_doc,
                     ac.centro_labores,
@@ -861,9 +863,11 @@ class AsistenciaColaborador extends Model
                     left join users b on a.id_usuario=b.id_usuario
                     where a.id_asistencia_inconsistencia='$id_asistencia_inconsistencia' and a.flag_ausencia=0";
         } else {
-            $fecha = "ai.fecha='" . $dato->dia . "' AND";
             if ($dato->tipo_fecha == "2") {
+                $fecha = "ai.fecha='" . $dato->dia . "' AND";
                 $fecha = "(ai.fecha BETWEEN '" . $dato->get_semana[0]->fec_inicio . "' AND '" . $dato->get_semana[0]->fec_fin . "') AND";
+            }else if ($dato->tipo_fecha == "3") {
+                $fecha = " YEAR(ai.fecha)='" . date('Y') . "' AND MONTH(ai.fecha)='" . $dato->mes . "' AND";
             }
 
             $base = "";
@@ -954,11 +958,12 @@ class AsistenciaColaborador extends Model
                     WHERE a.id_asistencia_inconsistencia = '$id_asistencia_inconsistencia' AND a.flag_ausencia = 0";
         } else {
 
-            $fecha = "ai.fecha='" . $dato['dia'] . "' AND";
-
-
             if ($dato['tipo_fecha'] == "2") {
                 $fecha = "(ai.fecha BETWEEN '" . $dato['get_semana'][0]['fec_inicio'] . "' AND '" . $dato['get_semana'][0]['fec_fin'] . "') AND";
+            }else if ($dato['tipo_fecha'] == "3") {
+                $fecha = " YEAR(ai.fecha)='" . date('Y') . "' AND MONTH(ai.fecha)='" . $dato['mes'] . "' AND";
+            }else{
+                $fecha = "ai.fecha='" . $dato['dia'] . "' AND";
             }
             // dd($dato['dia']);
             $base = "";
@@ -1491,10 +1496,11 @@ class AsistenciaColaborador extends Model
                     WHERE id_asistencia_colaborador=$id_asistencia_colaborador";
         } else {
             if ($dato['tipo_fecha'] == "2") {
-                $fecha = "ac.fecha='" . $dato['dia'] . "' AND";
                 $fecha = "MONTH(ac.fecha)='" . $dato['mes'] . "' AND YEAR(ac.fecha)='$anio' AND";
             }else if ($dato['tipo_fecha'] == 3) {
                 $fecha= "ac.fecha BETWEEN '" . $dato['get_semana'][0]->fec_inicio . "' AND '" . $dato['get_semana'][0]->fec_fin . "' AND ";
+            }else{
+                $fecha = "ac.fecha='" . $dato['dia'] . "' AND";
             }
             $base = "";
             if ($dato['base'] != "0") {
