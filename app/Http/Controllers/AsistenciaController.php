@@ -102,11 +102,11 @@ class AsistenciaController extends Controller
         $codAnio = $request->input('cod_anio');
 
         $codBase = $request->input('cod_base', 0);
-        $numDoc = $request->input('num_doc', []);
-        if (empty($numDoc)) {
+        $numDoc = $request->input('num_doc');
+        /*if (empty($numDoc)) {
             $numDoc = [0];
         }
-        $numDoc = array_map('intval', $numDoc);
+        $numDoc = array_map('intval', $numDoc);*/
 
         $area = intval($request->input('area', 0));
         $estado = $request->input('estado', null);
@@ -139,9 +139,9 @@ class AsistenciaController extends Controller
         $queryParams = [
             'initialDate' => $initialDate,
             'endDate' => $endDate,
-            'clabores' => $codBase, // Aquí mapeamos 'cod_base' como 'clabores'
-            'area' => $area,
-            'estado' => $estado,
+            'clabores' => intval($codBase), // Aquí mapeamos 'cod_base' como 'clabores'
+            'area' => intval($area),
+            'estado' => intval($estado),
             'colaborador' => $numDoc,
         ];
         // print_r(json_encode($numDoc));
