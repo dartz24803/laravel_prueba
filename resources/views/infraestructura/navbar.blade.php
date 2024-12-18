@@ -16,7 +16,35 @@
     </a>
 </li>
 
+<li class="menu menu-heading">
+    <div class="heading">
+        <span>MÓDULOS</span>
+    </div>
+</li>
 
+<li class="menu" id="infraestructuras">
+    <a href="#rinfraestructuras" id="hinfraestructuras" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle">
+        <div class="">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-eye">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                <circle cx="12" cy="12" r="3"></circle>
+            </svg>
+            <span>Infraestructura</span>
+        </div>
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-chevron-right">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </div>
+    </a>
+    <ul class="collapse submenu list-unstyled" id="rinfraestructuras" data-parent="#accordionExample">
+        <li id="lecturas_servicios">
+            <a href="{{ route('lectura_servicio_inf') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Lectura de servicio</p>
+            </a>
+        </li>
+    </ul>
+</li>
 
 
 

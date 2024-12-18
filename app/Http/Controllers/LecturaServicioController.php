@@ -756,4 +756,35 @@ class LecturaServicioController extends Controller
 
         $writer->save('php://output');
     }
+
+    public function index_inf()
+    {
+        //NOTIFICACIONES
+        $list_notificacion = Notificacion::get_list_notificacion();
+        //REPORTE BI CON ID
+        $list_subgerencia = SubGerencia::list_subgerencia(9);
+        $list_servicio = Servicio::where('lectura', 1)->where('estado', 1)->get();
+        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_mes = Mes::select('cod_mes', 'nom_mes')->where('estado', 1)->get();
+        $list_anio = Anio::select('cod_anio')->where('estado', 1)->orderBy('cod_anio', 'DESC')->get();
+        return view('infraestructura.lectura_servicio.index', compact(
+            'list_notificacion',
+            'list_subgerencia',
+            'list_servicio', 
+            'list_base',
+            'list_mes', 
+            'list_anio'
+        ));
+    }
+
+    public function list_inf(Request $request)
+    {
+        $list_lectura_servicio = LecturaServicio::get_list_lectura_servicio([
+            'id_servicio' => $request->id_servicio, 
+            'cod_base' => $request->cod_base, 
+            'mes' => $request->mes, 
+            'anio' => $request->anio
+        ]);
+        return view('infraestructura.lectura_servicio.lista', compact('list_lectura_servicio'));
+    }
 }
