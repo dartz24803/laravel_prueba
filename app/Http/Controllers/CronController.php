@@ -643,11 +643,9 @@ class CronController extends Controller
         $list_reporte = TiendaMarcacion::get_list_reporte_apertura_cierre_tienda();
         $list_correo = Usuario::select('emailp')
                     ->whereIn('id_puesto',PuestoReporteAperturaCierreTienda::select('id_puesto'))
-                    ->where('estado',1)->get();
+                    ->where('estado',1)->get(); 
 
-        echo $list_correo;
-
-        /*$mail = new PHPMailer(true);
+        $mail = new PHPMailer(true);
 
         try {
             $mail->SMTPDebug = 0;
@@ -677,19 +675,60 @@ class CronController extends Controller
                                         <tr align="center">
                                             <th><b>BASE</b></th>
                                             <th><b>INGRESO</b></th>
+                                            <th><b>DIFERENCIA (INGRESO)</b></th>
                                             <th><b>APERTURA</b></th>
+                                            <th><b>DIFERENCIA (APERTURA)</b></th>
                                             <th><b>CIERRE</b></th>
+                                            <th><b>DIFERENCIA (CIERRE)</b></th>
                                             <th><b>SALIDA</b></th>
+                                            <th><b>DIFERENCIA (SALIDA)</b></th>
                                         </tr>
                                     </thead>
                                     <tbody>';
                                 foreach($list_reporte as $list){
+                                        if($list->ingreso!="" && $list->apertura!="" && $list->cierre!="" && $list->salida!=""){
+                                            $color_base = "transparent";
+                                        }else{
+                                            $color_base = "red";
+                                        }
+                                        if($list->diferencia_ingreso>0){
+                                            $color_ingreso = "green";
+                                        }elseif($list->diferencia_ingreso<0){
+                                            $color_ingreso = "red";
+                                        }else{
+                                            $color_ingreso = "black";
+                                        }
+                                        if($list->diferencia_apertura>0){
+                                            $color_apertura = "green";
+                                        }elseif($list->diferencia_apertura<0){
+                                            $color_apertura = "red";
+                                        }else{
+                                            $color_apertura = "black";
+                                        }
+                                        if($list->diferencia_cierre>0){
+                                            $color_cierre = "green";
+                                        }elseif($list->diferencia_cierre<0){
+                                            $color_cierre = "red";
+                                        }else{
+                                            $color_cierre = "black";
+                                        }
+                                        if($list->diferencia_salida>0){
+                                            $color_salida = "green";
+                                        }elseif($list->diferencia_salida<0){
+                                            $color_salida = "red";
+                                        }else{
+                                            $color_salida = "black";
+                                        }
             $mail->Body .=  '            <tr align="center">
-                                            <td>'.$list->cod_base.'</td>
+                                            <td style="color:'.$color_base.';">'.$list->cod_base.'</td>
                                             <td>'.$list->ingreso.'</td>
+                                            <td style="color:'.$color_ingreso.';">'.$list->diferencia_ingreso.'</td>
                                             <td>'.$list->apertura.'</td>
+                                            <td style="color:'.$color_apertura.';">'.$list->diferencia_apertura.'</td>
                                             <td>'.$list->cierre.'</td>
+                                            <td style="color:'.$color_cierre.';">'.$list->diferencia_cierre.'</td>
                                             <td>'.$list->salida.'</td>
+                                            <td style="color:'.$color_salida.';">'.$list->diferencia_salida.'</td>
                                         </tr>';
                                 }
             $mail->Body .=  '        </tbody>
@@ -698,6 +737,6 @@ class CronController extends Controller
             $mail->send();
         }catch(Exception $e) {
             echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
-        }*/
+        }
     }
 }
