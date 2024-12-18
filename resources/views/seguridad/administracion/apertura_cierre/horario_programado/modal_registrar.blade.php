@@ -64,12 +64,12 @@
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Lunes
                 </label>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_lu" name="hora_ingreso_lu">
                 </div>
-            </div>-->
+            </div>
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold" title="Permite marcar desde:" style="cursor:help">Apertura: </label>
                 <div class="form-group mb-1">
@@ -82,12 +82,12 @@
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_cierre_lu" name="hora_cierre_lu" >
                 </div>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_lu" name="hora_salida_lu">
                 </div> 
-            </div>-->
+            </div>
         </div>
 
         <div class="row">
@@ -97,12 +97,12 @@
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Martes
                 </label>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_ma" name="hora_ingreso_ma">
                 </div>
-            </div>-->
+            </div>
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold" title="Permite marcar desde:" style="cursor:help">Apertura: </label>
                 <div class="form-group mb-1">
@@ -115,12 +115,12 @@
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_cierre_ma" name="hora_cierre_ma" >
                 </div>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_ma" name="hora_salida_ma">
                 </div> 
-            </div>-->
+            </div>
         </div>
 
         <div class="row">
@@ -130,12 +130,12 @@
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Miércoles
                 </label>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_mi" name="hora_ingreso_mi">
                 </div>
-            </div>-->
+            </div>
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold" title="Permite marcar desde:" style="cursor:help">Apertura: </label>
                 <div class="form-group mb-1">
@@ -148,12 +148,12 @@
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_cierre_mi" name="hora_cierre_mi" >
                 </div>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_mi" name="hora_salida_mi">
                 </div> 
-            </div>-->
+            </div>
         </div>
 
         <div class="row">
@@ -163,12 +163,12 @@
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Jueves
                 </label>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_ju" name="hora_ingreso_ju">
                 </div>
-            </div>-->
+            </div>
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold" title="Permite marcar desde:" style="cursor:help">Apertura: </label>
                 <div class="form-group mb-1">
@@ -181,12 +181,12 @@
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_cierre_ju" name="hora_cierre_ju" >
                 </div>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_ju" name="hora_salida_ju">
                 </div> 
-            </div>-->
+            </div>
         </div>
 
         <div class="row">
@@ -196,12 +196,12 @@
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Viernes
                 </label>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_vi" name="hora_ingreso_vi">
                 </div>
-            </div>-->
+            </div>
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold" title="Permite marcar desde:" style="cursor:help">Apertura: </label>
                 <div class="form-group mb-1">
@@ -214,12 +214,12 @@
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_cierre_vi" name="hora_cierre_vi" >
                 </div>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_vi" name="hora_salida_vi">
                 </div> 
-            </div>-->
+            </div>
         </div>
 
         <div class="row">
@@ -229,12 +229,12 @@
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Sábado
                 </label>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_sa" name="hora_ingreso_sa">
                 </div>
-            </div>-->
+            </div>
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold" title="Permite marcar desde:" style="cursor:help">Apertura: </label>
                 <div class="form-group mb-1">
@@ -247,12 +247,12 @@
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_cierre_sa" name="hora_cierre_sa" >
                 </div>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_sa" name="hora_salida_sa">
                 </div> 
-            </div>-->
+            </div>
         </div>
 
         <div class="row">
@@ -262,12 +262,12 @@
                     <span class="new-control-indicator"></span> &nbsp; &nbsp; &nbsp;  Domingo
                 </label>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_do" name="hora_ingreso_do">
                 </div>
-            </div>-->
+            </div>
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold" title="Permite marcar desde:" style="cursor:help">Apertura: </label>
                 <div class="form-group mb-1">
@@ -280,12 +280,12 @@
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_cierre_do" name="hora_cierre_do" >
                 </div>
             </div>
-            <!--<div class="form-group col-lg-2">
+            <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
                     <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_do" name="hora_salida_do">
                 </div> 
-            </div>-->
+            </div>
         </div>
     </div>
 
