@@ -79,7 +79,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_lue" name="hora_ingreso_lue" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_lue" name="hora_ingreso_lue" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
                 </div>
             </div>
             <div class="form-group col-lg-2">
@@ -97,7 +97,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_lue" name="hora_salida_lue" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_lue" name="hora_salida_lue" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
                 </div> 
             </div>
         </div>
@@ -116,7 +116,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_mae" name="hora_ingreso_mae" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_mae" name="hora_ingreso_mae" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
                 </div>
             </div>
             <div class="form-group col-lg-2">
@@ -134,7 +134,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_mae" name="hora_salida_mae" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_mae" name="hora_salida_mae" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
                 </div> 
             </div>
         </div>
@@ -153,7 +153,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_mie" name="hora_ingreso_mie" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_mie" name="hora_ingreso_mie" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
                 </div>
             </div>
             <div class="form-group col-lg-2">
@@ -171,7 +171,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_mie" name="hora_salida_mie" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_mie" name="hora_salida_mie" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
                 </div> 
             </div>
         </div>
@@ -190,7 +190,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_jue" name="hora_ingreso_jue" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_jue" name="hora_ingreso_jue" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
                 </div>
             </div>
             <div class="form-group col-lg-2">
@@ -208,7 +208,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_jue" name="hora_salida_jue" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_jue" name="hora_salida_jue" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
                 </div> 
             </div>
         </div>
@@ -227,7 +227,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_vie" name="hora_ingreso_vie" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_vie" name="hora_ingreso_vie" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
                 </div>
             </div>
             <div class="form-group col-lg-2">
@@ -245,7 +245,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_vie" name="hora_salida_vie" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_vie" name="hora_salida_vie" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
                 </div> 
             </div>
         </div>
@@ -264,7 +264,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_sae" name="hora_ingreso_sae" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_sae" name="hora_ingreso_sae" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
                 </div>
             </div>
             <div class="form-group col-lg-2">
@@ -282,7 +282,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_sae" name="hora_salida_sae" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_sae" name="hora_salida_sae" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
                 </div> 
             </div>
         </div>
@@ -301,7 +301,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Ingreso:</label>
                 <div class="form-group mb-2">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_doe" name="hora_ingreso_doe" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_ingreso_doe" name="hora_ingreso_doe" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_ingreso']; } @endphp">
                 </div>
             </div>
             <div class="form-group col-lg-2">
@@ -319,7 +319,7 @@
             <div class="form-group col-lg-2">
                 <label class=" control-label text-bold">Salida: </label>
                 <div class="form-group mb-1">
-                    <input disabled style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_doe" name="hora_salida_doe" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
+                    <input @if ($busq_detalle == false) disabled @endif style="border-bottom: 2px dashed #acb0c3;border-radius: 0px;border-top: 0px;border-left: 0px;border-right: 0pc;padding-bottom: 0px;" type="time" class="form-control" id="hora_salida_doe" name="hora_salida_doe" value="@php if($busq_detalle != false){ echo $list_detalle[$posicion]['hora_salida']; } @endphp">
                 </div> 
             </div>
         </div>
