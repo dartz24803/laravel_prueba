@@ -441,6 +441,8 @@ class AsistenciaColaborador extends Model
                 } elseif (isset($dato->get_semana) && is_array($dato->get_semana) && isset($dato->get_semana[0])) {
                     $fecha = "(ai.fecha BETWEEN '" . $dato->get_semana[0]->fec_inicio . "' AND '" . $dato->get_semana[0]->fec_fin . "') AND";
                 }
+            }else{
+                $fecha = "MONTH(ai.fecha) = " . $dato['mes'] .  " AND YEAR(ai.fecha) = " . date('Y') . " AND";
             }
 
             $base = "";
@@ -473,7 +475,6 @@ class AsistenciaColaborador extends Model
                     LEFT JOIN users us ON ai.id_usuario=us.id_usuario
                     WHERE $fecha $base $area $usuario ai.flag_ausencia=1 AND ai.estado=1";
         }
-
         // Ejecutar la consulta
         $query = DB::select($sql);
         return $query;
@@ -864,10 +865,11 @@ class AsistenciaColaborador extends Model
                     where a.id_asistencia_inconsistencia='$id_asistencia_inconsistencia' and a.flag_ausencia=0";
         } else {
             if ($dato->tipo_fecha == "2") {
-                $fecha = "ai.fecha='" . $dato->dia . "' AND";
                 $fecha = "(ai.fecha BETWEEN '" . $dato->get_semana[0]->fec_inicio . "' AND '" . $dato->get_semana[0]->fec_fin . "') AND";
             }else if ($dato->tipo_fecha == "3") {
                 $fecha = " YEAR(ai.fecha)='" . date('Y') . "' AND MONTH(ai.fecha)='" . $dato->mes . "' AND";
+            }else{
+                $fecha = "ai.fecha='" . $dato->dia . "' AND";
             }
 
             $base = "";

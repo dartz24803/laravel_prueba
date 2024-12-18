@@ -44,6 +44,10 @@
                 <input type="radio" class="new-control-input" id="r_semanaau" value="2" name="tipo_fechaau" onclick="Div_Tipo_Fechaau()">
                 <span class="new-control-indicator"></span>Semana
             </label>
+            <label class="new-control new-radio radio-primary">
+                <input type="radio" class="new-control-input" id="r_mesau" value="3" name="tipo_fechaau" onclick="Div_Tipo_Fechaau()">
+                <span class="new-control-indicator"></span>Mes
+            </label>
         </div>
     </div>
     <div class="form-group col-md-2">
@@ -55,6 +59,15 @@
             <select name="semanaau" id="semanaau" class="form-control basic">
                 <?php foreach ($data['list_semanas'] as $list) { ?>
                     <option value="<?php echo $list->id_semanas ?>"><?php echo "Semana " . $list->nom_semana . " (" . date('d/m/Y', strtotime($list->fec_inicio)) . " - " . date('d/m/Y', strtotime($list->fec_fin)) . ")" ?></option>
+                <?php } ?>
+            </select>
+        </div>
+        <div id="div3au" style="display:none">
+            <select name="mesau" id="mesau" class="form-control">
+                <?php foreach ($data['list_mes'] as $list) { ?>
+                    <option value="<?php echo $list->cod_mes ?>" <?php if (date('m') == $list->cod_mes) {
+                                                                        echo "selected";
+                                                                    } ?>><?php echo $list->nom_mes ?></option>
                 <?php } ?>
             </select>
         </div>
@@ -100,10 +113,10 @@
         var tipo_fecha = $('input:radio[name=tipo_fechaau]:checked').val();
         var dia = $('#diaau').val();
         var semana = $('#semanaau').val();
+        var mes = $('#mesau').val();
 
         var url = "{{ route('ausencia_colaborador.list') }}";
         var csrfToken = $('input[name="_token"]').val();
-        console.log(base)
         $.ajax({
             type: "POST",
             url: url,
@@ -113,7 +126,8 @@
                 'usuario': usuario,
                 'tipo_fecha': tipo_fecha,
                 'dia': dia,
-                'semana': semana
+                'semana': semana,
+                'mes': mes
             },
             headers: {
                 'X-CSRF-TOKEN': csrfToken
@@ -129,12 +143,19 @@
         Cargando();
         var div1 = document.getElementById("div1au");
         var div2 = document.getElementById("div2au");
+        var div3 = document.getElementById("div3au");
         if ($('#r_diaau').is(":checked")) {
             div1.style.display = "block";
             div2.style.display = "none";
+            div3.style.display = "none";
+        } else if($('#r_mesau').is(":checked")) {
+            div1.style.display = "none";
+            div2.style.display = "none";
+            div3.style.display = "block";
         } else {
             div1.style.display = "none";
             div2.style.display = "block";
+            div3.style.display = "none";
         }
     }
 
