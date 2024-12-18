@@ -51,85 +51,90 @@
                                 </li>
 
                                 @if (session('usuario')->id_nivel == 1 ||
-                                session('usuario')->id_puesto == 277)
-                                <li class="nav-item">
-                                    <a id="a_or" class="nav-link" onclick="Organigrama();" style="cursor: pointer;">Organigrama</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="EstadoCivil" onclick="TablaEstadoCivil()">Estado Civil</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="Idioma" onclick="TablaIdiomas()">Idiomas</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="Nacionalidad" onclick="TablaNacionalidad()">Nacionalidad</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="Parentesco" onclick="TablaParentesco()">Parentesco</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="Referencia" onclick="TablaReferencia()">Referencia Laboral</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="Regimen" onclick="TablaRegimen()">Régimen Laboral</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="Situacion" onclick="TablaSituacion()">Situacion Laboral</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoContrato" onclick="TablaTipoContrato()">Tipo de Contrato</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoDocumento" onclick="TablaTipoDocumento()">Tipo de Documento</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoSangre" onclick="TablaTipoSangre()">Tipo de Sangre</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoVia" onclick="TablaTipoVia()">Tipo de Via</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a style="cursor: pointer;" class="nav-link" id="TipoVivienda" onclick="TablaTipoVivienda()">Tipo de Vivienda</a>
-                                </li>
-                                <li>
-                                    <a style="cursor: pointer;" class="nav-link" id="Empresa" onclick="TablaEmpresa()">Empresa</a>
-                                </li>
-                                <li>
-                                    <a style="cursor: pointer;" class="nav-link" id="Banco" onclick="TablaBanco()">Banco</a>
-                                </li>
-                                <li>
-                                    <a style="cursor: pointer;" class="nav-link" id="Genero" onclick="TablaGenero()">Genero</a>
-                                </li>
-                                <li>
-                                    <a style="cursor: pointer;" class="nav-link" id="Talla" onclick="TablaTalla()">Talla</a>
-                                </li>
-                                <li>
-                                    <a style="cursor: pointer;" class="nav-link" id="Accesorio" onclick="TablaAccesorio()">Accesorio</a>
-                                </li>
-                                <li>
-                                    <a style="cursor: pointer;" class="nav-link" id="GradoInstruccion" onclick="TablaGradoInstruccion()">Grado Instruccion</a>
-                                </li>
-                                <li>
-                                    <a style="cursor: pointer;" class="nav-link" id="Zona" onclick="TablaZona()">Zona</a>
-                                </li>
-                                <li>
-                                    <a style="cursor: pointer;" class="nav-link" id="ComisionAFP" onclick="TablaComisionAFP()">Comision</a>
-                                </li>
-                                <li>
-                                    <a class="nav-link" style="cursor: pointer;" id="Turno" onclick="TablaTurno()">Turno</a>
-                                </li>
-                                <li>
-                                    <a class="nav-link" style="cursor: pointer;" id="Horario" onclick="TablaHorario()">Horario</a>
-                                </li>
-                                <li>
-                                    <a class="nav-link" style="cursor: pointer;" id="ToleranciaHorario" onclick="ToleranciaHorario()">Tolerancia Horario</a>
-                                </li>
-                                <li>
-                                    <a class="nav-link" style="cursor: pointer;" id="AsistenciaManual" onclick="AsistenciaManual()">Asistencia Manual</a>
-                                </li>
-                                <li>
-                                    <a class="nav-link" style="cursor: pointer" id="Modalidad_Laboral" onclick="TablaModalidad_Laboral()">Modalidad Laboral</a>
-                                </li>
+                                //ASISTENTE DE COMPENSACIONES
+                                session('usuario')->id_puesto == 209 ||
+                                //ANALISTA DE RECLUTAMIENTO Y SELECCIÓN
+                                session('usuario')->id_puesto == 277 ||
+                                //ASISTENTE DE RECLUTAMIENTO Y SELECCIÓN
+                                session('usuario')->id_puesto == 278)
+                                    <li class="nav-item">
+                                        <a id="a_or" class="nav-link" onclick="Organigrama();" style="cursor: pointer;">Organigrama</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="EstadoCivil" onclick="TablaEstadoCivil()">Estado Civil</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Idioma" onclick="TablaIdiomas()">Idiomas</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Nacionalidad" onclick="TablaNacionalidad()">Nacionalidad</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Parentesco" onclick="TablaParentesco()">Parentesco</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Referencia" onclick="TablaReferencia()">Referencia Laboral</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Regimen" onclick="TablaRegimen()">Régimen Laboral</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="Situacion" onclick="TablaSituacion()">Situacion Laboral</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="TipoContrato" onclick="TablaTipoContrato()">Tipo de Contrato</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="TipoDocumento" onclick="TablaTipoDocumento()">Tipo de Documento</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="TipoSangre" onclick="TablaTipoSangre()">Tipo de Sangre</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="TipoVia" onclick="TablaTipoVia()">Tipo de Via</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a style="cursor: pointer;" class="nav-link" id="TipoVivienda" onclick="TablaTipoVivienda()">Tipo de Vivienda</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;" class="nav-link" id="Empresa" onclick="TablaEmpresa()">Empresa</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;" class="nav-link" id="Banco" onclick="TablaBanco()">Banco</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;" class="nav-link" id="Genero" onclick="TablaGenero()">Genero</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;" class="nav-link" id="Talla" onclick="TablaTalla()">Talla</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;" class="nav-link" id="Accesorio" onclick="TablaAccesorio()">Accesorio</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;" class="nav-link" id="GradoInstruccion" onclick="TablaGradoInstruccion()">Grado Instruccion</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;" class="nav-link" id="Zona" onclick="TablaZona()">Zona</a>
+                                    </li>
+                                    <li>
+                                        <a style="cursor: pointer;" class="nav-link" id="ComisionAFP" onclick="TablaComisionAFP()">Comision</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link" style="cursor: pointer;" id="Turno" onclick="TablaTurno()">Turno</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link" style="cursor: pointer;" id="Horario" onclick="TablaHorario()">Horario</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link" style="cursor: pointer;" id="ToleranciaHorario" onclick="ToleranciaHorario()">Tolerancia Horario</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link" style="cursor: pointer;" id="AsistenciaManual" onclick="AsistenciaManual()">Asistencia Manual</a>
+                                    </li>
+                                    <li>
+                                        <a class="nav-link" style="cursor: pointer" id="Modalidad_Laboral" onclick="TablaModalidad_Laboral()">Modalidad Laboral</a>
+                                    </li>
                                 @endif
                             </div>
                         </ul>

@@ -40,4 +40,27 @@ class TiendaMarcacion extends Model
         $query = DB::select($sql);
         return $query;
     }
+
+    public static function get_list_reporte_apertura_cierre_tienda(){
+        $sql = "SELECT tm.cod_base,(SELECT ac.ingreso FROM apertura_cierre_tienda ac
+                WHERE ac.fecha=CURDATE() AND ac.cod_base=tm.cod_base AND ac.estado=1
+                ORDER BY ac.id_apertura_cierre DESC
+                LIMIT 1) AS ingreso,
+                (SELECT ac.apertura FROM apertura_cierre_tienda ac
+                WHERE ac.fecha=CURDATE() AND ac.cod_base=tm.cod_base AND ac.estado=1
+                ORDER BY ac.id_apertura_cierre DESC
+                LIMIT 1) AS apertura,
+                (SELECT ac.cierre FROM apertura_cierre_tienda ac
+                WHERE ac.fecha=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND ac.cod_base=tm.cod_base AND ac.estado=1
+                ORDER BY ac.id_apertura_cierre DESC
+                LIMIT 1) AS cierre,
+                (SELECT ac.salida FROM apertura_cierre_tienda ac
+                WHERE ac.fecha=DATE_SUB(CURDATE(), INTERVAL 1 DAY) AND ac.cod_base=tm.cod_base AND ac.estado=1
+                ORDER BY ac.id_apertura_cierre DESC
+                LIMIT 1) AS salida
+                FROM tienda_marcacion tm
+                WHERE tm.estado=1";
+        $query = DB::select($sql);
+        return $query;
+    }
 }

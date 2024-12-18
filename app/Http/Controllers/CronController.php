@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AperturaCierreTienda;
 use App\Models\AsistenciaColaborador;
 use App\Models\AsistenciaColaboradorInconsistencia;
 use App\Models\AsistenciaColaboradorMarcaciones;
@@ -9,10 +10,13 @@ use App\Models\BiotimeTemp;
 use App\Models\Feriado;
 use App\Models\HorarioDia;
 use App\Models\PuestoSinAsistencia;
+use App\Models\TiendaMarcacion;
 use App\Models\ToleranciaHorario;
 use App\Models\Turno;
 use App\Models\Usuario;
+use Exception;
 use Illuminate\Support\Facades\DB;
+use PHPMailer\PHPMailer\PHPMailer;
 
 class CronController extends Controller
 {
@@ -631,6 +635,60 @@ class CronController extends Controller
                     ]);
                 }
             }
+        }
+    }
+
+    public function reporte_apertura_cierre_tienda()
+    {
+        $list_reporte = TiendaMarcacion::get_list_reporte_apertura_cierre_tienda();
+
+        $mail = new PHPMailer(true);
+
+        try {
+            $mail->SMTPDebug = 0;
+            $mail->isSMTP();
+            $mail->Host       =  'mail.lanumero1.com.pe';
+            $mail->SMTPAuth   =  true;
+            $mail->Username   =  'intranet@lanumero1.com.pe';
+            $mail->Password   =  'lanumero1$1';
+            $mail->SMTPSecure =  'tls';
+            $mail->Port     =  587; 
+            $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
+
+            $mail->addAddress('dpalomino@lanumero1.com.pe');
+
+            $mail->isHTML(true);
+
+            $mail->Subject = "Reporte diario de apertura y cierre de tienda";
+        
+            $mail->Body =  '<FONT SIZE=3>
+                                A continuación se presenta el detalle de las bases de hoy:<br><br>
+                                <table CELLPADDING="6" CELLSPACING="0" border="2" style="width:100%;border: 1px solid black;">
+                                    <thead>
+                                        <tr align="center">
+                                            <th><b>BASE</b></th>
+                                            <th><b>INGRESO</b></th>
+                                            <th><b>APERTURA</b></th>
+                                            <th><b>CIERRE</b></th>
+                                            <th><b>SALIDA</b></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>';
+                                foreach($list_reporte as $list){
+            $mail->Body .=  '            <tr align="left">
+                                            <td>'.$list->cod_base.'</td>
+                                            <td>'.$list->ingreso.'</td>
+                                            <td>'.$list->apertura.'</td>
+                                            <td>'.$list->cierre.'</td>
+                                            <td>'.$list->salida.'</td>
+                                        </tr>';
+                                }
+            $mail->Body .=  '        </tbody>
+                                </table><br>';
+            $mail->CharSet = 'UTF-8';
+            $mail->send();
+        }catch(Exception $e) {
+            echo "Hubo un error al enviar el correo: {$mail->ErrorInfo}";
         }
     }
 }
