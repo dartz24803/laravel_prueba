@@ -1,3 +1,4 @@
+<?php use Carbon\Carbon; ?>
 <style>
     .tooltip-link {
         position: relative;
@@ -67,7 +68,7 @@
                 <td><?php echo $list->colaborador; ?></td>
                 <td><?php echo $list->num_doc; ?></td>
                 <td><?php echo $list->centro_labores; ?></td>
-                <td><?php echo $list->fecha; ?></td>
+                <td data-order="{{  Carbon::createFromFormat('d/m/Y', $list->fecha)->format('Y/m/d'); }}"><?php echo $list->fecha; ?></td>
                 <td><?php echo $list->turno; ?></td>
                 <td><?php echo $list->marcacion_entrada; ?></td>
                 <td><?php echo $list->marcacion_idescanso; ?></td>

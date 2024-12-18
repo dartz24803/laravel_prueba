@@ -75,7 +75,9 @@ class AsistenciaColaborador extends Model
             // Inicializamos la parte dinámica de la consulta
             $conditions = [];
             // Filtramos por fecha
-            if ($dato['tipo_fecha'] == "2") {
+            if ($dato['tipo_fecha'] == 3) {
+                $conditions[] = "(ac.fecha BETWEEN '" . $dato['get_semana'][0]->fec_inicio . "' AND '" . $dato['get_semana'][0]->fec_fin . "')";
+            } else if ($dato['tipo_fecha'] == "2") {
                 $conditions[] = "MONTH(ac.fecha) = :mes AND YEAR(ac.fecha) = :anio";
                 $queryParams['mes'] = $dato['mes'];
                 $queryParams['anio'] = $anio;
@@ -83,7 +85,6 @@ class AsistenciaColaborador extends Model
                 $conditions[] = "ac.fecha = :dia";
                 $queryParams['dia'] = $dato['dia'];
             }
-
             $parte_tienda1 = "";
             // Filtramos por base
             if ($dato['base'] != "0") {
@@ -643,13 +644,13 @@ class AsistenciaColaborador extends Model
             if ($dato['excel'] == 1 && $dato['area'] == 33) {
                 $parte_area = "pu.id_area IN ('14','33') AND";
             }
-            //Dto. Gestion del Talento Humano
-            if ($dato['excel'] == 1 && $dato['area'] == 34) {
-                $parte_area = "pu.id_area IN ('5','7') AND";
-            }
             //Dto. Gestion Comercial
-            if ($dato['excel'] == 1 && $dato['area'] == 39) {
+            if ($dato['excel'] == 1 && $dato['area'] == 34) {
                 $parte_area = "pu.id_area IN ('11','26','29','34') AND";
+            }
+            //Dto. Gestion del Talento Humano
+            if ($dato['excel'] == 1 && $dato['area'] == 39) {
+                $parte_area = "pu.id_area IN ('5','7','39') AND";
             }
             //Dto. Gestion de Manufactura
             if ($dato['excel'] == 1 && $dato['area'] == 49) {
@@ -1489,9 +1490,11 @@ class AsistenciaColaborador extends Model
             $sql = "SELECT * FROM asistencia_colaborador
                     WHERE id_asistencia_colaborador=$id_asistencia_colaborador";
         } else {
-            $fecha = "ac.fecha='" . $dato['dia'] . "' AND";
             if ($dato['tipo_fecha'] == "2") {
+                $fecha = "ac.fecha='" . $dato['dia'] . "' AND";
                 $fecha = "MONTH(ac.fecha)='" . $dato['mes'] . "' AND YEAR(ac.fecha)='$anio' AND";
+            }else if ($dato['tipo_fecha'] == 3) {
+                $fecha= "ac.fecha BETWEEN '" . $dato['get_semana'][0]->fec_inicio . "' AND '" . $dato['get_semana'][0]->fec_fin . "' AND ";
             }
             $base = "";
             if ($dato['base'] != "0") {
@@ -1533,8 +1536,9 @@ class AsistenciaColaborador extends Model
                     FROM asistencia_colaborador ac
                     LEFT JOIN users us ON ac.id_usuario=us.id_usuario
                     LEFT JOIN estado_asistencia ea ON ac.estado_registro=ea.id_estado_asistencia
-                    WHERE $fecha $base $area $usuario ac.estado=1";
+                    WHERE $fecha $base $area $usuario ac.estado=1 ORDER BY fecha ASC";
         }
+        // print_r($sql);
         $query = DB::select($sql);
         // return $query;
         return json_decode(json_encode($query), true);

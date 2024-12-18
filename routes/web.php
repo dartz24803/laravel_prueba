@@ -2469,8 +2469,7 @@ Route::controller(AsistenciaColaboradoresController::class)->group(function () {
     Route::post('asistencia_colaborador/update', 'update_estado_asistencia')->name('asistencia_colaborador.update');
     Route::get('asistencia_colaborador/excel/{base}/{area}/{usuario}/{tipo_fecha}/{dia}/{mes}', 'Excel_Asistencia_Colaborador')->name('asistencia_colaborador.excel');
     Route::get('asistencia_colaborador/excel_control/{base}/{area}/{usuario}/{tipo_fecha}/{dia}/{mes}', 'Excel_Control_Mensual_Asistencia_Colaborador')->name('asistencia_colaborador.excel_control');
-
-
+    Route::get('AsistenciaColaborador/Excel_Asistencia_Semana_Colaborador/{base}/{area}/{usuario}/{tipo_fecha}/{dia}/{mes}', 'Excel_Asistencia_Semana_Colaborador')->name('asistencia_colaborador_semana.excel');
 
     // INCONSISTENCIAS
     Route::post('inconsistencias_colaborador/list', 'list_inconsistencias_colaborador')->name('inconsistencias_colaborador.list');
