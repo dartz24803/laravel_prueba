@@ -221,7 +221,7 @@
     }
     
     function Traer_Colaborador() {
-        var cod_base = /*0;*/ $('#basei').val();
+        var cod_base = $('#basei').val();
         var id_area = $('#areai').val();
         var estado = 1;
         var url = "{{ url('Asistencia/Traer_Colaborador_Asistencia') }}";
