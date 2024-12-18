@@ -111,10 +111,8 @@ class ProduccionController extends Controller
 
 
         $list_proceso_visita = ProcesoVisita::select('id_procesov', 'nom_proceso')
-            ->where('estado', 1)
-            ->orderBy('nom_proceso', 'ASC')
-            ->distinct('nom_proceso')
-            ->get();
+                            ->orderBy('nom_proceso', 'ASC')
+                            ->get();
 
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_registrar', compact('list_area', 'list_inspector', 'list_proveedor', 'list_ficha_tecnica', 'list_proceso_visita'));
     }
@@ -248,10 +246,8 @@ class ProduccionController extends Controller
             ->get();
 
         $list_proceso_visita = ProcesoVisita::select('id_procesov', 'nom_proceso')
-            ->where('estado', 1)
-            ->orderBy('nom_proceso', 'ASC')
-            ->distinct('nom_proceso')
-            ->get();
+                            ->orderBy('nom_proceso', 'ASC')
+                            ->get();
 
 
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_editar', compact(
@@ -498,17 +494,6 @@ class ProduccionController extends Controller
             ->distinct('modelo')->get();
 
         return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.modal_registrar', compact('list_ficha_tecnica'));
-    }
-
-    public function image_ft($id)
-    {
-        $get_id = FichaTecnicaProduccion::where('id_ft_produccion', $id)->firstOrFail();
-        // Construye la URL completa de la imagen
-        $imageUrl = null;
-        if ($get_id->nom_img_ft_produccion) {
-            $imageUrl = "https://lanumerounocloud.com/intranet/PRODUCCION/ficha_tecnica/" . $get_id->nom_img_ft_produccion;
-        }
-        return view('manufactura.produccion.ficha_tecnica.registrar_ficha_tecnica.modal_imagen', compact('get_id', 'imageUrl'));
     }
 
     public function destroy_ft($id)

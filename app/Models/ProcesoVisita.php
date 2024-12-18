@@ -9,19 +9,12 @@ class ProcesoVisita extends Model
 {
     use HasFactory;
 
-    protected $table = 'proceso_visita';
-    protected $primaryKey = 'id_procesov';
+    protected $table = 'vw_proceso_visita';
 
-    public $timestamps = false; // Si tu tabla tiene columnas de timestamp, cámbialo a true
+    public $timestamps = false;
 
     protected $fillable = [
-        'nom_proceso',
-        'estado',
-        'fec_reg',
-        'user_reg',
-        'fec_act',
-        'user_act',
-        'fec_eli',
-        'user_eli'
+        'id_procesov',
+        'nom_proceso'
     ];
 }

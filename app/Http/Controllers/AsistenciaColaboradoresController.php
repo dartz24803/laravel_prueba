@@ -118,7 +118,7 @@ class AsistenciaColaboradoresController extends Controller
         $dato['tipo_fecha'] = $tipo_fecha;
         $dato['dia'] = $dia;
         $dato['mes'] = $mes;
-        // dd($dato);
+
         $list_asistencia = AsistenciaColaborador::get_list_asistencia_colaborador(0, $dato);
 
         $spreadsheet = new Spreadsheet();
@@ -1286,7 +1286,7 @@ class AsistenciaColaboradoresController extends Controller
             ->whereIn('puesto.id_nivel', [3, 4])
             ->whereNot('users.id_usuario', 133)
             ->where('users.estado', 1)
-            // ->whereIn('users.id_usuario', [2692]) // test comentar al subir
+            ->whereIn('users.id_usuario', [133, 1459, 2655]) // test comentar al subir
             ->orderBy('users.id_usuario', 'ASC')
             ->get();
         // print_r($usuarios);

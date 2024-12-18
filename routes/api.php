@@ -33,3 +33,5 @@ Route::post('list_requerimiento_reposicion', [TrackingController::class, 'list_r
 Route::get('update_tolerancia_horario', [CronController::class, 'update_tolerancia_horario'])->name('update_tolerancia_horario');
 //CRON DE ASISTENCIA COLABORADOR
 Route::get('insert_asistencia_colaborador', [CronController::class, 'insert_asistencia_colaborador'])->name('insert_asistencia_colaborador');
+//CRON DE REPORTE DE APERTURA Y CIERRE DE TIENDA
+Route::get('reporte_apertura_cierre_tienda', [CronController::class, 'reporte_apertura_cierre_tienda'])->name('reporte_apertura_cierre_tienda');
