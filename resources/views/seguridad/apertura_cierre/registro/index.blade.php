@@ -84,7 +84,7 @@
 
     <div class="col-lg-4 col-xl-6">
         <div class="toggle-switch">
-            <input class="toggle-input" id="toggle" type="checkbox" checked>
+            <input class="toggle-input" id="toggle" type="checkbox">
             <label class="toggle-label" for="toggle"></label>
             <span class="ml-5">Observaciones</span>
         </div>
