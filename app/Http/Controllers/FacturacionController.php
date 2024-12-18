@@ -335,7 +335,7 @@ class FacturacionController extends Controller
         $endDate = $request->input('endDate');
         $client = new Client();
         // Endpoint y datos a enviar
-        $url = 'http://172.16.0.140:8001/api/v1/insert/informeContabilidad';
+        $url = 'http://localhost:8001/api/v1/insert/informeContabilidad';
         $body = [
             'initialDate' => $initialDate,
             'endDate' => $endDate,

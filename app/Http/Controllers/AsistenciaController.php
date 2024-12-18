@@ -102,11 +102,13 @@ class AsistenciaController extends Controller
         $codAnio = $request->input('cod_anio');
 
         $codBase = $request->input('cod_base', 0);
-        $numDoc = $request->input('num_doc', []);
-        if (empty($numDoc)) {
+        $numDoc = $request->input('num_doc');
+        /*if (empty($numDoc)) {
             $numDoc = [0];
         }
-        $area = $request->input('area', 0);
+        $numDoc = array_map('intval', $numDoc);*/
+
+        $area = intval($request->input('area', 0));
         $estado = $request->input('estado', null);
         if (empty($estado)) {
             $estado = 1;
@@ -137,13 +139,13 @@ class AsistenciaController extends Controller
         $queryParams = [
             'initialDate' => $initialDate,
             'endDate' => $endDate,
-            'clabores' => $codBase, // Aquí mapeamos 'cod_base' como 'clabores'
-            'area' => $area,
-            'estado' => $estado,
+            'clabores' => intval($codBase), // Aquí mapeamos 'cod_base' como 'clabores'
+            'area' => intval($area),
+            'estado' => intval($estado),
             'colaborador' => $numDoc,
         ];
         // print_r(json_encode($numDoc));
-        // print_r($queryParams);
+        // dd($queryParams);
 
         $response = Http::post('http://172.16.0.140:8001/api/v1/list/asistenciaColaborador', $queryParams);
         // print_r($response->json()['data']);
@@ -418,13 +420,14 @@ class AsistenciaController extends Controller
             $endDate = date('d/m/Y', strtotime($endDate));
         }
         $colaboradores = explode(',', $numDoc); // Convertir la cadena a un array
+        $colaboradores = array_map('intval', $colaboradores);
 
         // Construir los datos para la consulta a la API
         $queryParams = [
             'initialDate' => $initialDate,
             'endDate' => $endDate,
-            'clabores' => $codBase, // Aquí mapeamos 'cod_base' como 'clabores'
-            'area' => $area,
+            'clabores' => intval($codBase), // Aquí mapeamos 'cod_base' como 'clabores'
+            'area' => intval($area),
             'estado' => $estado,
             'colaborador' => $colaboradores,
         ];
