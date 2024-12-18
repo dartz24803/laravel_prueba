@@ -111,7 +111,6 @@
 
     function Delete_Proceso(id) {
         Cargando();
-
         var url = "{{ route('portalprocesos_lm.destroy', ':id') }}".replace(':id', id);
         var csrfToken = $('input[name="_token"]').val();
 
@@ -138,6 +137,8 @@
                             'success'
                         ).then(function() {
                             Lista_Maestra();
+                            $("#ModalUpdate .close").click();
+
                         });
                     }
                 });
