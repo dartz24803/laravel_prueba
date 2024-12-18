@@ -2,7 +2,7 @@
     <div class="form-group col-md-1">
         <label for="" class="control-label text-bold">Base&nbsp;</label>
         <div>
-            <select id="baseau" name="baseau" class="form-control" onchange="Cmb_Colaboradoriau()">
+            <select id="baseau" name="baseau" class="form-control basic" onchange="Cmb_Colaboradoriau()">
                 <option value="0" selected>Todos</option>
                 <?php foreach ($data['list_base'] as $list) { ?>
                     <option value="<?php echo $list->cod_base; ?>"><?php echo $list->cod_base; ?></option>
@@ -14,7 +14,7 @@
     <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Área</label>
         <div>
-            <select class="form-control" id="areaau" name="areaau" onchange="Traer_Colaborador()">
+            <select class="form-control basic" id="areaau" name="areaau" onchange="Traer_Colaborador()">
                 <option value="0">Todos</option>
                 <?php foreach ($data['list_area'] as $list) { ?>
                     <option value="<?php echo $list->id_area ?>"><?php echo $list->nom_area ?></option>
@@ -63,7 +63,7 @@
             </select>
         </div>
         <div id="div3au" style="display:none">
-            <select name="mesau" id="mesau" class="form-control">
+            <select name="mesau" id="mesau" class="form-control basic">
                 <?php foreach ($data['list_mes'] as $list) { ?>
                     <option value="<?php echo $list->cod_mes ?>" <?php if (date('m') == $list->cod_mes) {
                                                                         echo "selected";
@@ -95,14 +95,7 @@
 
 
 <script>
-    $('#usuarioau').select2({
-        placeholder: 'Seleccione un Colaborador',
-        allowClear: true
-    });
-    $('#areaau').select2({
-        placeholder: 'Seleccione un Área',
-        allowClear: true
-    });
+    $('.basic').select2({});
 
     function Buscar_Ausencia_Colaborador() {
         Cargando();

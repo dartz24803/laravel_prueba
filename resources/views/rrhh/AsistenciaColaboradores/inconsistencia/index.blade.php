@@ -3,7 +3,7 @@
     <div class="form-group col-md-1">
         <label for="" class="control-label text-bold">Base&nbsp;</label>
         <div>
-            <select id="baseih" name="baseih" class="form-control" onchange="Cmb_Colaboradori()">
+            <select id="baseih" name="baseih" class="form-control basic" onchange="Cmb_Colaboradori()">
                 <option value="0" selected>Todos</option>
                 <?php foreach ($data['list_base'] as $list) { ?>
                     <option value="<?php echo $list->cod_base; ?>"><?php echo $list->cod_base; ?></option>
@@ -15,7 +15,7 @@
     <div class="form-group col-md-3">
         <label for="" class="control-label text-bold">Área</label>
         <div>
-            <select class="form-control" id="areaih" name="areaih" onchange="Traer_Colaborador()">
+            <select class="form-control basic" id="areaih" name="areaih" onchange="Traer_Colaborador()">
                 <option value="0">Todos</option>
                 <?php foreach ($data['list_area'] as $list) { ?>
                     <option value="<?php echo $list->id_area ?>"><?php echo $list->nom_area ?></option>
@@ -78,7 +78,7 @@
             </select>
         </div>
         <div id="div3h" style="display:none">
-            <select name="mesih" id="mesih" class="form-control">
+            <select name="mesih" id="mesih" class="form-control basic">
                 <?php foreach ($data['list_mes'] as $list) { ?>
                     <option value="<?php echo $list->cod_mes ?>" <?php if (date('m') == $list->cod_mes) {
                                                                         echo "selected";
@@ -118,14 +118,7 @@
 </div>
 
 <script>
-    $('#usuarioih').select2({
-        placeholder: 'Seleccione un Colaborador',
-        allowClear: true
-    });
-    $('#areaih').select2({
-        placeholder: 'Seleccione un Área',
-        allowClear: true
-    });
+    $('.basic').select2({});
 
 
     function Buscar_Asistencia_Colaborador_Inconsistencia() {
