@@ -327,10 +327,16 @@ class Usuario extends Model
     {
         $base = "";
         if ($cod_base != "0") {
-            if($cod_base == "t"){
+            //tiendas usar select con valor '-1'
+            if($cod_base == "-1"){
                 $base = "AND ub.estado = 1 AND ub.id_sede=6";
             }else{
-                $base = "AND u.id_centro_labor='$cod_base'";
+                //si es numerico buscar por id; sino con palabra completa Ejm:'OFC'
+                if (is_numeric($cod_base)) {
+                    $base = "AND u.id_centro_labor='$cod_base'";
+                }else{
+                    $base = "AND ub.cod_ubi='$cod_base'";
+                }
             }
         }
         $carea = "";

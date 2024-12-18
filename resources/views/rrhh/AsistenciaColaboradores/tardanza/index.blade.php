@@ -2,7 +2,7 @@
     <div class="form-group col-md-1">
         <label for="" class="control-label text-bold">Base&nbsp;</label>
         <div>
-            <select id="base_t" name="base_t" class="form-control basic" onchange="Traer_Colaborador_Tardanza(); Lista_Tardanza();">
+            <select id="base_t" name="base_t" class="form-control basic" onchange="Traer_Colaborador(); Lista_Tardanza();">
                 <option value="0" selected>Todos</option>
                 <?php foreach ($data['list_base'] as $list) { ?>
                     <option value="<?php echo $list->cod_base; ?>"><?php echo $list->cod_base; ?></option>

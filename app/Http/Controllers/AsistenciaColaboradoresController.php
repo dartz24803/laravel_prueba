@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Area;
 use App\Models\AsignacionJefatura;
 use App\Models\AsistenciaColaborador;
 use App\Models\Base;
@@ -15,6 +16,7 @@ use App\Models\Puesto;
 use App\Models\Notificacion;
 use App\Models\SolicitudPuesto;
 use App\Models\SubGerencia;
+use App\Models\Ubicacion;
 use App\Models\Usuario;
 use Exception;
 use Illuminate\Http\Request;
@@ -62,8 +64,11 @@ class AsistenciaColaboradoresController extends Controller
     {
         if (session('usuario')->id_usuario) {
             $data['list_mes'] = AsistenciaColaborador::get_list_mes();
-            $data['list_area'] = AsistenciaColaborador::get_list_area();
-            $data['list_base'] = AsistenciaColaborador::get_list_base_general();
+            $data['list_area'] = Area::where('estado', 1)->orderBy('nom_area', 'ASC')->get();
+            $data['list_base'] = Ubicacion::select('id_ubicacion', 'cod_ubi AS cod_base')
+                        ->where('estado', 1)
+                        ->orderBy('cod_ubi', 'ASC')
+                        ->get();
             $dato['centro_labores'] = 0;
             $dato['id_area'] = 0;
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
@@ -403,8 +408,11 @@ class AsistenciaColaboradoresController extends Controller
     {
         if (session('usuario')->id_usuario) {
             $data['list_mes'] = AsistenciaColaborador::get_list_mes();
-            $data['list_area'] = AsistenciaColaborador::get_list_area();
-            $data['list_base'] = AsistenciaColaborador::get_list_base_general();
+            $data['list_area'] = Area::where('estado', 1)->orderBy('nom_area', 'ASC')->get();
+            $data['list_base'] = Ubicacion::select('id_ubicacion', 'cod_ubi AS cod_base')
+                        ->where('estado', 1)
+                        ->orderBy('cod_ubi', 'ASC')
+                        ->get();
             $dato['centro_labores'] = 0;
             $dato['id_area'] = 0;
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
@@ -1021,8 +1029,11 @@ class AsistenciaColaboradoresController extends Controller
     {
         if (session('usuario')->id_usuario) {
             $data['list_mes'] = AsistenciaColaborador::get_list_mes();
-            $data['list_area'] = AsistenciaColaborador::get_list_area();
-            $data['list_base'] = AsistenciaColaborador::get_list_base_general();
+            $data['list_area'] = Area::where('estado', 1)->orderBy('nom_area', 'ASC')->get();
+            $data['list_base'] = Ubicacion::select('id_ubicacion', 'cod_ubi AS cod_base')
+                        ->where('estado', 1)
+                        ->orderBy('cod_ubi', 'ASC')
+                        ->get();
             $dato['centro_labores'] = 0;
             $dato['id_area'] = 0;
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
@@ -1163,8 +1174,11 @@ class AsistenciaColaboradoresController extends Controller
     {
         if (session('usuario')->id_usuario) {
             $data['list_mes'] = AsistenciaColaborador::get_list_mes();
-            $data['list_area'] = AsistenciaColaborador::get_list_area();
-            $data['list_base'] = AsistenciaColaborador::get_list_base_general();
+            $data['list_area'] = Area::where('estado', 1)->orderBy('nom_area', 'ASC')->get();
+            $data['list_base'] = Ubicacion::select('id_ubicacion', 'cod_ubi AS cod_base')
+                        ->where('estado', 1)
+                        ->orderBy('cod_ubi', 'ASC')
+                        ->get();
             $dato['centro_labores'] = 0;
             $dato['id_area'] = 0;
             $data['list_colaborador'] = AsistenciaColaborador::get_list_colaborador_rrhh_xbase($dato);
