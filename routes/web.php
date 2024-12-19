@@ -52,7 +52,6 @@ use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
-use App\Http\Controllers\IntencionRenunciaConfController;
 use App\Http\Controllers\InternaInicioController;
 use App\Http\Controllers\LetraCobrarController;
 use App\Http\Controllers\LineaCarreraConfController;
@@ -2014,16 +2013,6 @@ Route::controller(InicioFrasesAdmController::class)->group(function () {
     Route::post('Inicio/Delete_Frase', 'Delete_Frase');
 });
 
-//INTENCION DE RENUNCIA
-Route::controller(IntencionRenunciaConfController::class)->group(function () {
-    Route::get('IntencionRenunciaConfController/index', 'index');/*
-    Route::post('Inicio/Frases_Inicio_Listar', 'Frases_Inicio_Listar');
-    Route::get('Inicio/Modal_Update_Frases_Inicio/{id}', 'Modal_Update_Frases_Inicio');
-    Route::post('Inicio/Update_Frase_Inicio', 'Update_Frase_Inicio');
-    Route::get('Inicio/Modal_Registrar_Frases_Inicio', 'Modal_Registrar_Frases_Inicio');
-    Route::post('Inicio/Registrar_Frase_Inicio', 'Registrar_Frase_Inicio');
-    Route::post('Inicio/Delete_Frase', 'Delete_Frase');*/
-});
 //Ocurrencias
 Route::controller(OcurrenciasTiendaController::class)->group(function () {
     Route::get('OcurrenciaTienda/index', 'Ocurrencia_Tienda')->name('ocurrencia_tienda');
