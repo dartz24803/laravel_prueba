@@ -251,10 +251,5 @@
                 <p class="romperpalabra"><span id="icono_active2"></span> Control de ubicaciones</p>
             </a>
         </li>
-        <li>
-            <a id="errorespickingta" href="{{ route('errorespickingta_conf') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Errores Picking</p>
-            </a>
-        </li>
     </ul>
 </li>

@@ -348,18 +348,6 @@ Route::controller(ErroresPickingController::class)->group(function () {
 });
 
 
-Route::controller(ErroresPickingConfController::class)->group(function () {
-    // ADMINISTRABLE TALLA
-    Route::get('errorespickingta_conf', 'index')->name('errorespickingta_conf');
-    Route::get('errorespickingta', 'indexerpi')->name('errorespickingta');
-    Route::get('errorespicking_ta/list', 'list_ta')->name('errorespicking_ta.list');
-    Route::get('errorespicking_ta/{id}/edit', 'edit_ta')->name('errorespicking_ta.edit');
-    Route::get('errorespicking_ta/create', 'create_ta')->name('errorespicking_ta.create');
-    Route::delete('errorespicking_ta/{id}', 'destroy_ta')->name('errorespicking_ta.destroy');
-    Route::post('errorespicking_ta/store', 'store_ta')->name('errorespicking_ta.store');
-    Route::post('errorespicking_ta/{id}', 'update_ta')->name('errorespicking_ta.update');
-});
-
 
 
 
