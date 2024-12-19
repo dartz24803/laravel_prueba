@@ -134,6 +134,19 @@ session('usuario')->id_puesto !== 128)
                 </a>
             </li>
         <?php } ?>
+        <?php if (
+            session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 || 
+            session('usuario')->id_puesto == 27 ||
+            session('usuario')->id_puesto == 22 || session('usuario')->id_puesto == 21 || 
+            session('usuario')->id_puesto == 278 || session('usuario')->id_puesto == 128 || 
+            session('usuario')->id_puesto == 148 || session('usuario')->id_puesto == 310
+        ) { ?>
+            <li id="recumpleanio">
+                <a id="hcumpleanio" href="{{ url('Cumpleanios/index') }}">
+                    <p class="romperpalabra"><span id="icono_active2"></span> Cumpleaños</p>
+                </a>
+            </li>
+        <?php } ?>
         <?php if ( //MI EQUIPO
             session('usuario')->id_nivel == 1 || session('usuario')->id_puesto == 16 || session('usuario')->id_puesto == 20 || session('usuario')->id_puesto == 26 ||
             session('usuario')->id_puesto == 27 || session('usuario')->id_puesto == 98 || session('usuario')->id_puesto == 128 ||
@@ -232,8 +245,18 @@ session('usuario')->id_puesto !== 128)
         session('usuario')->id_puesto == "278" ||
         session('usuario')->id_puesto == "314" ||
         session('usuario')->id_sede_laboral == 6)
+        
+        <?php $postulantes1 = "• Registro y Evaluación";
+        if (session('usuario')->id_nivel=="1" ||
+        session('usuario')->id_puesto=="21" ||
+        session('usuario')->id_puesto=="22" ||
+        session('usuario')->id_puesto=="277" ||
+        session('usuario')->id_puesto=="278"){
+            $postulantes2 = "<br>• Todos los postulantes";
+        }
+        ?>
         <li id="postulantes">
-            <a href="{{ route('postulante') }}">
+            <a href="{{ route('postulante') }}" data-toggle="tooltip" data-placement="right" data-html="true" title="<?= $postulantes1 ?><?= $postulantes2 ?>">
                 <p class="romperpalabra"><span id="icono_active2"></span> Postulantes</p>
             </a>
         </li>
