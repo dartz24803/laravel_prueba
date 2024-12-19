@@ -1396,7 +1396,7 @@ Route::controller(CambioPrendaConfController::class)->group(function () {
     Route::post('cambio_prenda_conf_mo', 'store_mo')->name('cambio_prenda_conf_mo.store');
     Route::get('cambio_prenda_conf_mo/{id}/edit', 'edit_mo')->name('cambio_prenda_conf_mo.edit');
     Route::put('cambio_prenda_conf_mo/{id}', 'update_mo')->name('cambio_prenda_conf_mo.update');
-    Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prendfa_conf_mo.destroy');
+    Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prenda_conf_mo.destroy');
 });
 //CAJA - DURACIÓN DE TRANSACCIONES
 Route::controller(DuracionTransaccionController::class)->group(function () {
