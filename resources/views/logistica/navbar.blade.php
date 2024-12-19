@@ -242,18 +242,18 @@
 
     <ul class="collapse submenu list-unstyled" id="rlogisticaconf" data-parent="#accordionExample">
         <li>
-            <a id="errorespickingta" href="{{ route('errorespickingta_conf') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Errores Picking</p>
-            </a>
-        </li>
-        <li>
             <a id="consumibles" href="{{ route('consumible_art') }}">
                 <p class="romperpalabra"><span id="icono_active2"></span> Consumibles</p>
             </a>
         </li>
         <li id="mercaderiaconf">
             <a href="{{ url('MercaderiaConf/TablaMercaderia') }}">
-                <p class="romperpalabra"><span id="icono_active2"></span> Mercadería</p>
+                <p class="romperpalabra"><span id="icono_active2"></span> Control de ubicaciones</p>
+            </a>
+        </li>
+        <li>
+            <a id="errorespickingta" href="{{ route('errorespickingta_conf') }}">
+                <p class="romperpalabra"><span id="icono_active2"></span> Errores Picking</p>
             </a>
         </li>
     </ul>
