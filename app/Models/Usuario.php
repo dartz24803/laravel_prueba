@@ -177,7 +177,7 @@ class Usuario extends Model
                 (SELECT GROUP_CONCAT(puestos) FROM area WHERE estado=1 AND orden!='') AS grupo_puestos, sg.id_gerencia,
                 CASE WHEN u.urladm=1 THEN (select r.url_config from config r where r.descrip_config='Foto_Postulante'
                 and r.estado=1) else (select r.url_config from config r where r.descrip_config='Foto_colaborador'
-                and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,
+                and r.estado=1) end as url_foto,p.id_nivel as nivel_jerarquico,u.desvinculacion,u.foto,
                 pps.registro_masivo, visualizar_amonestacion(u.id_puesto) AS visualizar_amonestacion,
                 sl.descripcion AS sede_laboral, ubi.cod_ubi AS ubicacion,
                 visualizar_responsable_area(u.id_puesto) AS visualizar_responsable_area,

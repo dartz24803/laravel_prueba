@@ -11,16 +11,9 @@
             <div class="form-group col-lg-2">
                 <label>Fecha:</label>
             </div>
-            <?php if(session('usuario')->id_puesto==24 || session('usuario')->id_puesto==307 || session('usuario')->id_usuario==139){?>
-                <div class="form-group col-lg-4">
-                    <input id="fecha_lectura" name="fecha_lectura" type="date" class="form-control" value="{{ $get_id->fecha }}">
-                </div>
-            <?php }else{ ?>
-                <input type="hidden" type="date" class="form-control" name="fecha_lectura" value="{{ $get_id->fecha }}">
-                <div class="form-group col-lg-4">
-                    <input type="date" class="form-control" value="{{ $get_id->fecha }}" disabled>
-                </div>
-            <?php } ?>
+            <div class="form-group col-lg-4">
+                <input type="date" class="form-control" value="{{ $get_id->fecha }}" disabled>
+            </div>
 
             <div class="form-group col-lg-2">
                 <label>Servicio:</label>

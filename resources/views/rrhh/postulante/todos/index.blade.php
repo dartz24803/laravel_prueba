@@ -19,7 +19,7 @@
 
     <div class="col-md-6 col-lg-4">
         <label>Área:</label>
-        <select class="form-control basicb" name="id_areab" id="id_areab" onchange="Lista_Postulante();">
+        <select class="form-control basicb" name="id_areab" id="id_areab" onchange="Lista_Todos();">
             <option value="0">TODOS</option>
             @foreach ($list_area as $list)
                 <option value="{{ $list->id_area }}">{{ $list->nom_area }}</option>
@@ -29,7 +29,7 @@
 
     <div class="col-md-2 col-lg-4 d-lg-flex align-items-center">
         <a type="button" class="btn btn-primary mb-2 mb-lg-0" title="Buscar" 
-        onclick="Lista_Postulante();">
+        onclick="Lista_Todos();">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search toggle-search">
                 <circle cx="11" cy="11" r="8"></circle>
                 <line x1="21" y1="21" x2="16.65" y2="16.65"></line>

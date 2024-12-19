@@ -52,7 +52,6 @@ use App\Http\Controllers\InsumoController;
 use App\Http\Controllers\LecturaServicioConfController;
 use App\Http\Controllers\LecturaServicioController;
 use App\Http\Controllers\PrecioSugeridoConfController;
-use App\Http\Controllers\IntencionRenunciaConfController;
 use App\Http\Controllers\InternaInicioController;
 use App\Http\Controllers\LetraCobrarController;
 use App\Http\Controllers\LineaCarreraConfController;
@@ -347,18 +346,6 @@ Route::controller(ErroresPickingController::class)->group(function () {
     Route::get('errorespicking/excel', 'excel_ep')->name('errorespicking.excel');
 });
 
-
-Route::controller(ErroresPickingConfController::class)->group(function () {
-    // ADMINISTRABLE TALLA
-    Route::get('errorespickingta_conf', 'index')->name('errorespickingta_conf');
-    Route::get('errorespickingta', 'indexerpi')->name('errorespickingta');
-    Route::get('errorespicking_ta/list', 'list_ta')->name('errorespicking_ta.list');
-    Route::get('errorespicking_ta/{id}/edit', 'edit_ta')->name('errorespicking_ta.edit');
-    Route::get('errorespicking_ta/create', 'create_ta')->name('errorespicking_ta.create');
-    Route::delete('errorespicking_ta/{id}', 'destroy_ta')->name('errorespicking_ta.destroy');
-    Route::post('errorespicking_ta/store', 'store_ta')->name('errorespicking_ta.store');
-    Route::post('errorespicking_ta/{id}', 'update_ta')->name('errorespicking_ta.update');
-});
 
 
 
@@ -1101,7 +1088,7 @@ Route::controller(AsistenciaSegController::class)->group(function () {
     Route::get('asistencia_seg_lec/{id}/download', 'download_lec')->name('asistencia_seg_lec.download');
     Route::put('asistencia_seg_lec/{id}', 'update_image_lec')->name('asistencia_seg_lec.update_image');
     Route::delete('asistencia_seg_lec/{id}', 'destroy_lec')->name('asistencia_seg_lec.destroy');
-    Route::get('asistencia_seg_lec/excel', 'excel_lec')->name('asistencia_seg_lec.excel');
+    Route::get('asistencia_seg_lec/{fec_desde}/{fec_hasta}/excel', 'excel_lec')->name('asistencia_seg_lec.excel');
     Route::get('asistencia_seg_man', 'index_man')->name('asistencia_seg_man');
     Route::post('asistencia_seg_man/list', 'list_man')->name('asistencia_seg_man.list');
     Route::post('asistencia_seg_man/traer_colaborador', 'traer_colaborador_man')->name('asistencia_seg_man.traer_colaborador');
@@ -1409,7 +1396,7 @@ Route::controller(CambioPrendaConfController::class)->group(function () {
     Route::post('cambio_prenda_conf_mo', 'store_mo')->name('cambio_prenda_conf_mo.store');
     Route::get('cambio_prenda_conf_mo/{id}/edit', 'edit_mo')->name('cambio_prenda_conf_mo.edit');
     Route::put('cambio_prenda_conf_mo/{id}', 'update_mo')->name('cambio_prenda_conf_mo.update');
-    Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prendfa_conf_mo.destroy');
+    Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prenda_conf_mo.destroy');
 });
 //CAJA - DURACIÓN DE TRANSACCIONES
 Route::controller(DuracionTransaccionController::class)->group(function () {
@@ -2026,16 +2013,6 @@ Route::controller(InicioFrasesAdmController::class)->group(function () {
     Route::post('Inicio/Delete_Frase', 'Delete_Frase');
 });
 
-//INTENCION DE RENUNCIA
-Route::controller(IntencionRenunciaConfController::class)->group(function () {
-    Route::get('IntencionRenunciaConfController/index', 'index');/*
-    Route::post('Inicio/Frases_Inicio_Listar', 'Frases_Inicio_Listar');
-    Route::get('Inicio/Modal_Update_Frases_Inicio/{id}', 'Modal_Update_Frases_Inicio');
-    Route::post('Inicio/Update_Frase_Inicio', 'Update_Frase_Inicio');
-    Route::get('Inicio/Modal_Registrar_Frases_Inicio', 'Modal_Registrar_Frases_Inicio');
-    Route::post('Inicio/Registrar_Frase_Inicio', 'Registrar_Frase_Inicio');
-    Route::post('Inicio/Delete_Frase', 'Delete_Frase');*/
-});
 //Ocurrencias
 Route::controller(OcurrenciasTiendaController::class)->group(function () {
     Route::get('OcurrenciaTienda/index', 'Ocurrencia_Tienda')->name('ocurrencia_tienda');

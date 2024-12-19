@@ -174,8 +174,7 @@ class AsistenciaController extends Controller
         return view('rrhh.Asistencia.reporte.colaborador', $dato);
     }
 
-    public function Excel_Reporte_Asistencia($codMes, $codAnio, $codBase, $numDoc, $area, $estado, $tipo, $initialDate, $endDate, Request $request)
-    {
+    public function Excel_Reporte_Asistencia($codMes, $codAnio, $codBase, $numDoc, $area, $estado, $tipo, $initialDate, $endDate, Request $request){
         set_time_limit(600);
         ini_set('max_execution_time', 600);
         // Crear una nueva instancia de Spreadsheet
@@ -207,8 +206,8 @@ class AsistenciaController extends Controller
         $queryParams = [
             'initialDate' => $initialDate,
             'endDate' => $endDate,
-            'clabores' => $codBase, // Aquí mapeamos 'cod_base' como 'clabores'
-            'area' => $area,
+            'clabores' => intval($codBase), // Aquí mapeamos 'cod_base' como 'clabores'
+            'area' => intval($area),
             'estado' => $estado,
             'colaborador' => $colaboradores,
         ];
@@ -392,9 +391,7 @@ class AsistenciaController extends Controller
 
 
 
-
-    public function Excel_Asistencia_Colaborador($codMes, $codAnio, $codBase, $numDoc, $area, $estado, $tipo, $initialDate, $endDate, Request $request)
-    {
+    public function Excel_Asistencia_Colaborador($codMes, $codAnio, $codBase, $numDoc, $area, $estado, $tipo, $initialDate, $endDate, Request $request){
         set_time_limit(600);
         ini_set('max_execution_time', 600);
         // Crear una nueva instancia de Spreadsheet
