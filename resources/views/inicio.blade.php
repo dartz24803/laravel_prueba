@@ -4,8 +4,8 @@
 <div id="content" class="main-content">
     <!--<button class="btn btn-primary" type="button" onclick="validar_reporte_fotografico_dia_job_2();">Guardar</button>-->
     {{--ABRIR MODAL DE CUMPLEAÑOS--}}
-    <a href="javascript:void(0)" id="modal_cumple" data-toggle="modal" data-target="#ModalUpdateSlide" 
-    app_upd_slide="{{ route('modal_cumpleanio') }}"></a>
+    <a href="javascript:void(0)" id="modal_cumple" data-toggle="modal" data-target="#ModalUpdateSlide"
+        app_upd_slide="{{ route('modal_cumpleanio') }}"></a>
     <div class="layout-px-spacing">
         <div class="row layout-top-spacing" id="cancel-row">
             <div id="tabsSimple" class="col-lg-12 col-12 layout-spacing">
@@ -293,34 +293,34 @@
                     <ol class="carousel-indicators">
                         @php $i = 0; @endphp
                         @foreach ($list_bolsa_trabajo as $list)
-                            <li data-target="#carouselExampleIndicators" data-slide-to="<?= $i; ?>" 
-                            class="@php if($i==0){ echo "active"; } @endphp"></li>  
+                        <li data-target="#carouselExampleIndicators" data-slide-to="<?= $i; ?>"
+                            class="@php if($i==0){ echo " active"; } @endphp"></li>
                         @endforeach
                     </ol>
                     <div class="carousel-inner">
                         @php $i = 0; @endphp
                         @foreach ($list_bolsa_trabajo as $list)
-                            <div class="carousel-item @php if($i==0){ echo "active"; } @endphp">
-                                @if ($list->url!="")
-                                    <a href="{{ $list->url }}" target="_blank">
-                                        @if (substr($url_bt->url_config.$list->imagen,-3)=="mp4")
-                                            <video width="640" height="360" controls>
-                                                <source src="<?= $url_bt->url_config.$list->imagen; ?>" type="video/mp4">
-                                            </video>
-                                        @else
-                                            <img class="d-block w-100" src="{{ $list->imagen }}">
-                                        @endif
-                                    </a>
+                        <div class="carousel-item @php if($i==0){ echo " active"; } @endphp">
+                            @if ($list->url!="")
+                            <a href="{{ $list->url }}" target="_blank">
+                                @if (substr($url_bt->url_config.$list->imagen,-3)=="mp4")
+                                <video width="640" height="360" controls>
+                                    <source src="<?= $url_bt->url_config . $list->imagen; ?>" type="video/mp4">
+                                </video>
                                 @else
-                                    @if (substr($url_bt->url_config.$list->imagen,-3)=="mp4")
-                                        <video width="1140" height="720" controls autoplay>
-                                            <source src="<?= $url_bt->url_config.$list->imagen; ?>" type="video/mp4">
-                                        </video>
-                                    @else
-                                        <img class="d-block w-100" src="{{ $list->imagen }}">
-                                    @endif
+                                <img class="d-block w-100" src="{{ $list->imagen }}">
                                 @endif
-                            </div>
+                            </a>
+                            @else
+                            @if (substr($url_bt->url_config.$list->imagen,-3)=="mp4")
+                            <video width="1140" height="720" controls autoplay>
+                                <source src="<?= $url_bt->url_config . $list->imagen; ?>" type="video/mp4">
+                            </video>
+                            @else
+                            <img class="d-block w-100" src="{{ $list->imagen }}">
+                            @endif
+                            @endif
+                        </div>
                         @php $i++; @endphp
                         @endforeach
                     </div>
@@ -683,12 +683,17 @@
         $("#hinicio").attr('aria-expanded', 'true');
         cambiarClaseSegunResolucion();
         //ABRIR MODAL DE CUMPLEAÑOS
-        @if ($get_id->cumple_anio=="1")
+
+        <?php
+        if ($get_id->cumple_anio == "1") { ?>
             $('#modal_cumple').click();
-        @endif
-        @if (count($list_bolsa_trabajo)>0)
+        <?php } ?>
+
+        <?php if (count($list_bolsa_trabajo) > 0) { ?>
             $('#modal_bolsa_trabajo').modal("show");
-        @endif
+        <?php } ?>
+
+
     });
 
     document.getElementById('interna').onclick = function() {
