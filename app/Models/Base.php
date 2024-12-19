@@ -61,6 +61,17 @@ class Base extends Model
         $query = DB::select($sql);
         return $query;
     }
+
+    public static function get_list_bases_tesoreria()
+    {
+        $sql = "SELECT cod_base FROM base
+                WHERE estado=1
+                GROUP BY cod_base
+                ORDER BY cod_base ASC";
+        $query = DB::select($sql);
+        return $query;
+    }
+
     public static function get_list_todas_bases_agrupadas_bi()
     {
         $sql = "SELECT MIN(id_base) AS id_base, cod_base
