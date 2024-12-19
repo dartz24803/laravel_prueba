@@ -14,7 +14,7 @@
                     <div class="btn-toolbar justify-content-between mr-2" role="toolbar" aria-label="Toolbar with button groups">
                         <div class="btn-group mb-2" role="group" aria-label="First group">
                             <div class="page-title">
-                                <h3 class="page-title textocambio">Cumpleaños</h3>              
+                                <h3 class="page-title">Cumpleaños</h3>              
                             </div>                            
                         </div>
                     </div>
