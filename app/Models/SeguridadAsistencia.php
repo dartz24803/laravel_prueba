@@ -56,7 +56,8 @@ class SeguridadAsistencia extends Model
                     FROM seguridad_asistencia sa
                     INNER JOIN users us ON sa.id_usuario=us.id_usuario
                     WHERE (sa.fecha BETWEEN '".$dato['fec_desde']."' AND '".$dato['fec_hasta']."')
-                    AND sa.estado = 1";
+                    AND sa.estado = 1
+                    ORDER BY sa.fecha DESC";
             $query = DB::select($sql);
             return $query;
         }
