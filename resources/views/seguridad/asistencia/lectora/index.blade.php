@@ -81,11 +81,11 @@
         </div>
         <div class="form-group col-lg-2">
             <label>Fecha desde: </label>
-            <input class="form-control" type="date" name="fec_desde" id="fec_desde">
+            <input class="form-control" type="date" name="fec_desde" id="fec_desde" value="{{ date('Y-m-d') }}">
         </div>
         <div class="form-group col-lg-2">
             <label>Fecha hasta:</label>
-            <input class="form-control" type="date" name="fec_hasta" id="fec_hasta">
+            <input class="form-control" type="date" name="fec_hasta" id="fec_hasta" value="{{ date('Y-m-d') }}">
         </div>
         <div class="form-group col-lg-2">
             <button type="button" class="btn btn-primary mb-2 mb-sm-0 mb-md-2 mb-lg-0" title="Registrar" onclick="Lista_Lectora();">
@@ -95,7 +95,6 @@
     </div>
 </form>
 
-@csrf
 <div class="table-responsive mb-4 mt-4" id="lista_lectora">
 </div>
 
@@ -145,8 +144,7 @@
     function Lista_Lectora() {
         Cargando();
 
-        var url = "{{ url('asistencia_seg_lec/list') }}";
-        var csrfToken = $('input[name="_token"]').val();
+        var url = "{{ route('asistencia_seg_lec.list') }}";
         var fec_desde = $('#fec_desde').val();
         var fec_hasta = $('#fec_hasta').val();
 
@@ -175,7 +173,7 @@
                 url: url,
                 type: "POST",
                 headers: {
-                    'X-CSRF-TOKEN': csrfToken
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 data: {
                     'fec_desde': fec_desde,
@@ -285,7 +283,6 @@
         Cargando();
 
         var url = "{{ route('asistencia_seg_lec.destroy', ':id') }}".replace(':id', id);
-        var csrfToken = $('input[name="_token"]').val();
 
         Swal({
             title: '¿Realmente desea eliminar el registro?',
@@ -301,7 +298,7 @@
                     type: "DELETE",
                     url: url,
                     headers: {
-                        'X-CSRF-TOKEN': csrfToken
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     },
                     success: function() {
                         Swal(
@@ -318,6 +315,30 @@
     }
 
     function Excel_Lectora() {
-        window.location = "{{ route('asistencia_seg_lec.excel') }}";
+        var fec_desde = $('#fec_desde').val();
+        var fec_hasta = $('#fec_hasta').val();
+        var ini = moment(fec_desde);
+        var fin = moment(fec_hasta);
+        if (ini.isAfter(fin) == true) {
+            Swal({
+                title: '¡Selección Denegada!',
+                html: "Fecha inicio no debe ser mayor a fecha fin. <br> Por favor corrígelo. ",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+            });
+        } else if (fin.diff(ini, 'days') > 31) {
+            Swal({
+                title: '¡Selección Denegada!',
+                text: "Solo se permite búsquedas de hasta 31 días",
+                type: 'error',
+                showCancelButton: false,
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK',
+            });
+        }else{
+            window.location = "{{ route('asistencia_seg_lec.excel', [':fec_desde', ':fec_hasta']) }}".replace(':fec_desde', fec_desde).replace(':fec_hasta', fec_hasta);
+        }
     }
 </script>

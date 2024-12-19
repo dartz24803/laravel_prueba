@@ -1088,7 +1088,7 @@ Route::controller(AsistenciaSegController::class)->group(function () {
     Route::get('asistencia_seg_lec/{id}/download', 'download_lec')->name('asistencia_seg_lec.download');
     Route::put('asistencia_seg_lec/{id}', 'update_image_lec')->name('asistencia_seg_lec.update_image');
     Route::delete('asistencia_seg_lec/{id}', 'destroy_lec')->name('asistencia_seg_lec.destroy');
-    Route::get('asistencia_seg_lec/excel', 'excel_lec')->name('asistencia_seg_lec.excel');
+    Route::get('asistencia_seg_lec/{fec_desde}/{fec_hasta}/excel', 'excel_lec')->name('asistencia_seg_lec.excel');
     Route::get('asistencia_seg_man', 'index_man')->name('asistencia_seg_man');
     Route::post('asistencia_seg_man/list', 'list_man')->name('asistencia_seg_man.list');
     Route::post('asistencia_seg_man/traer_colaborador', 'traer_colaborador_man')->name('asistencia_seg_man.traer_colaborador');
@@ -1396,7 +1396,7 @@ Route::controller(CambioPrendaConfController::class)->group(function () {
     Route::post('cambio_prenda_conf_mo', 'store_mo')->name('cambio_prenda_conf_mo.store');
     Route::get('cambio_prenda_conf_mo/{id}/edit', 'edit_mo')->name('cambio_prenda_conf_mo.edit');
     Route::put('cambio_prenda_conf_mo/{id}', 'update_mo')->name('cambio_prenda_conf_mo.update');
-    Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prendfa_conf_mo.destroy');
+    Route::delete('cambio_prenda_conf_mo/{id}', 'destroy_mo')->name('cambio_prenda_conf_mo.destroy');
 });
 //CAJA - DURACIÓN DE TRANSACCIONES
 Route::controller(DuracionTransaccionController::class)->group(function () {
@@ -1416,7 +1416,7 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::get('produccion_av/create', 'create_av')->name('produccion_av.create');
     Route::post('produccion_av', 'store_av')->name('produccion_av.store');
     Route::get('produccion_av/{id}/edit', 'edit_av')->name('produccion_av.edit');
-    Route::put('produccion_av/{id}', 'update_av')->name('produccion_av.update');
+    Route::post('produccion_av/{id}', 'update_av')->name('produccion_av.update');
     Route::post('produccion_detalle_av/{id}', 'update_detalle_av')->name('produccion_detalle_av.update');
     Route::get('produccion_av/{id}/detalle', 'detalle_av')->name('produccion_av.detalle');
     Route::delete('produccion_av/{id}', 'destroy_av')->name('produccion_av.destroy');
