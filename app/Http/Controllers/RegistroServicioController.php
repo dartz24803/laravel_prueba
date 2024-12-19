@@ -33,7 +33,7 @@ class RegistroServicioController extends Controller
         $list_notificacion = Notificacion::get_list_notificacion();
         $list_subgerencia = SubGerencia::list_subgerencia(8);
 
-        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_base = Base::get_list_bases_tesoreria();
         $list_servicio = Servicio::where('tipodeed', NULL)->where('estado', 1)->get();
         $list_lugar = LugarServicio::all();
         $list_mes = Mes::select('cod_mes','abr_mes')->orderby('cod_mes','ASC')->get();
@@ -67,7 +67,7 @@ class RegistroServicioController extends Controller
 
     public function create()
     {
-        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_base = Base::get_list_bases_tesoreria();
         $list_mes = Mes::select('cod_mes','abr_mes')->orderby('cod_mes','ASC')->get();
         $list_anio = Anio::select('cod_anio')->where('estado', 1)->orderBy('cod_anio', 'DESC')->get();
         return view('finanzas.tesoreria.registro_servicio.modal_registrar',compact(
@@ -233,7 +233,7 @@ class RegistroServicioController extends Controller
                 ->select('gs.*','se.lectura')
                 ->leftjoin('servicio AS se','se.id_servicio','=','gs.id_servicio')
                 ->where('id_gasto_servicio',$id)->first();
-        $list_base = Base::get_list_todas_bases_agrupadas();
+        $list_base = Base::get_list_bases_tesoreria();
         $list_lugar = DatosServicio::from('datos_servicio AS ds')
                     ->select('ds.id_lugar_servicio', 'ls.nom_lugar_servicio')
                     ->leftjoin('vw_lugar_servicio AS ls','ls.id_lugar_servicio','=','ds.id_lugar_servicio')
