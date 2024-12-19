@@ -157,7 +157,7 @@ class Postulante extends Model
 
         $parte_area = "";
         if($dato['id_area']!="0"){
-            $parte_area = "po.id_area=".$dato['id_area']." AND";
+            $parte_area = "ar.id_area=".$dato['id_area']." AND";
         }
 
         $sql = "SELECT po.id_postulante,po.fec_reg AS orden,
