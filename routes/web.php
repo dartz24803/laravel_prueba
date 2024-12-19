@@ -37,7 +37,7 @@ use App\Http\Controllers\ConsumibleController;
 use App\Http\Controllers\ControlCamaraConfController;
 use App\Http\Controllers\ControlCamaraController;
 use App\Http\Controllers\SliderRRHH;
-use App\Http\Controllers\Cumpleanios;
+use App\Http\Controllers\CumpleaniosController;
 use App\Http\Controllers\DuracionTransaccionController;
 use App\Http\Controllers\ErroresPickingConfController;
 use App\Http\Controllers\ErroresPickingController;
@@ -2293,6 +2293,10 @@ Route::controller(InicioController::class)->group(function () {
     Route::get('Inicio/Modal_Ver_Todo_Cumpleanios', 'Modal_Ver_Todo_Cumpleanios');
 });
 
+Route::controller(CumpleaniosController::class)->group(function () {
+    Route::get('Cumpleanios/index', 'index');
+    Route::post('Cumpleanios/Buscar_Cumpleanios', 'Busqueda_Cumple');
+});
 
 
 
