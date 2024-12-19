@@ -1332,6 +1332,7 @@ Route::controller(ColaboradorController::class)->group(function () {
 //ÁREA INTERNA
 Route::controller(InternaInicioController::class)->group(function () {
     Route::get('interna', 'index')->name('interna');
+    Route::get('test', 'test')->name('test');
 });
 //CAJA - LÍNEA DE CARRERA
 Route::controller(LineaCarreraController::class)->group(function () {

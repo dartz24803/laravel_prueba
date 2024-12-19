@@ -9,6 +9,9 @@ use PHPMailer\PHPMailer\PHPMailer;
 use App\Models\Notificacion;
 use App\Models\Soporte;
 use App\Models\SubGerencia;
+use ConsoleTVs\Charts\Facades\Charts;
+
+
 
 class InternaInicioController extends Controller
 {
@@ -33,7 +36,7 @@ class InternaInicioController extends Controller
 
         foreach($list_usuario as $list){
             $mail = new PHPMailer(true);
-    
+
             try {
                 $mail->SMTPDebug = 0;
                 $mail->isSMTP();
@@ -44,14 +47,14 @@ class InternaInicioController extends Controller
                 $mail->SMTPSecure =  'tls';
                 $mail->Port     =  587; 
                 $mail->setFrom('intranet@lanumero1.com.pe','La Número 1');
-    
+
                 //$mail->addAddress($get_id->usuario_email);
                 $mail->addAddress($list->emailp);
-    
+
                 $mail->isHTML(true);
-    
+
                 $mail->Subject = "Amonestación por incumplimiento de funciones";
-            
+
                 $mail->Body =  "<FONT SIZE=3>
                                     Como es de su conocimiento, es responsabilidad de cada colaborador mantener 
                                     sus datos actualizados en nuestra Intranet.
@@ -73,4 +76,24 @@ class InternaInicioController extends Controller
             }
         }*/
     }
+
+    // public function test2()
+    // {
+    //     $id_usuario = session('usuario')->id_usuario;
+    //     $list_subgerencia = SubGerencia::list_subgerencia(9);
+    //     $acceso_pp = Soporte::userExistsInAreaWithPuesto(18, $id_usuario);
+    //     // Guardar el valor en la sesión
+    //     session(['acceso_pp' => $acceso_pp]);
+    //     // dd($acceso_pp);
+    //     $list_notificacion = Notificacion::get_list_notificacion();
+
+    //     $chart = Charts::create('bar', 'highcharts') // Usa 'chartjs' para Chart.js 
+    //         ->title('Usuarios Registrados por Mes')
+    //         ->labels(['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio'])
+    //         ->dataset('Usuarios', [10, 20, 15, 30, 25, 40]) // Usar dataset() en lugar de values()
+    //         ->dimensions(1000, 500) // Tamaño en píxeles
+    //         ->responsive(true); // Gráfico adaptable a dispositivos móviles
+
+    //     return view('interna.index', compact('list_notificacion', 'list_subgerencia', 'chart'));
+    // }
 }
