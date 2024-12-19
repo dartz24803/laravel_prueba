@@ -85,7 +85,7 @@ class ProduccionController extends Controller
             'id_usuario',
             DB::raw("CONCAT(usuario_apater, ' ', usuario_amater, ' ', usuario_nombres) AS nombre_completo")
         )
-            ->leftJoin('puesto', 'users.id_puesto','puesto.id_puesto')
+            ->leftJoin('puesto', 'users.id_puesto', 'puesto.id_puesto')
             ->where('users.estado', 1)
             ->whereIn('puesto.id_area', [28, 27, 47, 48, 49])
             ->orderBy(DB::raw("CONCAT(usuario_apater, ' ', usuario_amater, ' ', usuario_nombres)"), 'ASC') // Ordenar por nombre completo
@@ -111,8 +111,8 @@ class ProduccionController extends Controller
 
 
         $list_proceso_visita = ProcesoVisita::select('id_procesov', 'nom_proceso')
-                            ->orderBy('nom_proceso', 'ASC')
-                            ->get();
+            ->orderBy('nom_proceso', 'ASC')
+            ->get();
 
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_registrar', compact('list_area', 'list_inspector', 'list_proveedor', 'list_ficha_tecnica', 'list_proceso_visita'));
     }
@@ -120,6 +120,7 @@ class ProduccionController extends Controller
 
     public function store_av(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'id_inspector' => 'required',
             'inspector_acompaniante' => 'required',
@@ -171,6 +172,7 @@ class ProduccionController extends Controller
             $nuevoNumero = str_pad($numero + 1 + $index, 5, '0', STR_PAD_LEFT); // Asegurar 5 dígitos
             $codAsignacion = 'V' . $nuevoNumero;
 
+            // dd($data);
             // Crear un nuevo registro en la tabla asignacion_visita
             AsignacionVisita::create([
                 'cod_asignacion' => $codAsignacion,
@@ -246,8 +248,8 @@ class ProduccionController extends Controller
             ->get();
 
         $list_proceso_visita = ProcesoVisita::select('id_procesov', 'nom_proceso')
-                            ->orderBy('nom_proceso', 'ASC')
-                            ->get();
+            ->orderBy('nom_proceso', 'ASC')
+            ->get();
 
 
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.modal_editar', compact(
@@ -411,7 +413,7 @@ class ProduccionController extends Controller
         $ffin = $request->input('ffin', date('Y-m-t')); // Último día del mes actual
         // Obtener la lista de asignaciones filtrada por fecha
         $list_asignacion = AsignacionVisita::getListAsignacion($fini, $ffin, $idUsuario);
-        // dd($list_asignacion);
+
         return view('manufactura.produccion.registro_visitas.registrar_visitas.lista', compact('list_asignacion'));
     }
 
@@ -419,8 +421,8 @@ class ProduccionController extends Controller
     {
         $idUsuario = session('usuario')->id_usuario;
 
-        $dato['fini']= $fecha;
-        $dato['ffin']= $fecha_fin;
+        $dato['fini'] = $fecha;
+        $dato['ffin'] = $fecha_fin;
         $list_asignacion = AsignacionVisita::get_list_asignacion_visita(0, $dato);
 
         return view('manufactura.produccion.asignacion_visitas.asignar_visitas.lista', compact('list_asignacion'));
@@ -557,81 +559,82 @@ class ProduccionController extends Controller
 
         return response()->json(['message' => 'Registros creados con éxito.']);
     }
-    
-    public function Excel_Asignacion_Visita($fini,$ffin){
-            $dato['fini']=$fini;
-            $dato['ffin']=$ffin;
-            $data = AsignacionVisita::get_list_asignacion_visita(0,$dato);
-            // Create new Spreadsheet object
-            $spreadsheet = new Spreadsheet();
-            $sheet = $spreadsheet->getActiveSheet();
-            // $spreadsheet->getActiveSheet()->setTitle('Asignación de Visita');
-            $sheet->setCellValue('A1', 'FECHA');
-            $sheet->setCellValue('B1', 'INSPECTOR');
-            $sheet->setCellValue('C1', 'PUNTO DE PARTIDA');
-            $sheet->setCellValue('D1', 'PUNTO DE LLEGADA');
-            $sheet->setCellValue('E1', 'MODELO');
-            $sheet->setCellValue('F1', 'TRANSPORTE');
-            $sheet->setCellValue('G1', 'TOTAL');
-            $sheet->setCellValue('H1', 'INICIO');
-            $sheet->setCellValue('I1', 'TERMINO');
-            $sheet->setCellValue('J1', 'ESTADO');
-            //border
-            $styleThinBlackBorderOutline = [
-                'borders' => [
-                    'allBorders' => [
-                        'borderStyle' => Border::BORDER_THIN,
-                        'color' => ['argb' => 'FF000000'],
-                    ],
-                ],
-            ];
-            //Font BOLD
-            //$sheet->getStyle("A1:G1")->applyFromArray($styleThinBlackBorderOutline);
-            $sheet->getStyle("A1:J1")->applyFromArray($styleThinBlackBorderOutline);
-            $sheet->getStyle('A1:J1')->getFont()->setBold(true);
-            $spreadsheet->getActiveSheet()->setAutoFilter('A1:J1');  
-            //$slno = 1;
-            $start = 1;
-            // print_r($data);
-            foreach($data as $d){
-                $start = $start+1;          
-                
-                $spreadsheet->getActiveSheet()->setCellValue("A{$start}", date('d/m/Y', strtotime($d->fecha)));
-                $spreadsheet->getActiveSheet()->setCellValue("B{$start}", $d->usuario_nombres." ".$d->usuario_apater." ".$d->usuario_amater);
-                $spreadsheet->getActiveSheet()->setCellValue("C{$start}", $d->desc_punto_partida);
-                $spreadsheet->getActiveSheet()->setCellValue("D{$start}", $d->desc_punto_llegada);
-                $spreadsheet->getActiveSheet()->setCellValue("E{$start}", $d->modelos);
-                $spreadsheet->getActiveSheet()->setCellValue("F{$start}", $d->transporte);
-                $spreadsheet->getActiveSheet()->setCellValue("G{$start}", "S/ ".$d->total_transporte);
-                $spreadsheet->getActiveSheet()->setCellValue("H{$start}", $d->fecha_inicio);
-                $spreadsheet->getActiveSheet()->setCellValue("I{$start}", $d->fecha_fin);
-                $spreadsheet->getActiveSheet()->setCellValue("J{$start}", $d->desc_estado_registro);
 
-                $sheet->getStyle("A{$start}:J{$start}")->applyFromArray($styleThinBlackBorderOutline);
-            }
-            //Custom width for Individual Columns
-            $sheet->getColumnDimension('A')->setWidth(15);
-            $sheet->getColumnDimension('B')->setWidth(35);
-            $sheet->getColumnDimension('C')->setWidth(38);
-            $sheet->getColumnDimension('D')->setWidth(38);
-            $sheet->getColumnDimension('E')->setWidth(25);
-            $sheet->getColumnDimension('F')->setWidth(20);
-            $sheet->getColumnDimension('G')->setWidth(20);
-            $sheet->getColumnDimension('H')->setWidth(20);
-            $sheet->getColumnDimension('I')->setWidth(20);
-            $sheet->getColumnDimension('J')->setWidth(20);
-            //$sheet->getColumnDimension('C')->setWidth(55);
-            //$sheet->getColumnDimension('C')->setWidth(55);
-            //final part
-            $curdate = date('d-m-Y');
-           // $writer = new Xlsx($spreadsheet);
-            $filename = 'Asignacion de Visitas_'.$curdate;
-            if (ob_get_contents()) ob_end_clean();
-            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-            header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
-            header('Cache-Control: max-age=0');
-        
-            $writer = IOFactory::createWriter($spreadsheet,'Xlsx');
-            $writer->save('php://output');
+    public function Excel_Asignacion_Visita($fini, $ffin)
+    {
+        $dato['fini'] = $fini;
+        $dato['ffin'] = $ffin;
+        $data = AsignacionVisita::get_list_asignacion_visita(0, $dato);
+        // Create new Spreadsheet object
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        // $spreadsheet->getActiveSheet()->setTitle('Asignación de Visita');
+        $sheet->setCellValue('A1', 'FECHA');
+        $sheet->setCellValue('B1', 'INSPECTOR');
+        $sheet->setCellValue('C1', 'PUNTO DE PARTIDA');
+        $sheet->setCellValue('D1', 'PUNTO DE LLEGADA');
+        $sheet->setCellValue('E1', 'MODELO');
+        $sheet->setCellValue('F1', 'TRANSPORTE');
+        $sheet->setCellValue('G1', 'TOTAL');
+        $sheet->setCellValue('H1', 'INICIO');
+        $sheet->setCellValue('I1', 'TERMINO');
+        $sheet->setCellValue('J1', 'ESTADO');
+        //border
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+        //Font BOLD
+        //$sheet->getStyle("A1:G1")->applyFromArray($styleThinBlackBorderOutline);
+        $sheet->getStyle("A1:J1")->applyFromArray($styleThinBlackBorderOutline);
+        $sheet->getStyle('A1:J1')->getFont()->setBold(true);
+        $spreadsheet->getActiveSheet()->setAutoFilter('A1:J1');
+        //$slno = 1;
+        $start = 1;
+        // print_r($data);
+        foreach ($data as $d) {
+            $start = $start + 1;
+
+            $spreadsheet->getActiveSheet()->setCellValue("A{$start}", date('d/m/Y', strtotime($d->fecha)));
+            $spreadsheet->getActiveSheet()->setCellValue("B{$start}", $d->usuario_nombres . " " . $d->usuario_apater . " " . $d->usuario_amater);
+            $spreadsheet->getActiveSheet()->setCellValue("C{$start}", $d->desc_punto_partida);
+            $spreadsheet->getActiveSheet()->setCellValue("D{$start}", $d->desc_punto_llegada);
+            $spreadsheet->getActiveSheet()->setCellValue("E{$start}", $d->modelos);
+            $spreadsheet->getActiveSheet()->setCellValue("F{$start}", $d->transporte);
+            $spreadsheet->getActiveSheet()->setCellValue("G{$start}", "S/ " . $d->total_transporte);
+            $spreadsheet->getActiveSheet()->setCellValue("H{$start}", $d->fecha_inicio);
+            $spreadsheet->getActiveSheet()->setCellValue("I{$start}", $d->fecha_fin);
+            $spreadsheet->getActiveSheet()->setCellValue("J{$start}", $d->desc_estado_registro);
+
+            $sheet->getStyle("A{$start}:J{$start}")->applyFromArray($styleThinBlackBorderOutline);
+        }
+        //Custom width for Individual Columns
+        $sheet->getColumnDimension('A')->setWidth(15);
+        $sheet->getColumnDimension('B')->setWidth(35);
+        $sheet->getColumnDimension('C')->setWidth(38);
+        $sheet->getColumnDimension('D')->setWidth(38);
+        $sheet->getColumnDimension('E')->setWidth(25);
+        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('G')->setWidth(20);
+        $sheet->getColumnDimension('H')->setWidth(20);
+        $sheet->getColumnDimension('I')->setWidth(20);
+        $sheet->getColumnDimension('J')->setWidth(20);
+        //$sheet->getColumnDimension('C')->setWidth(55);
+        //$sheet->getColumnDimension('C')->setWidth(55);
+        //final part
+        $curdate = date('d-m-Y');
+        // $writer = new Xlsx($spreadsheet);
+        $filename = 'Asignacion de Visitas_' . $curdate;
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
     }
 }

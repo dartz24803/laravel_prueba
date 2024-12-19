@@ -145,7 +145,7 @@
                                     </div>
                                     <div class="user-email">
                                         <p class="info-title">Correo Corporativo: </p>
-                                        <p class="usr-email-addr" style="width: 160px; word-wrap: break-word; overflow-wrap: break-word; margin:10px" onkeyup="javascript:this.value=this.value.toLowerCase();"><?php echo $list['emailp']; ?> </p>
+                                        <p class="usr-email-addr" style="width: 160px; word-wrap: break-word; overflow-wrap: break-word; margin-bottom: 4px;" onkeyup="javascript:this.value=this.value.toLowerCase();"><?php echo $list['emailp']; ?> </p>
                                     </div>
                                 </div>
                             </div>

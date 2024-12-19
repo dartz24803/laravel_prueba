@@ -9,7 +9,7 @@ class ProcesoVisita extends Model
 {
     use HasFactory;
 
-    protected $table = 'vw_proceso_visita';
+    protected $table = 'proceso_visita';
 
     public $timestamps = false;
 
