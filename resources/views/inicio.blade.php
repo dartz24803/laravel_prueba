@@ -259,17 +259,22 @@
                                     }
                                 ?>
                                     <div class="carousel-item <?= $active ?>">
-                                        <img id="imagen_fondo_slider" style="max-width: 101%" src="<?= $image ?>">
+                                        <img id="imagen_fondo_slider" style="max-width: 100%" src="<?= $image ?>">
                                         <div id="carousel-caption" class="carousel-caption d-none d-block text-left">
+                                            <div style="background-color: white; padding: 2px; border-bottom-left-radius: 10px; display: inline-block; position: absolute; top: 0; right: 0; margin: 0;">
+                                                <span style="color: blue; font-size: 0.6rem; padding-bottom: 1rem; padding-bottom: 1rem"><?= mb_strtoupper($row['titulo'], 'UTF-8') ?></span>
+                                            </div>
+                                            <div style="padding-top: 2rem; ">
+                                                <p class="mensaje_nuevo_slider" style="color: <?= $color ?>; margin-bottom: 0%; margin-left: 0.2rem"><?= $row['descripcion'] ?></p>
+                                                <span class="d-flex align-items-center titulo_slider" style="color: <?= $color ?>;"><?= $row['titulo'] ?></span>
+                                                <a href="<?= $row['link'] ?>" target="_blank" style="max-width:100%;">
+                                                    <span class="badge" style="background-color: #fea600; color:white; margin-top: 1%;">
+                                                        <img id="mano_slider" style="max-width: 10%; margin-right: 1%;" src="{{ asset('inicio/LN1-Intranet-Mano.png') }}" alt="">
+                                                        DESCÚBRELO
+                                                    </span>
+                                                </a>
+                                            </div>
 
-                                            <p class="mensaje_nuevo_slider" style="color: <?= $color ?>; margin-bottom: 0%; margin-left: 0.2rem"><?= $row['descripcion'] ?></p>
-                                            <span class="d-flex align-items-center titulo_slider" style="color: <?= $color ?>;"><?= $row['titulo'] ?></span>
-                                            <a href="<?= $row['link'] ?>" target="_blank" style="max-width:100%;">
-                                                <span class="badge" style="background-color: #fea600; color:white; margin-top: 1%;">
-                                                    <img id="mano_slider" style="max-width: 10%; margin-right: 1%;" src="{{ asset('inicio/LN1-Intranet-Mano.png') }}" alt="">
-                                                    DESCÚBRELO
-                                                </span>
-                                            </a>
                                         </div>
                                     </div>
                                 <?php endforeach ?>
@@ -573,9 +578,11 @@
     }
 
     #carousel-caption {
-        margin-left: -7%;
+        margin-left: -10%;
         height: 100%;
-        top: 8%;
+        top: 0%;
+        position: absolute;
+        width: 100%;
     }
 
     @media screen and (max-width: 1050px) and (min-width: 800) {
