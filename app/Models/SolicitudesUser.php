@@ -199,7 +199,7 @@ class SolicitudesUser extends Model
         } elseif ($id_puesto == 10) {
             $gerencia = "";
             $puesto = "";
-            $area = " and u.id_area in (17) ";
+            $area = " and p.id_area in (17) ";
             $motivo = " and su.id_motivo=1 ";
         } elseif ($id_puesto == 93) {
             $gerencia = "";
