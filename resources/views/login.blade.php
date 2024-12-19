@@ -50,7 +50,18 @@
                 <strong><label for="Password" style="color: #696769; font-size:smaller">CONTRASEÑA</label></strong>
             </div>
             <input type="password" class="pass" id="Password"  name="Password">
-            <center style="background-color: white;"><br><div class="forgot-password"><a style="color:#ffa404; font-weight:600; font-size:0.7rem;" >¿Olvidaste&nbsp;tu&nbsp;contraseña?</a></div></center><br>
+            <center style="background-color: white;">
+                <br>
+                <div class="forgot-password">
+                    <a href="https://api.whatsapp.com/send/?phone=51967778561&text=Hola%2C+Necesito+restaurar+mi+contraseña.&type=phone_number&app_absent=0" 
+                       style="color:#ffa404; font-weight:600; font-size:0.7rem;" 
+                       target="_blank" 
+                       rel="noopener noreferrer">
+                        ¿Olvidaste&nbsp;tu&nbsp;contraseña?
+                    </a>
+                </div>
+            </center>
+            <br>
             <center style="background-color: white; margin-bottom:10px;"><span class="txt1" role="alert" id="resultado" style="color:red; display:none;"></span></center>
             <button type="button" class="submit" onclick="Login();">INGRESAR</button>
         </form>
