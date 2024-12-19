@@ -604,29 +604,31 @@
                         </a>
                     </li>
 
-                    <?php if (session('usuario')->id_nivel == 1 ||
-                    session('usuario')->id_puesto !== 30 ||
-                    session('usuario')->id_puesto !== 38 ||
-                    session('usuario')->id_puesto !== 161 ||
-                    session('usuario')->id_puesto !== 314
+                    <?php if (
+                        session('usuario')->id_nivel == 1 ||
+                        session('usuario')->id_puesto !== 30 ||
+                        session('usuario')->id_puesto !== 38 ||
+                        session('usuario')->id_puesto !== 161 ||
+                        session('usuario')->id_puesto !== 314
                     ) { ?>
-                    <li class="menu" id="tickets">
-                        <a id="htickets" href="{{ url('Tickets/index') }}" class="dropdown-toggle">
-                            <div class="">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-airplay">
-                                    <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
-                                    <polygon points="12 15 17 21 7 21 12 15"></polygon>
-                                </svg>
-                                <span id="icono_active"></span>
-                                <span> Registro de Tickets T.I</span>
-                            </div>
-                        </a>
-                    </li>
+                        <li class="menu" id="tickets">
+                            <a id="htickets" href="{{ url('Tickets/index') }}" class="dropdown-toggle">
+                                <div class="">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-airplay">
+                                        <path d="M5 17H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-1"></path>
+                                        <polygon points="12 15 17 21 7 21 12 15"></polygon>
+                                    </svg>
+                                    <span id="icono_active"></span>
+                                    <span> Registro de Tickets T.I</span>
+                                </div>
+                            </a>
+                        </li>
                     <?php } ?>
-                    <?php if (session('usuario')->id_nivel == 1 ||
-                    session('usuario')->id_puesto == 31 ||
-                    session('usuario')->id_puesto == 32 ||
-                    session('usuario')->id_puesto == 35
+                    <?php if (
+                        session('usuario')->id_nivel == 1 ||
+                        session('usuario')->id_puesto == 31 ||
+                        session('usuario')->id_puesto == 32 ||
+                        session('usuario')->id_puesto == 35
                     ) { ?>
                         <li class="menu" id="tareas_adm">
                             <a href="{{ url('Tareas/index') }}" id="hgpendientes" class="dropdown-toggle" data-toggle="tooltip" data-placement="right" data-html="true" title="• Mis tareas<br>• Tareas solicitadas">
@@ -645,7 +647,12 @@
                     <li class="menu" id="mamonestacion">
                         <a href="{{ url('Amonestaciones/Amonestaciones_Recibidas_Index') }}" id="hamonestacion" class="dropdown-toggle" data-toggle="tooltip" data-placement="right" data-html="true" title="• Recibidas">
                             <div class="">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-frown"><circle cx="12" cy="12" r="10"></circle><path d="M16 16s-1.5-2-4-2-4 2-4 2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>                                <span id="icono_active"></span>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-frown">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="M16 16s-1.5-2-4-2-4 2-4 2"></path>
+                                    <line x1="9" y1="9" x2="9.01" y2="9"></line>
+                                    <line x1="15" y1="9" x2="15.01" y2="9"></line>
+                                </svg> <span id="icono_active"></span>
                                 <span> Amonestaciones</span>
                             </div>
                         </a>
@@ -705,11 +712,11 @@
         })();
     </script>
     <style>
-        [id^="gb-widget-"] > div:first-child {
+        [id^="gb-widget-"]>div:first-child {
             height: auto;
         }
 
-        [id^="gb-widget-"] > a{
+        [id^="gb-widget-"]>a {
             display: none;
         }
 
@@ -741,6 +748,8 @@
     <script>
         $('[data-toggle="tooltip"]').tooltip();
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </body>
 
 </html>
