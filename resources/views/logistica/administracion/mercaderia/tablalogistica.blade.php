@@ -155,12 +155,7 @@ $id_puesto = session('usuario')->id_puesto; ?>
                             <?php if($id_nivel==1 || $id_puesto==131 || $id_puesto==74){ ?> 
                                 <a class="nav-link active" style="cursor: pointer;" id="Perchaar" onclick="TablaPercha()">Percha</a>
                                 <a class="nav-link " style="cursor: pointer;" id="Nichoar" onclick="TablaNicho()">Nicho</a>
-                                <a class="nav-link" style="cursor: pointer;" id="Codigoar" onclick="TablaCodigo()">Código</a>    
-                            <?php }if($id_nivel==1 || $id_cargo==30 || $id_puesto==9){ ?> 
-                                <a class="nav-link" style="cursor: pointer;" id="Articuloar" onclick="TablaArticulo()">Artículo</a>
-                                <a class="nav-link" style="cursor: pointer;" id="unidadar" onclick="TablaUnidad_Log()">Unidad</a>   
                             <?php } ?>
-                            <a class="nav-link" style="cursor: pointer;" id="Error_Picking_ar" onclick="TablaTallaErrorPicking();">Código</a>    
                         </div>
                     </ul>
 
@@ -182,11 +177,7 @@ $id_puesto = session('usuario')->id_puesto; ?>
         $("#rlogisticaconf").attr('aria-expanded','true');
         $("#mercaderiaconf").addClass('active');
         
-        <?php //if($id_nivel==1 || $id_puesto==131 || $id_puesto==74){ ?> 
-            TablaPercha();   
-        <?php //}else{ ?> 
-            //TablaArticulo();
-        <?php //}?>
+        TablaPercha();   
     });
 
     function TablaPercha() {
