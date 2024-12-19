@@ -261,6 +261,7 @@
                                     <div class="carousel-item <?= $active ?>">
                                         <img id="imagen_fondo_slider" style="max-width: 101%" src="<?= $image ?>">
                                         <div id="carousel-caption" class="carousel-caption d-none d-block text-left">
+
                                             <p class="mensaje_nuevo_slider" style="color: <?= $color ?>; margin-bottom: 0%; margin-left: 0.2rem"><?= $row['descripcion'] ?></p>
                                             <span class="d-flex align-items-center titulo_slider" style="color: <?= $color ?>;"><?= $row['titulo'] ?></span>
                                             <a href="<?= $row['link'] ?>" target="_blank" style="max-width:100%;">
@@ -574,7 +575,7 @@
     #carousel-caption {
         margin-left: -7%;
         height: 100%;
-        top: 75%;
+        top: 8%;
     }
 
     @media screen and (max-width: 1050px) and (min-width: 800) {
