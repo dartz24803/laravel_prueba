@@ -132,7 +132,15 @@
                     <div class="dropdown-menu position-absolute" aria-labelledby="userProfileDropdown">
                         <div class="user-profile-section">
                             <div class="media mx-auto">
-                                <img src="{{ asset('template/assets/img/90x90.jpg') }}" class="img-fluid mr-2" alt="avatar">
+                                {{-- {{ print_r(session('usuario')) }} --}}
+                                <?php if (session('usuario')->id_nivel != 8) { ?>
+                                    <img src="<?php if (session('usuario')->foto !== "") {
+                                                    echo session('usuario')->foto;
+                                                } else {
+                                                    echo asset('template/assets/img/90x90.jpg');
+                                                } ?>" class="img-fluid mr-2" alt="avatar">
+
+                                <?php } ?>
                                 <div class="media-body">
                                     <h5>{{ session('usuario')->usuario_nombres }} {{ session('usuario')->usuario_apater }}</h5>
                                 </div>
