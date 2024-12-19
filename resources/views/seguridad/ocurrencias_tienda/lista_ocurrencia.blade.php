@@ -1,3 +1,9 @@
+<style>
+    table.table td {
+        white-space: normal !important;
+    }
+</style>
+
 <?php
 $id_puesto=session('usuario')->id_puesto;
 $id_nivel=session('usuario')->id_nivel;
