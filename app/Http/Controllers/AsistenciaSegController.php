@@ -41,9 +41,10 @@ class AsistenciaSegController extends Controller
 
     public function list_lec(Request $request)
     {
-        $dato['fec_desde'] = $request->fec_desde;
-        $dato['fec_hasta'] = $request->fec_hasta;
-        $list_lectora = SeguridadAsistencia::get_list_lectora($dato);
+        $list_lectora = SeguridadAsistencia::get_list_lectora([
+            'fec_desde'=>$request->fec_desde,
+            'fec_hasta'=>$request->fec_hasta
+        ]);
         return view('seguridad.asistencia.lectora.lista', compact('list_lectora'));
     }
 
@@ -243,9 +244,12 @@ class AsistenciaSegController extends Controller
         ]);
     }
 
-    public function excel_lec()
+    public function excel_lec($fec_desde,$fec_hasta)
     {
-        $list_lectora = SeguridadAsistencia::get_list_lectora();
+        $list_lectora = SeguridadAsistencia::get_list_lectora([
+            'fec_desde'=>$fec_desde,
+            'fec_hasta'=>$fec_hasta
+        ]);
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
