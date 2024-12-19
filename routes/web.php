@@ -1416,7 +1416,7 @@ Route::controller(ProduccionController::class)->group(function () {
     Route::get('produccion_av/create', 'create_av')->name('produccion_av.create');
     Route::post('produccion_av', 'store_av')->name('produccion_av.store');
     Route::get('produccion_av/{id}/edit', 'edit_av')->name('produccion_av.edit');
-    Route::put('produccion_av/{id}', 'update_av')->name('produccion_av.update');
+    Route::post('produccion_av/{id}', 'update_av')->name('produccion_av.update');
     Route::post('produccion_detalle_av/{id}', 'update_detalle_av')->name('produccion_detalle_av.update');
     Route::get('produccion_av/{id}/detalle', 'detalle_av')->name('produccion_av.detalle');
     Route::delete('produccion_av/{id}', 'destroy_av')->name('produccion_av.destroy');

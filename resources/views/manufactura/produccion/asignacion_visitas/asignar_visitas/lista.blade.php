@@ -56,7 +56,17 @@
             <td>S/{{ $asignacion['total_costo'] ?? '0' }}</td>
             <td>{{ $asignacion['fec_ini_visita'] ? \Carbon\Carbon::parse($asignacion['fec_ini_visita'])->locale('es')->translatedFormat('D d M y H:i') : 'N/A' }}</td>
             <td>{{ $asignacion['fec_fin_visita'] ? \Carbon\Carbon::parse($asignacion['fec_fin_visita'])->locale('es')->translatedFormat('D d M y H:i') : 'N/A' }}</td>
-            <td>{{ $asignacion['desc_estado_registro'] }}</td>
+            <td>
+                @if ($asignacion['estado_registro'] == 1)
+                Por iniciar
+                @elseif ($asignacion['estado_registro'] == 2)
+                Iniciado
+                @elseif ($asignacion['estado_registro'] == 3)
+                Finalizado
+                @else
+                Desconocido
+                @endif
+            </td>
             <td>
                 <a href="javascript:void(0);" title="Editar" data-toggle="modal" data-target="#ModalUpdate" app_elim="{{ route('produccion_av.edit', $asignacion['id_asignacion_visita']) }}">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-edit-2 text-success">

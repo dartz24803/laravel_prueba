@@ -220,12 +220,13 @@ class ProduccionController extends Controller
             ->firstOrFail();
 
         $list_inspector = User::select(
-            'id_usuario',
-            DB::raw("CONCAT(usuario_apater, ' ', usuario_amater, ' ', usuario_nombres) AS nombre_completo")
+            'users.id_usuario',
+            DB::raw("CONCAT(users.usuario_apater, ' ', users.usuario_amater, ' ', users.usuario_nombres) AS nombre_completo")
         )
-            ->where('estado', 1)
-            ->whereIn('id_area', [28, 27, 47, 48, 49])
-            ->orderBy(DB::raw("CONCAT(usuario_apater, ' ', usuario_amater, ' ', usuario_nombres)"), 'ASC') // Ordenar por nombre completo
+            ->leftJoin('puesto', 'users.id_puesto', '=', 'puesto.id_puesto')
+            ->where('users.estado', 1)
+            ->whereIn('puesto.id_area', [28, 27, 47, 48, 49])
+            ->orderBy(DB::raw("CONCAT(users.usuario_apater, ' ', users.usuario_amater, ' ', users.usuario_nombres)"), 'ASC') // Ordenar por nombre completo
             ->distinct()
             ->get();
         // dd($list_inspector);
