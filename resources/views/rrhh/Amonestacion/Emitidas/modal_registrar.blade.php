@@ -28,12 +28,8 @@
             </div>
 
             <?php if(session('usuario')->id_nivel==1 || 
-            //ÁREAS DE RRHH
-            session('usuario')->id_area==11 ||
-            session('usuario')->id_area==26 ||
-            session('usuario')->id_area==29 ||
-            session('usuario')->id_area==34 ||
-            session('usuario')->id_area==43){?>
+            session('usuario')->nivel_jerarquico==3 ||  
+            session('usuario')->nivel_jerarquico==4){?>
                 <div class="form-group col-md-8">
                     <label class="col-sm-12 control-label text-bold">Solicitante: </label>
                     <div class="col-md">

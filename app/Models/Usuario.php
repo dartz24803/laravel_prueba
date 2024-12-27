@@ -1869,4 +1869,24 @@ class Usuario extends Model
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
+
+    public static function get_list_colaborador_amonestacion()
+    {
+        if(session('usuario')->nivel_jerarquico==3 ||  
+        session('usuario')->nivel_jerarquico==4){
+            $parte = "pu.id_area=".session('usuario')->id_area." AND";
+        }elseif(session('usuario')->id_puesto==161 ||
+        session('usuario')->id_puesto==314){
+            $parte = "us.id_centro_labor=".session('usuario')->id_centro_labor." AND";
+        }else{
+            $parte = "";
+        }
+        $sql = "SELECT us.id_usuario,us.usuario_apater,us.usuario_amater,
+                us.usuario_nombres
+                FROM users us
+                INNER JOIN puesto pu ON pu.id_puesto=us.id_puesto
+                WHERE $parte us.estado=1";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
 }
