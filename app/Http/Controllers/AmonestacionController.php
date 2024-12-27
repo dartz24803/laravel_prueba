@@ -85,12 +85,16 @@ class AmonestacionController extends Controller
 
     public function Modal_Amonestacion()
     {
-        if (
-            session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2
-            || session('usuario')->id_puesto == 133
-        ) {
-            $dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
-            $dato['list_responsables'] = $this->modelousuarios->list_usuarios_responsables($dato);
+        if (session('usuario')->id_nivel==1 || 
+        //ÁREAS DE RRHH
+        session('usuario')->id_area==11 ||
+        session('usuario')->id_area==26 ||
+        session('usuario')->id_area==29 ||
+        session('usuario')->id_area==34 ||
+        session('usuario')->id_area==43) {
+            //$dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
+            //$dato['list_responsables'] = $this->modelousuarios->list_usuarios_responsables($dato);
+            $dato['list_responsables'] = Usuario::get_list_solicitante_amonestacion();
         } else {
             $dato['id_area'] = session('usuario')->id_area;
         }
@@ -209,8 +213,9 @@ class AmonestacionController extends Controller
         if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 ||
         Session('usuario')->id_puesto == 30 ||
         session('usuario')->id_puesto == 131 || session('usuario')->id_puesto == 133) {
-            $dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
-            $list_responsables = $this->modelousuarios->list_usuarios_responsables($dato);
+            //$dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
+            //$list_responsables = $this->modelousuarios->list_usuarios_responsables($dato);
+            $list_responsables = Usuario::get_list_solicitante_amonestacion();
         } else {
             $dato['id_area'] = session('usuario')->id_area;
         }

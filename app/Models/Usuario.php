@@ -1858,4 +1858,15 @@ class Usuario extends Model
 
         return $query;
     }
+
+    public static function get_list_solicitante_amonestacion()
+    {
+        $sql = "SELECT us.id_usuario,us.usuario_apater,us.usuario_amater,
+                us.usuario_nombres
+                FROM users us
+                INNER JOIN puesto pu ON pu.id_puesto=us.id_puesto AND pu.id_nivel IN (3,4)
+                WHERE us.estado=1";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
 }
