@@ -1887,7 +1887,7 @@ class Usuario extends Model
                 FROM users us
                 INNER JOIN puesto pu ON pu.id_puesto=us.id_puesto
                 INNER JOIN area ar ON ar.id_area=pu.id_area
-                WHERE $parte us.estado=1";
+                WHERE $parte us.id_nivel NOT IN (8,12) AND us.estado=1";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
