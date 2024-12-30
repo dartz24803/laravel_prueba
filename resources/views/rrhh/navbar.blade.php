@@ -135,10 +135,10 @@ session('usuario')->id_puesto !== 128)
             </li>
         <?php } ?>
         <?php if (
-            session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 || 
+            session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 ||
             session('usuario')->id_puesto == 27 ||
-            session('usuario')->id_puesto == 22 || session('usuario')->id_puesto == 21 || 
-            session('usuario')->id_puesto == 278 || session('usuario')->id_puesto == 128 || 
+            session('usuario')->id_puesto == 22 || session('usuario')->id_puesto == 21 ||
+            session('usuario')->id_puesto == 278 || session('usuario')->id_puesto == 128 ||
             session('usuario')->id_puesto == 148 || session('usuario')->id_puesto == 310
         ) { ?>
             <li id="recumpleanio">
@@ -245,8 +245,10 @@ session('usuario')->id_puesto !== 128)
         session('usuario')->id_puesto == "278" ||
         session('usuario')->id_puesto == "314" ||
         session('usuario')->id_sede_laboral == 6)
-        
-        <?php $postulantes1 = "• Registro y Evaluación";
+
+        <?php
+        $postulantes1 = "• Registro y Evaluación";
+        $postulantes2 = "";
         if (session('usuario')->id_nivel=="1" ||
         session('usuario')->id_puesto=="21" ||
         session('usuario')->id_puesto=="22" ||

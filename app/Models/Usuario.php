@@ -484,21 +484,34 @@ class Usuario extends Model
         $id_usuario = session('usuario')->id_usuario;
         // $centro_labores= session('usuario')->centro_labores;
         $anio = date('Y');
-        $sql = "SELECT u.id_usuario,u.foto,u.usuario_nombres,u.usuario_apater,u.usuario_amater,u.fec_nac,
-                u.foto_nombre,CONCAT(YEAR(NOW()), '-', DATE_FORMAT(fec_nac, '%m-%d')) as cumpleanio,
-                h.id_historial,h.estado_registro,m.nom_mes,
-                LOWER(u.usuario_nombres) AS nombres_min,LOWER(u.usuario_apater) AS apater_min,
-                ar.nom_area,u.centro_labores,ub.cod_ubi AS centro_labores
+        $sql = "SELECT u.id_usuario, u.foto, u.usuario_nombres, u.usuario_apater, u.usuario_amater, u.fec_nac,
+                    u.foto_nombre,
+                    CASE
+                        WHEN MONTH(NOW()) = 12 AND DATE_FORMAT(u.fec_nac, '%m-%d') BETWEEN '01-01' AND '01-05'
+                            THEN CONCAT(YEAR(NOW()) + 1, '-', DATE_FORMAT(u.fec_nac, '%m-%d'))
+                        ELSE CONCAT(YEAR(NOW()), '-', DATE_FORMAT(u.fec_nac, '%m-%d'))
+                    END AS cumpleanio,
+                    h.id_historial, h.estado_registro, m.nom_mes,
+                    LOWER(u.usuario_nombres) AS nombres_min, LOWER(u.usuario_apater) AS apater_min,
+                    ar.nom_area, ub.cod_ubi AS centro_labores
                 FROM users u
-                LEFT JOIN saludo_cumpleanio_historial h on h.id_usuario='$id_usuario' and
-                h.id_cumpleaniero=u.id_usuario and year(h.fec_reg)='$anio' and h.estado=1
+                LEFT JOIN saludo_cumpleanio_historial h
+                    ON h.id_usuario = '$id_usuario'
+                AND h.id_cumpleaniero = u.id_usuario
+                AND YEAR(h.fec_reg) = '$anio'
+                AND h.estado = 1
+                LEFT JOIN mes m ON MONTH(u.fec_nac) = m.cod_mes
                 LEFT JOIN ubicacion ub ON u.id_centro_labor = ub.id_ubicacion
-                LEFT JOIN mes m on month(u.fec_nac)=m.cod_mes
-                INNER JOIN puesto pu ON pu.id_puesto=u.id_puesto
-                INNER JOIN area ar ON pu.id_area=ar.id_area
-                WHERE (DATE_FORMAT(u.fec_nac, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND
-                DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 5 DAY), '%m-%d')) AND u.usuario_nombres NOT LIKE 'Base%' AND u.estado=1
-                ORDER BY cumpleanio ASC";
+                INNER JOIN puesto pu ON pu.id_puesto = u.id_puesto
+                INNER JOIN area ar ON pu.id_area = ar.id_area
+                WHERE (
+                        (MONTH(NOW()) = 12 AND DATE_FORMAT(u.fec_nac, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND '12-31')
+                    OR (MONTH(NOW()) = 12 AND DATE_FORMAT(u.fec_nac, '%m-%d') BETWEEN '01-01' AND DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 5 DAY), '%m-%d'))
+                    OR (MONTH(NOW()) <> 12 AND DATE_FORMAT(u.fec_nac, '%m-%d') BETWEEN DATE_FORMAT(NOW(), '%m-%d') AND DATE_FORMAT(DATE_ADD(NOW(), INTERVAL 5 DAY), '%m-%d'))
+                    )
+                AND u.usuario_nombres NOT LIKE 'Base%'
+                AND u.estado = 1
+                ORDER BY cumpleanio ASC;";
         $result = DB::select($sql);
         return json_decode(json_encode($result), true);
     }
