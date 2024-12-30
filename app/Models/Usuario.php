@@ -185,7 +185,7 @@ class Usuario extends Model
                 visualizar_mi_equipo(u.id_puesto) AS visualizar_mi_equipo,
                 (SELECT COUNT(*) FROM asignacion_jefatura aj
                 WHERE aj.id_puesto_jefe=u.id_puesto and aj.estado=1) as puestos_asignados,u.id_cargo,
-                u.id_centro_labor
+                u.id_centro_labor,a.id_departamento
                 FROM users u
                 LEFT JOIN permiso_papeletas_salida pps ON u.id_puesto=pps.id_puesto_jefe AND pps.estado=1
                 LEFT JOIN nivel n ON u.id_nivel=n.id_nivel
@@ -1870,5 +1870,38 @@ class Usuario extends Model
         $query = DB::select($sql, ['id_area' => $id_area]);
 
         return $query;
+    }
+
+    public static function get_list_solicitante_amonestacion()
+    {
+        $sql = "SELECT us.id_usuario,us.usuario_apater,us.usuario_amater,
+                us.usuario_nombres
+                FROM users us
+                INNER JOIN puesto pu ON pu.id_puesto=us.id_puesto AND pu.id_nivel IN (3,4)
+                WHERE us.estado=1";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
+    }
+
+    public static function get_list_colaborador_amonestacion()
+    {
+        if(session('usuario')->nivel_jerarquico==3){
+            $parte = "ar.id_departamento=".session('usuario')->id_departamento." AND";
+        }elseif(session('usuario')->nivel_jerarquico==4){
+            $parte = "pu.id_area=".session('usuario')->id_area." AND";
+        }elseif(session('usuario')->id_puesto==161 ||
+        session('usuario')->id_puesto==314){
+            $parte = "us.id_centro_labor=".session('usuario')->id_centro_labor." AND";
+        }else{
+            $parte = "";
+        }
+        $sql = "SELECT us.id_usuario,us.usuario_apater,us.usuario_amater,
+                us.usuario_nombres
+                FROM users us
+                INNER JOIN puesto pu ON pu.id_puesto=us.id_puesto
+                INNER JOIN area ar ON ar.id_area=pu.id_area
+                WHERE $parte us.id_nivel NOT IN (8,12) AND us.estado=1";
+        $result = DB::select($sql);
+        return json_decode(json_encode($result), true);
     }
 }

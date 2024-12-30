@@ -34,8 +34,9 @@
 
 <?php
     $id_nivel = session('usuario')->id_nivel;
+    $id_area = session('usuario')->id_area;
     $id_puesto = session('usuario')->id_puesto;
-    $nivel_jerarquico = session('usuario')->nivel_jerarquico;//
+    $nivel_jerarquico = session('usuario')->nivel_jerarquico;
 ?>
 
 <div id="content" class="main-content">
@@ -52,12 +53,22 @@
                     <div class="widget-content widget-content-area simple-tab">
                         <ul class="nav nav-tabs  mb-3 mt-3" id="simpletab" role="tablist">
                         <?php 
-                        if($id_nivel==1 || $id_nivel==2 || $id_puesto==22 || $id_puesto==133 || $id_puesto==30 ||
+                        if($id_nivel==1 || 
                         session('usuario')->nivel_jerarquico==1 ||
                         session('usuario')->nivel_jerarquico==2 || 
                         session('usuario')->nivel_jerarquico==3 ||  
-                        session('usuario')->nivel_jerarquico==4 || $id_puesto==195 ||
-                        session('usuario')->visualizar_amonestacion!="sin_acceso_amonestacion" || $id_puesto==209){?>
+                        session('usuario')->nivel_jerarquico==4 || 
+                        //AUXILIAR DE COORDINADOR DE TIENDA
+                        $id_puesto==30 ||
+                        //PRACTICANTE DE PCP
+                        $id_puesto==195 ||
+                        //ÁREAS DE RRHH
+                        $id_area==11 ||
+                        $id_area==26 ||
+                        $id_area==29 ||
+                        $id_area==34 ||
+                        $id_area==43 ||
+                        session('usuario')->visualizar_amonestacion!="sin_acceso_amonestacion"){?>
                             <li class="nav-item">
                                 <a id="bae" class="nav-link active" id="registro-tab" data-toggle="tab" href="#registro" role="tab" aria-controls="home" aria-selected="true" onclick="Amonestaciones_Emitidas()">Emitidas</a>
                             </li><?php }?>

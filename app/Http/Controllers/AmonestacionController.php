@@ -85,17 +85,21 @@ class AmonestacionController extends Controller
 
     public function Modal_Amonestacion()
     {
-        if (
-            session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2
-            || session('usuario')->id_puesto == 133
-        ) {
-            $dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
-            $dato['list_responsables'] = $this->modelousuarios->list_usuarios_responsables($dato);
+        if (session('usuario')->id_nivel==1 || 
+        session('usuario')->nivel_jerarquico==3 ||  
+        session('usuario')->nivel_jerarquico==4 || 
+        //ADMINISTRADOR DE TIENDA
+        session('usuario')->id_puesto==161 ||
+        //COORDINADOR DE TIENDA
+        session('usuario')->id_puesto==314) {
+            //$dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
+            //$dato['list_responsables'] = $this->modelousuarios->list_usuarios_responsables($dato);
+            $dato['list_responsables'] = Usuario::get_list_solicitante_amonestacion();
         } else {
             $dato['id_area'] = session('usuario')->id_area;
         }
 
-        $dato['list_colaborador'] = $this->modelousuarios->get_list_colaborador();
+        $dato['list_colaborador'] = Usuario::get_list_colaborador_amonestacion();
 
         $dato['list_tipo_amonestacion'] = $this->modelotipoa->where('estado', 1)->get();
         $dato['list_gravedad_amonestacion'] = $this->modelogravedada->where('estado', 1)->get();
@@ -209,12 +213,13 @@ class AmonestacionController extends Controller
         if (session('usuario')->id_nivel == 1 || session('usuario')->id_nivel == 2 ||
         Session('usuario')->id_puesto == 30 ||
         session('usuario')->id_puesto == 131 || session('usuario')->id_puesto == 133) {
-            $dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
-            $list_responsables = $this->modelousuarios->list_usuarios_responsables($dato);
+            //$dato['puestos_jefes'] = $this->modelopuesto->list_puestos_jefes();
+            //$list_responsables = $this->modelousuarios->list_usuarios_responsables($dato);
+            $list_responsables = Usuario::get_list_solicitante_amonestacion();
         } else {
             $dato['id_area'] = session('usuario')->id_area;
         }
-        $list_colaborador = $this->modelousuarios->get_list_colaborador();
+        $list_colaborador = Usuario::get_list_colaborador_amonestacion();
         //$dato['modal']=$modal;
         return view('rrhh.Amonestacion.Emitidas.modal_editar', compact('list_responsables', 'list_colaborador', 'list_tipo_amonestacion', 'list_gravedad_amonestacion', 'list_motivo_amonestacion', 'modal', 'get_id'));
     }
@@ -352,7 +357,7 @@ class AmonestacionController extends Controller
         }
 
         // Obtener la lista de colaboradores
-        $list_colaborador = $this->modelousuarios->get_list_colaborador();
+        $list_colaborador = Usuario::get_list_colaborador_amonestacion();
         if (!$list_colaborador) {
             // Manejar el error si no se encuentran colaboradores
             return response()->json(['error' => 'No se encontraron colaboradores'], 404);
