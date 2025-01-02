@@ -13,8 +13,7 @@ class Kernel extends ConsoleKernel
     
     protected function schedule(Schedule $schedule)
     {
-        //$schedule->command('cron:insert-anio')->yearlyOn(1, 1, '00:00');
-        $schedule->command('cron:insert-anio')->yearlyOn(1, 2, '08:26');
+        $schedule->command('cron:insert-anio')->yearlyOn(1, 1, '00:00');
     }
     
 
