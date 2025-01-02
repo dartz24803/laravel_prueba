@@ -10,8 +10,9 @@ class Anio extends Model
     use HasFactory;
 
     protected $table = 'anio';
-
     protected $primaryKey = 'id_anio';
+
+    public $timestamps = false;
 
     protected $fillable = [
         'id_anio',
