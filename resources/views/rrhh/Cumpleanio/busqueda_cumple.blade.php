@@ -1,12 +1,15 @@
+<span>Total cumpleaños desde el mes de {{ ucfirst($mesActual) }}: {{ $conteo }}</span>
 <table id="zero-config" class="table table-hover" style="width:100%">
     <thead>
         <tr>
-            <th>&nbsp;</th>
+            <th></th>
             <th>Cumpleaños</th>
             <th>Cumpleañero</th>
             <th>Centro Labores</th>
             <th>Puesto</th>
-            <th>Cantidad</th>
+            <th>Tomatodo</th>
+            <th>Caja</th>
+            <th>Globos</th>
         </tr>
     </thead>
     <tbody>
@@ -17,10 +20,44 @@
             <td><?php echo $list['usuario_nombres']." ".$list['usuario_apater']." ".$list['usuario_amater']; ?></td>
             <td><?php echo $list['centro_labores'] ?></td>
             <td><?php echo $list['nom_puesto'] ?></td>
-            <td><?php echo $list['cantidad']; ?></td>
+            <td>1</td>
+            <td>1</td>
+            <td>3</td>
         </tr>
     <?php } ?>
     </tbody>
+    <tfoot>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Cumpleaños en el mes: {{ $conteo_mes }}</th>
+            <th>Σ = {{ $conteoA }}</th>
+            <th>Σ = {{ $conteoB }}</th>
+            <th>Σ = {{ $conteoC }}</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Restante: </th>
+            <th>Tomatodo {{ $restanteA }}</th>
+            <th>Caja {{ $restanteB }}</th>
+            <th>Globos {{ $restanteC }}</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th></th>
+            <th>Total en inventario:</th>
+            <th>Tomatodo {{ $inventario[2]->cantidad }}</th>
+            <th>Caja {{ $inventario[1]->cantidad }}</th>
+            <th>Globos {{ $inventario[0]->cantidad }}</th>
+        </tr>
+    </tfoot>
 </table>
 <script>
 $(document).ready(function() {

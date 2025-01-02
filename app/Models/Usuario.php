@@ -427,10 +427,8 @@ class Usuario extends Model
 
     static function get_list_proximos_cumpleanios_admin($dato)
     {
-        $anio = date('Y');
         $sql = "SELECT u.id_usuario,u.centro_labores,u.foto,u.usuario_nombres,u.usuario_apater,u.usuario_amater,u.fec_nac,u.foto_nombre,
         CONCAT(YEAR(NOW()), '-', DATE_FORMAT(u.fec_nac, '%m-%d')) as cumpleanio,
-        (SELECT COUNT(*) FROM saludo_cumpleanio_historial i where i.id_cumpleaniero=u.id_usuario and year(i.fec_reg)='$anio' and i.estado=1) as cantidad,
         p.nom_puesto
         FROM users u
         left join puesto p on u.id_puesto=p.id_puesto
