@@ -522,7 +522,6 @@ class ColaboradorController extends Controller
     public function excel_ce($id_gerencia){  
         $list_cesado = Usuario::get_list_cesado(['id_gerencia' => $id_gerencia,'excel'=>1]);
         $url = Config::where('id_config',8)->first();
-        $dato['url_archivo'] = $url[0]['url_config'];
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();

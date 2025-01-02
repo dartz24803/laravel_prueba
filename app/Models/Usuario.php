@@ -526,182 +526,182 @@ class Usuario extends Model
         }
         if(isset($dato['excel'])){
             $sql = "SELECT u.id_usuario, u.usuario_apater,
-            u.centro_labores, td.cod_tipo_documento,
-            td.nom_tipo_documento, u.num_celp,u.num_doc, 
-            u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, u.foto,
-            estau.nom_estado_usuario, ge.nom_genero, depart.nombre_departamento,
-            provic.nombre_provincia, distr.nombre_distrito, banc.nom_banco,
-            spn.cod_sistema_pensionario, afp.nom_afp, banc.nom_banco, cb.num_cuenta_bancaria,
-            u.fec_ingreso, u.fec_termino,em.ruc_empresa,
-            u.usuario_email, u.fec_nac, situlab.nom_situacion_laboral,u.ini_funciones,u.hijos, 
-            (case when u.usuario_nombres is not null and u.usuario_apater is not null and 
-            u.usuario_amater is not null and u.id_nacionalidad is not null and 
-            u.id_tipo_documento is not null and u.num_doc is not null and 
-            u.id_genero is not null and u.fec_nac is not null and u.id_estado_civil is not null and 
-            u.num_celp is not null and u.foto_nombre <>'' and 
-            (u.emailp is not null || u.usuario_email is not null) then 1 else 0 end) AS datos_personales,
-            (case when (select count(1) from gusto_preferencia_users 
-            where gusto_preferencia_users.id_usuario=u.id_usuario and 
-            gusto_preferencia_users.estado=1)>0 then 1 else 0 end) as gustos_preferencias,
-            (case when d.id_departamento is not null and d.id_provincia is not null and 
-            d.id_distrito is not null and d.id_tipo_vivienda is not null and 
-            d.referencia is not null and d.lat is not null and d.lng is not null
-            then 1 else 0 end) AS domicilio_user,
-            (case when (select count(1) from referencia_familiar 
-            where referencia_familiar.id_usuario=u.id_usuario and 
-            referencia_familiar.nom_familiar is not null
-            and referencia_familiar.id_parentesco is not null
-            and referencia_familiar.fec_nac is not null and 
-            (referencia_familiar.celular1 is not null || referencia_familiar.celular2 is not null || 
-            referencia_familiar.fijo is not null) and referencia_familiar.estado=1)>0
-            then 1 else 0 end) AS referencia,
-            (case when u.hijos=2 or (u.hijos=1 and (select count(1) from hijos 
-            where hijos.id_usuario=u.id_usuario AND hijos.nom_hijo IS NOT NULL AND 
-            hijos.id_genero IS NOT NULL AND hijos.fec_nac IS NOT NULL AND 
-            hijos.num_doc IS NOT NULL AND hijos.id_biologico IS NOT NULL AND 
-            hijos.documento IS NOT NULL AND hijos.estado=1)>0) then 1 else 0 end) AS cont_hijos,
-            (case when (select count(1) from contacto_emergencia 
-            where contacto_emergencia.id_usuario=u.id_usuario and 
-            contacto_emergencia.nom_contacto is not null
-            and contacto_emergencia.id_parentesco is not null
-            and (contacto_emergencia.celular1 is not null || 
-            contacto_emergencia.celular2 is not null || 
-            contacto_emergencia.fijo is not null) and contacto_emergencia.estado=1)>0
-            then 1 else 0 end) AS contactoe,
-            (case when (select count(1) from estudios_generales 
-            where estudios_generales.id_usuario=u.id_usuario and 
-            estudios_generales.id_grado_instruccion is not null
-            and (estudios_generales.carrera is not null || estudios_generales.centro is not null) and 
-            estudios_generales.estado=1)>0 then 1 else 0 end) AS estudiosg,
-            (case when co.nl_excel is not null and 
-            co.nl_word is not null and co.nl_ppoint is not null
-            then 1 else 0 end) AS office, 
-            (case when (select count(1) from conoci_idiomas 
-            where conoci_idiomas.id_usuario=u.id_usuario and conoci_idiomas.estado=1)>0 
-            then 1 else 0 end) AS idiomas,
-            1 AS con_cursos_compl,
-            (case when (select count(1) from experiencia_laboral 
-            where experiencia_laboral.id_usuario=u.id_usuario and 
-            experiencia_laboral.empresa is not null
-            and experiencia_laboral.cargo is not null and 
-            experiencia_laboral.fec_ini is not null
-            and experiencia_laboral.fec_fin is not null and 
-            experiencia_laboral.motivo_salida is not null
-            and experiencia_laboral.remuneracion is not null and experiencia_laboral.estado=1)>0
-            then 1 else 0 end) AS experiencial, 
-            (case when u.enfermedades=2 or (u.enfermedades=1 and 
-            (select count(1) from enfermedad_usuario 
-            where enfermedad_usuario.id_usuario=u.id_usuario and enfermedad_usuario.estado=1)>0) 
-            then 1 else 0 end) AS cont_enfermedades,
-            (case when u.id_genero=1 or (select count(1) from gestacion_usuario 
-            where gestacion_usuario.id_usuario=u.id_usuario and gestacion_usuario.estado=1)>0 
-            then 1 else 0 end) AS gestacion,
-            (case when u.alergia=0 then 0 else 1 end) AS cont_alergia, 
-            (case when (select count(1) from otros_usuario 
-            where otros_usuario.id_usuario=u.id_usuario and otros_usuario.estado=1)>0 
-            then 1 else 0 end) AS con_otros,
-            (case when (select count(1) from referencia_convocatoria 
-            where referencia_convocatoria.id_usuario=u.id_usuario and 
-            referencia_convocatoria.estado=1)>0 then 1 else 0 end) AS ref_convoc,
-            (case when du.cv_doc <>'' and du.dni_doc <>'' and 
-            du.recibo_doc <>'' then 1 else 0 end) as documentacion,
-            (case when ru.polo is not null and ru.pantalon is not null and ru.zapato is not null
-            then 1 else 0 end) AS talla_usuario,
-            (case when sp.id_respuestasp is not null then 1 else 0 end) AS sistema_pension,
-            (case when cb.cuenta_bancaria=2 then 1
-            when cb.id_banco is not null and cb.cuenta_bancaria is not null 
-            and cb.cuenta_bancaria=1 and cb.num_cuenta_bancaria is not null 
-            and cb.num_codigo_interbancario is not null then 1 else 0 end) AS cuenta_bancaria,
-            (case when u.terminos=0 then 0 else 1 end) AS cont_terminos,
-            (case when ou.id_grupo_sanguineo is not null
-            then 1 else 0 end) as grupo_sanguineo,
-            (case when ou.cert_vacu_covid is not null then 1 else 0 end) as covid,
-            ou.cert_vacu_covid,        
-            (case when (select count(1) from documentacion_usuario 
-            where documentacion_usuario.id_usuario and documentacion_usuario.estado=1)>0 
-            then 1 else 0 end) AS adj_documentacion,
-            a.nom_area, g.nom_gerencia, p.nom_puesto,
-            em.nom_empresa, du.dni_doc,
-            (case when u.id_horario is not null
-            then h.nombre else 'Sin Horario' end) as horariof,
-            (case when u.id_modalidad_laboral!=0
-            then md.nom_modalidad_laboral else 'Sin Modalidad' end) as modalidadf, tp.cod_talla as polo,
-            tc.cod_talla as camisa, tpa.cod_talla as pantalon, tz.cod_talla as zapato, 
-            gs.nom_grupo_sanguineo,CASE WHEN YEAR(u.fec_nac) BETWEEN 1946 AND 1964 THEN 'Baby Boomer'
-            WHEN YEAR(u.fec_nac) BETWEEN 1965 AND 1980 THEN 'Generación X'
-            WHEN YEAR(u.fec_nac) BETWEEN 1981 AND 1996 THEN 'Generación Y (Millennials)'
-            WHEN YEAR(u.fec_nac) BETWEEN 1997 AND 2012 THEN 'Generación Z'
-            WHEN YEAR(u.fec_nac) >= 2013 THEN 'Generación Alpha'
-            ELSE 'No se pudo determinar la generación'
-            END AS generacion,u.fin_funciones,tvia.nom_tipo_via,d.nom_via,d.num_via,d.kilometro,
-            d.manzana,d.interior,d.departamento,d.lote,d.piso,zon.nom_zona AS nom_tipo_zona,
-            d.nom_zona,tviv.nom_tipo_vivienda,d.referencia AS referencia_domicilio,
-            CONCAT((CASE WHEN d.id_tipo_via!=0 AND d.id_tipo_via!=21 THEN 
-            CONCAT(tvia.nom_tipo_via,' ') ELSE '' END),
-            (CASE WHEN d.nom_via!='' AND d.nom_via!='NO' AND d.nom_via!='No' AND 
-            d.nom_via!='no' AND d.nom_via!='-' AND d.nom_via!='.' 
-            THEN CONCAT(d.nom_via,' ') ELSE '' END),
-            (CASE WHEN d.num_via!='' AND d.num_via!='NO' AND d.num_via!='No' AND 
-            d.num_via!='no' AND d.num_via!='-' AND d.num_via!='.' 
-            THEN CONCAT(d.num_via,' ') ELSE '' END),
-            (CASE WHEN d.kilometro!='' AND d.kilometro!='NO' AND d.kilometro!='No' AND 
-            d.kilometro!='no' AND d.kilometro!='-' AND d.kilometro!='.' 
-            THEN CONCAT('KM ',d.kilometro,' ') ELSE '' END),
-            (CASE WHEN d.manzana!='' AND d.manzana!='NO' AND d.manzana!='No' AND 
-            d.manzana!='no' AND d.manzana!='-' AND d.manzana!='.' 
-            THEN CONCAT('MZ ',d.manzana,' ') ELSE '' END),
-            (CASE WHEN d.lote!='' AND d.lote!='NO' AND d.lote!='No' AND 
-            d.lote!='no' AND d.lote!='-' AND d.lote!='.' 
-            THEN CONCAT('LT ',d.lote,' ') ELSE '' END),
-            (CASE WHEN d.interior!='' AND d.interior!='NO' AND d.interior!='No' AND 
-            d.interior!='no' AND d.interior!='-' AND d.interior!='.' 
-            THEN CONCAT('INT ',d.interior,' ') ELSE '' END),
-            (CASE WHEN d.departamento!='' AND d.departamento!='NO' AND d.departamento!='No' AND 
-            d.departamento!='no' AND d.departamento!='-' AND d.departamento!='.' 
-            THEN CONCAT('DPTO ',d.departamento,' ') ELSE '' END),
-            (CASE WHEN d.piso!='' AND d.piso!='NO' AND d.piso!='No' AND 
-            d.piso!='no' AND d.piso!='-' AND d.piso!='.' 
-            THEN CONCAT('Piso ',d.piso,' ') ELSE '' END),
-            (CASE WHEN d.id_zona!=0 AND d.id_zona!=11 THEN CONCAT(zon.nom_zona,' ') ELSE '' END),
-            (CASE WHEN d.nom_zona!='' AND d.nom_zona!='NO' AND d.nom_zona!='No' AND 
-            d.nom_zona!='no' AND d.nom_zona!='-' AND d.nom_zona!='.' 
-            THEN CONCAT(d.nom_zona,' ') ELSE '' END)) AS direccion_completa,sg.nom_sub_gerencia
-            from users u 
-            INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
-            INNER JOIN area a ON a.id_area=p.id_area 
-            INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento 
-            INNER JOIN gerencia g ON g.id_gerencia=sg.id_gerencia
-            LEFT JOIN domicilio_users d on d.id_usuario=u.id_usuario
-            LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
-            LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
-            LEFT JOIN conoci_office co on co.id_usuario=u.id_usuario
-            LEFT JOIN otros_usuario ou on ou.id_usuario=u.id_usuario
-            LEFT JOIN grupo_sanguineo gs on ou.id_grupo_sanguineo=gs.id_grupo_sanguineo
-            LEFT JOIN documentacion_usuario du on du.id_usuario=u.id_usuario
-            LEFT JOIN cuenta_bancaria cb on cb.id_usuario=u.id_usuario
-            LEFT JOIN ropa_usuario ru on ru.id_usuario=u.id_usuario
-            LEFT JOIN sist_pens_usuario sp on sp.id_usuario=u.id_usuario
-            LEFT JOIN empresas em on em.id_empresa=u.id_empresapl
-            LEFT JOIN estado_usuario estau on estau.id_estado_usuario=u.estado
-            LEFT JOIN genero ge on ge.id_genero=u.id_genero
-            LEFT JOIN departamento depart on depart.id_departamento=d.id_departamento
-            LEFT JOIN provincia provic on provic.id_provincia=d.id_provincia
-            LEFT JOIN distrito distr on distr.id_distrito=d.id_distrito
-            LEFT JOIN banco banc on banc.id_banco=cb.id_banco
-            LEFT JOIN sistema_pensionario spn on spn.id_sistema_pensionario =sp.id_sistema_pensionario 
-            LEFT JOIN afp afp on afp.id_afp  =sp.id_afp  
-            LEFT JOIN situacion_laboral situlab on situlab.id_situacion_laboral =u.id_situacion_laboral 
-            LEFT JOIN horario h on u.id_horario=h.id_horario
-            LEFT JOIN modalidad_laboral md on u.id_modalidad_laboral=md.id_modalidad_laboral
-            LEFT JOIN talla tp on tp.id_talla=ru.polo
-            LEFT JOIN talla tc on tc.id_talla=ru.camisa
-            LEFT JOIN talla tpa on tpa.id_talla=ru.pantalon
-            LEFT JOIN talla tz on tz.id_talla=ru.zapato
-            LEFT JOIN tipo_via tvia ON tvia.id_tipo_via=d.id_tipo_via
-            LEFT JOIN zona zon ON zon.id_zona=d.id_zona
-            LEFT JOIN tipo_vivienda tviv ON tviv.id_tipo_vivienda=d.id_tipo_vivienda
-            WHERE $parte_gerencia u.id_nivel<>8 AND u.estado=3
-            ORDER BY u.ini_funciones DESC";
+                    u.centro_labores, td.cod_tipo_documento,
+                    td.nom_tipo_documento, u.num_celp,u.num_doc, 
+                    u.usuario_amater, u.usuario_nombres, n.nom_nacionalidad, u.foto,
+                    estau.nom_estado_usuario, gn.nom_genero, depart.nombre_departamento,
+                    provic.nombre_provincia, distr.nombre_distrito, banc.nom_banco,
+                    spn.cod_sistema_pensionario, afp.nom_afp, banc.nom_banco, cb.num_cuenta_bancaria,
+                    u.fec_ingreso, u.fec_termino,em.ruc_empresa,
+                    u.usuario_email, u.fec_nac, situlab.nom_situacion_laboral,u.ini_funciones,u.hijos, 
+                    (case when u.usuario_nombres is not null and u.usuario_apater is not null and 
+                    u.usuario_amater is not null and u.id_nacionalidad is not null and 
+                    u.id_tipo_documento is not null and u.num_doc is not null and 
+                    u.id_genero is not null and u.fec_nac is not null and u.id_estado_civil is not null and 
+                    u.num_celp is not null and u.foto_nombre <>'' and 
+                    (u.emailp is not null || u.usuario_email is not null) then 1 else 0 end) AS datos_personales,
+                    (case when (select count(1) from gusto_preferencia_users 
+                    where gusto_preferencia_users.id_usuario=u.id_usuario and 
+                    gusto_preferencia_users.estado=1)>0 then 1 else 0 end) as gustos_preferencias,
+                    (case when d.id_departamento is not null and d.id_provincia is not null and 
+                    d.id_distrito is not null and d.id_tipo_vivienda is not null and 
+                    d.referencia is not null and d.lat is not null and d.lng is not null
+                    then 1 else 0 end) AS domicilio_user,
+                    (case when (select count(1) from referencia_familiar 
+                    where referencia_familiar.id_usuario=u.id_usuario and 
+                    referencia_familiar.nom_familiar is not null
+                    and referencia_familiar.id_parentesco is not null
+                    and referencia_familiar.fec_nac is not null and 
+                    (referencia_familiar.celular1 is not null || referencia_familiar.celular2 is not null || 
+                    referencia_familiar.fijo is not null) and referencia_familiar.estado=1)>0
+                    then 1 else 0 end) AS referencia,
+                    (case when u.hijos=2 or (u.hijos=1 and (select count(1) from hijos 
+                    where hijos.id_usuario=u.id_usuario AND hijos.nom_hijo IS NOT NULL AND 
+                    hijos.id_genero IS NOT NULL AND hijos.fec_nac IS NOT NULL AND 
+                    hijos.num_doc IS NOT NULL AND hijos.id_biologico IS NOT NULL AND 
+                    hijos.documento IS NOT NULL AND hijos.estado=1)>0) then 1 else 0 end) AS cont_hijos,
+                    (case when (select count(1) from contacto_emergencia 
+                    where contacto_emergencia.id_usuario=u.id_usuario and 
+                    contacto_emergencia.nom_contacto is not null
+                    and contacto_emergencia.id_parentesco is not null
+                    and (contacto_emergencia.celular1 is not null || 
+                    contacto_emergencia.celular2 is not null || 
+                    contacto_emergencia.fijo is not null) and contacto_emergencia.estado=1)>0
+                    then 1 else 0 end) AS contactoe,
+                    (case when (select count(1) from estudios_generales 
+                    where estudios_generales.id_usuario=u.id_usuario and 
+                    estudios_generales.id_grado_instruccion is not null
+                    and (estudios_generales.carrera is not null || estudios_generales.centro is not null) and 
+                    estudios_generales.estado=1)>0 then 1 else 0 end) AS estudiosg,
+                    (case when co.nl_excel is not null and 
+                    co.nl_word is not null and co.nl_ppoint is not null
+                    then 1 else 0 end) AS office, 
+                    (case when (select count(1) from conoci_idiomas 
+                    where conoci_idiomas.id_usuario=u.id_usuario and conoci_idiomas.estado=1)>0 
+                    then 1 else 0 end) AS idiomas,
+                    1 AS con_cursos_compl,
+                    (case when (select count(1) from experiencia_laboral 
+                    where experiencia_laboral.id_usuario=u.id_usuario and 
+                    experiencia_laboral.empresa is not null
+                    and experiencia_laboral.cargo is not null and 
+                    experiencia_laboral.fec_ini is not null
+                    and experiencia_laboral.fec_fin is not null and 
+                    experiencia_laboral.motivo_salida is not null
+                    and experiencia_laboral.remuneracion is not null and experiencia_laboral.estado=1)>0
+                    then 1 else 0 end) AS experiencial, 
+                    (case when u.enfermedades=2 or (u.enfermedades=1 and 
+                    (select count(1) from enfermedad_usuario 
+                    where enfermedad_usuario.id_usuario=u.id_usuario and enfermedad_usuario.estado=1)>0) 
+                    then 1 else 0 end) AS cont_enfermedades,
+                    (case when u.id_genero=1 or (select count(1) from gestacion_usuario 
+                    where gestacion_usuario.id_usuario=u.id_usuario and gestacion_usuario.estado=1)>0 
+                    then 1 else 0 end) AS gestacion,
+                    (case when u.alergia=0 then 0 else 1 end) AS cont_alergia, 
+                    (case when (select count(1) from otros_usuario 
+                    where otros_usuario.id_usuario=u.id_usuario and otros_usuario.estado=1)>0 
+                    then 1 else 0 end) AS con_otros,
+                    (case when (select count(1) from referencia_convocatoria 
+                    where referencia_convocatoria.id_usuario=u.id_usuario and 
+                    referencia_convocatoria.estado=1)>0 then 1 else 0 end) AS ref_convoc,
+                    (case when du.cv_doc <>'' and du.dni_doc <>'' and 
+                    du.recibo_doc <>'' then 1 else 0 end) as documentacion,
+                    (case when ru.polo is not null and ru.pantalon is not null and ru.zapato is not null
+                    then 1 else 0 end) AS talla_usuario,
+                    (case when sp.id_respuestasp is not null then 1 else 0 end) AS sistema_pension,
+                    (case when cb.cuenta_bancaria=2 then 1
+                    when cb.id_banco is not null and cb.cuenta_bancaria is not null 
+                    and cb.cuenta_bancaria=1 and cb.num_cuenta_bancaria is not null 
+                    and cb.num_codigo_interbancario is not null then 1 else 0 end) AS cuenta_bancaria,
+                    (case when u.terminos=0 then 0 else 1 end) AS cont_terminos,
+                    (case when ou.id_grupo_sanguineo is not null
+                    then 1 else 0 end) as grupo_sanguineo,
+                    (case when ou.cert_vacu_covid is not null then 1 else 0 end) as covid,
+                    ou.cert_vacu_covid,        
+                    (case when (select count(1) from documentacion_usuario 
+                    where documentacion_usuario.id_usuario and documentacion_usuario.estado=1)>0 
+                    then 1 else 0 end) AS adj_documentacion,
+                    a.nom_area, ge.nom_gerencia, p.nom_puesto,
+                    em.nom_empresa, du.dni_doc,
+                    (case when u.id_horario is not null
+                    then h.nombre else 'Sin Horario' end) as horariof,
+                    (case when u.id_modalidad_laboral!=0
+                    then md.nom_modalidad_laboral else 'Sin Modalidad' end) as modalidadf, tp.cod_talla as polo,
+                    tc.cod_talla as camisa, tpa.cod_talla as pantalon, tz.cod_talla as zapato, 
+                    gs.nom_grupo_sanguineo,CASE WHEN YEAR(u.fec_nac) BETWEEN 1946 AND 1964 THEN 'Baby Boomer'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1965 AND 1980 THEN 'Generación X'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1981 AND 1996 THEN 'Generación Y (Millennials)'
+                    WHEN YEAR(u.fec_nac) BETWEEN 1997 AND 2012 THEN 'Generación Z'
+                    WHEN YEAR(u.fec_nac) >= 2013 THEN 'Generación Alpha'
+                    ELSE 'No se pudo determinar la generación'
+                    END AS generacion,u.fin_funciones,tvia.nom_tipo_via,d.nom_via,d.num_via,d.kilometro,
+                    d.manzana,d.interior,d.departamento,d.lote,d.piso,zon.nom_zona AS nom_tipo_zona,
+                    d.nom_zona,tviv.nom_tipo_vivienda,d.referencia AS referencia_domicilio,
+                    CONCAT((CASE WHEN d.id_tipo_via!=0 AND d.id_tipo_via!=21 THEN 
+                    CONCAT(tvia.nom_tipo_via,' ') ELSE '' END),
+                    (CASE WHEN d.nom_via!='' AND d.nom_via!='NO' AND d.nom_via!='No' AND 
+                    d.nom_via!='no' AND d.nom_via!='-' AND d.nom_via!='.' 
+                    THEN CONCAT(d.nom_via,' ') ELSE '' END),
+                    (CASE WHEN d.num_via!='' AND d.num_via!='NO' AND d.num_via!='No' AND 
+                    d.num_via!='no' AND d.num_via!='-' AND d.num_via!='.' 
+                    THEN CONCAT(d.num_via,' ') ELSE '' END),
+                    (CASE WHEN d.kilometro!='' AND d.kilometro!='NO' AND d.kilometro!='No' AND 
+                    d.kilometro!='no' AND d.kilometro!='-' AND d.kilometro!='.' 
+                    THEN CONCAT('KM ',d.kilometro,' ') ELSE '' END),
+                    (CASE WHEN d.manzana!='' AND d.manzana!='NO' AND d.manzana!='No' AND 
+                    d.manzana!='no' AND d.manzana!='-' AND d.manzana!='.' 
+                    THEN CONCAT('MZ ',d.manzana,' ') ELSE '' END),
+                    (CASE WHEN d.lote!='' AND d.lote!='NO' AND d.lote!='No' AND 
+                    d.lote!='no' AND d.lote!='-' AND d.lote!='.' 
+                    THEN CONCAT('LT ',d.lote,' ') ELSE '' END),
+                    (CASE WHEN d.interior!='' AND d.interior!='NO' AND d.interior!='No' AND 
+                    d.interior!='no' AND d.interior!='-' AND d.interior!='.' 
+                    THEN CONCAT('INT ',d.interior,' ') ELSE '' END),
+                    (CASE WHEN d.departamento!='' AND d.departamento!='NO' AND d.departamento!='No' AND 
+                    d.departamento!='no' AND d.departamento!='-' AND d.departamento!='.' 
+                    THEN CONCAT('DPTO ',d.departamento,' ') ELSE '' END),
+                    (CASE WHEN d.piso!='' AND d.piso!='NO' AND d.piso!='No' AND 
+                    d.piso!='no' AND d.piso!='-' AND d.piso!='.' 
+                    THEN CONCAT('Piso ',d.piso,' ') ELSE '' END),
+                    (CASE WHEN d.id_zona!=0 AND d.id_zona!=11 THEN CONCAT(zon.nom_zona,' ') ELSE '' END),
+                    (CASE WHEN d.nom_zona!='' AND d.nom_zona!='NO' AND d.nom_zona!='No' AND 
+                    d.nom_zona!='no' AND d.nom_zona!='-' AND d.nom_zona!='.' 
+                    THEN CONCAT(d.nom_zona,' ') ELSE '' END)) AS direccion_completa,sg.nom_sub_gerencia
+                    from users u 
+                    INNER JOIN puesto p ON p.id_puesto=u.id_puesto 
+                    INNER JOIN area a ON a.id_area=p.id_area 
+                    INNER JOIN sub_gerencia sg ON sg.id_sub_gerencia=a.id_departamento 
+                    INNER JOIN gerencia ge ON ge.id_gerencia=sg.id_gerencia
+                    LEFT JOIN domicilio_users d on d.id_usuario=u.id_usuario
+                    LEFT JOIN tipo_documento td on td.id_tipo_documento=u.id_tipo_documento
+                    LEFT JOIN nacionalidad n on n.id_nacionalidad=u.id_nacionalidad
+                    LEFT JOIN conoci_office co on co.id_usuario=u.id_usuario
+                    LEFT JOIN otros_usuario ou on ou.id_usuario=u.id_usuario
+                    LEFT JOIN grupo_sanguineo gs on ou.id_grupo_sanguineo=gs.id_grupo_sanguineo
+                    LEFT JOIN documentacion_usuario du on du.id_usuario=u.id_usuario
+                    LEFT JOIN cuenta_bancaria cb on cb.id_usuario=u.id_usuario
+                    LEFT JOIN ropa_usuario ru on ru.id_usuario=u.id_usuario
+                    LEFT JOIN sist_pens_usuario sp on sp.id_usuario=u.id_usuario
+                    LEFT JOIN empresas em on em.id_empresa=u.id_empresapl
+                    LEFT JOIN estado_usuario estau on estau.id_estado_usuario=u.estado
+                    LEFT JOIN genero gn on gn.id_genero=u.id_genero
+                    LEFT JOIN departamento depart on depart.id_departamento=d.id_departamento
+                    LEFT JOIN provincia provic on provic.id_provincia=d.id_provincia
+                    LEFT JOIN distrito distr on distr.id_distrito=d.id_distrito
+                    LEFT JOIN banco banc on banc.id_banco=cb.id_banco
+                    LEFT JOIN sistema_pensionario spn on spn.id_sistema_pensionario =sp.id_sistema_pensionario 
+                    LEFT JOIN afp afp on afp.id_afp  =sp.id_afp  
+                    LEFT JOIN situacion_laboral situlab on situlab.id_situacion_laboral =u.id_situacion_laboral 
+                    LEFT JOIN horario h on u.id_horario=h.id_horario
+                    LEFT JOIN modalidad_laboral md on u.id_modalidad_laboral=md.id_modalidad_laboral
+                    LEFT JOIN talla tp on tp.id_talla=ru.polo
+                    LEFT JOIN talla tc on tc.id_talla=ru.camisa
+                    LEFT JOIN talla tpa on tpa.id_talla=ru.pantalon
+                    LEFT JOIN talla tz on tz.id_talla=ru.zapato
+                    LEFT JOIN tipo_via tvia ON tvia.id_tipo_via=d.id_tipo_via
+                    LEFT JOIN zona zon ON zon.id_zona=d.id_zona
+                    LEFT JOIN tipo_vivienda tviv ON tviv.id_tipo_vivienda=d.id_tipo_vivienda
+                    WHERE $parte_gerencia u.id_nivel<>8 AND u.estado=3
+                    ORDER BY u.ini_funciones DESC";
         }else{
             $sql = "SELECT us.id_usuario,us.ini_funciones AS orden,
                     CASE WHEN YEAR(us.fec_nac) BETWEEN 1946 AND 1964 THEN 'BB'
