@@ -23,7 +23,6 @@
     </div>
 </div>
 
-@csrf
 <div class="table-responsive mb-4 mt-4" id="lista_cesado">
 </div>
 
@@ -35,7 +34,6 @@
 
         var id_gerencia = $('#id_gerenciab').val();
         var url = "{{ route('colaborador_ce.list') }}";
-        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             url: url,
@@ -44,7 +42,7 @@
                 'id_gerencia': id_gerencia
             },
             headers: {
-                'X-CSRF-TOKEN': csrfToken
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success: function(resp) {
                 $('#lista_cesado').html(resp);
@@ -56,7 +54,6 @@
         Cargando();
 
         var url = "{{ route('colaborador_ce.mail') }}";
-        var csrfToken = $('input[name="_token"]').val();
 
         $.ajax({
             type: "POST",
@@ -65,7 +62,7 @@
                 'id_usuario': id
             },
             headers: {
-                'X-CSRF-TOKEN': csrfToken
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
             },
             success: function(resp) {
                 swal.fire(
@@ -81,6 +78,6 @@
 
     function Excel_Cesado() {
         var id_gerencia = $('#id_gerenciab').val();
-        window.location = "{{ route('colaborador_ce.excel', ':id_servicio') }}".replace(':id_gerencia', id_gerencia);
+        window.location = "{{ route('colaborador_ce.excel', ':id_gerencia') }}".replace(':id_gerencia', id_gerencia);
     }
 </script>

@@ -519,6 +519,256 @@ class ColaboradorController extends Controller
         return view('rrhh.colaborador.cesado.modal_editar', compact('get_id'));
     }
 
+    public function excel_ce($id_gerencia){  
+        $list_cesado = Usuario::get_list_cesado(['id_gerencia' => $id_gerencia,'excel'=>1]);
+        $url = Config::where('id_config',8)->first();
+        $dato['url_archivo'] = $url[0]['url_config'];
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        $sheet->getStyle("A1:BA1")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle("A1:BA1")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+
+        $spreadsheet->getActiveSheet()->setTitle('Colaborador (Cesados)'); 
+
+        $sheet->setAutoFilter('A1:BA1');
+
+        $sheet->getColumnDimension('A')->setWidth(20);
+        $sheet->getColumnDimension('B')->setWidth(20);
+        $sheet->getColumnDimension('C')->setWidth(20);
+        $sheet->getColumnDimension('D')->setWidth(35);
+        $sheet->getColumnDimension('E')->setWidth(20);
+        $sheet->getColumnDimension('F')->setWidth(20);
+        $sheet->getColumnDimension('G')->setWidth(20);
+        $sheet->getColumnDimension('H')->setWidth(35);
+        $sheet->getColumnDimension('I')->setWidth(35);
+        $sheet->getColumnDimension('J')->setWidth(40);
+        $sheet->getColumnDimension('K')->setWidth(30);
+        $sheet->getColumnDimension('L')->setWidth(35);
+        $sheet->getColumnDimension('M')->setWidth(20);
+        $sheet->getColumnDimension('N')->setWidth(20);
+        $sheet->getColumnDimension('O')->setWidth(20);
+        $sheet->getColumnDimension('P')->setWidth(35);
+        $sheet->getColumnDimension('Q')->setWidth(20);
+        $sheet->getColumnDimension('R')->setWidth(20);
+        $sheet->getColumnDimension('S')->setWidth(20);
+        $sheet->getColumnDimension('T')->setWidth(30);
+        $sheet->getColumnDimension('U')->setWidth(20);
+        $sheet->getColumnDimension('V')->setWidth(20);
+        $sheet->getColumnDimension('W')->setWidth(30);
+        $sheet->getColumnDimension('X')->setWidth(20);
+        $sheet->getColumnDimension('Y')->setWidth(20);
+        $sheet->getColumnDimension('Z')->setWidth(30);
+        $sheet->getColumnDimension('AA')->setWidth(20);
+        $sheet->getColumnDimension('AB')->setWidth(20);
+        $sheet->getColumnDimension('AC')->setWidth(30);
+        $sheet->getColumnDimension('AD')->setWidth(20);
+        $sheet->getColumnDimension('AE')->setWidth(20);
+        $sheet->getColumnDimension('AF')->setWidth(30);
+        $sheet->getColumnDimension('AG')->setWidth(60);
+        $sheet->getColumnDimension('AH')->setWidth(120);
+        $sheet->getColumnDimension('AI')->setWidth(20);
+        $sheet->getColumnDimension('AJ')->setWidth(25);
+        $sheet->getColumnDimension('AK')->setWidth(30);
+        $sheet->getColumnDimension('AL')->setWidth(25);
+        $sheet->getColumnDimension('AM')->setWidth(25);
+        $sheet->getColumnDimension('AN')->setWidth(25);
+        $sheet->getColumnDimension('AO')->setWidth(60);
+        $sheet->getColumnDimension('AP')->setWidth(20);
+        $sheet->getColumnDimension('AQ')->setWidth(20);
+        $sheet->getColumnDimension('AR')->setWidth(20);
+        $sheet->getColumnDimension('AS')->setWidth(20);
+        $sheet->getColumnDimension('AT')->setWidth(20); 
+        $sheet->getColumnDimension('AU')->setWidth(20);
+        $sheet->getColumnDimension('AV')->setWidth(20);
+        $sheet->getColumnDimension('AW')->setWidth(20);
+        $sheet->getColumnDimension('AX')->setWidth(20);
+        $sheet->getColumnDimension('AY')->setWidth(20);
+        $sheet->getColumnDimension('AZ')->setWidth(25);
+        $sheet->getColumnDimension('BA')->setWidth(20); 
+
+        $sheet->getStyle('A1:BA1')->getFont()->setBold(true);  
+
+        $spreadsheet->getActiveSheet()->getStyle("A1:BA1")->getFill()
+        ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+        ->getStartColor()->setARGB('657099');
+
+        $styleThinBlackBorderOutline = [
+            'borders' => [
+                'allBorders' => [
+                    'borderStyle' => Border::BORDER_THIN,
+                    'color' => ['argb' => 'FF000000'],
+                ],
+            ],
+        ];
+
+        $sheet->getStyle("A1:BA1")->applyFromArray($styleThinBlackBorderOutline);
+
+        $sheet->setCellValue('A1', 'ESTADO');
+        $sheet->setCellValue('B1', 'FECHA DE PLANILLA');
+        $sheet->setCellValue('C1', 'CENTRO DE LABORES');
+        $sheet->setCellValue('D1', 'APELLIDO PATERNO');
+        $sheet->setCellValue('E1', 'APELLIDO MATERNO');
+        $sheet->setCellValue('F1', 'NOMBRES');
+        $sheet->setCellValue('G1', 'PUESTO');
+        $sheet->setCellValue('H1', 'ÁREA');
+        $sheet->setCellValue('I1', 'DEPARTAMENTO');
+        $sheet->setCellValue('J1', 'GERENCIA');
+        $sheet->setCellValue('K1', 'TIPO DOCUMENTO');
+        $sheet->setCellValue('L1', 'NUM. DOCUMENTO');
+        $sheet->setCellValue('M1', 'DOCUMENTO');
+        $sheet->setCellValue('N1', 'GENERO');
+        $sheet->setCellValue('O1', 'FECHA DE NACIMIENTO');
+        $sheet->setCellValue('P1', 'CORREO ELECTRÓNICO');
+        $sheet->setCellValue('Q1', 'TELÉFONO CELULAR');
+        $sheet->setCellValue('R1', 'DEPARTAMENTO');
+        $sheet->setCellValue('S1', 'PROVINCIA');
+        $sheet->setCellValue('T1', 'DISTRITO');
+        $sheet->setCellValue('U1', 'TIPO VÍA');
+        $sheet->setCellValue('V1', 'NOMBRE VÍA');
+        $sheet->setCellValue('W1', 'NÚMERO VÍA');
+        $sheet->setCellValue('X1', 'KM');
+        $sheet->setCellValue('Y1', 'MZ');
+        $sheet->setCellValue('Z1', 'INTERIOR');
+        $sheet->setCellValue('AA1', 'N° DEPARTAMENTO');
+        $sheet->setCellValue('AB1', 'LOTE');
+        $sheet->setCellValue('AC1', 'PISO');
+        $sheet->setCellValue('AD1', 'TIPO ZONA');
+        $sheet->setCellValue('AE1', 'NOMBRE ZONA');
+        $sheet->setCellValue('AF1', 'TIPO VIVIENDA');
+        $sheet->setCellValue('AG1', 'REFERENCIA DOMICILIO');
+        $sheet->setCellValue('AH1', 'DIRECCIÓN COMPLETA');
+        $sheet->setCellValue('AI1', 'SISTEMA DE PENSIONES');
+        $sheet->setCellValue('AJ1', 'BANCO');
+        $sheet->setCellValue('AK1', 'NÚMERO DE CUENTA');
+        $sheet->setCellValue('AL1', 'ANTIGUEDAD EN AÑOS');
+        $sheet->setCellValue('AM1', 'ANTIGUEDAD EN MESES');
+        $sheet->setCellValue('AN1', 'SITUACIÓN LABORAL');
+        $sheet->setCellValue('AO1', 'RAZON SOCIAL');
+        $sheet->setCellValue('AP1', 'HIJOS');
+        $sheet->setCellValue('AQ1', 'PROGRESO');
+        $sheet->setCellValue('AR1', 'CARNET VACUNACION');
+        $sheet->setCellValue('AS1', 'HORARIO');
+        $sheet->setCellValue('AT1', 'MODALIDAD');
+        $sheet->setCellValue('AU1', 'T. POLO');
+        $sheet->setCellValue('AV1', 'T. CAMISA');
+        $sheet->setCellValue('AW1', 'T. PANTALÓN');
+        $sheet->setCellValue('AX1', 'T. ZAPATO');
+        $sheet->setCellValue('AY1', 'T. SANGRE');
+        $sheet->setCellValue('AZ1', 'GENERACIÓN');
+        $sheet->setCellValue('BA1', 'FECHA CESE');
+
+        $contador=1;
+        
+        foreach($list_cesado as $list){
+            $contador++;
+
+            $sheet->getStyle("A{$contador}:BA{$contador}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+            $sheet->getStyle("A{$contador}:BA{$contador}")->applyFromArray($styleThinBlackBorderOutline);
+
+            $sheet->setCellValue("A{$contador}", $list->nom_estado_usuario);
+            if($list->ini_funciones===null || $list->ini_funciones==='0000-00-00'){
+            }else{
+                $sheet->setCellValue("B{$contador}", Date::PHPToExcel($list->ini_funciones));
+            }
+            $sheet->getStyle("B{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DMYSLASH);
+            $sheet->setCellValue("C{$contador}", $list->centro_labores);
+            $sheet->setCellValue("D{$contador}", $list->usuario_apater);
+            $sheet->setCellValue("E{$contador}", $list->usuario_amater);
+            $sheet->setCellValue("F{$contador}", $list->usuario_nombres);
+            $sheet->setCellValue("G{$contador}", $list->nom_puesto);
+            $sheet->setCellValue("H{$contador}", $list->nom_area);
+            $sheet->setCellValue("I{$contador}", $list->nom_sub_gerencia);
+            $sheet->setCellValue("J{$contador}", $list->nom_gerencia);
+            $sheet->setCellValue("K{$contador}", $list->cod_tipo_documento);
+            $sheet->setCellValue("L{$contador}", $list->num_doc);
+            $sheet->setCellValue("M{$contador}", $list->num_doc);
+            $sheet->getCell("M{$contador}")->getHyperlink()->setUrl($url->url_config.$list->dni_doc);
+            $sheet->setCellValue("N{$contador}", $list->nom_genero);
+            $sheet->setCellValue("O{$contador}", $list->fec_nac);
+            $sheet->setCellValue("P{$contador}", $list->usuario_email);                
+            $sheet->setCellValue("Q{$contador}", $list->num_celp);
+            $sheet->setCellValue("R{$contador}", $list->nombre_departamento);
+            $sheet->setCellValue("S{$contador}", $list->nombre_provincia);
+            $sheet->setCellValue("T{$contador}", $list->nombre_distrito);
+            $sheet->setCellValue("U{$contador}", $list->nom_tipo_via);
+            $sheet->setCellValue("V{$contador}", $list->nom_via);
+            $sheet->setCellValue("W{$contador}", $list->num_via);
+            $sheet->setCellValue("X{$contador}", $list->kilometro);
+            $sheet->setCellValue("Y{$contador}", $list->manzana);
+            $sheet->setCellValue("Z{$contador}", $list->interior);
+            $sheet->setCellValue("AA{$contador}", $list->departamento);
+            $sheet->setCellValue("AB{$contador}", $list->lote);
+            $sheet->setCellValue("AC{$contador}", $list->piso);
+            $sheet->setCellValue("AD{$contador}", $list->nom_tipo_zona);
+            $sheet->setCellValue("AE{$contador}", $list->nom_zona);
+            $sheet->setCellValue("AF{$contador}", $list->nom_tipo_vivienda);
+            $sheet->setCellValue("AG{$contador}", $list->referencia_domicilio);
+            $sheet->setCellValue("AH{$contador}", $list->direccion_completa);
+            $sheet->setCellValue("AI{$contador}", $list->cod_sistema_pensionario);
+            $sheet->setCellValue("AJ{$contador}", $list->nom_banco);
+            $sheet->setCellValue("AK{$contador}", $list->num_cuenta_bancaria);
+            $sheet->getStyle("AK{$contador}")->getNumberFormat()->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_NUMBER);
+            
+            $diferencia = date_diff(date_create($list->ini_funciones),date_create(date('d-m-Y')));
+            $anio= $diferencia->y;
+            $mes= $diferencia->m;
+            
+            if($list->ini_funciones==null){
+                $sheet->setCellValue                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       ("Y{$contador}", $list->ini_funciones);    
+            }else{
+                $sheet->setCellValue("AL{$contador}", $anio);    
+            }
+            if($list->ini_funciones==null){
+                $sheet->setCellValue("AM{$contador}", $list->ini_funciones);     
+            }else{
+                $sheet->setCellValue("AM{$contador}", $mes);    
+            }
+            
+            $sheet->setCellValue("AN{$contador}", $list->nom_situacion_laboral);
+            $sheet->setCellValue("AO{$contador}", $list->nom_empresa);
+            if($list->hijos== 1){
+            $sheet->setCellValue("AP{$contador}", 'SI');
+            }else{
+                $sheet->setCellValue("AP{$contador}", 'NO');    
+            } 
+            $porciento=round((($list->datos_personales+$list->gustos_preferencias+
+            $list->domicilio_user+$list->referencia+$list->cont_hijos+$list->contactoe+
+            $list->estudiosg+$list->office+$list->idiomas+$list->con_cursos_compl+
+            $list->experiencial+$list->cont_enfermedades+$list->gestacion+$list->cont_alergia+
+            $list->con_otros+$list->ref_convoc+$list->documentacion+$list->talla_usuario+
+            $list->sistema_pension+$list->cuenta_bancaria+$list->cont_terminos)/21)*1,4);
+            $sheet->setCellValue("AQ{$contador}", $porciento);
+            $sheet->getStyle("AQ{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_PERCENTAGE_00);
+            $sheet->setCellValue("AR{$contador}", $list->num_doc);
+            if($list->covid!="0"){
+                $sheet->getCell("AR{$contador}")->getHyperlink()->setUrl($url->url_config.$list->cert_vacu_covid);
+            }
+            $sheet->setCellValue("AS{$contador}", $list->horariof);   
+            $sheet->setCellValue("AT{$contador}", $list->modalidadf);
+            $sheet->setCellValue("AU{$contador}", $list->polo);   
+            $sheet->setCellValue("AV{$contador}", $list->camisa);
+            $sheet->setCellValue("AW{$contador}", $list->pantalon);   
+            $sheet->setCellValue("AX{$contador}", $list->zapato);
+            $sheet->setCellValue("AY{$contador}", $list->nom_grupo_sanguineo);
+            $sheet->setCellValue("AZ{$contador}", $list->generacion);
+            if($list->fin_funciones!=NULL && $list->fin_funciones!='0000-00-00'){
+                $sheet->setCellValue("BA{$contador}", Date::PHPToExcel($list->fin_funciones));
+                $sheet->getStyle("BA{$contador}")->getNumberFormat()->setFormatCode(NumberFormat::FORMAT_DATE_DMYSLASH);
+            }
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Colaborador (Cesados)';
+        if (ob_get_contents()) ob_end_clean();
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="'. $filename .'.xlsx"'); 
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
+    }
+
     protected $Model_Perfil;
 
     public function Mi_Perfil($id_usuario=null){
