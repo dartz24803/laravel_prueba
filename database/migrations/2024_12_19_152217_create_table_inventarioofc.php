@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id('id_inventario_ofc');
             $table->integer('categoria')->nullable();
             $table->integer('subcategoria')->nullable();
+            $table->integer('cantidad')->nullable();
             $table->string('descripcion', 100)->nullable();
             $table->string('unidad_salida', 100)->nullable();
             $table->integer('estado')->nullable();
@@ -32,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('table_inventarioofc');
+        Schema::dropIfExists('inventarioofc');
     }
 };

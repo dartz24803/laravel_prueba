@@ -37,6 +37,18 @@
                                     </select>
                                 </div>
                             </div>
+                            <div class="col-md-1">
+                                <div class="form-group">
+                                    <label class="control-label text-bold">Año:</label>
+                                    <select class="form-control" id="cod_anio" name="cod_anio">
+                                        <?php foreach ($list_anio as $list) { ?>
+                                            <option value="<?php echo $list['cod_anio'] ?>" <?php if ($list['cod_anio'] == date('Y')) {
+                                                                                                echo "selected";
+                                                                                            } ?>><?php echo $list['cod_anio']; ?></option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     @csrf
@@ -53,7 +65,6 @@
         $("#rhumanos").addClass('active');
         $("#hrhumanos").attr('aria-expanded','true');
         $("#recumpleanio").addClass('active');
-        $('.sorting_asc').click();
         Buscar_Cumpleanios();
     });
     
@@ -72,7 +83,6 @@
             data: {'cod_mes':mes},
             success: function(data) {
                 $('#lista_cumple').html(data);
-                
             }
         });
     }
